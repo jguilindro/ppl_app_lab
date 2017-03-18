@@ -1,0 +1,28 @@
+{
+	"cdn": {
+		"bootstrap": {
+			"css": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css",
+			"js": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		},
+		"vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js",
+		"vuex": "https://cdnjs.cloudflare.com/ajax/libs/vuex/2.2.1/vuex.min.js",
+		"vuetify": "https://unpkg.com/vuetify/dist/vuetify.min.js",
+		"jquery": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+		"materialize": {
+			"css": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css",
+			"js": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"
+		},
+		"lodash": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js",
+		"font-awesome": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	},
+	"locales": {
+		"bootstrap": "",
+		"vue": "",
+		"vuex": "",
+		"vuetify": "",
+		"jquery": "",
+		"materialize": "",
+		"lodash": "",
+		"font-awesome": ""
+	}
+}

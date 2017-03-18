@@ -1,0 +1,26 @@
+{
+  "name": "espol-ppl",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Joel Rodriguez <joelerll@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/razerjon24/ppl_app_lab",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "materialize": "^0.98.0",
+    "socket.io-client": "^1.7.2",
+    "vue": "^2.2.4",
+    "vuex": "^2.2.1"
+  }
+}
