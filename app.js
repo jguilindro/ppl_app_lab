@@ -21,18 +21,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', express.static(path.join(__dirname, 'app_client/home')));
-app.use('/login', express.static(path.join(__dirname, 'app_client/login'))); //login para estudiante como profesor
+app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta parte será dada por el CAS, no sé como será el trep aquí - Edison
 // Login middleware, verifica si el usuario esta loggeado
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   if (false) {
     return next()
   } else {
-    res.redirect('/login')
+    res.redirect('/')
   }
-})
-app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')))
-app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes')))
+})*/
+app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
+app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes')));
 
 // app_api
 app.use('/api/profesores/login', profesores_api);
