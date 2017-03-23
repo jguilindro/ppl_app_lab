@@ -1,5 +1,5 @@
-var app = new Veu({
-	el: '#app',
+var app = new Vue({
+	el: '#grupos',
 	data: {
 		grupos: [
 			/*GRUPO #1*/
@@ -22,7 +22,7 @@ var app = new Veu({
 						correo: 'julio@espol.edu.ec'
 					}
 				]
-			}
+			},
 			/*GRUPO #2*/
 			{
 				nombre: 'Grupo #2',
@@ -43,7 +43,7 @@ var app = new Veu({
 						correo: 'viteri@espol.edu.ec'
 					}
 				]
-			}
+			},
 			/*Grupo #3*/
 			{
 				nombre: 'Grupo #3',

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Hola</title>
+	<title>Profesor</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style type="text/css">
@@ -49,13 +49,13 @@
 				</form>
 			</div>
 		</header>
-		<section>
+		<section id="grupos">
 			<ul class="collapsible" data-collapsible="accordion" id="info-grupos">
 				<li v-for="grupo in grupos">
 					<div class="collapsible-header">{{grupo.nombre}}</div>
-					<div v-for="estudiante in grupo.integrantes">
-						<div class="collapsible-body"><span>{{estudiante.nombre}}</span></div>
-					</div>
+					
+						<div v-for="estudiante in grupo.integrantes" class="collapsible-body"><span>{{estudiante.nombre}}</span></div>
+					
 				</li>
 				<!--
 				<li>

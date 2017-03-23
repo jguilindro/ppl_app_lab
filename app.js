@@ -32,7 +32,7 @@ app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta p
 })*/
 app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
 app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes')));
-
+app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos/')))
 // app_api
 app.use('/api/profesores/login', profesores_api);
 
