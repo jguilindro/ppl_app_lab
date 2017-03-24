@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var index = require('./app_api/routes/index');
 var login = require('./app_api/routes/login.js')
@@ -35,6 +36,11 @@ app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudian
 app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos/')))
 // app_api
 app.use('/api/profesores/login', profesores_api);
+app.use(session({
+	secret: 'MY-SESSION-DEMO',
+	resave: true,
+	saveUninitialized: false	
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -53,5 +59,40 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({message: mensaje, error: error});
 });
+
+//Handling del login
+app.post('/login', function(req, res){
+	var username= req.body.username;
+	var password= req.body.password;
+	
+	if (username =="profesor" && password =="1234"){
+		req.session ["username"]= username;
+		res.send(200,'profesores/grupos') ;
+		return;
+	} else if (username =="estudiante" && password =="1234"){
+		req.session ["username"]= username;
+		res.send(200,'/estudiantes');
+		return;
+	
+	}else{res.send(500,'showAlert');}
+	
+	
+	/*
+	if (username =="user" && password =="user1234"&& rol=="Paciente"){
+		req.session ["username"]= username;
+		req.session ["rol"]= rol;
+		res.redirect('home');
+		return;
+	}
+	
+	*/
+	
+});
+
+app.get('/logout', function(req, res, next){
+	req.session.destroy();
+	res.redirect('/');
+});
+
 
 module.exports = app;
