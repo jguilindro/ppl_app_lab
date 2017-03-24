@@ -4,6 +4,7 @@
 	<title>Profesor</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<style type="text/css">
 		header{
 			margin-top: 15%;
@@ -30,7 +31,26 @@
 	</style>
 </head>
 <body>
-	<div class="container">
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span> 
+		      </button>
+		      <a class="navbar-brand" href="#">Profesores</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="myNavbar">
+		      <ul class="nav navbar-nav">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li> 
+		        <li class="active"><a href="#">Grupos</a></li> 
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+	<div class="container" id="grupos">
 		<header>
 			<div class = "row">
 				<form class = "col s12">
@@ -49,7 +69,7 @@
 				</form>
 			</div>
 		</header>
-		<section id="grupos">
+		<section>
 			<ul class="collapsible" data-collapsible="accordion" id="info-grupos">
 				<li v-for="grupo in grupos">
 					<div class="collapsible-header">{{grupo.nombre}}</div>
