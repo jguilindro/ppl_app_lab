@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 // base de datos mongoose
-require('./app_api/models/db.js')
+require('./app_api/models/db')
 
 var app = express();
 
@@ -36,6 +36,7 @@ app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/pr
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
+app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'))
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,

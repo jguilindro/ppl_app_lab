@@ -1,0 +1,155 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ppl",
+		"_postman_id": "973147d5-4f8d-6c77-8fec-9f4806f2d3ce",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "estudiantes",
+			"description": "",
+			"item": [
+				{
+					"name": "GET ALL obtener todos estudiantes",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerEstudiante",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/id",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarEstudianteNoDatosPrivados",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/id",
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerLecciones",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/lecciones",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarLeccion",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/lecciones/id",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/grupo",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "anadirGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/grupo/id",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes/grupo/id",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "profesores",
+			"description": "peticiones ejemplo profesores",
+			"item": [
+				{
+					"name": "get profesores",
+					"request": {
+						"url": "http://localhost:3000/api/profesores",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "obtener todos los profesores"
+					},
+					"response": []
+				},
+				{
+					"name": "post profesores",
+					"request": {
+						"url": "http://localhost:3000/api/profesores",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "put profesores",
+					"request": {
+						"url": "http://localhost:3000/api/profesores/d",
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete profesores",
+					"request": {
+						"url": "http://localhost:3000/api/profesores/_id",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

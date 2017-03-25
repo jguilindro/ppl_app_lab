@@ -6,8 +6,5 @@ router.get('/login', function(req, res, next) {
 })
 
 router.get('/', ProfesorController.obtenerTodosProfesores);
-router.post('/', ProfesorController.crearProfesor);
-router.put('/:id_profesor', ProfesorController.editarProfesor);
-router.delete('/:id_profesor', ProfesorController.eliminarProfesor);
-
+router.get('/:id_profesor', ProfesorController.obtenerProfesor);
 module.exports = router;

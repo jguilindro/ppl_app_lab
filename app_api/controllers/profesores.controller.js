@@ -1,25 +1,30 @@
 const ProfesorModel = require('../models/profesore.model')
 
-const obtenerTodosProfesores =  function(req, res, next) {
+const obtenerTodosProfesores =  (req, res, next) => {
   ProfesorModel.obtenerTodosProfesores(function(err, profesores) {
     res.send(profesores)
   })
 }
 
-const crearProfesor = function(req, res, next) {
+const obtenerProfesor = (req, res, next) => {
+  res.send('un profoesr')
+}
+
+const crearProfesor = (req, res, next) => {
   res.send('crear profesro');
 }
 
-const editarProfesor = function(req, res, next) {
+const editarProfesor = (req, res, next) => {
   res.send('editar profesor');
 }
 
-const eliminarProfesor = function(req, res, next) {
+const eliminarProfesor = (req, res, next) => {
   res.send('borrar profesor');
 }
 
 module.exports = {
   obtenerTodosProfesores,
+  obtenerProfesor,
   crearProfesor,
   editarProfesor,
   eliminarProfesor
