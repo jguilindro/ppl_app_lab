@@ -6,11 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var index = require('./app_api/routes/index');
-var login = require('./app_api/routes/login.js')
-
-//api
-var profesores_api = require('./app_api/routes/profesores')
+// base de datos mongoose
+require('./app_api/models/db.js')
 
 var app = express();
 
@@ -31,20 +28,23 @@ app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta p
     res.redirect('/')
   }
 })*/
+
+//vistas
 app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
 app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes')));
-app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos/')))
+app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos')));
+
 // app_api
-app.use('/api/profesores/login', profesores_api);
+app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,
-	saveUninitialized: false	
+	saveUninitialized: false
 }));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  var err = new Error('Url o metodo no valido');
   err.status = 404;
   next(err);
 });
@@ -57,14 +57,14 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json({message: mensaje, error: error});
+  res.json({"error-message": mensaje, "error-codigo": error.status});
 });
 
 //Handling del login
 app.post('/login', function(req, res){
 	var username= req.body.username;
 	var password= req.body.password;
-	
+
 	if (username =="profesor" && password =="1234"){
 		req.session ["username"]= username;
 		res.send(200,'profesores/grupos') ;
@@ -73,10 +73,10 @@ app.post('/login', function(req, res){
 		req.session ["username"]= username;
 		res.send(200,'/estudiantes');
 		return;
-	
+
 	}else{res.send(500,'showAlert');}
-	
-	
+
+
 	/*
 	if (username =="user" && password =="user1234"&& rol=="Paciente"){
 		req.session ["username"]= username;
@@ -84,9 +84,9 @@ app.post('/login', function(req, res){
 		res.redirect('home');
 		return;
 	}
-	
+
 	*/
-	
+
 });
 
 app.get('/logout', function(req, res, next){
