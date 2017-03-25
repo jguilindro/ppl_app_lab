@@ -1,0 +1,22 @@
+.clearer{
+			clear: left;
+		}
+.calificacion-good{
+	background-color: rgba(0, 128, 0, 0.4);	
+}
+.calificacion-reg{
+	background-color: rgba(255, 255, 0, 0.4);
+}
+.take{
+	background-color: #42a5f5;
+}
+#grad{
+	background: red; /* For browsers that do not support gradients */
+	background: linear-gradient(to bottom, rgba(0,128,0,0.1), rgba(0,128,0,0.4))  no-repeat center center fixed; /*Standard*/
+}
+tr{
+	background-color: rgba(255,255,255,0.3);
+}
+.titles{
+	background-color: rgba(255,255,255,0.6);	
+}
