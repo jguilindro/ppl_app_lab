@@ -26,8 +26,7 @@ const obtenerPreguntasPorCreador = (req, res) => {
 const crearPregunta = (req, res) => {
   // con quien este loggeado anadir el id creador
   let pregunta = new PreguntaModel({
-    tipoPregunta: req.body.tipoPregunta,
-    tipoLeccion: req.body.tipoLeccion,
+    tipo: req.body.tipo,
     capitulo: req.body.capitulo,
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje
@@ -40,8 +39,7 @@ const crearPregunta = (req, res) => {
 
 const actualizarPregunta = (req, res) => {
   let actualizar = {
-    tipoPregunta: req.body.tipoPregunta,
-    tipoLeccion: req.body.tipoLeccion,
+    tipo: req.body.tipo,
     capitulo: req.body.capitulo,
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje

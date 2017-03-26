@@ -17,24 +17,31 @@ const GrupoSchema = mongoose.Schema({
 	}]
 },{versionKey: false, timestamps: true, collection: 'grupos'})
 
-// obtener todos los grupos
 GrupoSchema.statics.obtenerTodosGrupos = function(callback) {
 	this.find({},callback);
 }
 
-// Obtener un grupo
 GrupoSchema.statics.obtenerGrupo = function(id_grupo,callback) {
   this.findOne({_id: id_grupo}, callback)
 }
 
-// crear grupo
 GrupoSchema.methods.crearGrupo = function(callback) {
 	this.save(callback);
 }
 
-// eliminar grupo
 GrupoSchema.statics.eliminarGrupo = function(id_grupo, callback) {
 	this.findOneAndRemove({_id: id_grupo}, callback)
+}
+
+/*
+* Estudiante
+ */
+GrupoSchema.statics.anadirEstudiante = function(id_grupo,id_estudiante, callback) {
+  this.update({_id: id_grupo}, {$addToSet: {estudiantes: id_estudiante}}, callback);
+}
+
+GrupoSchema.statics.eliminarEstudiante = function(id_grupo, id_estudiante, callback) {
+  this.update({_id: id_grupo}, {$pull: {estudiantes: id_estudiante}}, callback);
 }
 
 module.exports = mongoose.model('Grupo', GrupoSchema)

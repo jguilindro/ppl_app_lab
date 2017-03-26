@@ -16,7 +16,6 @@ const crearGrupo = (req, res) => {
     paralelo: req.body.idParalelo
   })
   grupo.crearGrupo((err) => {
-    if (err.code === 11000) return respuesta.mongoError(res, 'Ya existe');
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res, grupo);
   })
@@ -24,7 +23,6 @@ const crearGrupo = (req, res) => {
 
 const obtenerGrupo = (req, res) => {
   GrupoModel.obtenerGrupo(req.params.id_grupo, (err, grupo) => {
-    if (err.code == 11000) return respuesta.mongoError(res, 'Ya existe');
     if (err) return respuesta.serverError(res);
     return respuesta.ok(res, grupo);
   })
@@ -44,10 +42,31 @@ const eliminarGrupo = (req, res) => {
   })
 }
 
+// TODO: verificar si el estudiante existe y el grupo
+const anadirEstudiante = (req, res) => {
+  const { id_grupo, id_estudiante} = req.params
+  GrupoModel.anadirEstudiante(id_grupo, id_estudiante, (err, doc) => {
+    if (err) respuesta.serverError(res);
+    return respuesta.okAnadido(res);
+  })
+}
+
+// TODO: verificar si el estudiante existe y el grupo
+const eliminarEstudiante = (req, res) => {
+  const { id_grupo, id_estudiante} = req.params
+  GrupoModel.eliminarEstudiante(id_grupo, id_estudiante, (err, doc) => {
+    if (err) respuesta.serverError(res);
+    return respuesta.okEliminado(res);
+  })
+}
+
 module.exports = {
   obtenerTodosGrupos,
   crearGrupo,
   editarGrupo,
   eliminarGrupo,
   obtenerGrupo,
+  // estudiantes
+  anadirEstudiante,
+  eliminarEstudiante,
 }

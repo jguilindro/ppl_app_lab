@@ -11,7 +11,8 @@ const LeccionSchema = mongoose.Schema({
     type: String
   },
   estado: {
-    type: Number
+    type: Number,
+    'default': 0
   },
   tiempoEstimado: {
     type: Date

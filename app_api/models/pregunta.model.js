@@ -11,10 +11,7 @@ const PreguntaSchema = mongoose.Schema({
     type: String,
     ref: 'Profesor'
   },
-  tipoPregunta: {
-    type: Number
-  },
-  tipoLeccion: {
+  tipo: {
     type: Number
   },
   capitulo: {
@@ -45,7 +42,7 @@ PreguntaSchema.methods.crearPregunta = function(callback) {
 }
 
 PreguntaSchema.statics.actualizarPregunta = function(id_pregunta, actualizar, callback) {
-  this.update({_id: id_pregunta}, {$set: {tipoPregunta: actualizar.tipoPregunta, tipoLeccion: actualizar.tipoLeccion, capitulo: actualizar.capitulo, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.puntaje}},callback);
+  this.update({_id: id_pregunta}, {$set: {tipo: actualizar.tipo, capitulo: actualizar.capitulo, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.puntaje}},callback);
 }
 
 PreguntaSchema.statics.eliminarPregunta = function(id_pregunta, callback) {
