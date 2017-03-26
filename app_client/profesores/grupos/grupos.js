@@ -1,5 +1,6 @@
 var app = new Vue({
 	el: '#grupos',
+
 	data: {
 		grupos: [
 			/*GRUPO #1*/
@@ -66,5 +67,9 @@ var app = new Vue({
 				]
 			}
 		]
+	},
+
+	mounted: function(){
+		$('.button-collapse').sideNav();
 	}
 });
