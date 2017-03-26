@@ -230,6 +230,147 @@
 			]
 		},
 		{
+			"name": "lecciones",
+			"description": "",
+			"item": [
+				{
+					"name": "obtenerTodasLecciones",
+					"request": {
+						"url": "http://localhost:3000/api/lecciones",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerLeccion",
+					"request": {
+						"url": "http://localhost:3000/api/lecciones/id",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "crearLeccion",
+					"request": {
+						"url": "http://localhost:3000/api/lecciones",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nombre",
+									"value": "uno",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tiempoEstimado",
+									"value": "565",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "puntaje",
+									"value": "26",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tipo",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "fechaInicio",
+									"value": "6559",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarLeccion",
+					"request": {
+						"url": "http://localhost:3000/api/lecciones/rJJW-6rhg",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nombre",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tiempoEstimado",
+									"value": "24",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "puntaje",
+									"value": "45",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tipo",
+									"value": "4",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "fechaInicio",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarLeccion",
+					"request": {
+						"url": "http://localhost:3000/api/lecciones/rJJW-6rhg",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "paralelos",
 			"description": "",
 			"item": [

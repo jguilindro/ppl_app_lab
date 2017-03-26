@@ -39,7 +39,7 @@ app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
 app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
-//app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
+app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
 
 app.use(session({
