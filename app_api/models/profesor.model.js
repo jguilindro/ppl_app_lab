@@ -15,7 +15,14 @@ const ProfesorSchema = mongoose.Schema({
   },
   apellidos: {
     type: String
-  }
+  },
+  foto: {
+    type: String
+  },
+  preguntasCreadas: [{
+    type: String,
+    ref: 'Pregunta'
+  }]
 })
 
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {

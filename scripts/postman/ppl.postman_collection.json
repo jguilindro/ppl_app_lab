@@ -104,8 +104,42 @@
 					"request": {
 						"url": "http://localhost:3000/api/estudiantes",
 						"method": "POST",
-						"header": [],
-						"body": {},
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nombres",
+									"value": "uno",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "apellidos",
+									"value": "dos",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "correo",
+									"value": "sads@gmail.com",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "matricula",
+									"value": "145",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
 						"description": ""
 					},
 					"response": []
@@ -357,7 +391,7 @@
 				{
 					"name": "anadirEstudianteAParalelo",
 					"request": {
-						"url": "http://localhost:3000/api/paralelos/rkZvSYS3e/estudiantes/sadsa",
+						"url": "http://localhost:3000/api/paralelos/rkZvSYS3e/estudiantes/B19a5KS2l",
 						"method": "POST",
 						"header": [],
 						"body": {},
@@ -369,6 +403,158 @@
 					"name": "eliminarEstudianteDeParalelo",
 					"request": {
 						"url": "http://localhost:3000/api/paralelos/rkZvSYS3e/estudiantes/sadsa",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "preguntas",
+			"description": "",
+			"item": [
+				{
+					"name": "obtenerTodasPreguntas",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerPregunta",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas/HJ3wmnr2e",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerPreguntasPorCreador",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas/profesor/sd",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "crearPregunta",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tipoPregunta",
+									"value": "1",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tipoLeccion",
+									"value": "1",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "capitulo",
+									"value": "1",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tiempoEstimado",
+									"value": "1427",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "puntaje",
+									"value": "12",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarPregunta",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas/HJ3wmnr2e",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tipoPregunta",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tipoLeccion",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "capitulo",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "tiempoEstimado",
+									"value": "4548",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "puntaje",
+									"value": "2",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarPregunta",
+					"request": {
+						"url": "http://localhost:3000/api/preguntas/HJ3wmnr2e",
 						"method": "DELETE",
 						"header": [],
 						"body": {},
