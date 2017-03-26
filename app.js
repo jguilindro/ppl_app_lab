@@ -36,7 +36,8 @@ app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/pr
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
-app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'))
+app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
+app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,
@@ -58,7 +59,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json({"error-message": mensaje, "error-codigo": error.status});
+  res.json({"errorMessage": mensaje, "errorCodigo": error.status});
 });
 
 //Handling del login

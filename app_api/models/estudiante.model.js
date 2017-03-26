@@ -30,8 +30,13 @@ const EstudianteSchema = new Schema({
 			type: String,
 			ref: 'Leccion'
 		},
+		notaGrupo: {
+			type: Boolean
+		},
 		calificacion: {
 			type: Number
 		}
 	}]
 })
+
+module.exports = mongoose.model('Estudiante', EstudianteSchema)
