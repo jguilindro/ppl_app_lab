@@ -1,12 +1,27 @@
+const EstudianteModel = require('../models/estudiante.model');
+var respuesta = require('../utils/responses');
 /*
 * Estudiante metodos basicos
 */
 const obtenerTodosEstudiantes = (req, res) => {
-  res.send('todos Estudiantes');
+  EstudianteModel.obtenerTodosEstudiantes((err, estudiantes) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res, estudiantes);
+  })
 }
 
 const crearEstudiante = (req, res) => {
-	res.send('crearEstudiante');
+  let estudiante = new EstudianteModel({
+    nombres: req.body.nombres,
+    apellidos: req.body.apellidos,
+    correo: req.body.correo,
+    matricula: req.body.matricula
+  })
+  estudiante.crearEstudiante((err) => {
+    if (err.code) return respuesta.mongoError(res, 'Ya existe');
+    if (err) return respuesta.serverError(res);
+    return respuesta.creado(res, estudiante);
+  })
 }
 
 const actualizarEstudiante = (req, res) => {

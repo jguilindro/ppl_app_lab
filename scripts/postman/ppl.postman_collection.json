@@ -98,6 +98,283 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "crearEstudiante",
+					"request": {
+						"url": "http://localhost:3000/api/estudiantes",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerTodosGrupos",
+					"request": {
+						"url": "http://localhost:3000/api/grupos",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "grupos",
+			"description": "",
+			"item": [
+				{
+					"name": "crearGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/grupos",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "idParalelo",
+									"value": "423",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "nombre",
+									"value": "grupo 2",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerTodosGrupos",
+					"request": {
+						"url": "http://localhost:3000/api/grupos",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/grupos/rypW1tEn",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerGrupo",
+					"request": {
+						"url": "http://localhost:3000/api/grupos/BkzEHhVng",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "paralelos",
+			"description": "",
+			"item": [
+				{
+					"name": "obtenerTodosParalelos",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "crearParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nombre",
+									"value": "uno",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "limiteEstudiantes",
+									"value": "5",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "idProfesor",
+									"value": "sads",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "idEstudiante",
+									"value": "asdas",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/rkY1b_S3e",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "anadirGrupoAParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/B14lWdH3g/grupos/dos",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarGrupoDeParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/B14lWdHg/grupos/grupos",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "anadirProfesorAParelelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/HkYaKuBhl/profesores/asad",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarProfesorDeParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/HkYaKuBhls/profesores",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/HkYaKuBhls",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/HkYaKuBhl",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nombre",
+									"value": "editadosss",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "limiteEstudiantes",
+									"value": "5",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "anadirEstudianteAParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/rkZvSYS3e/estudiantes/sadsa",
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarEstudianteDeParalelo",
+					"request": {
+						"url": "http://localhost:3000/api/paralelos/rkZvSYS3e/estudiantes/sadsa",
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

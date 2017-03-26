@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const dbURL = require('../config/main');
+const autoIncrement = require('mongoose-auto-increment');
+
 mongoose.connect(dbURL.mlab);
 
 const db = mongoose.connection;

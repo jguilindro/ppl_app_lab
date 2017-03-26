@@ -38,6 +38,10 @@ app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/pr
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
 app.use('/api/grupos', require('./app_api/routes/grupos.router'));
+app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
+//app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
+//app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
+
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,
@@ -59,7 +63,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json({"errorMessage": mensaje, "errorCodigo": error.status});
+  res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
 
 //Handling del login

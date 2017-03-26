@@ -1,4 +1,4 @@
-const ProfesorModel = require('../models/profesore.model')
+const ProfesorModel = require('../models/profesor.model')
 
 const obtenerTodosProfesores =  (req, res, next) => {
   ProfesorModel.obtenerTodosProfesores(function(err, profesores) {
