@@ -4,6 +4,7 @@ const EstudiantesController = require('../controllers/estudiantes.controller');
 // Estudiante CRUD
 router.get('/', EstudiantesController.obtenerTodosEstudiantes);
 router.get('/:id_estudiante', EstudiantesController.obtenerEstudiante);
+router.post('/', EstudiantesController.crearEstudiante);
 
 // Lecciones
 router.get('/', EstudiantesController.obtenerLecciones);
@@ -17,9 +18,5 @@ router.post('/grupo/:id_grupo', EstudiantesController.anadirGrupo);
 router.delete('/grupo/:id_grupo', EstudiantesController.eliminarGrupo);
 
 
-/*
-* Pruebas
-*/
-router.post('/', EstudiantesController.crearEstudiante);
 
 module.exports = router;

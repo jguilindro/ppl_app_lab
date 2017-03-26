@@ -7,7 +7,7 @@ router.post('/', ParalelosController.crearParalelo);
 router.put('/:id_paralelo', ParalelosController.actualizarParalelo);
 router.delete('/:id_paralelo', ParalelosController.eliminarParalelo);
 
-// paralelos
+// grupos
 router.post('/:id_paralelo/grupos/:id_grupo', ParalelosController.anadirGrupoAParalelo);
 router.delete('/:id_paralelo/grupos/:id_grupo', ParalelosController.eliminarGrupoDeParalelo);
 

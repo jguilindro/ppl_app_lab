@@ -9,9 +9,6 @@ const ParaleloSchema = new mongoose.Schema({
   nombre: {
     type: String
   },
-  limiteEstudiantes: {
-    type: Number
-  },
   cantidadEstudiantes: {
     type: Number
   },

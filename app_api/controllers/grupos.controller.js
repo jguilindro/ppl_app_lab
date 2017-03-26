@@ -22,6 +22,14 @@ const crearGrupo = (req, res) => {
   })
 }
 
+const obtenerGrupo = (req, res) => {
+  GrupoModel.obtenerGrupo(req.params.id_grupo, (err, grupo) => {
+    if (err.code == 11000) return respuesta.mongoError(res, 'Ya existe');
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res, grupo);
+  })
+}
+
 // TODO: editar solo nombre
 const editarGrupo = (req, res) => {
   res.send('editarGrupo');
@@ -33,14 +41,6 @@ const eliminarGrupo = (req, res) => {
     if (!doc) return respuesta.mongoError(res, 'No existe este grupo')
     if (err) return respuesta.serverError(res);
     return respuesta.okEliminado(res);
-  })
-}
-
-const obtenerGrupo = (req, res) => {
-  GrupoModel.obtenerGrupo(req.params.id_grupo, (err, grupo) => {
-    if (err.code == 11000) return respuesta.mongoError(res, 'Ya existe');
-    if (err) return respuesta.serverError(res);
-    return respuesta.ok(res, grupo);
   })
 }
 
