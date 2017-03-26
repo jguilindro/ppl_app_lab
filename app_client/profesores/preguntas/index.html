@@ -6,11 +6,8 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		
-		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
 	</head>
 	<body>
-
 		<nav>
 	    <div class="nav-wrapper">
 	      <a href="#!" class="brand-logo">Profesor</a>
@@ -29,43 +26,14 @@
 	      </ul>
 	    </div>
 	  </nav>
-
-		<div class="container" id="grupos">
-			<header>
-				<div class = "row">
-					<form class = "col s12">
-						<div class="row">
-							<div class="input-field col s4 offset-s4">
-								<input 	type="text" name = "" class = "validate" 
-										placeholder="Buscar..." id="buscar">
-								<label for="buscar">Buscar</label>
-							</div>
-							<div class="col s1">
-								<button class="btn-floating btn-large waves-effect waves-light" id="search">
-									<i class="medium material-icons">search</i>
-								</button>						
-							</div>
-						</div>
-					</form>
-				</div>
-			</header>
-			<section>
-				<ul class="collapsible" data-collapsible="accordion" id="info-grupos">
-					<li v-for="grupo in grupos">
-						<div class="collapsible-header">{{grupo.nombre}}</div>
-						
-							<div v-for="estudiante in grupo.integrantes" class="collapsible-body"><span>{{estudiante.nombre}}</span></div>
-						
-					</li>
-				</ul>
-			</section>
-		</div>
-
+	  <div id="preguntas">
+	  	
+	  </div>
 		<footer>
 			<script src="https://unpkg.com/vue"></script>
 			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
-			<script src="./grupos.js"></script>
+			<script src="./preguntasScript.js"></script>
 		</footer>
 	</body>
 </html>
