@@ -25,5 +25,10 @@ var app = new Vue({
     		}
     	]
     }
+  },
+  methods: {
+    tomarLeccion : function(){
+        window.location.href = '/estudiantes/tomar-leccion'
+    }
   }
 })

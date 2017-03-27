@@ -31,9 +31,9 @@ app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta p
 
 //vistas
 app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
-app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes')));
 app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos')));
-
+app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.use('/estudiantes/tomar-leccion', express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));

@@ -3,30 +3,7 @@
 <head>
 	<title>Estudiante</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
-	<style type="text/css">
-		.clearer{
-			clear: left;
-		}
-		.calificacion-good{
-			background-color: rgba(0, 128, 0, 0.4);	
-		}
-		.calificacion-reg{
-			background-color: rgba(255, 255, 0, 0.4);
-		}
-		.take{
-			background-color: #42a5f5;
-		}
-		#grad{
-			background: red; /* For browsers that do not support gradients */
-			background: linear-gradient(to bottom, rgba(0,128,0,0.1), rgba(0,128,0,0.4))  no-repeat center center fixed; /*Standard*/
-		}
-		tr{
-			background-color: rgba(255,255,255,0.3);
-		}
-		.titles{
-			background-color: rgba(255,255,255,0.6);	
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
 </head>
 <body id="grad">
 	<div class="container" id="app">
@@ -56,7 +33,7 @@
 								<button class="btn waves-effect waves-light">Ver</button>
 							</td>
 							<td v-else="leccion.estado=='Pendiente'">
-								<button class="btn waves-effect waves-light blue lighten-1">Tomar</button>
+								<button class="btn waves-effect waves-light blue lighten-1" v-on:click="tomarLeccion()">Tomar</button>
 							</td>
 						</tr>
 					</tbody>

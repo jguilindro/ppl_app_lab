@@ -1,0 +1,20 @@
+.v-center{
+	margin-top: 20%;
+}
+.code{
+
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    grey;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    grey;
+   opacity:  0.5;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    grey;
+   opacity:  0.5;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    grey;
+}
