@@ -41,6 +41,7 @@ app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
 app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
+app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
 
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
@@ -48,36 +49,18 @@ app.use(session({
 	saveUninitialized: false
 }));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Url o metodo no valido');
-  err.status = 404;
-  next(err);
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  var mensaje = err.message;
-  var error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
-});
-
 //Handling del login
 app.post('/login', function(req, res){
-	var username= req.body.username;
+	var username= req.body.usuario;
 	var password= req.body.password;
 
 	if (username =="profesor" && password =="1234"){
 		req.session ["username"]= username;
-		res.send(200,'profesores/grupos') ;
+		res.redirect('profesores/grupos') ;
 		return;
 	} else if (username =="estudiante" && password =="1234"){
 		req.session ["username"]= username;
-		res.send(200,'/estudiantes');
+		res.redirect('/estudiantes');
 		return;
 
 	}else{res.send(500,'showAlert');}
@@ -99,6 +82,26 @@ app.get('/logout', function(req, res, next){
 	req.session.destroy();
 	res.redirect('/');
 });
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Url o metodo no valido');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  var mensaje = err.message;
+  var error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
+});
+
+
 
 
 module.exports = app;
