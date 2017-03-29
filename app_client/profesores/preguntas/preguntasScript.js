@@ -1,6 +1,7 @@
 var app = new Vue({
 	mounted: function(){
 		$('.button-collapse').sideNav();
+		$('.scrollspy').scrollSpy();
 	},
 
 	el: '#preguntas',
@@ -8,6 +9,8 @@ var app = new Vue({
 		capitulos: [
 			{
 				nombre: 'Capitulo 1',
+				id: 'capitulo1',
+				href:'#capitulo1',
 				preguntas: [
 					'pregunta #1',
 					'pregunta #2',
@@ -16,6 +19,8 @@ var app = new Vue({
 			},
 			{
 				nombre: 'Capitulo 2',
+				id: 'capitulo2',
+				href:'#capitulo2',
 				preguntas: [
 					'pregunta #1',
 					'pregunta #2',
@@ -25,6 +30,8 @@ var app = new Vue({
 			},
 			{
 				nombre: 'Capitulo 3',
+				id: 'capitulo3',
+				href:'#capitulo3',
 				preguntas: [
 					'pregunta #1',
 					'pregunta #2'
