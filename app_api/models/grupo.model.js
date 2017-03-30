@@ -18,7 +18,7 @@ const GrupoSchema = mongoose.Schema({
 },{versionKey: false, timestamps: true, collection: 'grupos'})
 
 GrupoSchema.statics.obtenerTodosGrupos = function(callback) {
-	this.find({},callback);
+	this.find({}).populate({path: 'estudiantes'}).exec(callback);
 }
 
 GrupoSchema.statics.obtenerGrupo = function(id_grupo,callback) {

@@ -18,7 +18,6 @@ const crearEstudiante = (req, res) => {
     matricula: req.body.matricula
   })
   estudiante.crearEstudiante((err) => {
-    if (err.code) return respuesta.mongoError(res, 'Ya existe');
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res, estudiante);
   })
