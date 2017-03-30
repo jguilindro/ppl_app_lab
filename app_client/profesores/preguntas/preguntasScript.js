@@ -12,9 +12,16 @@ var app = new Vue({
 				id: 'capitulo1',
 				href:'#capitulo1',
 				preguntas: [
-					'pregunta #1',
-					'pregunta #2',
-					'pregunta #3'
+					{ 
+						titulo: 'pregunta #1',
+						id: '1-1'
+					},	{ 
+						titulo: 'pregunta #2',
+						id: '1-2'
+					},	{ 
+						titulo: 'pregunta #3',
+						id: '1-3'
+					} 
 				]
 			},
 			{
@@ -22,10 +29,19 @@ var app = new Vue({
 				id: 'capitulo2',
 				href:'#capitulo2',
 				preguntas: [
-					'pregunta #1',
-					'pregunta #2',
-					'pregunta #3',
-					'pregunta #4'
+					{ 
+						titulo: 'pregunta #1',
+						id: '2-1'
+					},					{ 
+						titulo: 'pregunta #2',
+						id: '2-2'
+					},					{ 
+						titulo: 'pregunta #3',
+						id: '2-3'
+					},					{ 
+						titulo: 'pregunta #4',
+						id: '2-4'
+					} 
 				]
 			},
 			{
@@ -33,8 +49,13 @@ var app = new Vue({
 				id: 'capitulo3',
 				href:'#capitulo3',
 				preguntas: [
-					'pregunta #1',
-					'pregunta #2'
+					{ 
+						titulo: 'pregunta #1',
+						id: '3-1'
+					},					{ 
+						titulo: 'pregunta #2',
+						id: '3-2'
+					} 
 				]
 			},
 		]

@@ -37,8 +37,8 @@
 				  	<div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
 				  		<h5>{{capitulo.nombre}}</h5>
 				  		<ul class="preguntas">
-				  			<li v-for="pregunta in capitulo.preguntas">
-				  				<a href="#">{{pregunta}}</a>
+				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id">
+				  				<a href="#">{{pregunta.titulo}}</a>
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -81,6 +81,7 @@
 			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 			<script src="./preguntasScript.js"></script>
+			<script src="./hoverIcons.js"></script>
 		</footer>
 	</body>
 </html>
