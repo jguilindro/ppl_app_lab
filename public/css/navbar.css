@@ -1,0 +1,13 @@
+nav{
+	background-color: rgba(255,255,255,0.2);
+	border: 0px;
+}
+nav ul a{
+	color: #8da9c6;
+}
+nav .brand-logo{
+	color: #8da9c6;	
+}
+nav a{
+	color: #8da9c6;	
+}
