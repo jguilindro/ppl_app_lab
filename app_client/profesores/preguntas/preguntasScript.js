@@ -38,5 +38,11 @@ var app = new Vue({
 				]
 			},
 		]
+	},
+	methods: {
+		nuevaPregunta: function(){
+			window.location.href = '/profesores/preguntas/nueva-pregunta'
+
+		}
 	}
 });

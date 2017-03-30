@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profesor</title>
+		<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+	</head>
+	<body>
+		<header>
+				<nav>
+			    <div class="nav-wrapper">
+			      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
+			      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+			      <ul class="right hide-on-med-and-down ">
+			        <li><a href="#">Sesiones</a></li>
+			        <li><a href="#">Lecciones</a></li>
+			        <li><a href="../../grupos">Grupos</a></li>
+			        <li><a href="../../preguntas">Preguntas</a></li>
+			      </ul>
+			      <ul class="side-nav" id="mobile-demo">
+			        <li><a href="#">Sesiones</a></li>
+			        <li><a href="#">Lecciones</a></li>
+			        <li><a href="../grupos">Grupos</a></li>
+			        <li><a href="../preguntas">Preguntas</a></li>
+			      </ul>
+			    </div>
+			  </nav>
+		</header>
+		<main>
+			<div class="container" id="pregunta">
+				<h1 class="center-align">Nueva pregunta</h1>
+				<p class="center-align">Creada por: </p>
+				<form class="col s12">
+					<!--Titulo-->
+					<div class="row row-titulo">
+						<div class="input-field col s12">
+							<input type="text" name="titulo" id="titulo">
+							<label for="titulo">Título</label>
+						</div>
+					</div>
+					<!--Tags-->
+					<div class="row row-tags">
+						<div class="input-field col s12">
+							<div class="chips chips-placeholder">
+								<input type="text" name="tag" class="input" id="tag">
+							</div>
+						</div>
+					</div>
+					<!--Descripcion-->
+					<div class="row row-descripcion">
+	          <div class="input-field col s12">
+	            <textarea id="textarea1" class="materialize-textarea" data-length="120"></textarea>
+	            <label for="textarea1">Descripcion</label>
+	          </div>
+	        </div>
+	        <!--File uploader-->
+	        <div class="row row-file-uploader">
+	        	<div class="file-field input-field">
+				      <div class="btn">
+				        <span>File</span>
+				        <input type="file" multiple>
+				      </div>
+				      <div class="file-path-wrapper">
+				        <input class="file-path validate" type="text" placeholder="Upload one or more files">
+				      </div>
+				    </div>
+	        </div>
+	        <!--Tipos de preguntas y de leccion-->
+					<div class="row row-tipos-preguntas">
+						<div class="col s6 input-field" id="tipo-pregunta">
+							<select>
+								<option value="" disabled selected></option>
+								<option value="1">Opcion multiple</option>
+								<option value="2">V/F</option>
+								<option value="3">Justificacion</option>
+							</select>
+							<label>Tipo de pregunta</label>
+						</div>
+						<div class="col s6 input-field" id="tipo-leccion">
+							<select>
+								<option value="" disabled selected></option>
+								<option value="1">Lección</option>
+								<option value="2">Tutorial</option>
+								<option value="3">Experimento</option>
+							</select>
+							<label>Tipo de lección</label>
+						</div>
+					</div>
+					<!--Tiempos estimados-->
+					<div class="row row-tiempos-estimados">
+						<div class="col s6 input-field">
+							<input type="number" name="tiempo-estimado" id="tiempo-estimado">
+							<label for="tiempo-estimado">Tiempo estimado: </label>
+						</div>
+						<div class="col s6 input-field">
+							<input type="number" name="tiempo-naranja" id="tiempo-naranja">
+							<label for="tiempo-naranja">Tiempo bandera naranja: </label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer>
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+			<script src="https://unpkg.com/vue"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+			<script src="./nuevaPreguntaScript.js"></script>
+		</footer>
+	</body>
+</html>

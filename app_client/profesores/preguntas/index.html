@@ -36,12 +36,12 @@
 			  	<div class="col s12 m9 l10">
 				  	<div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
 				  		<h5>{{capitulo.nombre}}</h5>
-				  		
 				  		<ul class="preguntas">
 				  			<li v-for="pregunta in capitulo.preguntas">
 				  				<a href="#">{{pregunta}}</a>
 				  			</li>
 				  		</ul>
+				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
 				  	</div>
 				  	<!--
 			  		<div class="capitulo scrollspy section" id="capitulo1">
@@ -58,6 +58,7 @@
 			  	</div>
 
 			  	<div class="col hide-on-small-only m3 l2">
+			  		
 			  		<ul class="section table-of-contents">
 			  			<li v-for="capitulo in capitulos">
 			  				<a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
