@@ -20,7 +20,8 @@
     "font-awesome": "^4.7.0",
     "materialize": "^0.98.0",
     "socket.io-client": "^1.7.2",
-    "vue": "^2.2.4",
+    "vue-resource": "^1.2.1",
+    "vue.draggable": "^2.9.0",
     "vuex": "^2.2.1"
   }
 }
