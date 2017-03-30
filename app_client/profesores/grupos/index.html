@@ -49,16 +49,24 @@
 					</form>
 				</div>
 			</header>
-			<section>
-				<ul class="collapsible" data-collapsible="accordion" id="info-grupos">
-					<li v-for="grupo in grupos">
-						<div class="collapsible-header">{{grupo.nombre}}</div>
-
-							<div v-for="estudiante in grupo.estudiantes" class="collapsible-body"><span>{{estudiante.nombres}}</span></div>
-
-					</li>
-				</ul>
-			</section>
+      <section id="alumnos-sin-grupo">
+        <div class="drag">
+        </div>
+      </section>
+      <div v-for="estudiante in estudiantesSinGrupo">
+        <div v-bind:id="estudiante._id" draggable="true"
+        ondragstart="drag(event)">{{estudiante.nombres}}</div>
+      </div>
+      <section>
+        <div v-for="grupo in grupos" >
+          <li v-bind:id="grupo._id"   ondrop="drop(event, this)" ondragover="allowDrop(event)">
+              {{grupo.nombre}}
+            <div v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
+              <span>{{estudiante.nombres}}</span>
+            </div>
+          </li>
+        </div>
+      </section>
 		</div>
 
 		<footer>
@@ -66,6 +74,8 @@
 			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      <script src="/bower_components/Sortable/Sortable.min.js"></script>
+      <script src="/bower_components/vue.draggable/dist/vuedraggable.min.js"></script>
       <script src="./grupos.js"></script>
 
 		</footer>
