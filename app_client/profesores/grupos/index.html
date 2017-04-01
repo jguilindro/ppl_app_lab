@@ -6,13 +6,8 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<<<<<<< HEAD
 		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
-=======
-
-		<!-- <link rel="stylesheet" type="text/css" href="./gruposStyles.css"> -->
->>>>>>> 54a020251c51183927333e2a8d3dddea17b80a62
 	</head>
 	<body>
 
@@ -67,7 +62,7 @@
           <li v-bind:id="grupo._id"   ondrop="drop(event, this)" ondragover="allowDrop(event)">
               {{grupo.nombre}}
             <div v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-              <span>{{estudiante.nombres}}</span>
+              <span>{{estudiante.nombres}}</span><button v-bind:id="estudiante._id" onClick="borrarAlumno(this)">x</button>
             </div>
           </li>
         </div>

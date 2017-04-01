@@ -140,3 +140,26 @@ function estudianteEstaEnGrupo(grupos, estudiante) {
   })
   return false
 }
+
+function borrarAlumno(event) {
+  let i = 0
+  let j = 1
+  app.grupos.forEach(grupo => {
+    grupo.estudiantes.forEach(estudiante => {
+      if (estudiante._id == event.id) {
+        console.log(estudiante._id)
+        console.log(grupo._id)
+        app.$http.delete(`/api/grupos/${grupo._id}/estudiantes/${estudiante._id}`).then(response => {
+          if (response.body.estado) {
+            app.obtenerTodosGrupos()
+          }
+        }, response => {
+          // codigo error
+        });
+      }
+      j = j + 1
+    })
+    j = 0
+    i = i + 1
+  })
+}
