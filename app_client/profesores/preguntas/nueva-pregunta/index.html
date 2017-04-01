@@ -4,41 +4,43 @@
 		<title>Profesor</title>
 		<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		
 		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
 		<header>
-				<nav>
-			    <div class="nav-wrapper">
-			      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
-			      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-			      <ul class="right hide-on-med-and-down ">
-			        <li><a href="#">Sesiones</a></li>
-			        <li><a href="#">Lecciones</a></li>
-			        <li><a href="../../grupos">Grupos</a></li>
-			        <li><a href="../../preguntas">Preguntas</a></li>
-			      </ul>
-			      <ul class="side-nav" id="mobile-demo">
-			        <li><a href="#">Sesiones</a></li>
-			        <li><a href="#">Lecciones</a></li>
-			        <li><a href="../grupos">Grupos</a></li>
-			        <li><a href="../preguntas">Preguntas</a></li>
-			      </ul>
-			    </div>
-			  </nav>
+			<nav>
+		    <div class="nav-wrapper">
+		      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
+		      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		      <ul class="right hide-on-med-and-down ">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <li><a href="../../preguntas">Preguntas</a></li>
+		      </ul>
+		      <ul class="side-nav" id="mobile-demo">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <li><a href="../../preguntas">Preguntas</a></li>
+		      </ul>
+		    </div>
+		  </nav>
 		</header>
 		<main>
-			<div class="container" id="pregunta">
+			<div class="container" id="preguntaNueva">
 				<h1 class="center-align">Nueva pregunta</h1>
 				<p class="center-align">Creada por: </p>
 				<form class="col s12">
 					<!--Titulo-->
 					<div class="row row-titulo">
 						<div class="input-field col s12">
-							<input type="text" name="titulo" id="titulo">
+							<input type="text" name="titulo" id="titulo" v-model="pregunta.titulo">
 							<label for="titulo">Título</label>
 						</div>
 					</div>
@@ -46,33 +48,41 @@
 					<div class="row row-tags">
 						<div class="input-field col s12">
 							<div class="chips chips-placeholder">
-								<input type="text" name="tag" class="input" id="tag">
+								<input type="text" name="tag" class="input" id="tag" v-model="pregunta.tagssad">
 							</div>
 						</div>
 					</div>
 					<!--Descripcion-->
 					<div class="row row-descripcion">
 	          <div class="input-field col s12">
-	            <textarea id="textarea1" class="materialize-textarea" data-length="120"></textarea>
+	            <textarea id="textarea1" class="materialize-textarea" data-length="300" v-model="pregunta.descripcion"></textarea>
 	            <label for="textarea1">Descripcion</label>
 	          </div>
 	        </div>
+
+	        <div id="summernote">
+	        	Hello Summernote
+	        </div>
+
+
+
 	        <!--File uploader-->
 	        <div class="row row-file-uploader">
 	        	<div class="file-field input-field">
 				      <div class="btn">
 				        <span>File</span>
-				        <input type="file" multiple>
+				        <input type="file" multiple >
 				      </div>
 				      <div class="file-path-wrapper">
 				        <input class="file-path validate" type="text" placeholder="Upload one or more files">
 				      </div>
 				    </div>
 	        </div>
+
 	        <!--Tipos de preguntas y de leccion-->
 					<div class="row row-tipos-preguntas">
-						<div class="col s6 input-field" id="tipo-pregunta">
-							<select>
+						<div class="col s6 input-field" id="col-tipo-pregunta">
+							<select id="tipo-pregunta">
 								<option value="" disabled selected></option>
 								<option value="1">Opcion multiple</option>
 								<option value="2">V/F</option>
@@ -80,33 +90,54 @@
 							</select>
 							<label>Tipo de pregunta</label>
 						</div>
-						<div class="col s6 input-field" id="tipo-leccion">
-							<select>
-								<option value="" disabled selected></option>
-								<option value="1">Lección</option>
-								<option value="2">Tutorial</option>
-								<option value="3">Experimento</option>
-							</select>
+						<div class="col s6 input-field" id="col-tipo-leccion">
+							<select id='tipo-leccion'>
+					      <option value disabled selected></option>
+					      <option value='1'>Estimación</option>
+					      <option value='2'>Tutorial</option>
+					      <option value='3'>Laboratorio</option>
+					    </select>				
 							<label>Tipo de lección</label>
+						</div>
+					<!--Capitulo-->
+					<div v-if="pregunta.tipoLeccion=='Estimación'" class="row">
+						<div class="col s12 input-field" id="col-capitulo">
+							<input type="text" name="capitulo" id="capitulo" v-model="pregunta.capitulo">
+							<label for="capitulo">Capítulo</label>
+						</div>
+					</div>
+					<!--Tutorial-->
+					<div v-else-if="pregunta.tipoLeccion=='Tutorial'" class="row">
+						<div class="col s12 input-field" id="col-tutorial">
+							<input type="text" name="tutorial" id="tutorial" v-model="pregunta.tutorial">
+							<label for="tutorial">Tutorial</label>
+						</div>
+					</div>
+					<!--Laboratorio-->
+					<div v-else-if="pregunta.tipoLeccion=='Laboratorio'" class="row">
+						<div class="col s12 input-field" id="col-laboratorio">
+							<input type="text" name="laboratorio" id="laboratorio" v-model="pregunta.laboratorio">
+							<label for="laboratorio">Laboratorio</label>
 						</div>
 					</div>
 					<!--Tiempos estimados-->
 					<div class="row row-tiempos-estimados">
 						<div class="col s6 input-field">
-							<input type="number" name="tiempo-estimado" id="tiempo-estimado">
+							<input type="number" name="tiempo-estimado" id="tiempo-estimado" v-model="pregunta.tiempoEstimado">
 							<label for="tiempo-estimado">Tiempo estimado: </label>
 						</div>
 						<div class="col s6 input-field">
-							<input type="number" name="tiempo-naranja" id="tiempo-naranja">
-							<label for="tiempo-naranja">Tiempo bandera naranja: </label>
+							<input type="number" name="tiempo-bandera" id="tiempo-bandera" v-model="pregunta.tiempoBandera">
+							<label for="tiempo-bandera">Tiempo bandera naranja: </label>
 						</div>
 					</div>
 				</form>
-			</div>
+			</div>	
 		</main>
 		<footer>
-			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 			<script src="https://unpkg.com/vue"></script>
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 			<script src="./nuevaPreguntaScript.js"></script>
 		</footer>

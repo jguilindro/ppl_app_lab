@@ -11,24 +11,24 @@
 	</head>
 	<body>
 		<header>
-				<nav>
-			    <div class="nav-wrapper">
-			      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
-			      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-			      <ul class="right hide-on-med-and-down ">
-			        <li><a href="#">Sesiones</a></li>
-			        <li><a href="#">Lecciones</a></li>
-			        <li><a href="../grupos">Grupos</a></li>
-			        <li><a href="../preguntas">Preguntas</a></li>
-			      </ul>
-			      <ul class="side-nav" id="mobile-demo">
-			        <li><a href="#">Sesiones</a></li>
-			        <li><a href="#">Lecciones</a></li>
-			        <li><a href="../grupos">Grupos</a></li>
-			        <li><a href="../preguntas">Preguntas</a></li>
-			      </ul>
-			    </div>
-			  </nav>
+			<nav>
+		    <div class="nav-wrapper">
+		      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
+		      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		      <ul class="right hide-on-med-and-down ">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../grupos">Grupos</a></li>
+		        <li><a href="../preguntas">Preguntas</a></li>
+		      </ul>
+		      <ul class="side-nav" id="mobile-demo">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../grupos">Grupos</a></li>
+		        <li><a href="../preguntas">Preguntas</a></li>
+		      </ul>
+		    </div>
+		  </nav>
 		</header>
 		<main>
 			<div class="container" id="preguntas">
@@ -43,34 +43,16 @@
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
 				  	</div>
-				  	<!--
-			  		<div class="capitulo scrollspy section" id="capitulo1">
-			  			<h5>Capitulo 1: Electrostatica</h5>
-		  				<ul class="preguntas">
-		  					<li><a href="#">Pregunta 1</a></li>
-		  					<li><a href="#">Pregunta 2</a></li>
-		  					<li><a href="#">Pregunta 3</a></li>
-		  					<li><a href="#">Pregunta 4</a></li>
-		  					<li><a href="#">Pregunta 5</a></li>
-		  				</ul>
-			  		</div>
-						-->
 			  	</div>
 
 			  	<div class="col hide-on-small-only m3 l2">
-			  		
 			  		<ul class="section table-of-contents">
 			  			<li v-for="capitulo in capitulos">
 			  				<a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
 			  			</li>
-			  			<!--
-			  			<li><a href="#capitulo1">Capitulo 1</a></li>
-			  			<li><a href="#capitulo2">Capitulo 2</a></li>
-			  			<li><a href="#capitulo3">Capitulo 3</a></li>
-			  			<li><a href="#capitulo4">Capitulo 4</a></li>
-			  			<li><a href="#capitulo5">Capitulo 5</a></li>
-			  			-->
+			  			<button class="btn waves-effect waves-light" id="btn-small">Nuevo capítulo</button>
 			  		</ul>	
+			  		
 			  	</div>
 
 		  	</div>
