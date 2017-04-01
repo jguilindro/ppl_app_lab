@@ -53,16 +53,16 @@
         <div class="drag">
         </div>
       </section>
-      <div v-for="estudiante in estudiantesSinGrupo">
+      <div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
         <div v-bind:id="estudiante._id" draggable="true"
-        ondragstart="drag(event)">{{estudiante.nombres}}</div>
+        ondragstart="drag(event)"><span>{{estudiante.nombres}}</span></div>
       </div>
       <section>
         <div v-for="grupo in grupos" >
-          <li v-bind:id="grupo._id"   ondrop="drop(event, this)" ondragover="allowDrop(event)">
+          <li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
               {{grupo.nombre}}
-            <div v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-              <span>{{estudiante.nombres}}</span>
+            <div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
+              <span class="estudiante-nombre">{{estudiante.nombres}}</span><button v-bind:id="estudiante._id" onClick="borrarAlumno(this)">x</button>
             </div>
           </li>
         </div>
