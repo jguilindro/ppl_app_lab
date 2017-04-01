@@ -12,11 +12,47 @@ body{
 }
 .collapsible-header{
 	background: rgba(123, 163, 202,0.4);
-	border-color: rgb(123, 163, 202);	
+	border-color: rgb(123, 163, 202);
 }
 .collapsible-body{
-	border-color: rgb(123, 163, 202);	
+	border-color: rgb(123, 163, 202);
 }
 #search{
 	background:rgba(123, 163, 202,0.8);
+}
+
+
+div.grupo-estudiantes {
+  border-style: solid
+  margin: 2%;
+}
+
+div.grupos {
+
+}
+
+.grupo-estudiantes {
+  list-style-type: none;
+  border-style: dashed;
+  margin-bottom: 2%;
+}
+
+.grup {
+  margin: 2%;
+}
+
+.estudiante-nombre:hover {
+  background-color: yellow;
+}
+
+.estudiantes-sin-grupo {
+  margin-bottom: 2%;
+}
+
+.estudiantes-sin-grupo:hover {
+  background-color: red;
+}
+
+.grupo-estudiantes {
+  padding: 2%;
 }
