@@ -1,19 +1,12 @@
 
 var app = new Vue({
 	mounted: function(){
-		$('.button-collapse').sideNav();
-		$('select').material_select();
-		$('.chips').material_chip();
-		$('.chips-placeholder').material_chip({
-		    placeholder: 'Enter a tag',
-		    secondaryPlaceholder: 'Enter a Tag',
-		});
+		$('#summernote').summernote();
 
 
 	},
 	el: '#preguntaNueva',
 	data: {
-		selected: 'sad',
 		pregunta: {
 			titulo: '',
 			tags: [],
@@ -34,12 +27,15 @@ var app = new Vue({
 	}
 });
 
-
+/*
 $('#tipo-leccion').change(function(){ 
+	//console.log('asdfsdfsd')
+	console.log(app.$data.pregunta.tipoLeccion)
+	console.log($('#tipo-leccion option:selected').text())	
 	//app.set('select', $('#jurisdiction').val()); 
 	//console.log( 'Text: ' + $('#tipo-leccion option:selected').text())
 	//console.log('Antes: ' + app.$data.pregunta.tipoLeccion)
-	app.$data.pregunta.tipoLeccion = $('#tipo-leccion option:selected').text();
+	//app.$data.pregunta.tipoLeccion = $('#tipo-leccion option:selected').text();
 	//console.log('Despues: ' + app.$data.pregunta.tipoLeccion)
 });
 
@@ -49,4 +45,4 @@ $('#tipo-pregunta').change(function(){
 	//console.log('Antes: ' + app.$data.pregunta.tipoPregunta)
 	app.$data.pregunta.tipoPregunta = $('#tipo-pregunta option:selected').text();
 	//console.log('Despues: ' + app.$data.pregunta.tipoPregunta)
-});
+});*/
