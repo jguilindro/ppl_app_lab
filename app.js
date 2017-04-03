@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta parte será dada por el CAS, no sé como será el trep aquí - Edison
 // Login middleware, verifica si el usuario esta loggeado
 /*app.use(function(req, res, next) {
@@ -28,6 +29,8 @@ app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta p
     res.redirect('/')
   }
 })*/
+
+
 
 //vistas
 app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
@@ -51,6 +54,22 @@ app.use(session({
 	saveUninitialized: false
 }));
 
+app.get('/', function(req, res, next){
+if(req.session["username"]){
+console.log(req.session["username"]);
+	if (req.session["username"]== "profesor"){
+		res.redirect('profesores/grupos') ;
+		return;
+	} else if (req.session["username"]== "estudiante"){
+		res.redirect('/estudiantes');
+		return;
+	} else {
+	res.sendStatus(500);
+	}
+} else{
+	 res.sendfile('app_client/login/login.html', {root: __dirname });
+	}});
+
 //Handling del login
 app.post('/login', function(req, res){
 	var username= req.body.usuario;
@@ -65,7 +84,7 @@ app.post('/login', function(req, res){
 		res.redirect('/estudiantes');
 		return;
 
-	}else{res.send(500,'showAlert');}
+	}else{res.status(500);}
 
 
 	/*
