@@ -56,7 +56,6 @@ app.use(session({
 
 app.get('/', function(req, res, next){
 if(req.session["username"]){
-console.log(req.session["username"]);
 	if (req.session["username"]== "profesor"){
 		res.redirect('profesores/grupos') ;
 		return;
@@ -68,6 +67,17 @@ console.log(req.session["username"]);
 	}
 } else{
 	 res.sendfile('app_client/login/login.html', {root: __dirname });
+	}});
+	
+app.get('/estudiantes', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "estudiante"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/estudiantes/perfil/estudiante.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
 	}});
 
 //Handling del login
