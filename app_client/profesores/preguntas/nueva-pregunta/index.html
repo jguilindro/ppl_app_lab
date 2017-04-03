@@ -21,7 +21,7 @@
 					</div>
 					<!--Descripcion-->
 	        <div id="summernote">
-	        	Hello Summernote
+	        	Descripción
 	        </div>
 	        <!--File uploader-->
 
@@ -79,9 +79,12 @@
 							<input type="number" name="tiempo-bandera" id="tiempo-bandera" v-model="pregunta.tiempoBandera" class="form-control">
 						</div>
 					</div>
-					
-					{{pregunta}}
+						<div class="form-group botones">
+							<button type="button" class="btn btn-primary btn-md pull-right">Crear</button>
+							<button type="button" class="btn btn-danger btn-md pull-left">Cancelar</button>
+						</div>
 				</form>
+
 			</div>	
 		</main>
 		<footer>

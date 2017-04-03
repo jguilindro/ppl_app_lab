@@ -9,7 +9,6 @@ var app = new Vue({
 	data: {
 		pregunta: {
 			titulo: '',
-			tags: [],
 			descripcion: '',
 			imagenes: [],	//Es opcional añadir imágenes a la pregunta
 			tipoPregunta: '',	//V/F, justifiacación u opción múltiple
@@ -46,3 +45,14 @@ $('#tipo-pregunta').change(function(){
 	app.$data.pregunta.tipoPregunta = $('#tipo-pregunta option:selected').text();
 	//console.log('Despues: ' + app.$data.pregunta.tipoPregunta)
 });*/
+/*
+$('#aaa').click(function(){
+	console.log($('#summernote').summernote('code'))
+
+	//console.log('asdfafsd')
+})*/
+
+$('#summernote').on('summernote.change', function(we, contents, $editable) {
+ 	app.$data.pregunta.descripcion = contents;
+  
+})
