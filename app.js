@@ -22,89 +22,37 @@ app.use(cookieParser());
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,
-	saveUninitialized: false,
-  cookie: { secure: true }
+	saveUninitialized: false
 }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', express.static(path.join(__dirname, 'app_client/login')));
-app.post('/login', function(req, res, next) {
-  var joel = req.app.get('estado')
-  if (req.body.username === 'joel' && req.body.password === '123') {
-    req.session.username = req.body.username;
-    console.log('hoa')
-    app.set('estado', true);
-    res.redirect('/profesores')
+app.use('/api/session', require('./app_api/routes/login.router'));
+
+function auth(req, res, next) {
+  console.log(req.session)
+  if (req.session.login) {
     next()
-  } else {
+  }  else {
     res.redirect('/')
-    app.set('estado', false);
   }
-})
-/*
-middleware login
- */
+}
 
 //vistas
-app.use('/profesores',function(req, res, next) {
-  var joel = req.app.get('estado')
-  console.log(joel)
-  if (!joel) {
-    return res.redirect('/')
-  }
-  console.log(req.session.username)
-  next()
-},express.static(path.join(__dirname, 'app_client/profesores')));
-
-app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos')));
-app.use('/profesores/preguntas', express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
-app.use('/profesores/preguntas/nueva-pregunta', express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
-app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
-app.use('/estudiantes/tomar-leccion', express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
+app.use('/profesores', auth, express.static(path.join(__dirname, 'app_client/profesores')));
+app.use('/profesores/grupos', auth, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
+app.use('/profesores/preguntas', auth, express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
+app.use('/profesores/preguntas/nueva-pregunta', auth, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
+app.use('/estudiantes', auth, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.use('/estudiantes/tomar-leccion', auth, express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
 // app_api
-
-app.use('/api/profesores', require('./app_api/routes/profesores.router'));
-app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
-app.use('/api/grupos', require('./app_api/routes/grupos.router'));
-app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
-app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
-app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
-
-
-//Handling del login
-app.post('/login', function(req, res){
-	var username= req.body.usuario;
-	var password= req.body.password;
-
-	if (username =="profesor" && password =="1234"){
-		req.session ["username"]= username;
-		res.redirect('profesores/grupos') ;
-		return;
-	} else if (username =="estudiante" && password =="1234"){
-		req.session ["username"]= username;
-		res.redirect('/estudiantes');
-		return;
-
-	}else{res.send(500,'showAlert');}
-
-
-	/*
-	if (username =="user" && password =="user1234"&& rol=="Paciente"){
-		req.session ["username"]= username;
-		req.session ["rol"]= rol;
-		res.redirect('home');
-		return;
-	}
-
-	*/
-
-});
-
-app.get('/logout', function(req, res, next){
-	req.session.destroy();
-	res.redirect('/');
-});
+app.use('/api/profesores', auth, require('./app_api/routes/profesores.router'));
+app.use('/api/estudiantes', auth, require('./app_api/routes/estudiantes.router'));
+app.use('/api/grupos', auth, require('./app_api/routes/grupos.router'));
+app.use('/api/paralelos', auth, require('./app_api/routes/paralelos.router'));
+app.use('/api/lecciones', auth, require('./app_api/routes/lecciones.router'));
+app.use('/api/preguntas', auth, require('./app_api/routes/preguntas.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
