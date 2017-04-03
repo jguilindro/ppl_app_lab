@@ -11,8 +11,9 @@ const LeccionSchema = mongoose.Schema({
     type: String
   },
   estado: {
-    type: Number,
-    'default': 0
+    type: String,
+    enum: ['pendiente', 'tomando'],
+    'default': 'pendiente'
   },
   tiempoEstimado: {
     type: Date

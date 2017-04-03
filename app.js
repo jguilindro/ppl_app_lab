@@ -1,10 +1,12 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
+var express  = require('express');
+path         = require('path');
+favicon      = require('serve-favicon');
+logger       = require('morgan');
+cookieParser = require('cookie-parser');
+cors         = require('cors');
+bodyParser   = require('body-parser'),
+passport         = require('passport'),
+session      = require('express-session');
 
 // base de datos mongoose
 require('./app_api/models/db')
@@ -17,39 +19,58 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+	secret: 'MY-SESSION-DEMO',
+	resave: true,
+	saveUninitialized: false,
+  cookie: { secure: true }
+}));
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', express.static(path.join(__dirname, 'app_client/login'))); //Esta parte será dada por el CAS, no sé como será el trep aquí - Edison
-// Login middleware, verifica si el usuario esta loggeado
-/*app.use(function(req, res, next) {
-  if (false) {
-    return next()
+app.use('/', express.static(path.join(__dirname, 'app_client/login')));
+app.post('/login', function(req, res, next) {
+  var joel = req.app.get('estado')
+  if (req.body.username === 'joel' && req.body.password === '123') {
+    req.session.username = req.body.username;
+    console.log('hoa')
+    app.set('estado', true);
+    res.redirect('/profesores')
+    next()
   } else {
     res.redirect('/')
+    app.set('estado', false);
   }
-})*/
+})
+/*
+middleware login
+ */
 
 //vistas
-app.use('/profesores', express.static(path.join(__dirname, 'app_client/profesores')));
+app.use('/profesores',function(req, res, next) {
+  var joel = req.app.get('estado')
+  console.log(joel)
+  if (!joel) {
+    return res.redirect('/')
+  }
+  console.log(req.session.username)
+  next()
+},express.static(path.join(__dirname, 'app_client/profesores')));
+
 app.use('/profesores/grupos', express.static(path.join(__dirname, 'app_client/profesores/grupos')));
 app.use('/profesores/preguntas', express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
 app.use('/profesores/preguntas/nueva-pregunta', express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/tomar-leccion', express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
 // app_api
+
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
 app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
 app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
-app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
-app.use('/api/preguntas', require('./app_api/routes/preguntas.routes'));
+app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
 
-app.use(session({
-	secret: 'MY-SESSION-DEMO',
-	resave: true,
-	saveUninitialized: false
-}));
 
 //Handling del login
 app.post('/login', function(req, res){

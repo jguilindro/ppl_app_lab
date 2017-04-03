@@ -1,9 +1,14 @@
-var express = require('express');
-var app = express()
-var router = express.Router();
+var router = require('express').Router();
+var LoginController = require('../controllers/login');
 
-router.get('/', function(req, res, next) {
-  res.send('login')
+router.post('/', function(req, res, next) {
+  console.log(req.body)
+  if (req.body.username === 'joel' && req.body.password==='123') {
+    req.locals.status = true
+    console.log('sad')
+    res.send('coenctado')
+  }
+  res.send('no conectado')
 });
 
 module.exports = router;
