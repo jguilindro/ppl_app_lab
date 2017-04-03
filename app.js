@@ -80,6 +80,61 @@ if(req.session["username"]){
 	res.sendStatus(401);
 	}});
 
+app.get('/estudiantes/tomar-leccion', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "estudiante"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/estudiantes/tomar-leccion/tomarLeccion.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
+	}});
+
+app.get('/profesores/grupos', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "profesor"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/profesores/grupos/grupos.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
+	}});
+
+app.get('/profesores/preguntas', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "profesor"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/profesores/preguntas/preguntas.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
+	}});
+	
+app.get('/profesores/preguntas/nueva-pregunta', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "profesor"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/profesores/preguntas/nueva-pregunta/nuevaPregunta.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
+	}});
+
+app.get('/profesores/', function(req, res, next){
+if(req.session["username"]){
+	if (req.session["username"]!= "profesor"){
+		res.sendStatus(403);
+	} else {
+	res.sendfile('app_client/profesores/profesor.html', {root: __dirname });
+	}
+} else{
+	res.sendStatus(401);
+	}});
+
 //Handling del login
 app.post('/login', function(req, res){
 	var username= req.body.usuario;
