@@ -15,14 +15,14 @@
 
     <div class="container">
     <div class="row">
-   
+
         <!--
 		Para hacerlo con un carousel de fotos (puede ser que se animen a hacerlo asi): Ignorar
-		
+
 		<div class="col-md-9 " style="padding-top: 50px;">
 
             <div id="carousel-fotos" class="carousel slide" data-ride="carousel">
-                
+
                 <ol class="carousel-indicators">
                     <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
                     <li data-target="#carousel-example-generic" data-slide-to="1"></li>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-                
+
                 <a class="left carousel-control" href="#carousel-fotos" role="button" data-slide="prev">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                     <span class="sr-only">Previous</span>
@@ -83,14 +83,14 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="portlet-body">
-                   
-                    <form accept-charset="UTF-8" role="form" method="post" action="/login">
+
+                    <form method="post" action="/api/session/login">
                         <fieldset>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Usuario" name="usuario" type="text">
+                                <input id="username" class="form-control" placeholder="Matrícula" name="username" type="text">
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                <input id="password" class="form-control" placeholder="Password" name="password" type="password" value="">
                             </div>
                             <div class="checkbox">
                                 <label>
@@ -98,24 +98,24 @@
                                 </label>
                             </div>
                             <br>
-                            <input type="submit" href="" value="Iniciar Sesión" class="btn btn-lg btn-blue btn-block">
+                            <input type="submit" value="Iniciar Sesión" class="btn btn-lg btn-blue btn-block">
                         </fieldset>
                         <br>
                         <p class="small">
                             <a href="#">Olvidaste tu contraseña?</a>
                         </p>
                     </form>
-                    
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-    
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
-	<script href="login.js"></script>
+    <script src="./login.js" charset="utf-8"></script>
 </body>
 
 </html>

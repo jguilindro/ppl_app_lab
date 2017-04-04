@@ -29,4 +29,12 @@ ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
   this.model('Profesor').find({}, callback);
 }
 
+ProfesorSchema.statics.obtenerProfesorPorCorreo = function(correo_profesor, callback) {
+  this.findOne({correo: correo_profesor}, callback)
+}
+
+ProfesorSchema.methods.crearProfesor = function(callback) {
+  this.save(callback);
+}
+
 module.exports = mongoose.model('Profesor', ProfesorSchema)

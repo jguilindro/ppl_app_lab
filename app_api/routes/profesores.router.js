@@ -7,4 +7,5 @@ router.get('/login', function(req, res, next) {
 
 router.get('/', ProfesorController.obtenerTodosProfesores);
 router.get('/:id_profesor', ProfesorController.obtenerProfesor);
+router.post('/', ProfesorController.crearProfesor)
 module.exports = router;

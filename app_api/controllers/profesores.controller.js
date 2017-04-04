@@ -11,7 +11,15 @@ const obtenerProfesor = (req, res, next) => {
 }
 
 const crearProfesor = (req, res, next) => {
-  res.send('crear profesro');
+  let profesor = new ProfesorModel({
+    correo: req.body.correo,
+    nombres: req.body.nombres,
+    apellidos: req.body.apellidos,
+  })
+  profesor.crearProfesor(err => {
+    if (err) res.send('error crear profesr')
+    res.send(profesor)
+  })
 }
 
 const editarProfesor = (req, res, next) => {
