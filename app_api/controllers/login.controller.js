@@ -9,11 +9,13 @@ function login(req, res) {
       ProfesorModel.obtenerProfesorPorCorreo(req.body.username, (err, profesor) => {
         if (err) return res.redirect('/');
         if (!profesor) return res.redirect('/');
+        req.session.privilegios = 'profesor'
         req.session.correo = req.body.username
         req.session.login = true;
         return res.redirect('/profesores')
       })
     } else {
+      req.session.privilegios = 'estudiante'
       req.session.correo = req.body.username
       req.session.login = true;
       return res.redirect('/estudiantes')

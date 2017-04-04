@@ -32,17 +32,33 @@ app.use('/api/session', require('./app_api/routes/login.router'));
 /*
 * Auth middleware
  */
-function auth(req, res, next) {
+function authProfesor (req, res, next) {
   console.log(req.session)
-  if (req.session.login) {
+  if (req.session.login && req.session.privilegios === 'profesor') {
     next()
   }  else {
     res.redirect('/')
   }
 }
 
-function authApi(req, res, next) {
-  if (req.session.login) {
+function authEstudiante(req, res, next) {
+  if (req.session.login && req.session.privilegios === 'estudiante') {
+    next()
+  } else {
+    res.redirect('/')
+  }
+}
+
+function authApiProfesor (req, res, next) {
+  if (req.session.login && req.session.privilegios === 'profesor') {
+    next()
+  }  else {
+    res.status(401).json({estado: false, errorMessage: 'No autorizado'})
+  }
+}
+
+function authApiEstudiante(req, res, next) {
+  if (req.session.login && req.session.privilegios === 'estudiante') {
     next()
   }  else {
     res.status(401).json({estado: false, errorMessage: 'No autorizado'})
@@ -50,19 +66,19 @@ function authApi(req, res, next) {
 }
 
 //vistas
-app.use('/profesores', auth, express.static(path.join(__dirname, 'app_client/profesores')));
-app.use('/profesores/grupos', auth, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
-app.use('/profesores/preguntas', auth, express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
-app.use('/profesores/preguntas/nueva-pregunta', auth, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
-app.use('/estudiantes', auth, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
-app.use('/estudiantes/tomar-leccion', auth, express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
+app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
+app.use('/profesores/grupos', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
+app.use('/profesores/preguntas', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
+app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
+app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.use('/estudiantes/tomar-leccion', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
 // app_api
-app.use('/api/profesores', authApi, require('./app_api/routes/profesores.router'));
-app.use('/api/estudiantes', authApi, require('./app_api/routes/estudiantes.router'));
-app.use('/api/grupos', authApi, require('./app_api/routes/grupos.router'));
-app.use('/api/paralelos', authApi, require('./app_api/routes/paralelos.router'));
-app.use('/api/lecciones', authApi, require('./app_api/routes/lecciones.router'));
-app.use('/api/preguntas', authApi, require('./app_api/routes/preguntas.router'));
+app.use('/api/profesores', authApiProfesor, require('./app_api/routes/profesores.router'));
+app.use('/api/estudiantes', authApiEstudiante, require('./app_api/routes/estudiantes.router'));
+app.use('/api/grupos', authApiProfesor, require('./app_api/routes/grupos.router'));
+app.use('/api/paralelos', authApiProfesor, require('./app_api/routes/paralelos.router'));
+app.use('/api/lecciones', authApiProfesor, require('./app_api/routes/lecciones.router'));
+app.use('/api/preguntas', authApiProfesor, require('./app_api/routes/preguntas.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
