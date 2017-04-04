@@ -1,12 +1,13 @@
-var express  = require('express');
+const express  = require('express');
 path         = require('path');
 favicon      = require('serve-favicon');
 logger       = require('morgan');
 cookieParser = require('cookie-parser');
 cors         = require('cors');
 bodyParser   = require('body-parser'),
-passport         = require('passport'),
-session      = require('express-session');
+passport     = require('passport'),
+session      = require('express-session'),
+MongoStore   = require('connect-mongo')(session);
 
 // base de datos mongoose
 require('./app_api/models/db')
@@ -15,6 +16,7 @@ var app = express();
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+//
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,48 +24,16 @@ app.use(cookieParser());
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
 	resave: true,
-	saveUninitialized: false
+	saveUninitialized: false,
+  store: new MongoStore({ url: require('./app_api/config/main').mlab_sesiones })
 }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', express.static(path.join(__dirname, 'app_client/login')));
 app.use('/api/session', require('./app_api/routes/login.router'));
 
-/*
-* Auth middleware
- */
-function authProfesor (req, res, next) {
-  console.log(req.session)
-  if (req.session.login && req.session.privilegios === 'profesor') {
-    next()
-  }  else {
-    res.redirect('/')
-  }
-}
-
-function authEstudiante(req, res, next) {
-  if (req.session.login && req.session.privilegios === 'estudiante') {
-    next()
-  } else {
-    res.redirect('/')
-  }
-}
-
-function authApiProfesor (req, res, next) {
-  if (req.session.login && req.session.privilegios === 'profesor') {
-    next()
-  }  else {
-    res.status(401).json({estado: false, errorMessage: 'No autorizado'})
-  }
-}
-
-function authApiEstudiante(req, res, next) {
-  if (req.session.login && req.session.privilegios === 'estudiante') {
-    next()
-  }  else {
-    res.status(401).json({estado: false, errorMessage: 'No autorizado'})
-  }
-}
+// Auth middleware
+const { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
 
 //vistas
 app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
