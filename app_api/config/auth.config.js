@@ -1,7 +1,6 @@
 var respuesta = require('../utils/responses');
 
 function authProfesor (req, res, next) {
-  console.log(req.session)
   if (req.session.login && req.session.privilegios === 'profesor') {
     next()
   }  else {

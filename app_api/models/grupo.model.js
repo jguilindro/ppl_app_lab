@@ -22,7 +22,7 @@ GrupoSchema.statics.obtenerTodosGrupos = function(callback) {
 }
 
 GrupoSchema.statics.obtenerGrupo = function(id_grupo,callback) {
-  this.findOne({_id: id_grupo}, callback)
+  this.findOne({_id: id_grupo}).populate({path: 'estudiantes'}).exec(callback);
 }
 
 GrupoSchema.methods.crearGrupo = function(callback) {

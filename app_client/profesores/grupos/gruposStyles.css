@@ -1,5 +1,7 @@
 header{
-	margin-top: 15%;
+	margin-top: 0%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 body{
 	background: linear-gradient(to bottom, rgba(51, 102, 153,0.1), rgba(51, 102, 153,0.6))  no-repeat center center fixed; /*Standard*/

@@ -9,6 +9,7 @@ function login(req, res) {
       if ( !estudiante ) return resolve(false);
       req.session.privilegios = 'estudiante';
       req.session.correo = req.body.correo;
+      req.session._id = estudiante._id
       req.session.login = true;
       return resolve(true);
     })
@@ -18,8 +19,10 @@ function login(req, res) {
     ProfesorModel.obtenerProfesorPorCorreo(req.body.correo, ( err, profesor ) => {
       if ( err ) return reject('error');
       if ( !profesor ) return resolve(false);
+      console.log(profesor)
       req.session.privilegios = 'profesor';
       req.session.correo = req.body.correo;
+      req.session._id = profesor._id
       req.session.login = true;
       return resolve(true);
     })

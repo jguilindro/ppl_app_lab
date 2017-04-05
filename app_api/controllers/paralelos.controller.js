@@ -21,8 +21,6 @@ const crearParalelo = (req, res) => {
   let paralelo = new ParaleloModel({
     nombre: req.body.nombre,
     limiteEstudiantes: req.body.limiteEstudiantes,
-    profesor: req.body.idProfesor,
-    estudiante: req.body.idEstudiante,
   })
   paralelo.crearParalelo((err, doc) => {
 	  if (err) return respuesta.serverError(res);
@@ -94,6 +92,13 @@ const eliminarProfesorDeParalelo = (req, res) => {
   })
 }
 
+const obtenerParalelosProfesor = (req, res) => {
+	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
+		if (err) return respuesta.serverError(res);
+		return respuesta.ok(res, paralelos)
+	})
+}
+
 /*
 * Estudiantes
  */
@@ -116,6 +121,7 @@ const eliminarEstudianteDeParalelo = (req, res) => {
   })
 }
 
+
 module.exports = {
   obtenerTodosParalelos,
   crearParalelo,
@@ -128,7 +134,8 @@ module.exports = {
   // profesor
   anadirProfesorAParalelo,
   eliminarProfesorDeParalelo,
+  obtenerParalelosProfesor,
   // estudiante
   anadirEstudianteAParalelo,
-  eliminarEstudianteDeParalelo
+  eliminarEstudianteDeParalelo,
 }

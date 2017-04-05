@@ -29,7 +29,6 @@ const ParaleloSchema = new mongoose.Schema({
 }, {timestamps: true, versionKey: false, collection: 'paralelos'});
 
 ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
-  //this.find({}, callback);
   this.find({}).populate({path: 'profesor estudiantes grupos'}).exec(callback);
 }
 
@@ -74,6 +73,10 @@ ParaleloSchema.statics.anadirProfesorAParalelo = function(id_paralelo, id_profes
 
 ParaleloSchema.statics.eliminarProfesorDeParalelo = function(id_paralelo, callback) {
   this.update({_id: id_paralelo}, {$set: {'profesor': ''}}, callback);
+}
+
+ParaleloSchema.statics.obtenerParalelosProfesor = function(id_profesor, callback) {
+  this.find({profesor: id_profesor}).populate({path: 'grupos.estudiantes estudiantes grupos '}).exec(callback);
 }
 
 /*

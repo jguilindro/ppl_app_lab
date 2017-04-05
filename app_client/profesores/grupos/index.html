@@ -4,14 +4,13 @@
 		<title>Profesor</title>
 		<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
 
-		<nav>
+		<!-- <nav>
 	    <div class="nav-wrapper">
 	      <a href="#!" class="brand-logo">Profesor</a>
 	      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -28,13 +27,13 @@
 	        <li><a href="../preguntas">Preguntas</a></li>
 	      </ul>
 	    </div>
-	  </nav>
+	  </nav> -->
 
 		<div class="container" id="grupos">
 			<header>
 				<div class = "row">
 					<form class = "col s12">
-						<div class="row">
+						<!-- <div class="row">
 							<div class="input-field col s4 offset-s4">
 								<input 	type="text" name = "" class = "validate"
 										placeholder="Buscar..." id="buscar">
@@ -45,24 +44,30 @@
 									<i class="medium material-icons">search</i>
 								</button>
 							</div>
-						</div>
+						</div> -->
 					</form>
 				</div>
 			</header>
-      <section id="alumnos-sin-grupo">
-        <div class="drag">
-        </div>
-      </section>
+      <div>
+        <p>Cree un nuevo grupo</p>
+        <input type="text" id="grupo-nombre" placeholder="grupo nombre" v-on:keyup.enter="nuevoGrupo()">
+        <button v-on:click="nuevoGrupo()" >nuevo grupo</button>
+      </div>
+      <p>Escoga el paralelo</p>
+      <select id="selector" onchange="obtenerParaleloEscogido(this)">
+        <option v-for="paralelo in paralelos" v-bind:id="paralelo._id" >{{paralelo.nombre}}</option>
+      </select>
+      <p>Estudiantes sin grupo</p>
       <div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
         <div v-bind:id="estudiante._id" draggable="true"
-        ondragstart="drag(event)"><span>{{estudiante.nombres}}</span></div>
+        ondragstart="drag(event)"><span>{{estudiante.nombres}} {{estudiante.apellidos}} {{estudiante.correo}}</span></div>
       </div>
       <section>
         <div v-for="grupo in grupos" >
           <li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-              {{grupo.nombre}}
+              {{grupo.nombre}} <button v-on:click="eliminarGrupo(grupo._id)">x</button>
             <div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-              <span class="estudiante-nombre">{{estudiante.nombres}}</span><button v-bind:id="estudiante._id" onClick="borrarAlumno(this)">x</button>
+              <span class="estudiante-nombre">{{estudiante.correo}}</span><button v-bind:id="estudiante._id" onclick="borrarAlumno(this)">x</button>
             </div>
           </li>
         </div>
@@ -70,14 +75,10 @@
 		</div>
 
 		<footer>
-			<script src="https://unpkg.com/vue"></script>
-			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+			<script src="/bower_components/vue/dist/vue.min.js"></script>
+			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-      <script src="/bower_components/Sortable/Sortable.min.js"></script>
-      <script src="/bower_components/vue.draggable/dist/vuedraggable.min.js"></script>
       <script src="./grupos.js"></script>
-
 		</footer>
 	</body>
 </html>
