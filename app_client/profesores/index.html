@@ -12,16 +12,14 @@
   <form method="post" action="/api/session/logout">
     <button type="submit" onclick="" name="button">logout</button>
   </form>
-
+  <button onclick="usuarioConectado()">getUsuarioConectado</button>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript">
-    function logout() {
-      $.post({
-        url: '/api/session/logout',
-        data: {
-
-        }
-        success: function(json) {
+    function usuarioConectado() {
+      $.ajax({
+        type: 'GET',
+        url: '/api/session/usuario_conectado',
+        success: (json) => {
           console.log(json)
         }
       })

@@ -1,43 +1,72 @@
 var EstudianteModel = require('../models/estudiante.model');
-var ProfesorModel = require('../models/profesor.model');
-// TODO: usar async
+ProfesorModel       = require('../models/profesor.model');
+respuesta           = require('../utils/responses');
+
 function login(req, res) {
-  // comprobacion en la base de datos si existe este usuario
-  EstudianteModel.obtenerEstudiantePorCorreo(req.body.username, (err, estudiante) => {
-    if (err) return res.redirect('/')
-    if (!estudiante) {
-      ProfesorModel.obtenerProfesorPorCorreo(req.body.username, (err, profesor) => {
-        if (err) return res.redirect('/');
-        if (!profesor) return res.redirect('/');
-        req.session.privilegios = 'profesor'
-        req.session.correo = req.body.username
-        req.session.login = true;
-        return res.redirect('/profesores')
-      })
-    } else {
-      req.session.privilegios = 'estudiante'
-      req.session.correo = req.body.username
+  let estudiante = new Promise(( resolve, reject ) => {
+    EstudianteModel.obtenerEstudiantePorCorreo(req.body.correo, ( err, estudiante ) => {
+      if ( err ) return reject('error');
+      if ( !estudiante ) return resolve(false);
+      req.session.privilegios = 'estudiante';
+      req.session.correo = req.body.correo;
       req.session.login = true;
-      return res.redirect('/estudiantes')
+      return resolve(true);
+    })
+  })
+
+  let profesor = new Promise(( resolve, reject ) => {
+    ProfesorModel.obtenerProfesorPorCorreo(req.body.correo, ( err, profesor ) => {
+      if ( err ) return reject('error');
+      if ( !profesor ) return resolve(false);
+      req.session.privilegios = 'profesor';
+      req.session.correo = req.body.correo;
+      req.session.login = true;
+      return resolve(true);
+    })
+  })
+
+  Promise.all([estudiante, profesor]).then(values => {
+    if ( values[0] ) {
+      return res.redirect('/estudiantes');
     }
+    if ( values[1] ) {
+      return res.redirect('/profesores');
+    }
+    return res.redirect('/');
+  }, reason => {
+    res.redirect('/');
   })
 }
 
-function logout(req, res) {
-  req.session.destroy(function(err) {
-		if (err) {
-			console.log(err)
+function logout( req, res ) {
+  req.session.destroy(function( err ) {
+		if ( err ) {
+			console.log(err);
 		}
-    console.log(req.session)
-    res.redirect('/')
+    res.redirect('/');
 	})
 }
 
 function obtenerUsuarioLoggeado(req, res) {
-
+  if ( req.session.privilegios == 'profesor' ) {
+    ProfesorModel.obtenerProfesorPorCorreo(req.session.correo, (err, profesor) => {
+      if ( err ) return res.json({errorMensaje: 'error'});
+      if ( !profesor ) return res.json({errorMensaje: 'profesor no encontrado'});
+      return respuesta.ok(res, profesor);
+    })
+  } else if ( req.session.privilegios == 'estudiante' ) {
+    EstudianteModel.obtenerEstudiantePorCorreo(req.session.correo, (err, estudiante) => {
+      if ( err ) return res.json({errorMensaje: 'error'});
+      if ( !estudiante ) return res.json({errorMensaje: 'profesor no encontrado'});
+      return respuesta.ok(res, estudiante);
+    })
+  } else {
+    return respuesta.noAutorizado(res);
+  }
 }
 
 module.exports = {
   login,
-  logout
+  logout,
+  obtenerUsuarioLoggeado,
 }
