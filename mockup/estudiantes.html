@@ -28,6 +28,9 @@
 			float:left;
 			margin-left: 10%;
 		}
+		.fl-left-fixed{
+			float:left;
+		}
 		.fl-right{
 			float:right;
 			margin-right: 10%;
@@ -57,9 +60,8 @@
 		.opa{
 			background-color: rgba(255,255,255,0.6);
 		}
-		.radius{
-			border-bottom-right-radius: 8%;
-			border-bottom-left-radius: 8%;
+		.right-line{
+			border: 10px;
 		}
 	</style>
 </head>
@@ -105,10 +107,10 @@
 				<a href="#8" aria-controls="settings" role="tab" data-toggle="tab">8</a>
 			</li>
 			<li role="presentation">
-				<a href="#back" aria-controls="settings" role="tab" data-toggle="tab">>></a>
+				<a href="#back" aria-controls="settings" role="tab" data-toggle="tab">></a>
 			</li>
 			<li role="presentation">
-				<a href="#back" aria-controls="settings" role="tab" data-toggle="tab">></a>
+				<a href="#back" aria-controls="settings" role="tab" data-toggle="tab">>></a>
 			</li>
 		</ul>
 
@@ -227,7 +229,45 @@
 					<br>
 				</div>
 			</div>
-			<div role="tabpanel" class="tab-pane" id="5">...</div>
+			<div role="tabpanel" class="tab-pane" id="5">
+				<div class="row">
+					<div class="col-sm-6 right-line">
+						<br>
+						<h5 class="text-justify pregunta">
+							Duis ut justo ac nunc interdum ultricies eu ut dui. In volutpat volutpat felis sit amet eleifend. Vivamus vel nunc rutrum, tempor augue maximus, blandit mauris. Ut bibendum metus ut mi luctus blandit. Aenean a lacus purus. Vestibulum at enim at odio semper finibus. Cras sed diam ac ligula rutrum ullamcorper ut sed ligula. Curabitur quis interdum tellus. Pellentesque urna metus, viverra non hendrerit ac, placerat at urna. Nullam consectetur, tortor vel dapibus convallis, nunc dui facilisis quam, eget consequat tellus sapien sit amet sem. Proin lobortis tortor eget purus luctus, vitae sodales diam ornare. Interdum et malesuada fames ac ante ipsum primis in faucibus. Mauris malesuada libero odio, ut cursus dolor elementum eu. Nunc id nunc ac erat lacinia cursus id a erat. Suspendisse sed ex ante. Nullam gravida ex enim, vel maximus enim porta non.
+							<div><br></div>
+						</h5>
+					</div>
+					<div class="col-sm-6">
+						<br>
+						<div class="opciones">
+							<div class="clearer"></div>
+							<div class="radio-inline fl-left-fixed">
+								<label><input type="radio" name="optradio">Option 1</label>
+							</div>
+							<div class="radio-inline fl-right">
+								<label><input type="radio" name="optradio">Option 2</label>
+							</div>
+							<div class="clearer"></div>
+							<div class="radio-inline fl-left-fixed">
+								<label><input type="radio" name="optradio">Option 3</label>
+							</div>
+							<div class="radio-inline fl-right">
+								<label><input type="radio" name="optradio">Option 4</label>
+							</div>
+						</div>
+						<div class="clearer"></div>
+					<div class="form-group pregunta">
+						<label for="comment">Respuesta:</label>
+						<textarea class="form-control" rows="6" id="comment" placeholder="Argumente su respuesta..."></textarea>
+						<br>
+						<button class="btn btn-default fl-right">Enviar Respuesta</button>
+						<div class="clearer"></div>
+						<br>
+					</div>
+					</div>
+				</div>
+			</div>
 			<div role="tabpanel" class="tab-pane" id="6">...</div>
 			<div role="tabpanel" class="tab-pane" id="7">...</div>
 			<div role="tabpanel" class="tab-pane" id="8">...</div>
