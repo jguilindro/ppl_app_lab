@@ -24,12 +24,12 @@
 			<header>
 			</header>
 				<div class="col-md-12 col-md-offset-4">
-					<form class="form-inline">
+					<div class="form-inline">
 						<div class="form-group center-block">
 							<input type="text" id="grupo-nombre" class="form-control pull-left bigger" placeholder="nombre del grupo..." v-on:keyup.enter="nuevoGrupo()">
-							<button v-on:click="nuevoGrupo()" class="btn btn-default pull-right">nuevo grupo</button>
+							<button v-on:click="nuevoGrupo()" type="button" class="btn btn-default pull-right">nuevo grupo</button>
 						</div>
-					</form>
+					</div>
 				</div>
       <div class="clearer"></div> <br><br>
       			<div class="col-md-12 col-md-offset-5">
@@ -47,7 +47,7 @@
 			<div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
 				<div v-bind:id="estudiante._id" draggable="true"
 				ondragstart="drag(event)"><span>{{estudiante.nombres}} {{estudiante.apellidos}} {{estudiante.correo}}</span></div>
-			</div>	
+			</div>
       	</div>
       	<div class="col-sm-9">
 			<section>

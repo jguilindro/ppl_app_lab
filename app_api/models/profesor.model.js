@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const shortid = require('shortid');
 
 const ProfesorSchema = mongoose.Schema({
   _id: {
     type: String,
     unique: true,
-    'default': shortid.generate
+    'default': require('shortid').generate
   },
   correo: {
     type: String
@@ -23,7 +22,8 @@ const ProfesorSchema = mongoose.Schema({
     type: String,
     ref: 'Pregunta'
   }]
-})
+});
+//,{timestamps: true, versionKey: false, collection: 'profesores'}
 
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
   this.model('Profesor').find({}, callback);

@@ -7,8 +7,7 @@ cors          = require('cors');
 bodyParser    = require('body-parser'),
 passport      = require('passport'),
 session       = require('express-session'),
-os            = require('os'),
-MongoStore   = require('connect-mongo')(session);
+MongoStore    = require('connect-mongo')(session);
 
 // base de datos mongoose
 require('./app_api/models/db')
@@ -39,6 +38,7 @@ app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_cl
 app.use('/profesores/grupos', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
 app.use('/profesores/preguntas', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
+app.use('/profesores/leccion-panel', authProfesor,  express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/tomar-leccion', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
 // app_api

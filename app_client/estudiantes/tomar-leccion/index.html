@@ -21,28 +21,28 @@
 		}
 
 		:-moz-placeholder { /* Firefox 18- */
-		   text-align: center;  
+		   text-align: center;
 		}
 
 		::-moz-placeholder {  /* Firefox 19+ */
-		   text-align: center;  
+		   text-align: center;
 		}
 
-		:-ms-input-placeholder {  
-		   text-align: center; 
+		:-ms-input-placeholder {
+		   text-align: center;
 		}
 	</style>
 </head>
 <body id="grad">
-	<div class="container">
+	<div class="container" id="app">
 		<div class="center-align v-center">
 			<h1 class="center-align">Bienvenido</h1>
-			<h2>{{estudiante.nombre}}</h2>
+			<h2>{{estudiante.nombres}}</h2>
 			<form class="form-horizontal">
 				<div class="form-group code">
 					<input class="form-control" id="codigo" placeholder="Introduce el código">
 				</div>
-				<div class="form-group"> 
+				<div class="form-group">
 					<div class="col-sm col-sm-10  enter-align">
 						<button type="submit" class="btn btn-default">Ingresar</button>
 					</div>
@@ -54,7 +54,10 @@
 			<div class="right-align">
 				<a href="/estudiantes">O tomarlo después</a>
 			</div>
-			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
+			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      <script src="./app.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 		</footer>
 	</div>
