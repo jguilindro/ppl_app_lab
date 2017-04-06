@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Estudiante Lección</title>
+		<title>Calificar Lección</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<style type="text/css">
@@ -12,7 +12,7 @@
 				margin-top: 2%;
 				float:right;
 			}
-			.pregunta{
+			.pregunta, .feedback{
 				max-width:80%;
 				margin-left: 10%;
 			}
@@ -47,6 +47,8 @@
 			#grad{
 				background: red; /* For browsers that do not support gradients */
 				background: linear-gradient(to bottom, rgba(0,128,0,0.1), rgba(0,128,0,0.4))  no-repeat center center fixed; /*Standard*/
+				background: linear-gradient(to bottom, rgba(51, 102, 153,0.1), rgba(51, 102, 153,0.6))  no-repeat center center fixed; /*Standard*/
+}
 			}
 			tr{
 				background-color: rgba(255,255,255,0.3);
@@ -66,12 +68,10 @@
 	<body id="grad">
 		<header>
 			<img src="http://placehold.it/100x100" class="img-responsive center-block">
-			<h2 class="text-center">Xavier Fernando Idrovo Vallejo</h2>
+			<h2 class="text-center">Florencio Pinela</h2>
 		</header>
 		<div class="container">
-			<div class="timer">
-				<p>Tiempo restante: <span>12:25</span></p>
-			</div>
+
 			<div class="blocker"></div>
 			<ul class="nav nav-tabs nav-justified opa" role="tablist">
 				<li role="presentation">
@@ -123,7 +123,7 @@
 					<div class="pregunta opciones">
 						<div class="clearer"></div>
 						<div class="radio-inline fl-left">
-							<label><input type="radio" name="optradio">Option 1</label>
+							<label><input type="radio" name="optradio" checked="checked">Option 1</label>
 						</div>
 						<div class="radio-inline fl-right">
 							<label><input type="radio" name="optradio">Option 2</label>
@@ -139,9 +139,22 @@
 						<div class="clearer"></div>
 					<div class="form-group pregunta">
 						<label for="comment">Respuesta:</label>
-						<textarea class="form-control" rows="5" id="comment" placeholder="Argumente su respuesta..."></textarea>
+						<textarea class="form-control text-justify" rows="5" id="comment" placeholder="Argumente su respuesta..." disabled>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						</textarea>
 						<br>
-						<button class="btn btn-default fl-right">Enviar Respuesta</button>
+						
+						<div class="clearer"></div>
+						<br>
+					</div>
+
+					<div class="form-group feedback">
+						<label for="comment">Feedback:</label>
+						<textarea class="form-control text-justify" rows="5" id="feedback" placeholder="Argumente su respuesta...">
+							
+						</textarea>
+						<br>
+						<button class="btn btn-default fl-right">Enviar feedback</button>
 						<div class="clearer"></div>
 						<br>
 					</div>
