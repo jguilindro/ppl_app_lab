@@ -35,8 +35,8 @@ div.grupos {
 
 .grupo-estudiantes {
   list-style-type: none;
-  border-style: dashed;
-  margin-bottom: 2%;
+  border: 1px solid rgba(0,0,0,0.1);
+  margin-bottom: 1%;
 }
 
 .grup {
@@ -57,4 +57,20 @@ div.grupos {
 
 .grupo-estudiantes {
   padding: 2%;
+}
+
+.tiny{
+	width: 50%;
+}
+.fl-left{
+	float: left;
+}
+.fl-right{
+	float: right;
+}
+.clearer{
+	clear: both;
+}
+.bigger{
+  font-size: 18px;
 }
