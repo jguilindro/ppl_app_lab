@@ -36,7 +36,9 @@ const { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = req
 //vistas
 app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
 app.use('/profesores/grupos', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
-app.use('/profesores/preguntas', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas')));
+app.use('/profesores/preguntas/estimacion', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
+app.use('/profesores/preguntas/tutorial', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
+app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 app.use('/profesores/leccion-panel', authProfesor,  express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));

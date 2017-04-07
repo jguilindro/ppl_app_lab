@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profesor - Preguntas</title>
+		<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="./laboratorioStyle.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+	</head>
+	<body>
+		<header>
+			<nav>
+				<div class="nav-wrapper">
+		      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
+		      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		      <ul class="right hide-on-med-and-down ">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../grupos">Grupos</a></li>
+		        <li><a class="dropdown-button" href="#" data-activates="dropPreguntas">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+		      <ul class="side-nav" id="mobile-demo">
+		        <li><a href="#">Sesiones</a></li>
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../grupos">Grupos</a></li>
+		        <li><a class="dropdown-button" href="#" data-activates="dropPreguntas">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+		      <ul id="dropPreguntas" class="dropdown-content">
+		      	<li><a href="../estimacion">Estimación</a></li>
+		      	<li><a href="../tutorial">Tutorial</a></li>
+		      	<li><a href="../laboratorio">Laboratorio</a></li>
+		      </ul>
+		    </div>
+			</nav>
+		</header>
+		<main>
+			<div class="container" id="laboratorio">
+				<div class="row">
+					<div class="col s12 m9 l10">
+						<div v-for="laboratorio in laboratorios" class="laboratorio scrollspy section" v-bind:id="laboratorio.id">
+							<h5>{{laboratorio.nombre}}</h5>
+							<ul class="preguntas">
+								<li v-for="pregunta in laboratorio.preguntas" class="question" v-bind:id="pregunta.id">
+									<a href="#">{{pregunta.titulo}}</a>
+								</li>
+							</ul>
+							<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
+						</div>
+					</div>
+					<div class="col hide-on-small-only m3 l2">
+						<ul class="section table-of-contents">
+			  			<li v-for="laboratorio in laboratorios">
+			  				<a v-bind:href="laboratorio.href">{{laboratorio.nombre}}</a>
+			  			</li>
+			  			<button class="btn waves-effect waves-light" id="btn-small">Nuevo laboratorio</button>
+			  		</ul>	
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer>
+			<script src="/bower_components/vue/dist/vue.min.js"></script>
+  		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  		<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+			<script src="./laboratorioScript.js"></script>
+		</footer>
+	</body>
+</html>
