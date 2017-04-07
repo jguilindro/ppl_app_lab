@@ -13,6 +13,8 @@ MongoStore    = require('connect-mongo')(session);
 require('./app_api/models/db')
 
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -67,4 +69,4 @@ app.use(function(err, req, res, next) {
   res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
 
-module.exports = app;
+module.exports = {app: app, server: server};
