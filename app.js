@@ -15,7 +15,10 @@ require('./app_api/models/db')
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-
+app.use(function(req, res, next){
+  res.io = io;
+  next();
+});
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,6 +30,7 @@ app.use(session({
 	saveUninitialized: false,
   store: new MongoStore({ url: require('./app_api/utils/change_database').session() })
 }));
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', express.static(path.join(__dirname, 'app_client/login')));
@@ -34,6 +38,7 @@ app.use('/api/session', require('./app_api/routes/login.router'));
 
 // Auth middleware
 const { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
+require('./app_api/routes/realtime.router')(io)
 
 //vistas
 app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
@@ -42,9 +47,13 @@ app.use('/profesores/preguntas/estimacion', authProfesor, express.static(path.jo
 app.use('/profesores/preguntas/tutorial', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
 app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
-app.use('/profesores/leccion-panel', authProfesor,  express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
+
+app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
+
+app.use('/profesores/leccion-panel' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
-app.use('/estudiantes/tomar-leccion', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')))
+app.use('/estudiantes/tomar-leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));

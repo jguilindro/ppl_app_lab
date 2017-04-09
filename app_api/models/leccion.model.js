@@ -16,13 +16,15 @@ const LeccionSchema = mongoose.Schema({
     'default': 'pendiente'
   },
   tiempoEstimado: {
-    type: Date
+    type: String
   },
   puntaje: {
     type: Number
   },
   tipo: {
-    type: Number
+    type: String,
+    emun: ['leccion', 'tutorial', 'experimento'],
+    'default': 'leccion'
   },
   fechaInicio: {
     type: Date
@@ -34,7 +36,11 @@ const LeccionSchema = mongoose.Schema({
   creador: {
     type: String,
     ref: 'Profesor'
-  }
+  },
+  preguntas: [{  // <= DOCUMENTACION
+    type: String,
+    ref: 'Pregunta'
+  }]
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
 
 // TODO: settear creador aqui

@@ -44,4 +44,8 @@ GrupoSchema.statics.eliminarEstudiante = function(id_grupo, id_estudiante, callb
   this.update({_id: id_grupo}, {$pull: {estudiantes: id_estudiante}}, callback);
 }
 
+GrupoSchema.statics.obtenerGrupoDeEstudiante = function(id_estudiante, callback) {
+  this.findOne({estudiantes: id_estudiante}, callback)
+}
+
 module.exports = mongoose.model('Grupo', GrupoSchema)

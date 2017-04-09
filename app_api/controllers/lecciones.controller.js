@@ -18,12 +18,15 @@ const obtenerLeccion = (req, res) => {
 
 // TODO: anadir el creador con el login
 const crearLeccion = (req, res) => {
+  console.log(req.body)
   let leccion = new LeccionModel({
+    creador: req.session._id,
     nombre: req.body.nombre,
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
     tipo: req.body.tipo,
-    fechaInicio: req.body.fechaInicio
+    fechaInicio: req.body.fechaInicio,
+    preguntas: req.body.preguntas
   })
   leccion.crearLeccion((err, doc) => {
     if (err) return respuesta.serverError(res);

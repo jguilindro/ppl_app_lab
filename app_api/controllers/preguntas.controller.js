@@ -26,9 +26,13 @@ const obtenerPreguntasPorCreador = (req, res) => {
 const crearPregunta = (req, res) => {
   // con quien este loggeado anadir el id creador
   let pregunta = new PreguntaModel({
-    tipo: req.body.tipo,
+    //creador: req.session._id,
+    nombre: req.body.nombre,
+    tipoLeccion: req.body.tipoLeccion,
+    tipoPregunta: req.body.tipoPregunta,
     capitulo: req.body.capitulo,
     tiempoEstimado: req.body.tiempoEstimado,
+    tiempoMinimo: req.body.tiempoEstimado,
     puntaje: req.body.puntaje
   })
   pregunta.crearPregunta((err, doc) => {

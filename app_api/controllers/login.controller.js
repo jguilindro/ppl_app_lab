@@ -1,15 +1,15 @@
 var EstudianteModel = require('../models/estudiante.model');
 ProfesorModel       = require('../models/profesor.model');
 respuesta           = require('../utils/responses');
-
+var app = require('express')
 function login(req, res) {
   let estudiante = new Promise(( resolve, reject ) => {
     EstudianteModel.obtenerEstudiantePorCorreo(req.body.correo, ( err, estudiante ) => {
       if ( err ) return reject('error');
-      if ( !estudiante ) return resolve(false);
+      if ( !estudiante ) return resolve(false); 
       req.session.privilegios = 'estudiante';
       req.session.correo = req.body.correo;
-      req.session._id = estudiante._id
+      req.session._id = estudiante._id;
       req.session.login = true;
       return resolve(true);
     })

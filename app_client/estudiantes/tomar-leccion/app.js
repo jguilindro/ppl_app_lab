@@ -16,3 +16,7 @@ app = new Vue({
 })
 
 app.obtenerLogeado()
+var socket = io()
+// socket.on('login', function(data) {
+//   console.log(data)
+// })
