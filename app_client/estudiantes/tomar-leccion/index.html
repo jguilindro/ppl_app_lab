@@ -38,16 +38,16 @@
 		<div class="center-align v-center">
 			<h1 class="center-align">Bienvenido</h1>
 			<h2>{{estudiante.nombres}}</h2>
-			<form class="form-horizontal">
+			<div class="form-horizontal">
 				<div class="form-group code">
 					<input class="form-control" id="codigo" placeholder="Introduce el código">
 				</div>
 				<div class="form-group">
 					<div class="col-sm col-sm-10  enter-align">
-						<button type="submit" class="btn btn-default">Ingresar</button>
+						<button type="button" v-on:click="verificarEstudiantPuedeDarLeccion()" class="btn btn-default">Ingresar</button>
 					</div>
 				</div>
-			</form>
+			</div>
 		</div>
 		<footer>
 			<br><br><br>

@@ -6,5 +6,5 @@ router.get('/:id_leccion', LeccionController.obtenerLeccion);
 router.post('/', LeccionController.crearLeccion);
 router.put('/:id_leccion', LeccionController.actualizarLeccion);
 router.delete('/:id_leccion', LeccionController.eliminarLeccion);
-
+router.post('/tomar/:id_leccion', LeccionController.tomarLeccion); // <= DOCUMENTACION
 module.exports = router;

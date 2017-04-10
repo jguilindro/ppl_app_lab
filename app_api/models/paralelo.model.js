@@ -9,6 +9,14 @@ const ParaleloSchema = new mongoose.Schema({
   nombre: {
     type: String
   },
+  dandoLeccion: {  // <= para ver si un estudiante puede dar leccion y verificar que cursos estan dando leccion DOCUMENTACION
+    type: Boolean,
+		'default': false
+  },
+  leccion: { // <= saber que leccion esta dando el curso, setear a null cuando termine la leccion  DOCUMENTACION
+    type: String,
+    ref: 'Leccion'
+  },
   cantidadEstudiantes: {
     type: Number
   },
@@ -89,4 +97,13 @@ ParaleloSchema.statics.anadirEstudianteAParalelo = function(id_paralelo, id_estu
 ParaleloSchema.statics.eliminarEstudianteDeParalelo = function(id_paralelo, id_estudiante, callback) {
   this.update({_id: id_paralelo}, {$pull: {estudiantes: id_estudiante}}, callback);
 }
+
+/*
+Lecciones
+ */
+ParaleloSchema.statics.dandoLeccion = function(id_paralelo, id_leccion, callback) {
+	this.update({_id: id_paralelo}, {$set: {'leccion': id_leccion, 'dandoLeccion': true}},callback)
+}
+
+
 module.exports = mongoose.model('Paralelo', ParaleloSchema);

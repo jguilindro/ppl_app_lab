@@ -4,21 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Profesor</title>
+  <title>Document</title>
 </head>
 <body>
-  <div id="app">
-    <p>{{leccion}}</p>
-    <h3>El codigo de la leccion {{leccion.codigo}}</h3>
-    <h1>Ver los estudiantes conectados</h1>
-    <div v-for="estudiante in estudiantes_conectados">
-      <p>{{estudiante.nombres}}</p>
-    </div>
-  </div>
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <p>Leccion estudiante</p>
   <script src="/bower_components/vue/dist/vue.min.js"></script>
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
   <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-  <script src="./app.js" async></script>
+  <script src="./app.leccion.js"></script>
 </body>
 </html>

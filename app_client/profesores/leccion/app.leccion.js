@@ -22,6 +22,7 @@ var App = new Vue({
       tipo: '',
       fechaInicio: '',
       preguntas: [],
+      puntaje: 0
     },
     preguntas: []
   }

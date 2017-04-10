@@ -34,7 +34,7 @@
       </div>
       <div class="form-group">
         <label for="Puntaje">Puntaje</label>
-        <input type="text" placeholder="puntaje">
+        <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
       </div>
       <button type="button" v-on:click="crearLeccion()">send</button>
     </form>

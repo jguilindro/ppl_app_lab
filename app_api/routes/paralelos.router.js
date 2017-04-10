@@ -20,4 +20,9 @@ router.get('/profesores/mis_paralelos', ParalelosController.obtenerParalelosProf
 router.post('/:id_paralelo/estudiantes/:id_estudiante', ParalelosController.anadirEstudianteAParalelo);
 router.delete('/:id_paralelo/estudiantes/:id_estudiante', ParalelosController.eliminarEstudianteDeParalelo);
 
+
+// Lecciones
+router.post('/:id_paralelo/leccion/:id_leccion', ParalelosController.dandoLeccion) // <= DOCUMENTACION
+// router.delete('/:id_paralelo/leccion', ParelelosController.terminadoLeccion) // <= DOCUMENTACION
+
 module.exports = router

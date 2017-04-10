@@ -18,12 +18,11 @@ const obtenerLeccion = (req, res) => {
 
 // TODO: anadir el creador con el login
 const crearLeccion = (req, res) => {
-  console.log(req.body)
   let leccion = new LeccionModel({
     creador: req.session._id,
     nombre: req.body.nombre,
     tiempoEstimado: req.body.tiempoEstimado,
-    puntaje: req.body.puntaje,
+    puntaje: parseInt(req.body.puntaje),
     tipo: req.body.tipo,
     fechaInicio: req.body.fechaInicio,
     preguntas: req.body.preguntas
@@ -57,10 +56,21 @@ const eliminarLeccion = (req, res) => {
   })
 }
 
+// Lecciones realtime
+const tomarLeccion = (req, res) => {
+  const { id_leccion } = req.params
+  LeccionModel.tomarLeccion(id_leccion, (err, docs) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.okActualizado(res);
+  })
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
   obtenerLeccion,
   actualizarLeccion,
-  eliminarLeccion
+  eliminarLeccion,
+  // realtime
+  tomarLeccion,
 }

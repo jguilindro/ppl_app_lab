@@ -49,10 +49,12 @@ app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.j
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
+app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
 
-app.use('/profesores/leccion-panel' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
+app.use('/profesores/leccion-panel/:id_leccion' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/tomar-leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+app.use('/estudiantes/leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
