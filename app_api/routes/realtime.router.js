@@ -9,17 +9,37 @@ function realtime(io) {
   // estudiantes en la pagina ingresar codigo
   var no_codigo = io.of('/no_codigo');
   no_codigo.on('connection', function(socket){
-    console.log('someone connected');
-    socket.broadcast.emit('estudiante tratando ingresar', 'es')
+    var cook = obtenerCook(socket.request.headers.cookie)
+    const obtenerEstudiante = function (_usuario_cookie) {
+      return new Promise((resolve, reject) => {
+        EstudianteModel.obtenerEstudiantePorCorreo(_usuario_cookie.correo, (err, estudiante) => {
+          if (err) return reject(err)
+          if (!estudiante) {
+            socket.profesor = true
+            return resolve(false)
+          }
+          socket.estudiante = estudiante;
+          socket.broadcast.emit('estudiante tratando ingresar', estudiante)
+          resolve(estudiante)
+        })
+      })
+    }
+    mongoSession(cook)
+      .then(obtenerEstudiante)
+      .then(obtenerGrupo)
+      .then(res => {
+          console.log(`${res}`)
+          socket.join(`${res._id}`);
+          io.to(`${res._id}`).emit('some event');
+        })
+      .catch(err => console.log(err))
   });
 
   // estudiantes conectados
-  var tomado_leccion = io.of('/tomando_leccion');
+  var tomando_leccion = io.of('/tomando_leccion');
   var estudiantes_conectados = []
-  tomado_leccion.on('connection', function(socket) {
-    var cookies = cookie.parse(socket.request.headers.cookie);
-    var cook = cookies['connect.sid'].split('.').filter((ele,index) => index == 0)[0].split(':')[1]
-
+  tomando_leccion.on('connection', function(socket) {
+    var cook = obtenerCook(socket.request.headers.cookie)
     const obtenerEstudiante = function (_usuario_cookie) {
       return new Promise((resolve, reject) => {
         EstudianteModel.obtenerEstudiantePorCorreo(_usuario_cookie.correo, (err, estudiante) => {
@@ -35,21 +55,31 @@ function realtime(io) {
       })
     }
 
-    mongoSession(cook)
-      .then(obtenerEstudiante)
-      .then(obtenerGrupo)
-      .then(res => {
+      mongoSession(cook)
+        .then(obtenerEstudiante)
+        .then(obtenerGrupo)
+        .then(res => {
+          console.log('curso')
+          socket.join(res._id) // anadir a estudiante al room de su grupo
           console.log(`${res}`)
-          socket.join(`${res._id}`);
-          io.to(`${res._id}`).emit('some event');
         })
-
-      .catch(err => console.log(err))
-
+        .catch(err => console.log(err))
     socket.on('disconnect', function() {
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
   })
+  console.log(tomando_leccion)
+  tomando_leccion.on('hola', function(data) {
+    console.log(data)
+  })
+  //io.to('some room').emit('some event'); , leave
+  /*
+  io.on('connection', function(socket){
+    socket.on('say to someone', function(id, msg){
+      socket.broadcast.to(id).emit('my message', msg);
+    });
+  });
+   */
 }
 
 module.exports = realtime
@@ -85,4 +115,10 @@ function obtenerGrupo(_estudiante) {
       resolve(grupo)
     })
   })
+}
+
+function obtenerCook(cookie_socket) {
+  var cookies = cookie.parse(cookie_socket);
+  var cook = cookies['connect.sid'].split('.').filter((ele,index) => index == 0)[0].split(':')[1]
+  return cook
 }

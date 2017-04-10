@@ -69,6 +69,10 @@ function mongoError (res, error) {
   })
 }
 
+function noOK (res) {
+  return res.status(200).json({estado: false});
+}
+
 function ok (res, datos) {
   return res.status(200).json({estado: true, datos: datos});
 }
@@ -105,4 +109,6 @@ module.exports = {
     // validos
     ok,
     creado,
+    // no validos
+    noOK
   }

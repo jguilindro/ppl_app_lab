@@ -98,6 +98,10 @@ ParaleloSchema.statics.eliminarEstudianteDeParalelo = function(id_paralelo, id_e
   this.update({_id: id_paralelo}, {$pull: {estudiantes: id_estudiante}}, callback);
 }
 
+ParaleloSchema.statics.obtenerParaleloDeEstudiante = function(id_estudiante, callback) {
+  this.findOne({estudiantes: id_estudiante}, callback)
+}
+
 /*
 Lecciones
  */

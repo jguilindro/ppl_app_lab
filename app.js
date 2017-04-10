@@ -54,7 +54,13 @@ app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname
 app.use('/profesores/leccion-panel/:id_leccion' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/tomar-leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
-app.use('/estudiantes/leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
+app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
+  if (!req.app.get('habilitado_para_leccion')) {
+    res.redirect('/estudiantes/tomar-leccion')
+  } else {
+    next()
+  }
+} ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));

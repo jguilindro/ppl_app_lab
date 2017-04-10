@@ -83,4 +83,8 @@ LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
   this.update({_id: id_leccion}, {$set: {estado: 'tomando'}}, callback)
 }
 
+LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {
+  this.findOne({codigo: codigo_leccion}, callback)
+}
+
 module.exports = mongoose.model('Leccion', LeccionSchema);

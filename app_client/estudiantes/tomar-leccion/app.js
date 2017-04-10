@@ -10,7 +10,7 @@ app = new Vue({
         })
     },
     verificarEstudiantPuedeDarLeccion() {
-      this.$http.get(`/api/estudiantes/leccion/verificar`).
+      this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
         then(res => {
           if (res.body.estado) {
             window.location.href = `/estudiantes/leccion`
@@ -21,7 +21,8 @@ app = new Vue({
     }
   },
   data: {
-    estudiante: {}
+    estudiante: {},
+    codigo_leccion: ''
   }
 })
 
