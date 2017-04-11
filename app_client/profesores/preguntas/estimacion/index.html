@@ -44,6 +44,7 @@
 				  		<ul class="preguntas">
 				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id">
 				  				<a href="#">{{pregunta.titulo}}</a>
+
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -61,6 +62,18 @@
 			  	</div>
 
 		  	</div>
+		  	<!-- Modal Structure -->
+			  <div id="modalEliminar" class="modal">
+			    <div class="modal-content">
+			      
+			    </div>
+			    <div class="modal-footer">
+			    	
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="eliminarPregunta($event)">Eliminar</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>
+
 		  </div>
 		</main>
 		<footer>

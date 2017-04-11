@@ -1,7 +1,10 @@
 var app = new Vue({
 	mounted: function(){
 		$('.button-collapse').sideNav();
+		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
+		$('#modalEliminar').modal();
+
 	},
 
 	el: '#preguntas',
@@ -64,6 +67,28 @@ var app = new Vue({
 		nuevaPregunta: function(){
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
 
+		},
+		eliminarPregunta: function(event){
+			console.log(this)
+			console.log(event)
 		}
 	}
 });
+
+/*
+function crearModal(){
+	var modal = $('<div/>').attr({
+		'id': 'modalEliminar',
+		'class': 'modal'
+	});
+	var modalContent = $('<div/>').attr({'class': 'modal-content'});
+	var modalText = $('<p/>').text('Holaaaa');
+	modalContent.append(modalText);
+	modal.append(modalContent);
+}*/
+/*
+$('#preguntas').on("click", '.btn-eliminar', function(){
+	console.log('Esto va a funcionar carajo');
+	//crearModal();
+	$('#modalEliminar').modal('open');
+})*/

@@ -77,5 +77,6 @@ var tutorial = new Vue({
 	mounted: function(){
 		$('.button-collapse').sideNav();
 		$('.scrollspy').scrollSpy();
+		$(".dropdown-button").dropdown();
 	}
 });
