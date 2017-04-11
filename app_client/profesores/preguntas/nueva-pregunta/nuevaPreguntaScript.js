@@ -23,6 +23,11 @@ var app = new Vue({
 			puntaje: 0
 
 		}
+	},
+	methods: {
+		cancelar: function(){
+			window.location.href = '/profesores/preguntas/estimacion'
+		}
 	}
 });
 

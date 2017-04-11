@@ -78,5 +78,11 @@ var tutorial = new Vue({
 		$('.button-collapse').sideNav();
 		$('.scrollspy').scrollSpy();
 		$(".dropdown-button").dropdown();
+	},
+	methods: {
+		nuevaPregunta: function(){
+			window.location.href = '/profesores/preguntas/nueva-pregunta'
+
+		}
 	}
 });

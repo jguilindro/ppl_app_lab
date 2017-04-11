@@ -77,5 +77,11 @@ var laboratorio = new Vue({
 	mounted: function(){
 		$('.button-collapse').sideNav();
 		$('.scrollspy').scrollSpy();
+	},
+	methods: {
+		nuevaPregunta: function(){
+			window.location.href = '/profesores/preguntas/nueva-pregunta'
+
+		}
 	}
 });

@@ -12,27 +12,33 @@
 	<body>
 		<header>
 			<nav>
+				<!-- Dropdown Structure -->
+				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
+				  <li><a href="../estimacion">Estimación</a></li>
+				  <li><a href="../laboratorio">Laboratorio</a></li>
+				  <li><a href="../tutorial">Prácticas</a></li>
+				</ul>
+				<ul id="dropdownPreguntasMobile" class="dropdown-content">
+				  <li><a href="../estimacion">Estimación</a></li>
+				  <li><a href="../laboratorio">Laboratorio</a></li>
+				  <li><a href="../tutorial">Prácticas</a></li>
+				</ul>
 				<div class="nav-wrapper">
-		      <a href="../grupos" class="brand-logo titulo-nav">Profesor</a>
-		      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-		      <ul class="right hide-on-med-and-down ">
-		        <li><a href="#">Sesiones</a></li>
+					<a href="#!" class="brand-logo">Profesor</a>
+					<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+					<ul class="right hide-on-med-and-down">
 		        <li><a href="#">Lecciones</a></li>
-		        <li><a href="../grupos">Grupos</a></li>
-		        <li><a class="dropdown-button" href="#" data-activates="dropPreguntas">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
 		      </ul>
 		      <ul class="side-nav" id="mobile-demo">
-		        <li><a href="#">Sesiones</a></li>
 		        <li><a href="#">Lecciones</a></li>
-		        <li><a href="../grupos">Grupos</a></li>
-		        <li><a class="dropdown-button" href="#" data-activates="dropPreguntas">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
 		      </ul>
-		      <ul id="dropPreguntas" class="dropdown-content">
-		      	<li><a href="../estimacion">Estimación</a></li>
-		      	<li><a href="../tutorial">Tutorial</a></li>
-		      	<li><a href="../laboratorio">Laboratorio</a></li>
-		      </ul>
-		    </div>
+				</div>
 			</nav>
 		</header>
 		<main>
