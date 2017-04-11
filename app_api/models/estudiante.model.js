@@ -38,7 +38,13 @@ const EstudianteSchema = mongoose.Schema({
 		},
 		calificacion: {
 			type: Number
-		}
+		},
+    autorizado: { // si puede dar la leccion y sive cuando recarge la pagina tiene que comprobarse este boolean <= DOCUMENTACION
+      type: Boolean
+    },
+    terminado: { // si la leccion ha sido terminada, esto permitira que no pueda acceder a la leccion luego de terminarla <= DOCUMENTACION
+      type: Boolean
+    }
 	}]
 },{timestamps: true, versionKey: false, collection: 'estudiantes'})
 

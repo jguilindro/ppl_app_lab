@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <title>Nueva Leccion</title>
+</head>
+<body>
+  <h1>Crear un nueva leccion</h1>
+  <div id="app">
+    <p>{{leccion_nueva}}</p>
+    <form >
+      <div class="form-group">
+        <label for="nombre">nombre</label>
+        <input v-model="leccion_nueva.nombre" class="form-control" type="text" name="nombre" placeholder="nombre leccion">
+      </div>
+      <div class="form-group">
+        <label for="tiempoEstimado">tiempo estimado</label>
+        <input v-model="leccion_nueva.tiempoEstimado" type="number" step="5" min="5" value="5"/>minutos
+      </div>
+      <div class="form-group">
+        <label for="tipo">tipo</label>
+        <select v-model="leccion_nueva.tipo" class="" name="">
+          <option value="leccion">estimacion</option>
+          <option value="tutorial">tutorial</option>
+          <option value="experimento">experimento</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fechaInicio">fecha inicio</label>
+        <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
+      </div>
+      <div class="form-group">
+        <label for="Puntaje">Puntaje</label>
+        <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
+      </div>
+      <button type="button" v-on:click="crearLeccion()">send</button>
+    </form>
+    <div>
+      <div v-for="pregunta in preguntas">
+        <p>{{pregunta.nombre}}</p><input type="checkbox" onclick="preguntaSeleccionada(this)" v-bind:id="pregunta._id">
+      </div>
+    </div>
+  </div>
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vue/dist/vue.min.js"></script>
+  <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
+  <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+  <script src="./app.leccion.js"></script>
+</body>
+</html>

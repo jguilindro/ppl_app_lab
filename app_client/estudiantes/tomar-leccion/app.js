@@ -8,11 +8,23 @@ app = new Vue({
             this.estudiante = res.body.datos
           }
         })
+    },
+    verificarEstudiantPuedeDarLeccion() {
+      this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
+        then(res => {
+          if (res.body.estado) {
+            window.location.href = `/estudiantes/leccion`
+          } else {
+            console.log(res.body)
+          }
+        })
     }
   },
   data: {
-    estudiante: {}
+    estudiante: {},
+    codigo_leccion: ''
   }
 })
 
 app.obtenerLogeado()
+var socket = io('/no_codigo');

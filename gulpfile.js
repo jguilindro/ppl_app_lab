@@ -14,6 +14,9 @@ gulp.task('browser-sync', [], function() {
         files: ["app_client/**"],
         browser: "default",
         port: 5000,
+        ghostMode: {
+          links: false
+      }
 	});
 });
 gulp.task('nodemon', function (cb) {
@@ -45,6 +48,6 @@ gulp.task('nodemon', function (cb) {
 
     }).
     on('quit', function() {
-      
+
     })
 });

@@ -1,4 +1,7 @@
 const EstudianteModel = require('../models/estudiante.model');
+const ParaleloModel = require('../models/paralelo.model');
+const LeccionModel = require('../models/leccion.model');
+
 var respuesta = require('../utils/responses');
 /*
 * Estudiante metodos basicos
@@ -23,101 +26,37 @@ const crearEstudiante = (req, res) => {
   })
 }
 
-const actualizarEstudiante = (req, res) => {
-	res.send('actualizarEstudiante');
-}
-
-const actualizarEstudianteNoDatosPrivados = (req, res) => {
-	res.send(`actualizarEstudianteNoDatos ${req.params.id_estudiante}`)
-}
-
-const eliminarEstudiante = (req, res) => {
-	res.send('eliminarEstudiante');
-}
-
 const obtenerEstudiante = (req, res) => {
 	res.send(`obtenerEstudiante ${req.params.id_estudiante}`);
 }
 
-/*
-* Lecciones
-*/
-const obtenerLecciones = (req, res) => {
-	res.send(`obtenerLecciones`)
-}
-
-const anadirLeccion = (req, res) => {
-	res.send(`anadirLeccion ${req.params.id_leccion} ${req.params.calificacion}`)
-}
-
-const editarLeccion = (req, res) => {
-	res.send(`editar ${req.params.id_leccion} ${req.params.calificacion}`)
-}
-
-const eliminarLeccion = (req, res) => {
-	res.send(`elimnar leccion ${req.params.id_leccion}`)
-}
-
-/*
-* Grupo
-*/
-const obtenerGrupo = (req, res) => {
-	res.send(`obtenerGrupo`)
-}
-const anadirGrupo = (req, res) => {
-	res.send(`anadirGrupo ${req.params.id_grupo}`)
-}
-
-const eliminarGrupo = (req, res) => {
-	res.send(`eliminarGrupo ${req.params.id_grupo}`)
-}
-
-/*
-* Profesor
-*/
-const anadirProfesor = (req, res) => {
-	res.send(`anadirGrupo ${req.params.id_profesor}`)
-}
-
-const editarProfesor = (req, res) => {
-	res.send(`editarProfesor ${req.params.id_profesor}`)
-}
-
-const eliminarProfesor = (req, res) => {
-	res.send(`eliminarProfesor ${req.params.id_profesor}`)
-}
-
-/*
-* Eliminar Paralelo
-*/
-const anadirParalelo = (req, res) => {
-	res.send(`anadirParalelo ${req.params.id_paralelo}`)
-}
-
-const eliminarParalelo = (req, res) => {
-	res.send(`eliminarParalelo ${req.params.id_paralelo}`)
+// mensajes error dos: si no es del curso, o si ingreso mal la contrasena leccion
+// restrigir acceso al lecciones si no ha ingresado el codigo
+const verificarEstudiantePuedeDarLeccion = (req, res) => {
+  const { _id } = req.session
+  const { codigo_leccion } = req.params
+  ParaleloModel.obtenerParaleloDeEstudiante(_id, (err, paralelo) => {
+    if (err) {
+      return respuesta.serverError(res)
+    }else if (paralelo.dandoLeccion) {
+      LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
+        console.log(leccion)
+        if (err) return respuesta.serverError(res);
+        if (!leccion) return respuesta.noOK(res);
+        req.app.set('habilitado_para_leccion', true)
+        return respuesta.okAnadido(res);
+        // TODO: setearle al estudiante la leccion y que la esta dando
+      })
+    } else {
+      return respuesta.noOK(res); // DOCUMENTACION
+    }
+  })
 }
 
 module.exports = {
 	obtenerTodosEstudiantes,
 	crearEstudiante,
-	actualizarEstudiante,
-	actualizarEstudianteNoDatosPrivados,
-	eliminarEstudiante,
 	obtenerEstudiante,
-	// lecciones
-	obtenerLecciones,
-	anadirLeccion,
-	editarLeccion,
-	eliminarLeccion,
-	// grupo
-	obtenerGrupo,
-	anadirGrupo,
-	eliminarGrupo,
-	// profesor
-	anadirProfesor,
-	eliminarProfesor,
-	// paralelo
-	anadirParalelo,
-	eliminarParalelo,
+  // leccion
+  verificarEstudiantePuedeDarLeccion,
 }

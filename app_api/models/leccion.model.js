@@ -8,24 +8,32 @@ const LeccionSchema = mongoose.Schema({
     'default': require('shortid').generate
   },
   nombre: {
-    type: String
+    type: String,
+    unique: false
   },
   estado: {
     type: String,
-    enum: ['pendiente', 'tomando'],
-    'default': 'pendiente'
+    enum: ['pendiente', 'tomando', 'terminado'],
+    'default': 'pendiente',
+    unique: false
   },
   tiempoEstimado: {
-    type: Date
+    type: String,
+    unique: false
   },
   puntaje: {
-    type: Number
+    type: Number,
+    unique: false
   },
   tipo: {
-    type: Number
+    type: String,
+    enum: ['estimacion', 'tutorial', 'experimento'],
+    'default': 'estimacion',
+    unique: false
   },
   fechaInicio: {
-    type: Date
+    type: Date,
+    unique: false
   },
   codigo: {
     type: String,
@@ -33,9 +41,21 @@ const LeccionSchema = mongoose.Schema({
   },
   creador: {
     type: String,
-    ref: 'Profesor'
-  }
+    ref: 'Profesor',
+    unique: false
+  },
+  preguntas: [{
+    type: String,
+    ref: 'Pregunta'
+  }]
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
+
+
+
+LeccionSchema.pre('save', function(next) {
+  this.codigo = require('../utils').random()
+  next()
+})
 
 // TODO: settear creador aqui
 LeccionSchema.methods.crearLeccion = function(callback) {
@@ -56,6 +76,15 @@ LeccionSchema.statics.actualizarLeccion = function(id_leccion, actualizar, callb
 
 LeccionSchema.statics.eliminarLeccion = function(id_leccion, callback) {
   this.findOneAndRemove({_id: id_leccion}, callback);
+}
+
+// realtime
+LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
+  this.update({_id: id_leccion}, {$set: {estado: 'tomando'}}, callback)
+}
+
+LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {
+  this.findOne({codigo: codigo_leccion}, callback)
 }
 
 module.exports = mongoose.model('Leccion', LeccionSchema);
