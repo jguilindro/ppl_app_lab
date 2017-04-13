@@ -46,16 +46,22 @@
       		<p>Estudiantes sin grupo</p>
 			<div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
 				<div v-bind:id="estudiante._id" draggable="true"
-				ondragstart="drag(event)"><span>{{estudiante.nombres}} {{estudiante.apellidos}} {{estudiante.correo}}</span></div>
+				ondragstart="drag(event)"><span class="text-justify">{{estudiante.nombres}} {{estudiante.apellidos}} {{estudiante.correo}}</span></div>
 			</div>
       	</div>
       	<div class="col-sm-9">
 			<section>
 				<div v-for="grupo in grupos" >
 					<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-					{{grupo.nombre}} <button v-on:click="eliminarGrupo(grupo._id)">x</button>
+					{{grupo.nombre}} 
+						<button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
+							<span class="glyphicon glyphicon-remove icono"></span>
+						</button>
 						<div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-							<span class="estudiante-nombre">{{estudiante.correo}}</span><button v-bind:id="estudiante._id" onclick="borrarAlumno(this)">x</button>
+							<span class="estudiante-nombre col-sm-8">{{estudiante.correo}}</span>
+							<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="cruz">
+							<span class="glyphicon glyphicon-remove icono"></span>
+							</button>
 						</div>
 					</li>
 				</div>

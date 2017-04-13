@@ -44,15 +44,31 @@ div.grupos {
 }
 
 .estudiante-nombre:hover {
-  background-color: yellow;
-}
+	box-shadow: -2px -1px 5px #888888;
+	border-radius: 5px;
+	background-color: rgba(255,255,255,0.2)
 
+}
+.icono{	
+	padding-top: 0px;
+}
+.cruz{
+	background: none;
+	border:none;
+}
+.cruz:hover{
+	box-shadow: -2px -1px 5px #888888;
+	border-radius: 5px;
+	background-color: rgba(255,255,255,0.2)
+}
 .estudiantes-sin-grupo {
   margin-bottom: 2%;
 }
 
 .estudiantes-sin-grupo:hover {
-  background-color: red;
+	box-shadow: -2px -1px 5px #888888;
+	border-radius: 5px;
+	background-color: rgba(255,255,255,0.2)
 }
 
 .grupo-estudiantes {
