@@ -3,7 +3,8 @@ var app = new Vue({
 		$('.button-collapse').sideNav();
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
-		$('#modalEliminar').modal();
+		$('#modalEliminarPregunta').modal();
+		$('#modalNuevoCapitulo').modal();
 
 	},
 
@@ -17,13 +18,16 @@ var app = new Vue({
 				preguntas: [
 					{ 
 						titulo: 'pregunta #1',
-						id: '1-1'
+						id: '1-1',
+						show: false
 					},	{ 
 						titulo: 'pregunta #2',
-						id: '1-2'
+						id: '1-2',
+						show: false
 					},	{ 
 						titulo: 'pregunta #3',
-						id: '1-3'
+						id: '1-3',
+						show: false
 					} 
 				]
 			},
@@ -34,16 +38,20 @@ var app = new Vue({
 				preguntas: [
 					{ 
 						titulo: 'pregunta #1',
-						id: '2-1'
+						id: '2-1',
+						show: false
 					},					{ 
 						titulo: 'pregunta #2',
-						id: '2-2'
+						id: '2-2',
+						show: false
 					},					{ 
 						titulo: 'pregunta #3',
-						id: '2-3'
+						id: '2-3',
+						show: false
 					},					{ 
 						titulo: 'pregunta #4',
-						id: '2-4'
+						id: '2-4',
+						show: false
 					} 
 				]
 			},
@@ -54,10 +62,12 @@ var app = new Vue({
 				preguntas: [
 					{ 
 						titulo: 'pregunta #1',
-						id: '3-1'
+						id: '3-1',
+						show: false
 					},					{ 
 						titulo: 'pregunta #2',
-						id: '3-2'
+						id: '3-2',
+						show: false
 					} 
 				]
 			},
@@ -68,9 +78,61 @@ var app = new Vue({
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
 
 		},
-		eliminarPregunta: function(event){
-			console.log(this)
-			console.log(event)
+		eliminarPregunta: function(id){
+			var self = this;
+			var idPregunta = id;
+			$.each(self.capitulos, function(index, capitulo){
+				$.each(capitulo.preguntas, function(j, pregunta){
+					if (pregunta.id==id) {
+						console.log("Edison no te olvides de conectar esto al backend")
+					}
+				})
+			})
+			
+		},
+		nuevoCapitulo: function(event){
+			var nombreCapitulo = $('#nombreCapitulo').val();
+			var idCapitulo = nombreCapitulo.replace(/\s+/g, '');
+			var hrefCapitulo = '#' + idCapitulo;
+			//console.log(nombreCapitulo)
+			//console.log(idCapitulo)
+			//console.log(hrefCapitulo)
+			var capitulo = {
+				nombre: nombreCapitulo,
+				id:  idCapitulo,
+				href: hrefCapitulo,
+				preguntas: []
+			}
+			console.log(capitulo)
+			this.capitulos.push(capitulo)
+		},
+		crearModalEliminarPregunta: function(id){
+			var self = this;
+			var preguntaId = id;
+			//Primero hay que eliminar el modal-content. Sino cada vez que abran el modal se añadirá un p más
+			$('#modalEliminarPreguntaContent').empty();
+			//Ahora si añadir las cosas
+			var modalContentH4 = $('<h4/>').addClass('center-align').text('Eliminar');
+			var modalContentP = $('<p/>').text('Seguro que desea eliminar la pregunta: ' + preguntaId)
+			modalContentP.addClass('center-align')
+			$('#modalEliminarPreguntaContent').append(modalContentH4, modalContentP);
+			//Lo mismo con el footer
+			$('#modalEliminarPreguntaFooter').empty();
+			var btnEliminar = $('<a/>').attr({
+				'href': '#!',
+				'class': 'modal-action modal-close waves-effect waves-green btn-flat'
+			});			
+			btnEliminar.text('Eliminar');
+			btnEliminar.click(function(){
+				self.eliminarPregunta(preguntaId);
+			})
+			var btnCancelar = $('<a/>').attr({
+				'href': '#!',
+				'class': 'modal-action modal-close waves-effect waves-green btn-flat'
+			});
+			btnCancelar.text('Cancelar');
+			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
+			$('#modalEliminarPregunta').modal('open');
 		}
 	}
 });
@@ -92,3 +154,9 @@ $('#preguntas').on("click", '.btn-eliminar', function(){
 	//crearModal();
 	$('#modalEliminar').modal('open');
 })*/
+
+$('body').on("click", '#btnCapituloNuevo', function(){
+	//console.log('Esto va a funcionar carajo');
+	//console.log($(this).attr('id'))
+	$('#modalNuevoCapitulo').modal('open');
+})

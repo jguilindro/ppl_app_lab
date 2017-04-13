@@ -21,8 +21,7 @@ body{
 	padding: 2%;
 
 }
-
-#btn-small{
+.btn-small-new{
 	padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;

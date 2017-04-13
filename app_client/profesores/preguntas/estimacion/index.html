@@ -48,9 +48,10 @@
 				  	<div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
 				  		<h5>{{capitulo.nombre}}</h5>
 				  		<ul class="preguntas">
-				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id">
+				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
 				  				<a href="#">{{pregunta.titulo}}</a>
-
+				  				<a v-show="pregunta.show" href="#" class="right-align btn-eliminar" v-bind:id="pregunta.id" v-on:click="crearModalEliminarPregunta(pregunta.id)" >[Eliminar]</a>
+				  				<a v-show="pregunta.show" href="#" class="btn-editar" v-bind:id="pregunta.id">[Editar]</a>
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -62,20 +63,36 @@
 			  			<li v-for="capitulo in capitulos">
 			  				<a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
 			  			</li>
-			  			<button class="btn waves-effect waves-light" id="btn-small">Nuevo capítulo</button>
-			  		</ul>	
-			  		
+			  			<button class="btn waves-effect waves-light btn-small-new" id="btnCapituloNuevo">Nuevo capítulo</button>
+			  		</ul>				  		
 			  	</div>
 
 		  	</div>
-		  	<!-- Modal Structure -->
-			  <div id="modalEliminar" class="modal">
-			    <div class="modal-content">
+
+		  	<!-- Modal Eliminar Pregunta Structure -->
+			  <div id="modalEliminarPregunta" class="modal">
+			    <div class="modal-content" id="modalEliminarPreguntaContent">
 			      
+			    </div>
+			    <div class="modal-footer" id="modalEliminarPreguntaFooter">
+			    	
+			    </div>
+			  </div>
+
+				<!-- Modal Nuevo Capitulo Structure -->
+			  <div id="modalNuevoCapitulo" class="modal">
+			    <div class="modal-content" id="modalNuevoCapituloContent">
+			    	<h4 class="center-align">Nuevo capítulo</h4>
+			      <div class="row row-capitulo-nuevo">
+			      	<div class="input-field col s12">
+			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo">
+			      		<label for="nombreCapitulo">Nombre del capítulo</label>
+			      	</div>
+			      </div>
 			    </div>
 			    <div class="modal-footer">
 			    	
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="eliminarPregunta($event)">Eliminar</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoCapitulo($event)">Crear</a>
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>
@@ -87,7 +104,6 @@
 			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="./preguntasScript.js"></script>
-			<script src="./hoverIcons.js"></script>
 		</footer>
 	</body>
 </html>

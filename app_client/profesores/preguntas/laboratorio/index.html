@@ -48,22 +48,53 @@
 						<div v-for="laboratorio in laboratorios" class="laboratorio scrollspy section" v-bind:id="laboratorio.id">
 							<h5>{{laboratorio.nombre}}</h5>
 							<ul class="preguntas">
-								<li v-for="pregunta in laboratorio.preguntas" class="question" v-bind:id="pregunta.id">
+								<li v-for="pregunta in laboratorio.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
 									<a href="#">{{pregunta.titulo}}</a>
+									<a v-show="pregunta.show" href="#" class="right-align btn-eliminar" v-bind:id="pregunta.id" v-on:click="crearModalEliminarPregunta(pregunta.id)" >[Eliminar]</a>
+				  				<a v-show="pregunta.show" href="#" class="btn-editar" v-bind:id="pregunta.id">[Editar]</a>
 								</li>
 							</ul>
 							<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
 						</div>
 					</div>
+
 					<div class="col hide-on-small-only m3 l2">
 						<ul class="section table-of-contents">
 			  			<li v-for="laboratorio in laboratorios">
 			  				<a v-bind:href="laboratorio.href">{{laboratorio.nombre}}</a>
 			  			</li>
-			  			<button class="btn waves-effect waves-light" id="btn-small">Nuevo laboratorio</button>
+			  			<button class="btn waves-effect waves-light btn-small-new" id="btnLabNuevo">Nuevo laboratorio</button>
 			  		</ul>	
 					</div>
 				</div>
+
+				<!-- Modal Eliminar Pregunta Structure -->
+			  <div id="modalEliminarPregunta" class="modal">
+			    <div class="modal-content" id="modalEliminarPreguntaContent">			      
+			    </div>
+			    <div class="modal-footer" id="modalEliminarPreguntaFooter">			    	
+			    </div>
+			  </div>
+
+			  <!-- Modal Nuevo Laboratorio Structure -->
+			  <div id="modalNuevoLab" class="modal">
+			    <div class="modal-content" id="modalNuevoLabContent">
+			    	<h4 class="center-align">Nuevo laboratorio</h4>
+			      <div class="row row-lab-nuevo">
+			      	<div class="input-field col s12">
+			      		<input type="text" name="nombreLab" id="nombreLab">
+			      		<label for="nombreLab">Nombre del laboratorio</label>
+			      	</div>
+			      </div>
+			    </div>
+			    <div class="modal-footer">
+			    	
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoLab($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>
+
+
 			</div>
 		</main>
 		<footer>

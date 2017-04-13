@@ -42,14 +42,16 @@
 			</nav>
 		</header>
 		<main>
-			<div class="container" id="tutorial">
+			<div class="container" id="practica">
 				<div class="row">
 					<div class="col s12 m9 l10">
-						<div v-for="tutorial in tutoriales" class="tutorial scrollspy section" v-bind:id="tutorial.id">
-							<h5>{{tutorial.nombre}}</h5>
+						<div v-for="practica in practicas" class="practica scrollspy section" v-bind:id="practica.id">
+							<h5>{{practica.nombre}}</h5>
 							<ul class="preguntas">
-								<li v-for="pregunta in tutorial.preguntas" class="question" v-bind:id="pregunta.id">
+								<li v-for="pregunta in practica.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
 									<a href="#">{{pregunta.titulo}}</a>
+									<a v-show="pregunta.show" href="#" class="right-align btn-eliminar" v-bind:id="pregunta.id" v-on:click="crearModalEliminarPregunta(pregunta.id)" >[Eliminar]</a>
+				  				<a v-show="pregunta.show" href="#" class="btn-editar" v-bind:id="pregunta.id">[Editar]</a>
 								</li>
 							</ul>
 							<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -58,13 +60,42 @@
 					</div>
 					<div class="col hide-on-small-only m3 l2">
 						<ul class="section table-of-contents">
-			  			<li v-for="tutorial in tutoriales">
-			  				<a v-bind:href="tutorial.href">{{tutorial.nombre}}</a>
+			  			<li v-for="practica in practicas">
+			  				<a v-bind:href="practica.href">{{practica.nombre}}</a>
 			  			</li>
-			  			<button class="btn waves-effect waves-light" id="btn-small">Nuevo tutorial</button>
+			  			<button class="btn waves-effect waves-light btn-small-new" id="btnPracticaNueva">Nueva práctica</button>
 			  		</ul>	
 					</div>
+
 				</div>
+
+				<!-- Modal Eliminar Pregunta Structure -->
+			  <div id="modalEliminarPregunta" class="modal">
+			    <div class="modal-content" id="modalEliminarPreguntaContent">
+			      
+			    </div>
+			    <div class="modal-footer" id="modalEliminarPreguntaFooter">
+			    	
+			    </div>
+			  </div>
+
+				<!-- Modal Nueva Practica Structure -->
+			  <div id="modalNuevaPractica" class="modal">
+			    <div class="modal-content" id="modalNuevaPracticaContent">
+			    	<h4 class="center-align">Nueva práctica</h4>
+			      <div class="row row-practica-nueva">
+			      	<div class="input-field col s12">
+			      		<input type="text" name="nombrePractica" id="nombrePractica">
+			      		<label for="nombrePractica">Nombre de la práctica</label>
+			      	</div>
+			      </div>
+			    </div>
+			    <div class="modal-footer">
+			    	
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevaPractica($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>
 			</div>
 		</main>
 		<footer>

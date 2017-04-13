@@ -3,6 +3,8 @@
 	en profesores/Preguntas. - Xavier
 
 	También pudo haber sido hecho en el script de Vue, lo cual me hubiera ahorrado muchas confusiones...  - Edison
+
+	Implementé esto usando Vue, ya no se utilizará este script -Edison
 */
 
 $(".question").mouseenter(function(){
