@@ -1,90 +1,8 @@
 var laboratorio = new Vue({
 	el: '#laboratorio',
 	data: {
-		laboratorios: [
-			{
-				nombre: 'Laboratorio #1',
-				id: 'laboratorio1',
-				href: '#laboratorio1',
-				preguntas: [
-					{
-						titulo: 'Pregunta #1',
-						id: '1-1',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #2',
-						id: '1-2',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #3',
-						id: '1-3',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #4',
-						id: '1-4',
-						show: false
-					}
-				]
-			},
-			{
-				nombre: 'Laboratorio #2',
-				id: 'laboratorio2',
-				href: '#laboratorio2',
-				preguntas: [
-					{
-						titulo: 'Pregunta #1',
-						id: '2-1',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #2',
-						id: '2-2',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #3',
-						id: '2-3',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #4',
-						id: '2-4',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #5',
-						id: '2-5',
-						show: false
-					}
-				]
-			},
-			{
-				nombre: 'Laboratorio #3',
-				id: 'laboratorio3',
-				href: '#laboratorio3',
-				preguntas: [
-					{
-						titulo: 'Pregunta #1',
-						id: '3-1',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #2',
-						id: '3-2',
-						show: false
-					},
-					{
-						titulo: 'Pregunta #3',
-						id: '3-3',
-						show: false
-					}
-				]
-			},
-
-		]
+		laboratorios: [],
+		preguntas: []
 	},
 	mounted: function(){
 		$('.button-collapse').sideNav();
@@ -92,6 +10,7 @@ var laboratorio = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoLab').modal();
+		this.getPreguntas();
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -153,6 +72,91 @@ var laboratorio = new Vue({
 			btnCancelar.text('Cancelar');
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
+		},
+		getPreguntas: function(){
+			/*
+				Esta función hará lo siguiente:
+					Hará una llamada a la api de preguntas
+					Obtendrá todas las preguntas de la base de datos
+					Escogerá solamente las que son de Laboratorio
+					Las dividirá por laboratorios para poder mostrarlas al usuario
+			*/
+			var c = 0;
+			var self = this;
+			var flag = false;
+			console.log('Inicialmente self.laboratorios: ')
+			console.log(self.laboratorios)
+			//Llamada a la api			
+			this.$http.get('/api/preguntas').then(response => {
+				//success callback				
+				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
+				$.each(self.preguntas, function(index, pregunta){
+					//pregunta['show'] = true;
+					if (pregunta.tipoLeccion.toLowerCase()=='laboratorio') {
+						//Si la pregunta es de laboratorio entonces se tiene que almacenar para mostrarla al usuario
+						c++
+						console.log('Pregunta #' + c);
+						console.log(pregunta.nombre);
+						console.log(pregunta.capitulo);
+						$.each(self.laboratorios, function(index, laboratorio){
+							//Recorre el array de laboratorios del script. Si encuentra el laboratorio al que pertenece la pregunta, lo añade.
+							console.log('Se recorre self.laboratorios para ver si pertenece a alguno')
+							console.log('Revisando el laboratorio: ' + laboratorio.nombre)
+							if (laboratorio.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
+								console.log('Encontró el laboratorio dentro de self.laboratorios. Se añadirá la pregunta...')
+								laboratorio.preguntas.push(pregunta);
+								flag = true;	//Cambia la bandera indicando que encontro el capitulo
+								
+								return;
+							}else{
+								flag=false;
+							}
+						});
+						//Si no encontro el laboratorio, la bandera sigue en falso indicando que el laboratorio no existe. Entonces se crea el laboratorio y se agrega la pregunta
+						if (!flag) {
+							console.log('No se encontro el laboratorio en self.laboratorios... Se procede a crearlo')
+							self.crearLaboratorio(pregunta)
+						}
+					}
+
+				})
+				console.log("Finalmente self.laboratorios: ")
+				console.log(self.laboratorios)
+			}, response => {
+				//error callback
+				console.log(response)
+			})
+		},
+		crearLaboratorio: function(pregunta){
+			var self = this;
+			//console.log(pregunta)
+			/*
+				Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
+				Se revisará a cada pregunta el laboratorio al que pertenece
+				Si pertenece a un laboratorio que ya se encuentra en self.laboratorios entonces no entrará a esta función
+				Si no pertenece a un laboratorio que ya se encuentra en self.laboratorios entones hay que crear ese laboratorio y añadirlo al array self.laboratorios
+				Luego se añadirá la pregunta al laboratorio ya creado
+				Formato de laboratorio:
+				laboratorio = {
+					nombre: 'Laboratorio 1: Electrodinámica',
+					id: 'laboratorio1'.
+					href: '#laboratorio1',
+					preguntas: []
+				}
+			*/
+			var nombreLaboratorio = pregunta.capitulo;
+			var idLaboratorio = nombreLaboratorio.toLowerCase();
+			idLaboratorio = idLaboratorio.split(":")[0];
+			idLaboratorio - idLaboratorio.replace(/\s+/g, '');
+			var hrefLaboratorio = '#' + idLaboratorio;
+			var laboratorio = {
+				nombre: nombreLaboratorio,
+				id:  idLaboratorio,
+				href: hrefLaboratorio,
+				preguntas: []
+			}
+			laboratorio.preguntas.push(pregunta);
+			self.laboratorios.push(laboratorio);
 		}
 	}
 });

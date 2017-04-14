@@ -25,7 +25,7 @@ const PreguntaSchema = mongoose.Schema({
     'default': 'justificacion'
   },
   capitulo: {
-    type: Number
+    type: String
   },
   tiempoEstimado: {
     type: String

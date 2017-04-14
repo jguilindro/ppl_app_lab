@@ -16,12 +16,12 @@
 				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
 				  <li><a href="../estimacion">Estimación</a></li>
 				  <li><a href="../laboratorio">Laboratorio</a></li>
-				  <li><a href="../tutorial">Prácticas</a></li>
+				  <li><a href="../tutorial">Tutorial</a></li>
 				</ul>
 				<ul id="dropdownPreguntasMobile" class="dropdown-content">
 				  <li><a href="../estimacion">Estimación</a></li>
 				  <li><a href="../laboratorio">Laboratorio</a></li>
-				  <li><a href="../tutorial">Prácticas</a></li>
+				  <li><a href="../tutorial">Tutorial</a></li>
 				</ul>
 				<div class="nav-wrapper">
 					<a href="#!" class="brand-logo">Profesor</a>
@@ -48,10 +48,10 @@
 				  	<div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
 				  		<h5>{{capitulo.nombre}}</h5>
 				  		<ul class="preguntas">
-				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
-				  				<a href="#">{{pregunta.titulo}}</a>
-				  				<a v-show="pregunta.show" href="#" class="right-align btn-eliminar" v-bind:id="pregunta.id" v-on:click="crearModalEliminarPregunta(pregunta.id)" >[Eliminar]</a>
-				  				<a v-show="pregunta.show" href="#" class="btn-editar" v-bind:id="pregunta.id">[Editar]</a>
+				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
+				  				<a href="#">{{pregunta.nombre}}</a>
+				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)"><i class="material-icons tiny">delete</i></a>
+				  				<a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -66,7 +66,7 @@
 			  			<button class="btn waves-effect waves-light btn-small-new" id="btnCapituloNuevo">Nuevo capítulo</button>
 			  		</ul>				  		
 			  	</div>
-
+			  	
 		  	</div>
 
 		  	<!-- Modal Eliminar Pregunta Structure -->
@@ -102,6 +102,7 @@
 		<footer>
 			<script src="/bower_components/jquery/dist/jquery.js"></script>
 			<script src="/bower_components/vue/dist/vue.js"></script>
+			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="./preguntasScript.js"></script>
 		</footer>

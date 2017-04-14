@@ -5,73 +5,17 @@ var app = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoCapitulo').modal();
+		this.getPreguntas();
 
 	},
 
 	el: '#preguntas',
 	data: {
+		preguntas: [],
 		capitulos: [
-			{
-				nombre: 'Capitulo 1',
-				id: 'capitulo1',
-				href:'#capitulo1',
-				preguntas: [
-					{ 
-						titulo: 'pregunta #1',
-						id: '1-1',
-						show: false
-					},	{ 
-						titulo: 'pregunta #2',
-						id: '1-2',
-						show: false
-					},	{ 
-						titulo: 'pregunta #3',
-						id: '1-3',
-						show: false
-					} 
-				]
-			},
-			{
-				nombre: 'Capitulo 2',
-				id: 'capitulo2',
-				href:'#capitulo2',
-				preguntas: [
-					{ 
-						titulo: 'pregunta #1',
-						id: '2-1',
-						show: false
-					},					{ 
-						titulo: 'pregunta #2',
-						id: '2-2',
-						show: false
-					},					{ 
-						titulo: 'pregunta #3',
-						id: '2-3',
-						show: false
-					},					{ 
-						titulo: 'pregunta #4',
-						id: '2-4',
-						show: false
-					} 
-				]
-			},
-			{
-				nombre: 'Capitulo 3',
-				id: 'capitulo3',
-				href:'#capitulo3',
-				preguntas: [
-					{ 
-						titulo: 'pregunta #1',
-						id: '3-1',
-						show: false
-					},					{ 
-						titulo: 'pregunta #2',
-						id: '3-2',
-						show: false
-					} 
-				]
-			},
-		]
+			
+		],
+		aux: true
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -133,27 +77,94 @@ var app = new Vue({
 			btnCancelar.text('Cancelar');
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
+		},
+		getPreguntas: function(){
+			/*
+				Esta función hará lo siguiente:
+					Hará una llamada a la api de preguntas
+					Obtendrá todas las preguntas de la base de datos
+					Escogerá solamente las que son de Estimación
+					Las dividirá por capítulos para poder mostrarlas al usuario
+			*/
+			var c = 0;
+			var self = this;
+			var flag = false;
+			console.log('Inicialmente self.capitulos: ')
+			console.log(self.capitulos)
+			//Llamada a la api			
+			this.$http.get('/api/preguntas').then(response => {
+				//success callback				
+				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
+				$.each(self.preguntas, function(index, pregunta){
+					pregunta['show'] = true;
+					if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
+						//Si la pregunta es de estimacion entonces se tiene que almacenar para mostrarla al usuario
+						c++
+						console.log('Pregunta #' + c);
+						console.log(pregunta.nombre);
+						console.log(pregunta.capitulo);
+						$.each(self.capitulos, function(index, capitulo){
+							//Recorre el array de capitulos del script. Si encuentra el capitulo al que pertenece la pregunta, lo añade.
+							console.log('Se recorre self.capitulos para ver si pertenece a alguno')
+							console.log('Revisando el capitulo: ' + capitulo.nombre)
+							if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
+								console.log('Encontró el capítulo dentro de self.capitulos. Se añadirá la pregunta...')
+								capitulo.preguntas.push(pregunta);
+								flag = true;	//Cambia la bandera indicando que encontro el capitulo
+								
+								return;
+							}else{
+								flag=false;
+							}
+						});
+						//Si no encontro el capitulo, la bandera sigue en falso indicando que el capitulo no existe. Entonces se crea el capitulo y se agrega la pregunta
+						if (!flag) {
+							console.log('No se encontro el capitulo en self.capitulos... Se procede a crearlo')
+							self.crearCapitulo(pregunta)
+						}
+					}
+
+				})
+				console.log("Finalmente self.capitulos: ")
+				console.log(self.capitulos)
+			}, response => {
+				//error callback
+				console.log(response)
+			})
+		},
+		crearCapitulo: function(pregunta){
+			var self = this;
+			//console.log(pregunta)
+			/*
+				Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
+				Se revisará a cada pregunta el capítulo al que pertenece
+				Si pertenece a un capítulo que ya se encuentra en self.capitulos entonces no entrará a esta función
+				Si no pertenece a un capítulo que ya se encuentra en self.capitulos entones hay que crear ese capítulo y añadirlo al array self.capitulos
+				Luego se añadirá la pregunta al capítulo ya creado
+				Formato de capitulo:
+				capitulo = {
+					nombre: 'Capítulo 1: Electrodinámica',
+					id: 'capitulo1'.
+					href: '#capitulo1',
+					preguntas: []
+				}
+			*/
+			var nombreCapitulo = pregunta.capitulo;
+			var idCapitulo = nombreCapitulo.toLowerCase();
+			idCapitulo = idCapitulo.split(":")[0];
+			idCapitulo - idCapitulo.replace(/\s+/g, '');
+			var hrefCapitulo = '#' + idCapitulo;
+			var capitulo = {
+				nombre: nombreCapitulo,
+				id:  idCapitulo,
+				href: hrefCapitulo,
+				preguntas: []
+			}
+			capitulo.preguntas.push(pregunta);
+			self.capitulos.push(capitulo);
 		}
 	}
 });
-
-/*
-function crearModal(){
-	var modal = $('<div/>').attr({
-		'id': 'modalEliminar',
-		'class': 'modal'
-	});
-	var modalContent = $('<div/>').attr({'class': 'modal-content'});
-	var modalText = $('<p/>').text('Holaaaa');
-	modalContent.append(modalText);
-	modal.append(modalContent);
-}*/
-/*
-$('#preguntas').on("click", '.btn-eliminar', function(){
-	console.log('Esto va a funcionar carajo');
-	//crearModal();
-	$('#modalEliminar').modal('open');
-})*/
 
 $('body').on("click", '#btnCapituloNuevo', function(){
 	//console.log('Esto va a funcionar carajo');

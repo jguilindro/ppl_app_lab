@@ -43,7 +43,9 @@ require('./app_api/routes/realtime.router')(io)
 //vistas
 app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
 app.use('/profesores/grupos', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
+
 app.use('/profesores/preguntas/estimacion', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
+app.use('/profesores/preguntas/estimacion/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 app.use('/profesores/preguntas/tutorial', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
 app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));

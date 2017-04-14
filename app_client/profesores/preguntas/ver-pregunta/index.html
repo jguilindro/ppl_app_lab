@@ -4,13 +4,13 @@
 		<title>Profesor</title>
 		<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
-  	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
+  	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
   	<link href="/css/summernote.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
+  	<link rel="stylesheet" type="text/css" href="./verPreguntaStyles.css">
 	</head>
 	<body>
 		<main>
-			<div class="container" id="preguntaNueva">
+			<div class="container" id="pregunta">
 				<h1 class="text-center">Nueva pregunta</h1>
 				<p class="text-center">Creada por: </p>
 				<form>
@@ -41,7 +41,7 @@
 	        		<label for="tipo-leccion">Tipo de lección: </label>
 	        		  <select class="form-control" id="tipo-leccion" v-model="pregunta.tipoLeccion">
 							    <option value="" disabled selected></option>
-									<option value='Estimación'>Estimación</option>
+									<option value='estimación'>estimación</option>
 						      <option value='Tutorial'>Tutorial</option>
 						      <option value='Laboratorio'>Laboratorio</option>
 							  </select>
@@ -69,44 +69,31 @@
 						</div>
 					</div>
 					<!--Tiempos estimados-->
-					<div class="row row-tiempo-puntaje">
+					<div class="row row-tiempos-estimados">
 						<div class="col-xs-6">
 							<label for="tiempo-estimado">Tiempo estimado:</label>
 							<input type="number" name="tiempo-estimado" id="tiempo-estimado" v-model="pregunta.tiempoEstimado" class="form-control">
 						</div>
 						<div class="col-xs-6">
-							<label for="puntaje">Puntaje: </label>
-							<input type="number" name="puntaje" id="puntaje" v-model="pregunta.puntaje" class="form-control">
+							<label for="tiempo-bandera">Tiempo bandera naranja: </label>
+							<input type="number" name="tiempo-bandera" id="tiempo-bandera" v-model="pregunta.tiempoBandera" class="form-control">
 						</div>
 					</div>
 						<div class="form-group botones">
-							<button type="button" class="btn btn-primary btn-md pull-right" @click="crearPregunta">Crear</button>
-							<button type="button" class="btn btn-danger btn-md pull-left" @click="cancelar">Cancelar</button>
+							<button type="button" class="btn btn-primary btn-md pull-right">Crear</button>
+							<button type="button" class="btn btn-danger btn-md pull-left">Cancelar</button>
 						</div>
 				</form>
 
-				<!-- Modal -->
-			  <div class="modal fade" id="myModal" role="dialog">
-			    <div class="modal-dialog modal-sm">
-			      <div class="modal-content">
-			        <div class="modal-body">
-			          <p class="text-center">Pregunta creada correctamente</p>
-			        </div>
-			        <div class="modal-footer text-center">
-			          <button type="button" class="btn btn-default" data-dismiss="modal" @click="ok">Close</button>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
 			</div>	
 		</main>
 		<footer>
-			<script src="https://unpkg.com/vue"></script>
+			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-			<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+			<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 			<script src="/js/summernote.js"></script>
-			<script src="./nuevaPreguntaScript.js"></script>
+			<script src="./verPreguntaScript.js"></script>
 		</footer>
 	</body>
 </html>

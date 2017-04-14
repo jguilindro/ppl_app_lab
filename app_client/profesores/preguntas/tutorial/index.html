@@ -16,12 +16,12 @@
 				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
 				  <li><a href="../estimacion">Estimación</a></li>
 				  <li><a href="../laboratorio">Laboratorio</a></li>
-				  <li><a href="../tutorial">Prácticas</a></li>
+				  <li><a href="../tutorial">Tutorial</a></li>
 				</ul>
 				<ul id="dropdownPreguntasMobile" class="dropdown-content">
 				  <li><a href="../estimacion">Estimación</a></li>
 				  <li><a href="../laboratorio">Laboratorio</a></li>
-				  <li><a href="../tutorial">Prácticas</a></li>
+				  <li><a href="../tutorial">Tutorial</a></li>
 				</ul>
 				<div class="nav-wrapper">
 					<a href="#!" class="brand-logo">Profesor</a>
@@ -42,16 +42,16 @@
 			</nav>
 		</header>
 		<main>
-			<div class="container" id="practica">
+			<div class="container" id="tutorial">
 				<div class="row">
 					<div class="col s12 m9 l10">
-						<div v-for="practica in practicas" class="practica scrollspy section" v-bind:id="practica.id">
-							<h5>{{practica.nombre}}</h5>
+						<div v-for="tutorial in tutoriales" class="tutorial scrollspy section" v-bind:id="tutorial._id">
+							<h5>{{tutorial.nombre}}</h5>
 							<ul class="preguntas">
-								<li v-for="pregunta in practica.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
-									<a href="#">{{pregunta.titulo}}</a>
-									<a v-show="pregunta.show" href="#" class="right-align btn-eliminar" v-bind:id="pregunta.id" v-on:click="crearModalEliminarPregunta(pregunta.id)" >[Eliminar]</a>
-				  				<a v-show="pregunta.show" href="#" class="btn-editar" v-bind:id="pregunta.id">[Editar]</a>
+								<li v-for="pregunta in tutorial.preguntas" class="question" v-bind:id="pregunta._id">
+									<a href="#">{{pregunta.nombre}}</a>
+									<a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)" ><i class="material-icons tiny">delete</i></a>
+				  				<a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
 								</li>
 							</ul>
 							<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
@@ -60,10 +60,10 @@
 					</div>
 					<div class="col hide-on-small-only m3 l2">
 						<ul class="section table-of-contents">
-			  			<li v-for="practica in practicas">
-			  				<a v-bind:href="practica.href">{{practica.nombre}}</a>
+			  			<li v-for="tutorial in tutoriales">
+			  				<a v-bind:href="tutorial.href">{{tutorial.nombre}}</a>
 			  			</li>
-			  			<button class="btn waves-effect waves-light btn-small-new" id="btnPracticaNueva">Nueva práctica</button>
+			  			<button class="btn waves-effect waves-light btn-small-new" id="btnPracticaNueva">Nuevo tutorial</button>
 			  		</ul>	
 					</div>
 

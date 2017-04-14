@@ -15,17 +15,33 @@ var app = new Vue({
 			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
 			tipoLeccion: '',	// Lección, tutorial o laboratorio
 			tiempoEstimado: 0,
-			tiempoBandera: 0,	// Tiempo en que la bandera cambiará de color para el Real Time
+			//tiempoBandera: 0,	// Tiempo en que la bandera cambiará de color para el Real Time
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
 			capitulo: '',		//Se llena solo si tipoLeccion=='leccion'
 			tutorial: '',		//Se llena solo si tipoLeccion=='tutorial'
 			laboratorio: '',	//Se llena solo si tipoLeccion=='Laboratorio'
-			puntaje: 0
+			puntaje: 2
 
 		}
 	},
 	methods: {
 		cancelar: function(){
+			window.location.href = '/profesores/preguntas/estimacion'
+		},
+		crearPregunta: function(){
+			console.log(this.pregunta);
+			var url = 'http://localhost:5000/api/preguntas';
+			/*this.$http.post(url, {pregunta: this.pregunta}).then(response => {
+				//success callback
+				console.log(response)
+			}, response => {
+				//error callback
+				console.log(response)
+			})*/
+			$('#myModal').modal()
+
+		},
+		ok: function(){
 			window.location.href = '/profesores/preguntas/estimacion'
 		}
 	}
