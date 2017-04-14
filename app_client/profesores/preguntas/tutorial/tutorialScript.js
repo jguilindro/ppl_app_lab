@@ -18,15 +18,17 @@ var practica = new Vue({
 
 		},
 		eliminarPregunta: function(id){
-			var self = this;
-			var idPregunta = id;
-			$.each(self.tutoriales, function(index, tutorial){
-				$.each(tutorial.preguntas, function(j, pregunta){
-					if (pregunta.id==id) {
-						console.log("Edison no te olvides de conectar esto al backend")
-					}
-				})
-			})
+			var url = '/api/preguntas/' + id;
+			this.$http.delete(url).then(response => {
+				console.log(response)
+				//ELIMINAR LA PREGUNTA DE SELF.CAPITULOS
+				self.tutoriales = [];
+				self.preguntas = [];
+				this.getPreguntas();
+			}, response => {
+				//error callback
+				console.log(response)
+			});
 			
 		},
 		nuevaPractica: function(event){

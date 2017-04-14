@@ -18,15 +18,17 @@ var laboratorio = new Vue({
 
 		},
 		eliminarPregunta: function(id){
-			var self = this;
-			var idPregunta = id;
-			$.each(self.laboratorios, function(index, lab){
-				$.each(lab.preguntas, function(j, pregunta){
-					if (pregunta.id==id) {
-						console.log("Edison no te olvides de conectar esto al backend")
-					}
-				})
-			})
+			var url = '/api/preguntas/' + id;
+			this.$http.delete(url).then(response => {
+				console.log(response)
+				//ELIMINAR LA PREGUNTA DE SELF.CAPITULOS
+				self.laboratorios = [];
+				self.preguntas = [];
+				this.getPreguntas();
+			}, response => {
+				//error callback
+				console.log(response)
+			});
 			
 		},
 		nuevoLab: function(event){

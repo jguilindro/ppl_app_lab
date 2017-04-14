@@ -14,24 +14,28 @@ var app = new Vue({
 		preguntas: [],
 		capitulos: [
 			
-		],
-		aux: true
+		]
 	},
 	methods: {
 		nuevaPregunta: function(){
-			window.location.href = '/profesores/preguntas/nueva-pregunta'
+
+			//window.location.href = '/profesores/preguntas/nueva-pregunta'
 
 		},
 		eliminarPregunta: function(id){
 			var self = this;
-			var idPregunta = id;
-			$.each(self.capitulos, function(index, capitulo){
-				$.each(capitulo.preguntas, function(j, pregunta){
-					if (pregunta.id==id) {
-						console.log("Edison no te olvides de conectar esto al backend")
-					}
-				})
-			})
+
+			var url = '/api/preguntas/' + id;
+			this.$http.delete(url).then(response => {
+				console.log(response)
+				//ELIMINAR LA PREGUNTA DE SELF.CAPITULOS
+				self.capitulos = [];
+				self.preguntas = []	;
+				this.getPreguntas();			
+			}, response => {
+				//error callback
+				console.log(response)
+			});
 			
 		},
 		nuevoCapitulo: function(event){
@@ -69,6 +73,7 @@ var app = new Vue({
 			btnEliminar.text('Eliminar');
 			btnEliminar.click(function(){
 				self.eliminarPregunta(preguntaId);
+
 			})
 			var btnCancelar = $('<a/>').attr({
 				'href': '#!',
