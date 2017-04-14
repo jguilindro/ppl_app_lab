@@ -55,6 +55,9 @@ var app = new Vue({
       })
     },
     obtenerTodosEstudiantes: function() {
+      if (this.grupos.length == 0) {
+        this.nuevoGrupo()
+      }
       let cont = 0
       this.paralelos.forEach(paralelo => {
         if (paralelo._id == this.paralelo_seleccionado) {
@@ -116,8 +119,16 @@ var app = new Vue({
       })
     },
     nuevoGrupo() {
-      var nombre_grupo = $('#grupo-nombre').val()
-      $('#grupo-nombre').val('');
+      var ultimo_grupo = []
+      // var nombre_grupo = $('#grupo-nombre').val()
+      // $('#grupo-nombre').val('');
+      if (this.grupos != 0) {
+        ultimo_grupo = this.grupos[this.grupos.length - 1].nombre.split(' ')
+        console.log(ultimo_grupo)
+        nombre_grupo = `Grupo ${parseInt(ultimo_grupo[1]) + 1}`
+      } else {
+        nombre_grupo = `Grupo 1`
+      }
       this.$http.post(`/api/grupos`,{nombre: nombre_grupo}).then( res => {
         if (res.body.estado) {
           let nuevo_paralelo = res.body.datos
@@ -187,6 +198,11 @@ var app = new Vue({
       contador_global: 0
 	},
   watch: {
+    grupos: function(val) {
+      if (this.grupos[this.grupos.length - 1])
+        if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 )
+          this.nuevoGrupo()
+    }
   }
 });
 app.profesorLogeado()
@@ -246,3 +262,15 @@ function obtenerParaleloEscogido(element) {
   app.paralelo_seleccionado = element[element.selectedIndex].id
   app.obtenerTodosParalelosProfesor()
 }
+
+window.onbeforeunload = function () {
+    var grupo  = app.grupos[app.grupos.length - 1]
+    $.ajax({
+      method: 'DELETE',
+      url: `/api/paralelos/${app.paralelo_seleccionado}/grupos/${grupo._id}`
+    })
+    $.ajax({
+      method: 'DELETE',
+      url: `/api/grupos/${grupo._id}`
+    })
+};

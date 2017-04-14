@@ -9,15 +9,15 @@ const ParaleloSchema = new mongoose.Schema({
   nombre: {
     type: String
   },
-  dandoLeccion: {  // <= para ver si un estudiante puede dar leccion y verificar que cursos estan dando leccion DOCUMENTACION
+  dandoLeccion: {
     type: Boolean,
 		'default': false
   },
-  leccion: { // <= saber que leccion esta dando el curso, setear a null cuando termine la leccion  DOCUMENTACION
+  leccion: {
     type: String,
     ref: 'Leccion'
   },
-  cantidadEstudiantes: {
+  limiteEstudiantes: {
     type: Number
   },
   profesor: {

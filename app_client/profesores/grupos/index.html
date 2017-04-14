@@ -26,8 +26,8 @@
 				<div class="col-md-12 col-md-offset-4">
 					<div class="form-inline">
 						<div class="form-group center-block">
-							<input type="text" id="grupo-nombre" class="form-control pull-left bigger" placeholder="nombre del grupo..." v-on:keyup.enter="nuevoGrupo()">
-							<button v-on:click="nuevoGrupo()" type="button" class="btn btn-default pull-right">nuevo grupo</button>
+							<!-- <input type="text" id="grupo-nombre" class="form-control pull-left bigger" placeholder="nombre del grupo..." v-on:keyup.enter="nuevoGrupo()">
+							<button v-on:click="nuevoGrupo()" type="button" class="btn btn-default pull-right">nuevo grupo</button> -->
 						</div>
 					</div>
 				</div>
@@ -53,10 +53,10 @@
 			<section>
 				<div v-for="grupo in grupos" >
 					<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-					{{grupo.nombre}} 
-						<button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
+					{{grupo.nombre}}
+						<!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
 							<span class="glyphicon glyphicon-remove icono"></span>
-						</button>
+						</button> -->
 						<div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
 							<span class="estudiante-nombre col-sm-8">{{estudiante.correo}}</span>
 							<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="cruz">

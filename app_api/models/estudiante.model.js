@@ -32,7 +32,7 @@ const EstudianteSchema = mongoose.Schema({
 		type: String,
     ref: 'Grupo'
 	},
-  dandoLeccion: {  // DOCUMENTACION
+  dandoLeccion: {
     type: Boolean,
     'default': false
   },
@@ -41,16 +41,16 @@ const EstudianteSchema = mongoose.Schema({
 			type: String,
 			ref: 'Leccion'
 		},
-		calificado: { // Si el estudiante es el que el profesor escoge a ser calificado por el grupo
+		calificado: {
 			type: Boolean
 		},
 		calificacion: {
 			type: Number
 		},
-    autorizado: { // si puede dar la leccion y sive cuando recarge la pagina tiene que comprobarse este boolean <= DOCUMENTACION
+    autorizado: {
       type: Boolean
     },
-    terminado: { // si la leccion ha sido terminada, esto permitira que no pueda acceder a la leccion luego de terminarla <= DOCUMENTACION
+    terminado: {
       type: Boolean
     }
 	}]
