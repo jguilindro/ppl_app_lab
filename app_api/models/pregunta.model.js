@@ -58,7 +58,7 @@ PreguntaSchema.methods.crearPregunta = function(callback) {
 }
 
 PreguntaSchema.statics.actualizarPregunta = function(id_pregunta, actualizar, callback) {
-  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, tiempoEstimado: actualizar.tiempoEstimado, tiempoMinimo: actualizar.tiempoMinimo, puntaje: actualizar.puntaje}},callback);
+  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, tiempoEstimado: actualizar.tiempoEstimado, tiempoMinimo: actualizar.tiempoMinimo, puntaje: actualizar.puntaje, descripcion: actualizar.descripcion}},callback);
 }
 
 PreguntaSchema.statics.eliminarPregunta = function(id_pregunta, callback) {
