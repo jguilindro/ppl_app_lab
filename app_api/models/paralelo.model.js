@@ -44,7 +44,8 @@ const ParaleloSchema = new mongoose.Schema({
 }, {timestamps: true, versionKey: false, collection: 'paralelos'});
 
 ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
-  this.find({}).populate({path: 'profesor estudiantes grupos'}).exec(callback);
+  //this.find({}).populate({path: 'estudiantes grupos'}).exec(callback);
+  this.find({}, callback)
 }
 
 ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
