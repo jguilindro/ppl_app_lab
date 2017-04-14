@@ -25,6 +25,13 @@ const ParaleloSchema = new mongoose.Schema({
     ref: 'Profesor',
     'default': ''
   },
+  horario: { // DOCUMENTACION
+    type: String,
+  },
+  diasClase: { // DOCUMENTACION
+    type: [String],
+    enum: ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']
+  },
   estudiantes: [{
     type: String,
     ref: 'Estudiante'

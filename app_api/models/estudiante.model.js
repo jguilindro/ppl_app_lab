@@ -15,6 +15,10 @@ const EstudianteSchema = mongoose.Schema({
 	apellidos: {
 		type: String
 	},
+  genero: {
+    type: String,
+    enum: ['masculino', 'femenino']
+  },
 	correo: {
 		type: String
 	},
@@ -28,6 +32,10 @@ const EstudianteSchema = mongoose.Schema({
 		type: String,
     ref: 'Grupo'
 	},
+  dandoLeccion: {  // DOCUMENTACION
+    type: Boolean,
+    'default': false
+  },
 	lecciones: [{
 		leccion: {
 			type: String,
@@ -74,6 +82,15 @@ EstudianteSchema.statics.obtenerEstudiante = function(id_estudiante, callback) {
 
 EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante, callback) {
   this.findOne({correo: correo_estudiante}, callback)
+}
+
+// Realtime
+EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,callback) {
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}},callback)
+}
+
+EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante,callback) {
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}},callback)
 }
 
 module.exports = mongoose.model('Estudiante', EstudianteSchema)

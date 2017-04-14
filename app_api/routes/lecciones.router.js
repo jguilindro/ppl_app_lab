@@ -7,4 +7,6 @@ router.post('/', LeccionController.crearLeccion);
 router.put('/:id_leccion', LeccionController.actualizarLeccion);
 router.delete('/:id_leccion', LeccionController.eliminarLeccion);
 router.post('/tomar/:id_leccion', LeccionController.tomarLeccion); // <= DOCUMENTACION
+router.post('/:id_paralelo/estudiantes', LeccionController.habilitarEstudiantesCursoParaLeccion) // DOCUMENTACION
+
 module.exports = router;

@@ -22,8 +22,7 @@ const ProfesorSchema = mongoose.Schema({
     type: String,
     ref: 'Pregunta'
   }]
-});
-//,{timestamps: true, versionKey: false, collection: 'profesores'}
+},{timestamps: true, versionKey: false, collection: 'profesores'});
 
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
   this.model('Profesor').find({}, callback);

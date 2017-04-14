@@ -21,6 +21,8 @@ const crearParalelo = (req, res) => {
   let paralelo = new ParaleloModel({
     nombre: req.body.nombre,
     limiteEstudiantes: req.body.limiteEstudiantes,
+    horario: req.body.horario,
+    diasClase: req.body.diasClase
   })
   paralelo.crearParalelo((err, doc) => {
 	  if (err) return respuesta.serverError(res);

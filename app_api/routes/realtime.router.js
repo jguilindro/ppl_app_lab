@@ -68,7 +68,6 @@ function realtime(io) {
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
   })
-  console.log(tomando_leccion)
   tomando_leccion.on('hola', function(data) {
     console.log(data)
   })

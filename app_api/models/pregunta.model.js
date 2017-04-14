@@ -33,6 +33,9 @@ const PreguntaSchema = mongoose.Schema({
   tiempoMinimo: {
     type: String
   },
+  descripcion: {
+    type: String
+  },
   puntaje: {
     type: Number
   }
