@@ -44,56 +44,51 @@
     </header>
     
     <h1>Crear un nueva leccion</h1>
-    <div id="app">
-      <p>{{leccion_nueva}}</p>
-      <form >
-        <div class="form-group">
-          <label for="nombre">nombre</label>
-          <input v-model="leccion_nueva.nombre" class="form-control" type="text" name="nombre" placeholder="nombre leccion">
-        </div>
-        <div class="form-group">
-          <label for="tiempoEstimado">tiempo estimado</label>
-          <input v-model="leccion_nueva.tiempoEstimado" type="number" step="5" min="5" value="5"/>minutos
-        </div>
-        <div class="form-group">
-          <label for="tipo">tipo</label>
-          <select v-model="leccion_nueva.tipo" class="" name="">
-            <option value="leccion">estimacion</option>
-            <option value="tutorial">tutorial</option>
-            <option value="experimento">experimento</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="fechaInicio">fecha inicio</label>
-          <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
-        </div>
-        <div class="form-group">
-          <label for="Puntaje">Puntaje</label>
-          <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
-        </div>
-        <button type="button" v-on:click="crearLeccion()">send</button>
-      </form>
-      <div>
-        <div v-for="pregunta in preguntas">
-          <p>{{pregunta.nombre}}</p><input type="checkbox" onclick="preguntaSeleccionada(this)" v-bind:id="pregunta._id">
-        </div>
+  <div id="app">
+    <p>{{leccion_nueva}}</p>
+    <form >
+      <div class="form-group">
+        <label for="nombre">nombre</label>
+        <input v-model="leccion_nueva.nombre" class="form-control" type="text" name="nombre" placeholder="nombre leccion">
       </div>
-    </div>
-    
-    <main>
-        <div class="container" id="preguntas">
+      <div class="form-group">
+        <label for="tiempoEstimado">tiempo estimado</label>
+        <input v-model="leccion_nueva.tiempoEstimado" type="number" step="5" min="5" value="5"/>minutos
+      </div>
+      <div class="form-group">
+        <label for="tipo">tipo</label>
+        <select v-model="leccion_nueva.tipo" class="" name="">
+          <option value="leccion">estimacion</option>
+          <option value="tutorial">tutorial</option>
+          <option value="experimento">experimento</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fechaInicio">fecha inicio</label>
+        <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
+      </div>
+      <div class="form-group">
+        <label for="Puntaje">Puntaje</label>
+        <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
+      </div>
+      <button type="button" v-on:click="crearLeccion()">send</button>
+    </form>
+        <main>
+          <div class="container">
           <div class="row">
             <div class="col s12 m9 l10">
               <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
                 <h5>{{capitulo.nombre}}</h5>
                 <ul class="preguntas">
-                  <li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
-                    <a href="#">{{pregunta.nombre}}</a>
-                    <a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)"><i class="material-icons tiny">delete</i></a>
-                    <a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
+                  <li v-for="pregunta in capitulo.preguntas" class="question">
+                  <p>
+                    <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
+                    <label v-bind:for="pregunta._id">
+                      {{pregunta.nombre}}
+                    </label>
+                  </p>
                   </li>
                 </ul>
-                <a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
               </div>
             </div>
 
@@ -107,7 +102,18 @@
             
           </div>
         </div>
-    </main>
+        </main>
+   <!--
+    <div>
+      <div v-for="pregunta in preguntas">
+        <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)">
+        <label v-bind:for="pregunta._id">
+          <p>{{pregunta.nombre}}</p>
+        </label>
+      </div>
+    </div>
+    -->
+  </div>
     <footer>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>
@@ -116,7 +122,6 @@
       
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="./app.leccion.js"></script>
-      <script src="./verPreguntaScript.js"></script>
       
       <script src="/js/summernote.js"></script>
     </footer>
