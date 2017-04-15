@@ -52,10 +52,6 @@
         <input v-model="leccion_nueva.nombre" class="form-control" type="text" name="nombre" placeholder="nombre leccion">
       </div>
       <div class="form-group">
-        <label for="tiempoEstimado">tiempo estimado</label>
-        <input v-model="leccion_nueva.tiempoEstimado" type="number" step="5" min="5" value="5"/>minutos
-      </div>
-      <div class="form-group">
         <label for="tipo">tipo</label>
         <select v-model="leccion_nueva.tipo" class="" name="">
           <option value="leccion">estimacion</option>
@@ -71,7 +67,6 @@
         <label for="Puntaje">Puntaje</label>
         <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
       </div>
-      <button type="button" v-on:click="crearLeccion()">send</button>
     </form>
         <main>
           <div class="container">
@@ -99,10 +94,26 @@
                 </li>
               </ul>             
             </div>
-            
           </div>
         </div>
+        <hr class="medium">
         </main>
+        <h2>Resumen</h2>
+        <p>Nombre: {{leccion_nueva.nombre}}</p>
+        <p>Tiempo total estimado: {{preguntas_escogidas.tiempoTotal}} minutos</p>
+        <!-- Preguntas Seleccionadas-->
+        <div class="asd">
+          <ul class="preguntas">
+            <h2>Preguntas escogidas</h2>
+            <li v-for="pregunta in preguntas_escogidas.preguntas">
+              <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked>
+                <label v-bind:for="pregunta._id">
+                  <span>{{pregunta.nombre}}</span> <span>{{pregunta.tiempoEstimado}}</span>
+                </label>
+            </li>
+          </ul>
+          <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>         
+        </div>
   </div>
     <footer>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
