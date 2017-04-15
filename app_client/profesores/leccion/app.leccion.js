@@ -43,7 +43,7 @@ var App = new Vue({
       var flag = false;
       console.log('Inicialmente self.capitulos: ')
       console.log(self.capitulos)
-      //Llamada a la api      
+      //Llamada a la api       
       this.$http.get('/api/preguntas').then(response => {
         //success callback        
         self.preguntas = response.body.datos;   //Se almacenarán temporalmente todas las preguntas de la base de datos
@@ -118,7 +118,10 @@ var App = new Vue({
   }
 })
 function preguntaSeleccionada(_element) {
-  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)
+  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)(
+    $('/api/preguntas/HJEkyFCal', function(data){
+      console.log(data)
+    }))
   if (!existe) {
     App.leccion_nueva.preguntas.push(_element.id)
   } else {
