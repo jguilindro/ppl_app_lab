@@ -12,42 +12,39 @@
 </head>
 <body>
   <header>
-      <nav>
-        <!-- Dropdown Structure -->
-        <ul id="dropdownPreguntasDesktop" class="dropdown-content">
-          <li><a href="../estimacion">Estimación</a></li>
-          <li><a href="../laboratorio">Laboratorio</a></li>
-          <li><a href="../tutorial">Prácticas</a></li>
-        </ul>
-        <ul id="dropdownPreguntasMobile" class="dropdown-content">
-          <li><a href="../estimacion">Estimación</a></li>
-          <li><a href="../laboratorio">Laboratorio</a></li>
-          <li><a href="../tutorial">Prácticas</a></li>
-        </ul>
-        <div class="nav-wrapper">
-          <a href="#!" class="brand-logo">Profesor</a>
-          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-          <ul class="right hide-on-med-and-down">
-            <li><a href="#">Lecciones</a></li>
-            <li><a href="../../grupos">Grupos</a></li>
-            <!--Dropdown button-->
-            <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-          </ul>
-          <ul class="side-nav" id="mobile-demo">
-            <li><a href="#">Lecciones</a></li>
-            <li><a href="../../grupos">Grupos</a></li>
-            <!--Dropdown button-->
-            <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+  <nav>
+    <!-- Dropdown Structure -->
+    <ul id="dropdownPreguntasDesktop" class="dropdown-content">
+      <li><a href="../estimacion">Estimación</a></li>
+      <li><a href="../laboratorio">Laboratorio</a></li>
+      <li><a href="../tutorial">Tutorial</a></li>
+    </ul>
+    <ul id="dropdownPreguntasMobile" class="dropdown-content">
+      <li><a href="../estimacion">Estimación</a></li>
+      <li><a href="../laboratorio">Laboratorio</a></li>
+      <li><a href="../tutorial">Tutorial</a></li>
+    </ul>
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo">Profesor</a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Lecciones</a></li>
+        <li><a href="../../grupos">Grupos</a></li>
+        <!--Dropdown button-->
+        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a href="#">Lecciones</a></li>
+        <li><a href="../../grupos">Grupos</a></li>
+        <!--Dropdown button-->
+        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+    </div>
+  </nav>
+  </header>
   <h1>Crear un nueva leccion</h1>
   <div id="app">
-    <p>{{leccion_nueva}}</p
-
-
-    >
+    <p>{{leccion_nueva}}</p>
     <form >
       <div class="form-group">
         <label for="nombre">nombre</label>
@@ -81,22 +78,20 @@
       </div>
     </div>
   </div>
-    <main>
+<main>
       <div class="container" id="preguntas">
         <div class="row">
           <div class="col s12 m9 l10">
             <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
               <h5>{{capitulo.nombre}}</h5>
               <ul class="preguntas">
-                <li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta.id" v-on:mouseenter="pregunta.show=!pregunta.show" v-on:mouseleave="pregunta.show=!pregunta.show">
-                  <p>
-                    <input type="checkbox" class="filled-in" id="filled-in-box" checked="checked" />
-                    <label>
-                      <a href="#">{{pregunta.titulo}}</a> <a href=""> {{pregunta.tiempoEstimado}} </a>
-                    </label>
-                  </p>
+                <li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
+                  <a href="#">{{pregunta.nombre}}</a>
+                  <a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)"><i class="material-icons tiny">delete</i></a>
+                  <a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
                 </li>
               </ul>
+              <a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
             </div>
           </div>
 
@@ -107,16 +102,19 @@
               </li>
             </ul>             
           </div>
-
+          
         </div>
       </div>
     </main>
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="/bower_components/vue/dist/vue.min.js"></script>
-  <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
-  <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-  <script src="./app.leccion.js"></script>
-  <script src="/bower_components/materialize/bin/materialize.js"></script>
-  <script src="./preguntasScript.js"></script>
+  <footer>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/vue/dist/vue.min.js"></script>
+    <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
+    <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+    <script src="./app.leccion.js"></script>
+    <script src="./verPreguntaScript.js"></script>
+    <script src="/bower_components/materialize/bin/materialize.js"></script>
+    <script src="/js/summernote.js"></script>
+  </footer>
 </body>
 </html>
