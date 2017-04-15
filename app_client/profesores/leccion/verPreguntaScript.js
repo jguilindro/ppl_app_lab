@@ -11,13 +11,10 @@ var app = new Vue({
 	el: '#preguntas',
 	data: {
 		preguntas: [],
-		capitulos: [
-			
-		],
-		aux: true
+		capitulos: []
 	},
-methods: {
-			getPreguntas: function(){
+	methods: {
+		getPreguntas: function(){
 			/*
 				Esta función hará lo siguiente:
 					Hará una llamada a la api de preguntas
@@ -45,7 +42,7 @@ methods: {
 						$.each(self.capitulos, function(index, capitulo){
 							//Recorre el array de capitulos del script. Si encuentra el capitulo al que pertenece la pregunta, lo añade.
 							console.log('Se recorre self.capitulos para ver si pertenece a alguno')
-								console.log('Revisando el capitulo: ' + capitulo.nombre)
+							console.log('Revisando el capitulo: ' + capitulo.nombre)
 							if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
 								console.log('Encontró el capítulo dentro de self.capitulos. Se añadirá la pregunta...')
 								capitulo.preguntas.push(pregunta);
@@ -70,5 +67,37 @@ methods: {
 				//error callback
 				console.log(response)
 			})
-		};
-}
+		},
+		crearCapitulo: function(pregunta){
+			var self = this;
+			//console.log(pregunta)
+			/*
+				Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
+				Se revisará a cada pregunta el capítulo al que pertenece
+				Si pertenece a un capítulo que ya se encuentra en self.capitulos entonces no entrará a esta función
+				Si no pertenece a un capítulo que ya se encuentra en self.capitulos entones hay que crear ese capítulo y añadirlo al array self.capitulos
+				Luego se añadirá la pregunta al capítulo ya creado
+				Formato de capitulo:
+				capitulo = {
+					nombre: 'Capítulo 1: Electrodinámica',
+					id: 'capitulo1'.
+					href: '#capitulo1',
+					preguntas: []
+				}
+			*/
+			var nombreCapitulo = pregunta.capitulo;
+			var idCapitulo = nombreCapitulo.toLowerCase();
+			idCapitulo = idCapitulo.split(":")[0];
+			idCapitulo - idCapitulo.replace(/\s+/g, '');
+			var hrefCapitulo = '#' + idCapitulo;
+			var capitulo = {
+				nombre: nombreCapitulo,
+				id:  idCapitulo,
+				href: hrefCapitulo,
+				preguntas: []
+			}
+			capitulo.preguntas.push(pregunta);
+			self.capitulos.push(capitulo);
+		}
+	}
+});
