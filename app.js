@@ -11,7 +11,7 @@ MongoStore    = require('connect-mongo')(session);
 
 // base de datos mongoose
 require('./app_api/models/db')
-require('./app_api/utils/telegram_bot')
+//require('./app_api/utils/telegram_bot')
 
 var app = express();
 var server = require('http').Server(app);
