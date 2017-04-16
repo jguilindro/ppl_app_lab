@@ -1,7 +1,6 @@
 const cookie = require('cookie'),
 cookieParser = require('cookie-parser'),
 MongoClient  = require('mongodb').MongoClient,
-prettyjson   = require('prettyjson'),
 moment       = require('moment'),
 tz           = require('moment-timezone'),
 co           = require('co');
