@@ -16,7 +16,7 @@ const PreguntaSchema = mongoose.Schema({
   },
   tipoLeccion: {  // <= DOCUMENTACION
     type: String,
-    enum: ['estimacion', 'tutorial', 'experimento'],
+    enum: ['estimacion', 'tutorial', 'laboratorio'],
     'default': 'estimacion'
   },
   tipoPregunta: {
@@ -27,10 +27,13 @@ const PreguntaSchema = mongoose.Schema({
   capitulo: {
     type: String
   },
-  tiempoEstimado: {
+  tutorial: {
     type: String
   },
-  tiempoMinimo: {
+  laboratorio: {
+    type: String
+  },
+  tiempoEstimado: {
     type: String
   },
   descripcion: {

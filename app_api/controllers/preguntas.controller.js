@@ -32,11 +32,14 @@ const crearPregunta = (req, res) => {
     tipoLeccion: req.body.tipoLeccion,
     tipoPregunta: req.body.tipoPregunta,
     capitulo: req.body.capitulo,
+    tutorial: req.body.tutorial,
+    laboratorio: req.body.laboratorio,
     tiempoEstimado: req.body.tiempoEstimado,
-    tiempoMinimo: req.body.tiempoEstimado,
+    // tiempoMinimo: req.body.tiempoEstimado,   //Ya no hay tiempo minimo
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   })
+  console.log(pregunta)
   pregunta.crearPregunta((err, doc) => {
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res, pregunta);

@@ -17,7 +17,7 @@
 					<!--Titulo-->
 					<div class="form-group">
 						<label for="titulo">Título</label>
-						<input type="text" name="titulo" id="titulo" class="form-control" v-model="pregunta.titulo">
+						<input type="text" name="titulo" id="titulo" class="form-control" v-model="preguntaObtenida.nombre">
 					</div>
 					<!--Descripcion-->
 	        <div id="summernote">
@@ -30,39 +30,39 @@
 	        <div class="row row-tipos-pregunta">
 	        	<div class="col-xs-6">
 	        		<label for="tipo-pregunta">Tipo de pregunta: </label>
-	        		  <select class="form-control" id="tipo-pregunta" v-model="pregunta.tipoPregunta">
+	        		  <select class="form-control" id="tipo-pregunta" v-model="preguntaObtenida.tipoPregunta">
 							    <option value="" disabled selected></option>
 									<option value="Opcion multiple">Opcion multiple</option>
 									<option value="V/F">V/F</option>
-									<option value="Justificacion">Justificacion</option>
+									<option value="justificacion">Justificacion</option>
 							  </select>
 	        	</div>
 	        	<div class="col-xs-6">
 	        		<label for="tipo-leccion">Tipo de lección: </label>
-	        		  <select class="form-control" id="tipo-leccion" v-model="pregunta.tipoLeccion">
+	        		  <select class="form-control" id="tipo-leccion" v-model="preguntaObtenida.tipoLeccion">
 							    <option value="" disabled selected></option>
-									<option value='estimación'>estimación</option>
-						      <option value='Tutorial'>Tutorial</option>
-						      <option value='Laboratorio'>Laboratorio</option>
+									<option value='estimacion'>estimación</option>
+						      <option value='tutorial'>Tutorial</option>
+						      <option value='laboratorio'>Laboratorio</option>
 							  </select>
 	        	</div>
 	        </div>					
 					<!--Capitulo-->
-					<div v-if="pregunta.tipoLeccion=='Estimación'" class="row">
+					<div v-if="preguntaObtenida.tipoLeccion=='estimacion'" class="row">
 						<div class="col-xs-12" id="col-capitulo">
 							<label for="capitulo">Capítulo</label>
-							<input type="text" name="capitulo" id="capitulo" v-model="pregunta.capitulo" class="form-control">
+							<input type="text" name="capitulo" id="capitulo" v-model="preguntaObtenida.capitulo" class="form-control">
 						</div>
 					</div>
 					<!--Tutorial-->
-					<div v-else-if="pregunta.tipoLeccion=='Tutorial'" class="row">
+					<div v-else-if="preguntaObtenida.tipoLeccion=='tutorial'" class="row">
 						<div class="col-xs-12" id="col-tutorial">
 							<label for="tutorial">Tutorial</label>
 							<input type="text" name="tutorial" id="tutorial" v-model="pregunta.tutorial" class="form-control">
 						</div>
 					</div>
 					<!--Laboratorio-->
-					<div v-else-if="pregunta.tipoLeccion=='Laboratorio'" class="row">
+					<div v-else-if="preguntaObtenida.tipoLeccion=='laboratorio'" class="row">
 						<div class="col-xs-12" id="col-laboratorio">
 							<label for="laboratorio">Laboratorio</label>
 							<input type="text" name="laboratorio" id="laboratorio" v-model="pregunta.laboratorio" class="form-control">
@@ -72,15 +72,15 @@
 					<div class="row row-tiempos-estimados">
 						<div class="col-xs-6">
 							<label for="tiempo-estimado">Tiempo estimado:</label>
-							<input type="number" name="tiempo-estimado" id="tiempo-estimado" v-model="pregunta.tiempoEstimado" class="form-control">
+							<input type="number" name="tiempo-estimado" id="tiempo-estimado" v-model="preguntaObtenida.tiempoEstimado" class="form-control">
 						</div>
 						<div class="col-xs-6">
 							<label for="tiempo-bandera">Tiempo bandera naranja: </label>
-							<input type="number" name="tiempo-bandera" id="tiempo-bandera" v-model="pregunta.tiempoBandera" class="form-control">
+							<input type="number" name="tiempo-bandera" id="tiempo-bandera" v-model="preguntaObtenida.tiempoBandera" class="form-control">
 						</div>
 					</div>
 						<div class="form-group botones">
-							<button type="button" class="btn btn-primary btn-md pull-right">Crear</button>
+							<button type="button" class="btn btn-primary btn-md pull-right">Aceptar</button>
 							<button type="button" class="btn btn-danger btn-md pull-left">Cancelar</button>
 						</div>
 				</form>

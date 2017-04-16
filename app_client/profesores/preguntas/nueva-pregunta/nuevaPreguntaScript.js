@@ -8,12 +8,12 @@ var app = new Vue({
 	el: '#preguntaNueva',
 	data: {
 		pregunta: {
-			titulo: '',
+			nombre: '',
 			descripcion: '',
-			imagenes: [],	//Es opcional añadir imágenes a la pregunta
-			tipoPregunta: '',	//V/F, justifiacación u opción múltiple
-			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
-			tipoLeccion: '',	// Lección, tutorial o laboratorio
+			//imagenes: [],	//Es opcional añadir imágenes a la pregunta
+			tipoPregunta: '',	//v_f, justifiacación u opcion
+			//opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
+			tipoLeccion: '',	// estimacion, tutorial o laboratorio
 			tiempoEstimado: 0,
 			//tiempoBandera: 0,	// Tiempo en que la bandera cambiará de color para el Real Time
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
@@ -29,15 +29,16 @@ var app = new Vue({
 			window.location.href = '/profesores/preguntas/estimacion'
 		},
 		crearPregunta: function(){
+			var self = this;
 			console.log(this.pregunta);
 			var url = 'http://localhost:5000/api/preguntas';
-			/*this.$http.post(url, {pregunta: this.pregunta}).then(response => {
+			this.$http.post(url, self.pregunta).then(response => {
 				//success callback
 				console.log(response)
 			}, response => {
 				//error callback
 				console.log(response)
-			})*/
+			});
 			$('#myModal').modal()
 
 		},

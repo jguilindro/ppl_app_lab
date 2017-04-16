@@ -34,7 +34,8 @@ var pregunta = new Vue({
 				this.preguntaObtenida = response.body.datos
 				console.log('Pregunta obtenida: ')
 				console.log(this.preguntaObtenida)
-				console.log(this.preguntaObtenida.tipoLeccion)
+				console.log(this.preguntaObtenida.tipoLeccion);
+				//$('#tipo-pregunta').val(this.preguntaObtenida.tipoPregunta)
 			}, response => {
 				//error callback
 				console.log(response)
