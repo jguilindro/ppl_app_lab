@@ -1,21 +1,21 @@
 var pregunta = new Vue({
 	el: '#pregunta',
 	created: function(){
-		$('#summernote').summernote();
+		//$('#summernote').summernote();
 		this.getPregunta();
 
 	},
 	data: {
 		preguntaObtenida: {},
 		pregunta: {
-			titulo: '',
+			nombre: '',
 			descripcion: '',
-			imagenes: [],	//Es opcional añadir imágenes a la pregunta
+			//imagenes: [],	//Es opcional añadir imágenes a la pregunta
 			tipoPregunta: '',	//V/F, justifiacación u opción múltiple
-			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
+			//opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
 			tipoLeccion: '',	// Lección, tutorial o laboratorio
 			tiempoEstimado: 0,
-			tiempoBandera: 0,	// Tiempo en que la bandera cambiará de color para el Real Time
+			//tiempoBandera: 0,	// Tiempo en que la bandera cambiará de color para el Real Time
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
 			capitulo: '',		//Se llena solo si tipoLeccion=='leccion'
 			tutorial: '',		//Se llena solo si tipoLeccion=='tutorial'
@@ -32,6 +32,7 @@ var pregunta = new Vue({
 			this.$http.get(urlApi).then(response => {
 				//success callback
 				this.preguntaObtenida = response.body.datos
+				//$('#summernote').summernote('code', this.preguntaObtenida.descripcion)
 				console.log('Pregunta obtenida: ')
 				console.log(this.preguntaObtenida)
 				console.log(this.preguntaObtenida.tipoLeccion);
