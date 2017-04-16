@@ -20,7 +20,10 @@ var App = new Vue({
     },
     preguntas: [],
     capitulos: [],
-    tiempos: []
+    preguntas_escogidas: {
+      preguntas: [],
+      tiempoTotal: 0
+    }
   },
   methods: {
     crearLeccion() {
@@ -118,15 +121,36 @@ var App = new Vue({
   }
 })
 function preguntaSeleccionada(_element) {
-  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)(
-    $('/api/preguntas/HJEkyFCal', function(data){
-      console.log(data)
-    }))
+  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)
   if (!existe) {
     App.leccion_nueva.preguntas.push(_element.id)
   } else {
     App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta)
   }
+  //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
+  var selected = App.preguntas.filter(filtrarPreguntas);
+  App.preguntas_escogidas.preguntas = selected;
+  App.preguntas_escogidas.tiempoTotal = sumarTiempos(selected);
+  /*
+  url = '/api/preguntas/' + _element.id;
+        $.get(url, function(data){
+          console.log(data);
+      });
+  */
+}
+function filtrarPreguntas(elemento){
+  for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
+      if(elemento._id == App.leccion_nueva.preguntas[x])
+        return true;
+      }
+  return false;
+}
+function sumarTiempos(objeto_preguntas){
+  var acumulador = 0;
+  for (var x = 0; x < objeto_preguntas.length; x++){
+      acumulador = acumulador + parseInt(objeto_preguntas[x].tiempoEstimado);
+  }
+  return acumulador;
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
