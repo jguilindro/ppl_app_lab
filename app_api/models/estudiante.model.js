@@ -3,6 +3,8 @@ const shortid = require('shortid');
 var jwt             = require('jsonwebtoken');
 var config = require('../config/main')
 mongoose.Promise = global.Promise;
+var moment = require('moment')
+var tz = require('moment-timezone')
 const EstudianteSchema = mongoose.Schema({
 	_id: {
 		type: String,
@@ -93,9 +95,11 @@ EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante
 
 // Realtime
 EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,id_leccion,callback) {
+  let fecha = moment();
+  let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
   let leccion_nueva = {
     leccion: id_leccion,
-    fechaEmpezado: new Date,
+    fechaEmpezado: current_time_guayaquil,
   }
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
 }

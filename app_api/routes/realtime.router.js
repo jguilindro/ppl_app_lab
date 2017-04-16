@@ -1,21 +1,27 @@
-var cookie = require('cookie');
-var cookieParser = require('cookie-parser')
-var MongoClient = require('mongodb').MongoClient
-var url = require('../utils/change_database').session();
-var EstudianteModel = require('../models/estudiante.model');
-var ProfesorModel = require('../models/profesor.model');
-var ParaleloModel = require('../models/paralelo.model')
-var GrupoModel = require('../models/grupo.model');
-var prettyjson = require('prettyjson');
-var co = require('co');
+const cookie = require('cookie'),
+cookieParser = require('cookie-parser'),
+MongoClient  = require('mongodb').MongoClient,
+moment       = require('moment'),
+tz           = require('moment-timezone'),
+co           = require('co');
+
+require("moment-duration-format");
+
+const url       = require('../utils/change_database').session(),
+EstudianteModel = require('../models/estudiante.model'),
+ProfesorModel   = require('../models/profesor.model'),
+ParaleloModel   = require('../models/paralelo.model'),
+GrupoModel      = require('../models/grupo.model'),
+LeccionModel    = require('../models/leccion.model');
+
+var hora = moment();
+var current_time_guayaquil = moment(hora.tz('America/Guayaquil').format());
 
 function realtime(io) {
-
   // verificar profesor, crear leccion canal y canal de cada grupo
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
     var cook = obtenerCook(socket.request.headers.cookie)
-
     const obtenerProfesor = function(_usuario_cookie) {
       return new Promise((resolve,reject) => {
         ProfesorModel.obtenerProfesorPorCorreo(_usuario_cookie.correo, (err, profesor) => {
@@ -23,6 +29,7 @@ function realtime(io) {
           if (!profesor) return resolve(false)
           obtenerParaleloProfesor(profesor._id,paralelo => {
             paralelo.grupos.forEach(grupo => {
+              socket.join(paralelo._id)
               socket.join(grupo._id) // crear los room para cada grupo
             })
           })
@@ -46,9 +53,24 @@ function realtime(io) {
       const cookie = yield mongoSession(cook)
       const profesor = yield obtenerProfesor(cookie)
       const estudiante = yield obtenerEstudiante(cookie)
+      if (profesor) {
+        const paralelo = yield obtenerParaleloProfesorPromise(profesor)
+        const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
+        const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
+        var tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
+        setInterval(function() {
+          let tiempo_rest = tiempo_maximo.subtract(1, 's')
+          var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
+          // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
+          leccion.in(paralelo._id).emit('tiempo restante', duration)
+        }, 1000)
+      }
       if (estudiante) {
         const grupo = yield obtenerGrupo(estudiante)
+        const paralelo = yield obtenerParaleloDeEstudiante(estudiante)
         socket.join(grupo._id)
+        socket.join(paralelo._id)
+        socket.to(grupo._id).emit('mi grupo', estudiante);
         socket.estudiante = estudiante
         socket.broadcast.emit('estudiante conectado', estudiante)
       }
@@ -58,7 +80,9 @@ function realtime(io) {
     socket.on('disconnect', function() {
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
-
+    socket.on('parar leccion', function() {
+      // boton para terminar la leccion
+    })
   })
 }
 
@@ -103,11 +127,40 @@ function obtenerCook(cookie_socket) {
 }
 
 
-function obtenerParaleloProfesor(_id_profesor, callback) {
-  ParaleloModel.obtenerParalelosProfesor(_id_profesor, (err, paralelos) => {
-    let para = paralelos.find(paralelo => paralelo.dandoLeccion)
-    if (err) return callback(null)
-    callback(para)
+function obtenerParaleloProfesorPromise(_profesor) {
+  return new Promise((resolve, reject) => {
+    ParaleloModel.obtenerParalelosProfesor(_profesor._id, (err, paralelos) => {
+      let para = paralelos.find(paralelo => paralelo.dandoLeccion)
+      if (err) return reject(null)
+      return resolve(para)
+    })
+  })
+}
+
+function obtenerParaleloProfesor(_id, callback) {
+    ParaleloModel.obtenerParalelosProfesor(_id, (err, paralelos) => {
+      let para = paralelos.find(paralelo => paralelo.dandoLeccion)
+      if (err) return callback(null)
+      callback(para)
+    })
+}
+
+function obtenerParaleloDeEstudiante(estudiante, callback) {
+  return new Promise((resolve, reject) => {
+    ParaleloModel.obtenerParaleloDeEstudiante(estudiante._id, (err, paralelo) => {
+      if (err) return reject(null)
+      return resolve(paralelo)
+    })
+  })
+}
+
+function obtenerLeccion(_id_leccion) {
+  return new Promise((resolve, reject) => {
+    LeccionModel.obtenerLeccion(_id_leccion, (err, leccion) => {
+      if (err) return reject(err)
+      if (!leccion) return reject('no se encontro leccion')
+      return resolve(leccion)
+    })
   })
 }
 
