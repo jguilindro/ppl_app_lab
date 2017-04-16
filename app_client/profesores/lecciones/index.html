@@ -13,6 +13,7 @@
     <p>{{paralelo_escogido}}</p>
     <div>
       <select onchange="escogerParalelo(this)">
+        <option value="sda"></option>
         <option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
       </select>
     </div>

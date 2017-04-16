@@ -49,7 +49,8 @@ ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
 }
 
 ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
-  this.find({_id: id_paralelo}, callback);
+  //this.find({_id: id_paralelo}, callback);
+  this.findOne({_id: id_paralelo}).populate({path: 'grupos'}).exec(callback);
 }
 
 ParaleloSchema.methods.crearParalelo = function(callback) {
@@ -62,10 +63,6 @@ ParaleloSchema.statics.actualizarParalelo = function(id_paralelo, actualizar, ca
 
 ParaleloSchema.statics.eliminarParalelo = function(id_paralelo, callback) {
   this.findOneAndRemove({_id: id_paralelo}, callback);
-}
-
-ParaleloSchema.statics.obtenerParalelo = function(id_paralelo, callback) {
-  this.findOne({_id: id_paralelo}, callback)
 }
 
 /*

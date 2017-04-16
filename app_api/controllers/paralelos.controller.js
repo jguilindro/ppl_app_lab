@@ -10,6 +10,7 @@ const obtenerTodosParalelos = (req, res) => {
 
 // TODO: si el paralelo no existe
 const obtenerParalelo = (req, res) => {
+  console.log('obtener paralelo');
   ParaleloModel.obtenerParalelo(req.params.id_paralelo, (err, paralelo) => {
     if (err) return respuesta.serverError(res);
     return respuesta.ok(res, paralelo)
@@ -130,6 +131,7 @@ Lecciones
 
 const dandoLeccion = (req, res) => {
 	const { id_paralelo, id_leccion } = req.params
+  console.log(req.params)
 	ParaleloModel.dandoLeccion(id_paralelo, id_leccion, (err, paralelo) => {
 		if (err) return respuesta.serverError(res);
 		return respuesta.okActualizado(res);

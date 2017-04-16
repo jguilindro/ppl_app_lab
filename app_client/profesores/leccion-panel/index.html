@@ -8,11 +8,20 @@
 </head>
 <body>
   <div id="app">
-    <p>{{leccion}}</p>
+    <p v-show="false">{{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
+    <!-- <p>{{grupos}}</p> -->
+    <!-- <p>{{paralelo}}</p> -->
     <h3>El codigo de la leccion {{leccion.codigo}}</h3>
-    <h1>Ver los estudiantes conectados</h1>
-    <div v-for="estudiante in estudiantes_conectados">
+    <!-- <div v-for="estudiante in estudiantes_conectados">
       <p>{{estudiante.nombres}}</p>
+    </div> -->
+    <div v-for="grupo in paralelo.grupos">
+      <div style="">
+        <p>{{grupo.nombre}} {{grupo._id}}</p>
+        <div v-for="estudiante in grupo.estudiantes_conectados">
+          <p>{{estudiante.nombres}} {{estudiante.correo}}</p>
+        </div>
+      </div>
     </div>
   </div>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>

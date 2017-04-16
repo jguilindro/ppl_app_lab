@@ -53,15 +53,28 @@ app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(pat
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
 app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
 
-app.use('/profesores/leccion-panel/:id_leccion' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
+app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
-app.use('/estudiantes/tomar-leccion', authEstudiante ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+app.use('/estudiantes/tomar-leccion', authEstudiante , function(req, res, next) {
+  var EstudianteController = require('./app_api/controllers/estudiantes.controller')
+  EstudianteController.verificarPuedeDarLeccion(req.session._id, (match) => {
+    console.log(match);
+    if (match) {
+      res.redirect('/estudiantes/leccion')
+    } else {
+      next()
+    }
+  })
+} ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
-  if (!req.app.get('habilitado_para_leccion')) {
-    res.redirect('/estudiantes/tomar-leccion')
-  } else {
-    next()
-  }
+  var EstudianteController = require('./app_api/controllers/estudiantes.controller')
+  EstudianteController.verificarPuedeDarLeccion(req.session._id, (match) => {
+    if (!match) {
+      res.redirect('/estudiantes/tomar-leccion')
+    } else {
+      next()
+    }
+  })
 } ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app_api

@@ -11,17 +11,18 @@ var App = new Vue({
       this.$http.post(`/api/lecciones/tomar/${id_leccion}`).then(res => {
         if (res.body.estado) {
           // tomando leccion en paralelo
+          // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
           this.$http.post(`/api/paralelos/${this.paralelo_escogido}/leccion/${id_leccion}`).
             then(res => {
               if (res.body.estado) {
-                window.location.href = `/profesores/leccion-panel/${id_leccion}`
+                window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${this.paralelo_escogido}`
               }
             })
         }
       })
     },
     tomandoLeccion(id_leccion) {
-      window.location.href = `/profesores/leccion-panel/${id_leccion}`
+      window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${this.paralelo_escogido}`
     },
     misParalelos() {
       this.$http.get(`/api/paralelos/profesores/mis_paralelos`).then(response => {

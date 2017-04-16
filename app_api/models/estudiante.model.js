@@ -42,13 +42,20 @@ const EstudianteSchema = mongoose.Schema({
 			ref: 'Leccion'
 		},
 		calificado: {
-			type: Boolean
+			type: Boolean,
+      'default': false
 		},
 		calificacion: {
 			type: Number
 		},
-    autorizado: {
+    autorizado: { // DOCUMENTACION ,BORRAR
       type: Boolean
+    },
+    fechaEmpezado: {
+      type: Date
+    },
+    fechaTerminado: {
+      type: Date
     },
     terminado: {
       type: Boolean
@@ -85,8 +92,20 @@ EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante
 }
 
 // Realtime
-EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}},callback)
+EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,id_leccion,callback) {
+  let leccion_nueva = {
+    leccion: id_leccion,
+    fechaEmpezado: new Date,
+  }
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
+}
+
+EstudianteSchema.statics.anadirEstudianteLeccion = function(id_estudiante, id_leccion,callback) {
+  this.update({_id: id_estudiante}, {$set: {'lecciones': id_leccion}},{ safe: true, upsert: true },callback)
+}
+
+EstudianteSchema.statics.veficarPuedeDarLeccion = function(id_estudiante, callback) {
+  this.findOne({_id:id_estudiante}, callback)
 }
 
 EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante,callback) {

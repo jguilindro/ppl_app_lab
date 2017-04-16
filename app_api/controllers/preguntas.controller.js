@@ -23,6 +23,7 @@ const obtenerPreguntasPorCreador = (req, res) => {
   })
 }
 
+
 const crearPregunta = (req, res) => {
   // con quien este loggeado anadir el id creador
   let pregunta = new PreguntaModel({

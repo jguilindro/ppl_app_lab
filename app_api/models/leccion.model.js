@@ -35,6 +35,9 @@ const LeccionSchema = mongoose.Schema({
     type: Date,
     unique: false
   },
+  fechaInicioTomada: { // DOCUMENTACION
+    type: Date
+  },
   codigo: {
     type: String,
     unique: true
@@ -80,7 +83,7 @@ LeccionSchema.statics.eliminarLeccion = function(id_leccion, callback) {
 
 // realtime
 LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
-  this.update({_id: id_leccion}, {$set: {estado: 'tomando'}}, callback)
+  this.update({_id: id_leccion}, {$set: {estado: 'tomando', fechaInicioTomada: new Date}}, callback)
 }
 
 LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {

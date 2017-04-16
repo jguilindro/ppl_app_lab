@@ -40,16 +40,25 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
       return respuesta.serverError(res)
     }else if (paralelo.dandoLeccion) {
       LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
-        console.log(leccion)
         if (err) return respuesta.serverError(res);
         if (!leccion) return respuesta.noOK(res);
-        req.app.set('habilitado_para_leccion', true)
-        return respuesta.okAnadido(res);
-        // TODO: setearle al estudiante la leccion y que la esta dando
+        EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
+            if (err) return respuesta.serverError(res)
+            req.app.set('habilitado_para_leccion', true)
+            return respuesta.okAnadido(res);
+          // TODO: setearle al estudiante la leccion y que la esta dando
+        })
       })
     } else {
       return respuesta.noOK(res); // DOCUMENTACION
     }
+  })
+}
+
+const verificarPuedeDarLeccion = (id_estudiante, callback) => {
+  EstudianteModel.veficarPuedeDarLeccion(id_estudiante, (err, estudiante) => {
+    if (err) return callback(err)
+    return callback(estudiante.dandoLeccion)
   })
 }
 
@@ -59,4 +68,5 @@ module.exports = {
 	obtenerEstudiante,
   // leccion
   verificarEstudiantePuedeDarLeccion,
+  verificarPuedeDarLeccion,
 }
