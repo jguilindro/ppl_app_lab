@@ -35,7 +35,8 @@ var App = new Vue({
     grupos: [
     ],
     leccion: {},
-    paralelo: []
+    paralelo: [],
+    tiempo: ''
   }
 })
 
@@ -69,6 +70,9 @@ leccion.on('estudiante desconectado', function(_estudiante) {
   App.estudiantes_conectados = App.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
 })
 
+leccion.on('tiempo restante', function(tiempo) {
+  App.tiempo = tiempo
+})
 
 
 
