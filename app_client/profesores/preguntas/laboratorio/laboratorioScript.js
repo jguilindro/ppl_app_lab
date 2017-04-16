@@ -99,15 +99,15 @@ var laboratorio = new Vue({
 						c++
 						console.log('Pregunta #' + c);
 						console.log(pregunta.nombre);
-						console.log(pregunta.capitulo);
+						console.log(pregunta.laboratorio);
 						$.each(self.laboratorios, function(index, laboratorio){
 							//Recorre el array de laboratorios del script. Si encuentra el laboratorio al que pertenece la pregunta, lo añade.
 							console.log('Se recorre self.laboratorios para ver si pertenece a alguno')
 							console.log('Revisando el laboratorio: ' + laboratorio.nombre)
-							if (laboratorio.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
+							if (laboratorio.nombre.toLowerCase()==pregunta.laboratorio.toLowerCase()) {
 								console.log('Encontró el laboratorio dentro de self.laboratorios. Se añadirá la pregunta...')
 								laboratorio.preguntas.push(pregunta);
-								flag = true;	//Cambia la bandera indicando que encontro el capitulo
+								flag = true;	//Cambia la bandera indicando que encontro el laboratorio
 								
 								return;
 							}else{
@@ -146,7 +146,7 @@ var laboratorio = new Vue({
 					preguntas: []
 				}
 			*/
-			var nombreLaboratorio = pregunta.capitulo;
+			var nombreLaboratorio = pregunta.laboratorio;
 			var idLaboratorio = nombreLaboratorio.toLowerCase();
 			idLaboratorio = idLaboratorio.split(":")[0];
 			idLaboratorio - idLaboratorio.replace(/\s+/g, '');

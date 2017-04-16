@@ -99,12 +99,12 @@ var practica = new Vue({
 						c++
 						console.log('Pregunta #' + c);
 						console.log(pregunta.nombre);
-						console.log(pregunta.capitulo);
+						console.log(pregunta.tutorial);
 						$.each(self.tutoriales, function(index, tutorial){
 							//Recorre el array de tutoriales del script. Si encuentra el tutorial al que pertenece la pregunta, lo añade.
 							console.log('Se recorre self.tutoriales para ver si pertenece a alguno')
 							console.log('Revisando el tutorial: ' + tutorial.nombre)
-							if (tutorial.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
+							if (tutorial.nombre.toLowerCase()==pregunta.tutorial.toLowerCase()) {
 								console.log('Encontró el tutorial dentro de self.laboratorios. Se añadirá la pregunta...')
 								tutorial.preguntas.push(pregunta);
 								flag = true;	//Cambia la bandera indicando que encontro el tutorial
@@ -146,7 +146,7 @@ var practica = new Vue({
 					preguntas: []
 				}
 			*/
-			var nombreTutorial = pregunta.capitulo;
+			var nombreTutorial = pregunta.tutorial;
 			var idTutorial = nombreTutorial.toLowerCase();
 			idTutorial = idTutorial.split(":")[0];
 			idTutorial - idTutorial.replace(/\s+/g, '');
