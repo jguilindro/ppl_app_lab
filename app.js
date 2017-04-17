@@ -48,7 +48,11 @@ app.use('/profesores/grupos', authProfesor, express.static(path.join(__dirname, 
 app.use('/profesores/preguntas/estimacion', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
 app.use('/profesores/preguntas/estimacion/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 app.use('/profesores/preguntas/tutorial', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
+app.use('/profesores/preguntas/tutorial/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+
 app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
+app.use('/profesores/preguntas/laboratorio/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))

@@ -50,7 +50,7 @@
 							<h5>{{laboratorio.nombre}}</h5>
 							<ul class="preguntas">
 								<li v-for="pregunta in laboratorio.preguntas" class="question" v-bind:id="pregunta._id">
-									<a href="#">{{pregunta.nombre}}</a>
+									<a v-bind:href="pregunta._id">{{pregunta.nombre}}</a>
 									<a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)" ><i class="material-icons tiny">delete</i></a>
 				  				<a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
 								</li>
