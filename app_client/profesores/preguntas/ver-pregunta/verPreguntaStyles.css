@@ -4,7 +4,7 @@
 	margin: 2% 0;
 }
 
-#row-pregunta{
+#row-pregunta, #row-editar-pregunta{
 	margin-top: 3%;
 }
 
@@ -12,6 +12,10 @@
 	padding: 0 2%;
 	opacity: 0.8;
 	border-radius: 1%;
+}
+
+.card .card-title{
+	color: black
 }
 
 #nombre{

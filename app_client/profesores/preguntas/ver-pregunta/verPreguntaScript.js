@@ -1,11 +1,15 @@
 var pregunta = new Vue({
 	el: '#pregunta',
-	created: function(){
+	mounted: function(){
+		
 		//$('#summernote').summernote();
 		this.getPregunta();
-
+		$('.button-collapse').sideNav();
+		$('.myEditor').materialnote();
+		$(".note-editor").find("button").attr("type", "button");		//No borrar. Corrige el error estupido de materialNote
 	},
 	data: {
+		aux: true,
 		preguntaObtenida: {},
 		pregunta: {
 			nombre: '',
@@ -41,6 +45,11 @@ var pregunta = new Vue({
 				//error callback
 				console.log(response)
 			})
+		},
+		mostrarEditar: function(){
+			var self = this;
+			self.aux = !self.aux;
+
 		}
 	}
 });
