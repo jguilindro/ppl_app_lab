@@ -17,3 +17,6 @@ mongodump -h ds049476.mlab.com:49476 -d ppl  -u ppl -p ppl -o <output directory>
 
 * copiar db de folder a local
 mongorestore -d ppl <input db directory>
+
+
+heroku features:enable http-session-affinity

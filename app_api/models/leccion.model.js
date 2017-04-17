@@ -89,6 +89,11 @@ LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
   this.update({_id: id_leccion}, {$set: {estado: 'tomando', fechaInicioTomada: current_time_guayaquil}}, callback)
 }
 
+LeccionSchema.statics.leccionTerminada = function(id_leccion, callback) {
+  let fecha = moment();
+  this.update({_id: id_leccion}, {$set: {estado: 'terminado'}}, callback)
+}
+
 LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {
   this.findOne({codigo: codigo_leccion}, callback)
 }

@@ -11,7 +11,7 @@ MongoStore    = require('connect-mongo')(session);
 
 // base de datos mongoose
 require('./app_api/models/db')
-require('./app_api/utils/telegram_bot')
+//require('./app_api/utils/telegram_bot')
 
 var app = express();
 var server = require('http').Server(app);
@@ -57,6 +57,7 @@ app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(pat
 
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
 app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
+app.use('/profesores/leccion/modificar/:id',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
 
 app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
