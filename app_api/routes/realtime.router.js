@@ -58,10 +58,17 @@ function realtime(io) {
         const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
         const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
         var tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
-        setInterval(function() {
+        var interval = setInterval(function() {
           let tiempo_rest = tiempo_maximo.subtract(1, 's')
           var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
+          if (!isNaN(duration)) {
+						if (parseInt(duration) == 0) {
+              clearInterval(interval);
+              leccionTerminada(paralelo, paralelo.leccion)
+							leccion.in(paralelo._id).emit('terminado leccion', true)
+						}
+					}
           leccion.in(paralelo._id).emit('tiempo restante', duration)
         }, 1000)
       }
@@ -162,6 +169,32 @@ function obtenerLeccion(_id_leccion) {
       return resolve(leccion)
     })
   })
+}
+
+function leccionTerminada(paralelo, id_leccion) {
+  LeccionModel.leccionTerminada(id_leccion, (err, res) => {
+    if (err) return console.log(err);
+    console.log('leccion terminado ' + id_leccion);
+  })
+  ParaleloModel.leccionTerminada(paralelo._id, (err, res) => {
+    if (err) return console.log(err);
+    console.log('leccion terminada ' + paralelo._id);
+  })
+  var promises = []
+  paralelo.estudiantes.forEach(estudiante => {
+    promises.push(new Promise((resolve, reject) => {
+      EstudianteModel.leccionTerminada(estudiante._id, (err, e) => {
+        if (err) return reject(err)
+        return resolve(true)
+      })
+    }))
+  })
+  Promise.all(promises).then(values => {
+    console.log('terminado leccion estudiantes');
+  }, fail => {
+    console.log(fail);
+  })
+
 }
 
 function run(generator) {

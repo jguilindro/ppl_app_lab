@@ -18,3 +18,8 @@ socket.on('mi grupo', function(data) {
 socket.on('tiempo restante', function(tiempo) {
   App.tiempo = tiempo
 })
+
+socket.on('terminado leccion', function(match) {
+  window.location.href = `/estudiantes`
+	console.log('se ha terminado la leccion')
+})

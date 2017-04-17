@@ -114,5 +114,8 @@ ParaleloSchema.statics.dandoLeccion = function(id_paralelo, id_leccion, callback
 	this.update({_id: id_paralelo}, {$set: {'leccion': id_leccion, 'dandoLeccion': true}},callback)
 }
 
+ParaleloSchema.statics.leccionTerminada = function(id_paralelo, callback) {
+	this.update({_id: id_paralelo}, {$set: {'leccion': '', 'dandoLeccion': false}},callback)
+}
 
 module.exports = mongoose.model('Paralelo', ParaleloSchema);

@@ -74,6 +74,11 @@ leccion.on('tiempo restante', function(tiempo) {
   App.tiempo = tiempo
 })
 
+leccion.on('terminado leccion', function(match) {
+  App.tiempo = 'leccion terminada'
+	console.log('se ha terminado la leccion')
+})
+
 
 
 // grupos del curso

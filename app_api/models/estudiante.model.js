@@ -116,4 +116,8 @@ EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}},callback)
 }
 
+EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}}, callback)
+}
+
 module.exports = mongoose.model('Estudiante', EstudianteSchema)
