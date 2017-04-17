@@ -15,7 +15,6 @@ GrupoModel      = require('../models/grupo.model'),
 LeccionModel    = require('../models/leccion.model');
 
 function realtime(io) {
-  // verificar profesor, crear leccion canal y canal de cada grupo
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
     var cook = obtenerCook(socket.request.headers.cookie)
@@ -53,21 +52,21 @@ function realtime(io) {
       const profesor = yield obtenerProfesor(cookie)
       const estudiante = yield obtenerEstudiante(cookie)
       if (profesor) {
-        var hora_local = moment();
-        var current_time_guayaquil = moment(hora_local.tz('America/Guayaquil').format());
+        const hora_local = moment();
+        const current_time_guayaquil = moment(hora_local.tz('America/Guayaquil').format());
         const paralelo = yield obtenerParaleloProfesorPromise(profesor)
         const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
         const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
         console.log(`fecha inicio ${inicio_leccion.format('YY/MM/DD hh:mm:ss')}`);
-        var tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
+        const tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
         console.log(`tiempo maximo ${tiempo_maximo.format('YY/MM/DD hh:mm:ss')}`);
         interval = setInterval(function() {
           let tiempo_rest = tiempo_maximo.subtract(1, 's');
           var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
-          console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
-          console.log(`tiempo restante ${duration}`);
+          // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
+          // console.log(`tiempo restante ${duration}`);
           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
-          if (!isNaN(duration)) {
+          if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
                         if (parseInt(duration) == 0) {
               clearInterval(interval);
               leccionTerminada(paralelo, paralelo.leccion)
@@ -98,13 +97,6 @@ function realtime(io) {
 }
 
 module.exports = realtime
-//console.log(prettyjson.render(io.nsps['/profesor'].adapter.rooms));
-
-// namespaces, un namespace por leccion?
-// namespaces estudiante, /codigo, /leccion
-// /codigo => data la coneccion, setear el _id, verificar cofigo correcto,
-// /leccion => operaciones de la leccion con el profesor
-// rooms, un room por cada grupo conectado
 
 function mongoSession(cook) {
   return new Promise((resolve, reject) => {
@@ -136,7 +128,6 @@ function obtenerCook(cookie_socket) {
   var cook = cookies['connect.sid'].split('.').filter((ele,index) => index == 0)[0].split(':')[1]
   return cook
 }
-
 
 function obtenerParaleloProfesorPromise(_profesor) {
   return new Promise((resolve, reject) => {
@@ -201,89 +192,14 @@ function leccionTerminada(paralelo, id_leccion) {
 
 }
 
-function run(generator) {
-  const iterator = generator()
-  const iteration = iterator.next()
-  const promise = iteration.value
-  promise.then(x => {
-    const anotherIterator = iterator.next(x)
-    const anotherPromise = anotherIterator.value
-    anotherPromise.then(y => iterator.next(y))
-  })
-}
-
-/*
-
-  // estudiantes en la pagina ingresar codigo
-  var no_codigo = io.of('/no_codigo');
-  no_codigo.on('connection', function(socket){
-    var cook = obtenerCook(socket.request.headers.cookie)
-    const obtenerEstudiante = function (_usuario_cookie) {
-      return new Promise((resolve, reject) => {
-        EstudianteModel.obtenerEstudiantePorCorreo(_usuario_cookie.correo, (err, estudiante) => {
-          if (err) return reject(err)
-          if (!estudiante) {
-            // socket.profesor = true
-            // return resolve(false)
-          }
-          socket.estudiante = estudiante;
-          socket.broadcast.emit('estudiante tratando ingresar', estudiante)
-          resolve(estudiante)
-        })
-      })
-    }
-    mongoSession(cook)
-      .then(obtenerEstudiante)
-      .then(obtenerGrupo)
-      .then(res => {
-          console.log(`${res}`)
-          socket.join(`${res._id}`);
-          io.to(`${res._id}`).emit('some event');
-        })
-      .catch(err => console.log(err))
-  });
-
-  // estudiantes conectados
-  var tomando_leccion = io.of('/tomando_leccion');
-  var estudiantes_conectados = []
-  tomando_leccion.on('connection', function(socket) {
-    var cook = obtenerCook(socket.request.headers.cookie)
-    const obtenerEstudiante = function (_usuario_cookie) {
-      return new Promise((resolve, reject) => {
-        EstudianteModel.obtenerEstudiantePorCorreo(_usuario_cookie.correo, (err, estudiante) => {
-          if (err) return reject(err)
-          if (!estudiante) {
-            socket.profesor = true
-            return resolve(false)
-          }
-          socket.estudiante = estudiante;
-          socket.broadcast.emit('estudiante conectado', estudiante)
-          resolve(estudiante)
-        })
-      })
-    }
-
-      mongoSession(cook)
-        .then(obtenerEstudiante)
-        .then(obtenerGrupo)
-        .then(res => {
-          console.log('curso')
-          socket.join(res._id) // anadir a estudiante al room de su grupo
-          console.log(`${res}`)
-        })
-        .catch(err => console.log(err))
-    socket.on('disconnect', function() {
-      socket.broadcast.emit('estudiante desconectado', socket.estudiante)
-    })
-  })
-  tomando_leccion.on('hola', function(data) {
-    console.log(data)
-  })
-  //io.to('some room').emit('some event'); , leave
-  /*
-  io.on('connection', function(socket){
-    socket.on('say to someone', function(id, msg){
-      socket.broadcast.to(id).emit('my message', msg);
-    });
-  });
-   */
+// Reemplazar por co
+// function run(generator) {
+//   const iterator = generator()
+//   const iteration = iterator.next()
+//   const promise = iteration.value
+//   promise.then(x => {
+//     const anotherIterator = iterator.next(x)
+//     const anotherPromise = anotherIterator.value
+//     anotherPromise.then(y => iterator.next(y))
+//   })
+// }
