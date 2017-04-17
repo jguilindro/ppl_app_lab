@@ -57,13 +57,14 @@ function realtime(io) {
         const paralelo = yield obtenerParaleloProfesorPromise(profesor)
         const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
         const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
-				console.log(inicio_leccion);
+				console.log(inicio_leccion.format('YY:MM:DD hh:mm:ss'));
         var tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
-				console.log(tiempo_maximo);
+				console.log(tiempo_maximo.format('YY:MM:DD hh:mm:ss'));
         var interval = setInterval(function() {
           let tiempo_rest = tiempo_maximo.subtract(1, 's');
           var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
-					console.log(tiempo_rest);
+					console.log(tiempo_rest.format('YY:MM:DD hh:mm:ss'));
+          console.log(duration);
           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
           if (!isNaN(duration)) {
 						if (parseInt(duration) == 0) {
