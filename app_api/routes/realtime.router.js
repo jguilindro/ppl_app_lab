@@ -14,9 +14,6 @@ ParaleloModel   = require('../models/paralelo.model'),
 GrupoModel      = require('../models/grupo.model'),
 LeccionModel    = require('../models/leccion.model');
 
-var hora = moment();
-var current_time_guayaquil = moment(hora.tz('America/Guayaquil').format());
-
 function realtime(io) {
   // verificar profesor, crear leccion canal y canal de cada grupo
   var leccion = io.of('/tomando_leccion');
@@ -28,13 +25,15 @@ function realtime(io) {
           if (err) return reject(err)
           if (!profesor) return resolve(false)
           obtenerParaleloProfesor(profesor._id,paralelo => {
+            if (!paralelo) return resolve(false)
+            // undefined si el paralelo no esta para dar leccion if(!paralelo)
             paralelo.grupos.forEach(grupo => {
               socket.join(paralelo._id)
               socket.join(grupo._id) // crear los room para cada grupo
             })
+            return resolve(profesor)
           })
           socket.emit('ingresado profesor', profesor)
-          return resolve(profesor)
         })
       })
     }
@@ -48,31 +47,33 @@ function realtime(io) {
         })
       })
     }
-
+    var interval
     co(function *() {
       const cookie = yield mongoSession(cook)
       const profesor = yield obtenerProfesor(cookie)
       const estudiante = yield obtenerEstudiante(cookie)
       if (profesor) {
+        var hora_local = moment();
+        var current_time_guayaquil = moment(hora_local.tz('America/Guayaquil').format());
         const paralelo = yield obtenerParaleloProfesorPromise(profesor)
         const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
         const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
-				console.log(inicio_leccion.format('YY:MM:DD hh:mm:ss'));
+        console.log(`fecha inicio ${inicio_leccion.format('YY/MM/DD hh:mm:ss')}`);
         var tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
-				console.log(tiempo_maximo.format('YY:MM:DD hh:mm:ss'));
-        var interval = setInterval(function() {
+        console.log(`tiempo maximo ${tiempo_maximo.format('YY/MM/DD hh:mm:ss')}`);
+        interval = setInterval(function() {
           let tiempo_rest = tiempo_maximo.subtract(1, 's');
           var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
-					console.log(tiempo_rest.format('YY:MM:DD hh:mm:ss'));
-          console.log(duration);
+          console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
+          console.log(`tiempo restante ${duration}`);
           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
           if (!isNaN(duration)) {
-						if (parseInt(duration) == 0) {
+                        if (parseInt(duration) == 0) {
               clearInterval(interval);
               leccionTerminada(paralelo, paralelo.leccion)
-							leccion.in(paralelo._id).emit('terminado leccion', true)
-						}
-					}
+                            leccion.in(paralelo._id).emit('terminado leccion', true)
+                        }
+                    }
           leccion.in(paralelo._id).emit('tiempo restante', duration)
         }, 1000)
       }
@@ -85,10 +86,9 @@ function realtime(io) {
         socket.estudiante = estudiante
         socket.broadcast.emit('estudiante conectado', estudiante)
       }
-    }, function(err) {
-      console.log(err);
-    })
+    }).catch(fail => console.log(fail))
     socket.on('disconnect', function() {
+      clearInterval(interval);
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
     socket.on('parar leccion', function() {
