@@ -43,101 +43,122 @@
       </nav>
     </header>
   <div id="app">
-    <!--        .::Paso 1, SETUP::.           -->
-  <div class="seccion-1 row container">
-   <h2 class="center-align">Crear un nueva leccion</h2>
-    <form>
-      <div class="form-group col s10 offset-2">
-        <label for="nombre">nombre</label>
-        <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
-      </div>
-      <!-- Arreglar el escoger el tipo de lección
-        <div class="form-group input-field col s6">
-        <label for="tipo">tipo</label>
-        <select v-model="leccion_nueva.tipo" class=" col s6" name="">
-          <option value="leccion">estimacion</option>
-          <option value="tutorial">tutorial</option>
-          <option value="experimento">experimento</option>
-        </select>
-      </div>
-      -->
-      <!-- 
-        <select onchange="escogerParalelo(this)">
-          <option value="sda"></option>
-          <option v-for="paralelo in paralelos" v-bind:id="paralelo.id">{{paralelo.nombre}}</option>
-        </select>
-      -->
-      <div class="form-group col s6">
-        <label for="fechaInicio">fecha inicio</label>
-        <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
-      </div>
-      <div class="form-group col s4">
-        <label for="Puntaje">Puntaje</label>
-        <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
-      </div>
-    </form> 
-  </div>
-
-    <!--       Paso 2, SELECTION!      -->
-        <div class="strike">
-          <span>escoger las preguntas</span>
-        </div>
-        <main>
-          <div class="container">
-          <div class="row">
-            <div class="col s12 m9 l10">
-              <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
-                <h5>{{capitulo.nombre}}</h5>
-                <ul class="preguntas">
-                  <li v-for="pregunta in capitulo.preguntas" class="question">
-                  <p>
-                    <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                    <label v-bind:for="pregunta._id">
-                      {{pregunta.nombre}}
-                    </label>
-                  </p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="col hide-on-small-only m3 l2">
-              <ul class="section table-of-contents">
-                <li v-for="capitulo in capitulos">
-                  <a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
-                </li>
-              </ul>             
-            </div>
-          </div>
-          </div>
-        </main>
-
-        <!--     Paso 3, OVERVIEW       -->
-        <div class="strike">
-          <span>Resumen</span>
-        </div>
-        <div class="container">
-        <p>Nombre: {{leccion_nueva.nombre}}</p>
-        <p>Tiempo total estimado: {{preguntas_escogidas.tiempoTotal}} minutos</p>
-
-        <!-- Preguntas Seleccionadas-->
-        <div class="preguntas-selected">
-          <ul class="preguntas">
-            <h2>Preguntas escogidas</h2>
-            <div class="collection">
-              <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
-              <li v-for="pregunta in preguntas_escogidas.preguntas">
-                <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
-                  <label v-bind:for="pregunta._id" class="maxWidth">
-                    <p class="collection-item"><span class="badge">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
-                  </label>
-              </li>
-            </div>
+    <div id="pages">
+      <div class="row">
+        <div class="col s9">
+          <ul class="tabs">
+            <li class="tab col s3"><a class="active" href="#test1">Setup</a></li>
+            <li class="tab col s3"><a href="#test2">Select</a></li>
+            <li class="tab col s3"><a href="#test4">Overview</a></li>
           </ul>
-          <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>         
         </div>
+      </div>
+      <!--        .::Paso 1, SETUP::.           -->
+      <div id="test1" class="col s12">
+        <div class="page">
+          <div class="seccion-1 row container">
+           <h2 class="center-align">Crear un nueva leccion</h2>
+            <form>
+              <div class="form-group col s10 offset-2">
+                <label for="nombre">nombre</label>
+                <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
+              </div>
+              <div class="form-group input-field offset-2 col s6">
+                <select v-model="leccion_nueva.tipo" name="tipo">
+                  <option value="leccion">estimacion</option>
+                  <option value="tutorial">tutorial</option>
+                  <option value="experimento">experimento</option>
+                </select>
+              </div>
+              
+              <!-- 
+                <select onchange="escogerParalelo(this)">
+                  <option value="sda"></option>
+                  <option v-for="paralelo in paralelos" v-bind:id="paralelo.id">{{paralelo.nombre}}</option>
+                </select>
+              -->
+              <div class="form-group col s6">
+                <label for="fechaInicio">fecha inicio</label>
+                <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
+              </div>
+              <div class="form-group col s4">
+                <label for="Puntaje">Puntaje</label>
+                <input type="text" v-model="leccion_nueva.puntaje" placeholder="puntaje">
+              </div>
+            </form> 
+          </div>
         </div>
+      </div>
+      <!--       Paso 2, SELECTION!      -->
+      <div id="test2" class="col s12">
+        <div class="page">
+          <div class="strike">
+            <span>escoger las preguntas</span>
+          </div>
+            <main>
+              <div class="container">
+                <div class="row">
+                  <div class="col s12 m9 l10">
+                    <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
+                      <h5>{{capitulo.nombre}}</h5>
+                      <ul class="preguntas">
+                        <li v-for="pregunta in capitulo.preguntas" class="question">
+                        <p>
+                          <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
+                          <label v-bind:for="pregunta._id">
+                            {{pregunta.nombre}}
+                          </label>
+                        </p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
 
+                  <div class="col hide-on-small-only m3 l2">
+                    <ul class="section table-of-contents">
+                      <li v-for="capitulo in capitulos">
+                        <a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
+                      </li>
+                    </ul>             
+                  </div>
+                </div>
+                </div>
+            </main>
+        </div>
+      </div>
+      
+
+      <!--     Paso 3, OVERVIEW       -->
+        <div id="test4" class="col s12">
+          <div class="page">
+          <div class="strike">
+            <span>Resumen</span>
+          </div>
+          <div class="container">
+          <p>Nombre: {{leccion_nueva.nombre}}</p>
+          <p>Tiempo total estimado: {{preguntas_escogidas.tiempoTotal}} minutos</p>
+
+          <!-- Preguntas Seleccionadas-->
+          <div class="preguntas-selected">
+            <ul class="preguntas">
+              <h2>Preguntas escogidas</h2>
+              <div class="collection">
+                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
+                <li v-for="pregunta in preguntas_escogidas.preguntas">
+                  <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
+                    <label v-bind:for="pregunta._id" class="maxWidth">
+                      <p class="collection-item"><span class="badge">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
+                    </label>
+                </li>
+              </div>
+            </ul>
+            <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>         
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="pagination" id="myPager"></ul>
   </div>
     <footer>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -147,7 +168,7 @@
       
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="./app.leccion.js"></script>
-      
+      <script src="./pagination.js"></script>
       <script src="/js/summernote.js"></script>
     </footer>
   </body>

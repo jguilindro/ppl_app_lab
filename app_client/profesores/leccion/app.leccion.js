@@ -7,6 +7,7 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     this.getPreguntas();
 
+    $('select').material_select();
   },
   el: '#app',
   data: {
@@ -129,15 +130,12 @@ function preguntaSeleccionada(_element) {
   }
   //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
   var selected = App.preguntas.filter(filtrarPreguntas);
+  //Por ahora, preguntas_escogidas tendrá TODA la información en cuanto a las preguntas escogidas, también habrá un total de tiempos para feedback del usuario.
   App.preguntas_escogidas.preguntas = selected;
   App.preguntas_escogidas.tiempoTotal = sumarTiempos(selected);
-  /*
-  url = '/api/preguntas/' + _element.id;
-        $.get(url, function(data){
-          console.log(data);
-      });
-  */
 }
+
+//Funcion 'Compare' para el uso de filter
 function filtrarPreguntas(elemento){
   for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
       if(elemento._id == App.leccion_nueva.preguntas[x])
@@ -145,6 +143,8 @@ function filtrarPreguntas(elemento){
       }
   return false;
 }
+//Función que suma los tiempos... ;D
+//Recibe un objeto de tipo object[M].Int, retorna un entero.
 function sumarTiempos(objeto_preguntas){
   var acumulador = 0;
   for (var x = 0; x < objeto_preguntas.length; x++){
