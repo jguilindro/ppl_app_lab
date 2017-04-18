@@ -1,16 +1,16 @@
 var pregunta = new Vue({
 	el: '#pregunta',
 	mounted: function(){
-		
-		//$('#summernote').summernote();
 		this.getPregunta();
 		$('.button-collapse').sideNav();
 		$('.myEditor').materialnote();
 		$(".note-editor").find("button").attr("type", "button");		//No borrar. Corrige el error estupido de materialNote
+		$('select').material_select();
 	},
 	data: {
 		aux: true,
 		preguntaObtenida: {},
+		preguntaEditar: {},
 		pregunta: {
 			nombre: '',
 			descripcion: '',
@@ -36,6 +36,7 @@ var pregunta = new Vue({
 			this.$http.get(urlApi).then(response => {
 				//success callback
 				this.preguntaObtenida = response.body.datos
+
 				//$('#summernote').summernote('code', this.preguntaObtenida.descripcion)
 				console.log('Pregunta obtenida: ')
 				console.log(this.preguntaObtenida)
@@ -47,13 +48,58 @@ var pregunta = new Vue({
 			})
 		},
 		mostrarEditar: function(){
+			//Hago visible la parte de editar pregunta e invisible la parte de ver pregunta
 			var self = this;
 			self.aux = !self.aux;
-
+			//Copio los valores de la pregutaObtenida en preguntaEditar que será un temporal
+			self.preguntaEditar = self.preguntaObtenida;
+			console.log(self.preguntaEditar.tipoPregunta)
+			//$('.myEditor').materialnote('code', self.preguntaEditar.descripcion)
+			$('#firstEditor').code(self.preguntaEditar.descripcion);
+			//$('#select-editar-tipo-pregunta').material_select('destroy');
+			//$('#select-editar-tipo-pregunta').material_select();
+			$('#select-editar-tipo-pregunta option:selected').val('opcion')
+			$('.lblEditar').addClass('active')
+		},
+		prueba: function(){
+			console.log($('#firstEditor').code())
+			$('select').material_select();
+			//$('#select-editar-tipo-pregunta').val(self.preguntaEditar.tipoPregunta)
+		},
+		actualizarPregunta: function(){
+			var self = this;
+			console.log('Pregunta actualizada: ');
+			console.log(self.preguntaEditar);
+			var preguntaId = window.location.href.toString().split('/')[6]
+			var url = '/api/preguntas/' + preguntaId;
+			this.$http.put(url, self.preguntaEditar).then(response => {
+				//success callback
+				console.log(response);
+				location.reload();
+			}, response => {
+				//error callback
+			});
 		}
 	}
 });
 
+
+$('#select-editar-tipo-pregunta').change(function(){ 
+	//console.log('asdfsdfsd')
+	pregunta.$data.preguntaEditar.tipoPregunta = $('#select-editar-tipo-pregunta option:selected').text();
+	console.log(pregunta.$data.preguntaEditar.tipoPregunta)
+	console.log($('#select-editar-tipo-pregunta option:selected').text())	
+	//app.set('select', $('#jurisdiction').val()); 
+	//console.log( 'Text: ' + $('#tipo-leccion option:selected').text())
+	//console.log('Antes: ' + app.$data.pregunta.tipoLeccion)
+	//app.$data.pregunta.tipoLeccion = $('#tipo-leccion option:selected').text();
+	//console.log('Despues: ' + app.$data.pregunta.tipoLeccion)
+});
+
+$('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
+ 	pregunta.$data.preguntaEditar.descripcion = contents;
+  
+})
 /*
 
 
