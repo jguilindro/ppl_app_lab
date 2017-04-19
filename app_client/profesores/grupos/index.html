@@ -68,7 +68,7 @@
 
 				<div class="col s9 offset-s3">
 				<section>
-					<div v-for="grupo in grupos" class="col s4">
+					<div v-for="grupo in grupos" class="col s4 grupin">
 						<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
 						{{grupo.nombre}}
 							<!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
