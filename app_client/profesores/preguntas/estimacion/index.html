@@ -52,7 +52,6 @@
 				  			<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
 				  				<a v-bind:href="pregunta._id">{{pregunta.nombre}}</a>
 				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)"><i class="material-icons tiny">delete</i></a>
-				  				<a href="#" class="btn-editar pull right" v-bind:id="pregunta._id"><i class="material-icons tiny">mode_edit</i></a>
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>

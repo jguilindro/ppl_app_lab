@@ -1,66 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<title>Lección</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
-	<link rel="stylesheet" href="/css/estudiantesbackground.css">
-	<link rel="stylesheet" type="text/css" href="./tomarLeccion.css">
-	<style type="text/css">
-		#codigo{
-			width: 40%;
-			font-size: 2.5em;
-			margin-top: 2%;
-			text-align: center;
-		}
-		h1, h2{
-			color:rgba(0,0,0,0.6);
-		}
-		::-webkit-input-placeholder {
-		   text-align: center;
-		}
-
-		:-moz-placeholder { /* Firefox 18- */
-		   text-align: center;
-		}
-
-		::-moz-placeholder {  /* Firefox 19+ */
-		   text-align: center;
-		}
-
-		:-ms-input-placeholder {
-		   text-align: center;
-		}
-	</style>
-</head>
-<body id="grad">
-	<div class="container" id="app">
-		<div class="center-align v-center">
-			<h1 class="center-align">Bienvenido</h1>
-			<h2>{{estudiante.nombres}}</h2>
-			<div class="form-horizontal">
-				<div class="form-group code">
-					<input v-model="codigo_leccion"class="form-control" id="codigo" placeholder="Introduce el código">
-				</div>
-				<div class="form-group">
-					<div class="col-sm col-sm-10  enter-align">
-						<button type="button" v-on:click="verificarEstudiantPuedeDarLeccion()" class="btn btn-default">Ingresar</button>
+	<head>
+		<title>Lección</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="/css/estudiantesbackground.css">
+		<link rel="stylesheet" type="text/css" href="./tomarLeccion.css">
+	</head>
+	<body id="grad">
+		<main>
+			<div class="container" id="app">
+				<section class="center-align v-center">
+					<h1 class="center-align title">Bienvenido</h1>
+					<h2>{{estudiante.nombres}}</h2>
+					<div class="form-horizontal">
+						<div class="form-group code">
+							<input v-model="codigo_leccion"class="form-control" id="codigo" placeholder="Introduce el código">
+						</div>
+						<div class="form-group">
+							<div class="col-sm col-sm-10  enter-align">
+								<button type="button" v-on:click="verificarEstudiantPuedeDarLeccion()" class="btn btn-default">Ingresar</button>
+							</div>
+						</div>
 					</div>
-				</div>
+				</section>
+				<section>
+					<br><br><br>
+					<div class="right-align">
+						<a href="/estudiantes">O tomarlo después</a>
+					</div>
+				</section>
 			</div>
-		</div>
+		</main>
 		<footer>
-			<br><br><br>
-			<div class="right-align">
-				<a href="/estudiantes">O tomarlo después</a>
-			</div>
       <script src="/bower_components/vue/dist/vue.min.js"></script>
 			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-      <script src="./app.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="./app.js"></script>
 		</footer>
-	</div>
-</body>
+	</body>
 </html>
