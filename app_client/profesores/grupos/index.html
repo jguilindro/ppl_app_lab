@@ -2,79 +2,96 @@
 <html>
 	<head>
 		<title>Profesor</title>
-		<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+	    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
 	</head>
 	<body>
-		<nav class="navbar navbar-default">
-		    <div class="container-fluid">
-		      <a href="#" class="navbar-brand">Profesor</a>
-		      <ul class="nav navbar-nav">
-		        <li><a href="#">Sesiones</a></li>
-		        <li><a href="#">Lecciones</a></li>
-		        <li><a href="../grupos">Grupos</a></li>
-		        <li><a href="../preguntas">Preguntas</a></li>
-		      </ul>
-		    </div>
-	 	</nav>
+		<header>
+	      <nav>
+	        <!-- Dropdown Structure -->
+	        <ul id="dropdownPreguntasDesktop" class="dropdown-content">
+	          <li><a href="../estimacion">Estimación</a></li>
+	          <li><a href="../laboratorio">Laboratorio</a></li>
+	          <li><a href="../tutorial">Tutorial</a></li>
+	        </ul>
+	        <ul id="dropdownPreguntasMobile" class="dropdown-content">
+	          <li><a href="../estimacion">Estimación</a></li>
+	          <li><a href="../laboratorio">Laboratorio</a></li>
+	          <li><a href="../tutorial">Tutorial</a></li>
+	        </ul>
+	        <div class="nav-wrapper">
+	          <a href="#!" class="brand-logo">Profesor</a>
+	          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+	          <ul class="right hide-on-med-and-down">
+	            <li><a href="#">Lecciones</a></li>
+	            <li><a href="../../grupos">Grupos</a></li>
+	            <!--Dropdown button-->
+	            <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+	          </ul>
+	          <ul class="side-nav" id="mobile-demo">
+	            <li><a href="#">Lecciones</a></li>
+	            <li><a href="../../grupos">Grupos</a></li>
+	            <!--Dropdown button-->
+	            <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+	          </ul>
+	        </div>
+	      </nav>
+    	</header>
 		<div class="container" id="grupos">
-			<header>
-			</header>
-				<div class="col-md-12 col-md-offset-4">
-					<div class="form-inline">
-						<div class="form-group center-block">
-							<!-- <input type="text" id="grupo-nombre" class="form-control pull-left bigger" placeholder="nombre del grupo..." v-on:keyup.enter="nuevoGrupo()">
-							<button v-on:click="nuevoGrupo()" type="button" class="btn btn-default pull-right">nuevo grupo</button> -->
-						</div>
+
+			<!-- Select de Paralelos -->
+			<div class="clearer"></div> <br><br>
+			<div class="col-md-12 col-md-offset-5">
+				<form class="form-inline">
+					<label for="usr">Paralelo: </label>
+					<select id="selector" onchange="obtenerParaleloEscogido(this)" class="bigger">
+						<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
+					</select>
+				</form>
+			</div>
+			<div class="clearer"></div><br><br>
+
+			<div class="row">
+			<!-- LISTA DE LA IZQUIERDA DE ESTUDIANTES -->
+				<div class="col s2 panel-izquierdo">
+					<p>Estudiantes sin grupo</p>
+					<div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
+						<div v-bind:id="estudiante._id" draggable="true"
+						ondragstart="drag(event)"><span class="text-justify">{{estudiante.nombres}} {{estudiante.apellidos}}</span></div>
 					</div>
 				</div>
-      <div class="clearer"></div> <br><br>
-      			<div class="col-md-12 col-md-offset-5">
-      				<form class="form-inline">
-      					<label for="usr">Paralelo: </label>
-							<select id="selector" onchange="obtenerParaleloEscogido(this)" class="bigger">
-								<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
-							</select>
-      				</form>
-      			</div>
-      			<div class="clearer"></div><br><br>
-      <div class="row">
-      	<div class="col-sm-3">
-      		<p>Estudiantes sin grupo</p>
-			<div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
-				<div v-bind:id="estudiante._id" draggable="true"
-				ondragstart="drag(event)"><span class="text-justify">{{estudiante.nombres}} {{estudiante.apellidos}} {{estudiante.correo}}</span></div>
-			</div>
-      	</div>
-      	<div class="col-sm-9">
-			<section>
-				<div v-for="grupo in grupos" >
-					<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-					{{grupo.nombre}}
-						<!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
-							<span class="glyphicon glyphicon-remove icono"></span>
-						</button> -->
-						<div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-							<span class="estudiante-nombre col-sm-8">{{estudiante.correo}}</span>
-							<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="cruz">
-							<span class="glyphicon glyphicon-remove icono"></span>
-							</button>
-						</div>
-					</li>
+
+				<div class="col s9 offset-s3">
+				<section>
+					<div v-for="grupo in grupos" class="col s4">
+						<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
+						{{grupo.nombre}}
+							<!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
+								<span class="glyphicon glyphicon-remove icono"></span>
+							</button> -->
+							<div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes" class="grupos">
+								<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="cruz">
+									<i class="tiny material-icons">delete</i>
+								</button>
+								<span class="estudiante-nombre col-sm-8">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
+							</div>
+						</li>
+					</div>
+				</section>
 				</div>
-			</section>
-      	</div>
-      </div>
+			</div>
 		</div>
 		<footer>
 			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-      <script src="/bower_components/vue/dist/vue.min.js"></script>
-			<script src="/bower_components/dist/js/bootstrap.min.js"></script>
-      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-      <script src="./grupos.js"></script>
+			<script src="/bower_components/vue/dist/vue.min.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+			<script src="./grupos.js"></script>
 		</footer>
 	</body>
 </html>

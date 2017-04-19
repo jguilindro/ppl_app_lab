@@ -4,7 +4,15 @@ Flujo: profesorLogeado => obtenerTodosParalelosProfesor => obtenerTodosGrupos =>
  */
 // TODO: que no recage todo el dom al eliminar, cambiar de grupo o anadir a grupo
 // TODO: al crear un grupo que lo anada a los grupos
+
+
 var app = new Vue({
+  mounted: function(){
+    $('.button-collapse').sideNav();
+    $(".dropdown-button").dropdown({ hover: false });
+    $('select').material_select();
+  },
+
 	el: '#grupos',
   methods: {
     profesorLogeado: function() {

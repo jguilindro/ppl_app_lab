@@ -60,7 +60,10 @@ app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname
 app.use('/profesores/leccion/modificar/:id',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
 
 app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
-app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+
+
+
+app.use('/estudiantes/', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/tomar-leccion', authEstudiante , function(req, res, next) {
   var EstudianteController = require('./app_api/controllers/estudiantes.controller')
   EstudianteController.verificarPuedeDarLeccion(req.session._id, (match) => {

@@ -23,10 +23,16 @@ body{
 	background:rgba(123, 163, 202,0.8);
 }
 
+div.panel-izquierdo{
+	overflow-y: scroll;
+	max-height: 100%;
+	position: absolute;
+}
 
 div.grupo-estudiantes {
-  border-style: solid
+  border-style: solid;
   margin: 2%;
+  height: 200%;
 }
 
 div.grupos {
