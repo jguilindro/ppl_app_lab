@@ -1,20 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
-<body>
-  <div id="app">
-    <h2>Tiempo {{tiempo}}</h2>
-  </div>
-  <p>Leccion estudiante</p>
-  <script src="/bower_components/vue/dist/vue.min.js"></script>
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-  <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-  <script src="./app.leccion.js"></script>
-</body>
+  <head>
+    <title>Estudiante</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
+    <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
+  </head>
+  <body id="grad">
+    <main>
+      <div id="app" class="container">
+        <section id="nombre">
+          <!--Nombre del estudiante-->
+          <h3 class="center-align">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h3>
+        </section>
+        <div class="timer pull right">
+          <p>Tiempo restante: {{tiempo}} minutos</p>
+        </div>
+        <section id="leccion">
+          <div class="row" id="row-tabs">
+            <div class="col s12">
+              <ul class="tabs-fixed-width tabs">
+                <li class="tab"><a class="active" href="#test1">Instrucciones</a></li>
+                <li class="tab" v-for="pregunta in leccion.preguntas"><a v-bind:href="'#' + pregunta.pregunta">{{pregunta.ordenPregunta + 1}}</a></li>
+                <li class="tab"><a href="#terminar">Terminar</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div id="test1" class="col s12">
+              <div class="row row-instruccion">
+                <h5 class="center-align">Instrucciones de la lección</h5>
+                <p>Tienen hasta el tiempo indicado para completar la lección</p>
+                <p>Una vez acabado el tiempo, las preguntas que han respondido se enviarán automáticamente, las que no respondieron se enviarán sin respuesta, y por lo tanto, sin calificación</p>
+                <p>No se olviden de enviar cada respuesta luego de completarla. Si responen una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
+              </div>
+            </div>
+            <div class="col s12" v-bind:id="pregunta._id" v-for="pregunta in preguntas" style="display: none">
+              <div class="row row-pregunta">
+                <section id="descripcion-pregunta" class="col s6">
+                  <p class="center-align nombre-pregunta">{{pregunta.nombre}}</p>
+                  <label>Descripción: </label>
+                  <p v-html="pregunta.descripcion"></p>
+                  
+                </section>
+                <section id="area-respuesta" class="col s6">
+                  <div class="row">
+                    <form class="col s12">
+                      <div class="row" id="row-area-respuesta">
+                        <div class="col s12 input-field">
+                          <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea"></textarea>
+                          <label for="textarea-respuesta">Escriba aquí su respuesta</label>
+                        </div>
+                      </div>
+                      <div class="row" id="botones">
+                        <a class="waves-effect waves-light btn pull right">Responder</a>
+                      </div>
+                    </form>
+                  </div>
+                  
+                </section>
+              </div>
+            </div>
+            <div id="terminar" class="col s12">
+              <div class="row row-terminar center-align">
+                <section class="col s12">
+                  <h4>Terminar la lección</h4>
+                  <a class="waves-effect waves-light btn">Terminar</a>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
+      <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="/bower_components/materialize/bin/materialize.js"></script>
+      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
+      <script src="./app.leccion.js"></script>  
+    </footer>
+  </body>
 </html>

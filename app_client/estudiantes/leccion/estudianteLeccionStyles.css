@@ -1,0 +1,21 @@
+.container{
+	margin-top: 5%;
+}
+.nombre-pregunta{
+	font-weight: bold;
+}
+
+.row-pregunta, .row-instruccion{
+	background-color: white;
+	opacity: 0.8;
+}
+
+#row-tabs{
+	margin-bottom: 0;
+}
+
+.container .row{
+	margin-left: 0;
+	margin-right: 0;
+	padding: 0 3%;
+}

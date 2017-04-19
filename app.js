@@ -49,10 +49,8 @@ app.use('/profesores/preguntas/estimacion', authProfesor, express.static(path.jo
 app.use('/profesores/preguntas/estimacion/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 app.use('/profesores/preguntas/tutorial', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
 app.use('/profesores/preguntas/tutorial/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
-
 app.use('/profesores/preguntas/laboratorio', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 app.use('/profesores/preguntas/laboratorio/:id', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
-
 app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
@@ -75,7 +73,8 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , function(req, res, next) 
     }
   })
 } ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
-app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
+app.use('/estudiantes/leccion', authEstudiante/*, function(req, res, next) {
+  
   var EstudianteController = require('./app_api/controllers/estudiantes.controller')
   EstudianteController.verificarPuedeDarLeccion(req.session._id, (match) => {
     if (!match) {
@@ -84,7 +83,7 @@ app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
       next()
     }
   })
-} ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
+} */,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
