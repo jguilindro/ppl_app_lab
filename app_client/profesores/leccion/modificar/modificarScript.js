@@ -34,6 +34,7 @@ var App = new Vue({
           console.log(res.body)
         })
     },
+	//carga la lección que se quiere editar y la muestra en los campos
 	getLeccion: function(){
 	var preguntaId = window.location.href.toString().split('/')[6];
 	var modificarLeccionURL = '/api/lecciones/'+ preguntaId;
