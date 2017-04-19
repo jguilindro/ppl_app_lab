@@ -16,10 +16,8 @@ var App = new Vue({
       tiempoEstimado: '',
       tipo: '',
       fechaInicio: '',
-      preguntas: {
-        pregunta: [],
-        ordenPregunta: []
-      },
+      preguntas: [
+      ],
       puntaje: 0
     },
     paralelos: [],
@@ -53,9 +51,9 @@ var App = new Vue({
       var c = 0;
       var self = this;
       var flag = false;
-      //Llamada a la api       
+      //Llamada a la api
       this.$http.get('/api/preguntas').then(response => {
-        //success callback        
+        //success callback
         self.preguntas = response.body.datos;   //Se almacenarán temporalmente todas las preguntas de la base de datos
         $.each(self.preguntas, function(index, pregunta){
           pregunta['show'] = true;
@@ -67,7 +65,7 @@ var App = new Vue({
               if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
                 capitulo.preguntas.push(pregunta);
                 flag = true;  //Cambia la bandera indicando que encontro el capitulo
-                
+
                 return;
               }else{
                 flag=false;
@@ -134,11 +132,12 @@ var App = new Vue({
   }
 })
 function preguntaSeleccionada(_element) {
-  var existe = App.leccion_nueva.preguntas.pregunta.some(pregunta => _element.id == pregunta)
+  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
   if (!existe) {
-    App.leccion_nueva.preguntas.pregunta.push(_element.id)
+    let tamano = App.leccion_nueva.preguntas.length
+    App.leccion_nueva.preguntas.push({pregunta: _element.id, ordenPregunta: tamano})
   } else {
-    App.leccion_nueva.preguntas.pregunta = App.leccion_nueva.preguntas.pregunta.filter(pregunta => _element.id != pregunta)
+    App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta.pregunta)
   }
   //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
   var selected = App.preguntas.filter(filtrarPreguntas);
@@ -154,8 +153,8 @@ function preguntaSeleccionada(_element) {
 
 //Funcion 'Compare' para el uso de filter
 function filtrarPreguntas(elemento){
-  for(var x = 0; x < App.leccion_nueva.preguntas.pregunta.length; x++){
-      if(elemento._id == App.leccion_nueva.preguntas.pregunta[x])
+  for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
+      if(elemento._id == App.leccion_nueva.preguntas[x])
         return true;
       }
   return false;
@@ -181,7 +180,7 @@ function sumatoria(objeto_preguntas, str_elemento){
 //de acuerdo a como han sido grabadas sus ID
 function ordenPreguntas(preguntas){
   App.leccion_nueva.preguntas.ordenPregunta = [];
-  for(var x = 0; x < preguntas.pregunta.length; x++){
+  for(var x = 0; x < preguntas.length; x++){
     App.leccion_nueva.preguntas.ordenPregunta.push(x);
   }
 }

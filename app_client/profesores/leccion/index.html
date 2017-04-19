@@ -43,6 +43,7 @@
       </nav>
     </header>
   <div id="app">
+    <p>{{leccion_nueva}}</p>
     <div id="pages">
       <div class="row">
       <br>
@@ -64,7 +65,7 @@
                 <label for="nombre">nombre</label>
                 <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
               </div>
-              <!-- 
+              <!--
 				<div class="form-group input-field offset-2 col s6">
 	                <select v-model="leccion_nueva.tipo">
 	                  <option value="leccion">estimacion</option>
@@ -73,7 +74,7 @@
 		            </select>
 	            </div>
               -->
-                <!-- 
+                <!--
 					<div class="form-group input-field col s6">
 	                	<select v-model="leccion_nueva.paralelo" name="paralelo" class="col s6">
 						  <option>{{paralelos}}</option>
@@ -87,20 +88,20 @@
               <div class="form-group col s6">
               	<form action="#">
               	<p>
-              		<input name="tipo" type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="Estimacion" />
+              		<input name="tipo" type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion" />
 	      			<label for="Estimacion">Estimación</label>
               	</p>
               	<p>
-              		<input name="tipo" type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="Tutorial" />
+              		<input name="tipo" type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="tutorial" />
 	      			<label for="Tutorial">Tutorial</label>
               	</p>
               	<p>
-              		<input name="tipo" type="radio" id="Experimento" v-model="leccion_nueva.tipo" value="Experimento" />
+              		<input name="tipo" type="radio" id="Experimento" v-model="leccion_nueva.tipo" value="experimento" />
 	      			<label for="Experimento">Experimento</label>
               	</p>
               </form>
               </div>
-            </form> 
+            </form>
           </div>
         </div>
       </div>
@@ -134,14 +135,14 @@
                       <li v-for="capitulo in capitulos">
                         <a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
                       </li>
-                    </ul>             
+                    </ul>
                   </div>
                 </div>
                 </div>
             </main>
         </div>
       </div>
-      
+
 
       <!--     Paso 3, OVERVIEW       -->
         <div id="test4" class="col s12">
@@ -169,7 +170,7 @@
 	                </li>
 	              </div>
 	            </ul>
-	            <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>         
+	            <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>
           </div>
 
           </div>
@@ -183,7 +184,7 @@
       <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-      
+
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="./app.leccion.js"></script>
       <script src="/js/summernote.js"></script>

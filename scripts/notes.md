@@ -1,5 +1,10 @@
 # Como documentar
+https://www.sitepoint.com/self-documenting-javascript/
 http://usejsdoc.org/about-getting-started.html
+https://github.com/apidoc/apidoc
+https://github.com/jsdoc3/jsdoc
+https://esdoc.org/
+https://github.com/documentationjs/documentation/blob/master/docs/GETTING_STARTED.md
 ```js
 /**
  * @file Working with Tags
