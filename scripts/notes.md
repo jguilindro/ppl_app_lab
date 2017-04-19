@@ -16,6 +16,11 @@ http://usejsdoc.org/about-getting-started.html
    * @param {Number} max - Maximum value accepted for trends.
    * @param {Object} plc - The ID of the {@link PLC} object where this tag belongs.
    */
+   /**
+  * This function adds one to its input.
+  * @param {number} input any number
+  * @returns {number} that number, plus one.
+  */
 	 /**
 	      * Get the current value of the tag.
 	      *

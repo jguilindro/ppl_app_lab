@@ -49,8 +49,13 @@ const LeccionSchema = mongoose.Schema({
     unique: false
   },
   preguntas: [{
-    type: String,
-    ref: 'Pregunta'
+    pregunta: {
+      type: String,
+      ref: 'Pregunta'
+    },
+    ordenPregunta: {
+      type: Number
+    }
   }]
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
 
