@@ -7,6 +7,7 @@
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
+		<link rel="stylesheet" type="text/css" href="./estudiantePerfilStyles.css">
 	</head>
 	<body id="grad">
 		<main>
@@ -30,14 +31,14 @@
 							</thead>
 							<tbody>
 								<tr v-for="leccion in estudiante.lecciones">
-									<td>{{leccion.leccion}}</td>
-									<td>{{leccion.estado}}</td>
-									<td>{{leccion.calificacion}}</td>
+									<td>{{leccion.leccion.nombre}}</td>
+									<td>{{leccion.leccion.estado}}</td>
+									<td>{{leccion.leccion.calificacion}}</td>
 									<td>{{leccion.fechaEmpezado}}</td>
-									<td v-if="leccion.estado=='Calificado'">
+									<td v-if="leccion.leccion.estado=='terminado'">
 										<button class="btn waves-effect waves-light">Ver</button>
 									</td>
-									<td v-else="leccion.estado=='Pendiente'">
+									<td v-else-if="leccion.leccion.estado=='pendiente'">
 										<button class="btn waves-effect waves-light blue lighten-1" v-on:click="tomarLeccion()">Tomar</button>
 									</td>
 								</tr>
