@@ -50,17 +50,11 @@ const EstudianteSchema = mongoose.Schema({
 		calificacion: {
 			type: Number
 		},
-    autorizado: { // DOCUMENTACION ,BORRAR
-      type: Boolean
-    },
     fechaEmpezado: {
       type: Date
     },
     fechaTerminado: {
       type: Date
-    },
-    terminado: {
-      type: Boolean
     }
 	}]
 },{timestamps: true, versionKey: false, collection: 'estudiantes'})
@@ -78,7 +72,7 @@ EstudianteSchema.methods.generarJwt = function() {
 };
 
 EstudianteSchema.statics.obtenerTodosEstudiantes = function(callback) {
-  this.find({}, callback)
+  this.find({}).populate({path: 'lecciones.leccion'}).exec(callback);
 }
 
 EstudianteSchema.methods.crearEstudiante = function(callback) {
@@ -86,11 +80,11 @@ EstudianteSchema.methods.crearEstudiante = function(callback) {
 }
 
 EstudianteSchema.statics.obtenerEstudiante = function(id_estudiante, callback) {
-  this.findOne({_id: id_estudiante}, callback)
+  this.findOne({_id: id_estudiante}).populate({path: 'lecciones.leccion'}).exec(callback);
 }
 
 EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante, callback) {
-  this.findOne({correo: correo_estudiante}, callback)
+  this.findOne({correo: correo_estudiante}).populate({path: 'lecciones.leccion'}).exec(callback);
 }
 
 // Realtime

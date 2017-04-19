@@ -39,7 +39,7 @@ app.use('/api/session', require('./app_api/routes/login.router'));
 
 // Auth middleware
 const { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
-require('./app_api/routes/realtime.router')(io)
+require('./app_api/realtime/realtime')(io)
 
 //vistas
 app.use('/profesores', authProfesor, express.static(path.join(__dirname, 'app_client/profesores')));
