@@ -57,6 +57,7 @@ app.use('/profesores/preguntas/nueva-pregunta', authProfesor, express.static(pat
 
 app.use('/profesores/leccion',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion')))
 app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
+app.use('/profesores/leccion/modificar/:id',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
 
 app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 app.use('/estudiantes', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));

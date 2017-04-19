@@ -6,6 +6,7 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="/bower_components/materialnote/css/materialNote.css">
   	<link rel="stylesheet" type="text/css" href="./verPreguntaStyles.css">
   	<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
@@ -43,32 +44,28 @@
 		</header>
 		<main>
 			<div class="container" id="pregunta">
-
-				<div class="row" id="row-pregunta">
+				<!--Ver pregunta-->
+				<div class="row" id="row-ver-pregunta" v-show="aux">
 	        <div class="col s12">
 	          <div class="card">
 	            <div class="card-content">
 	              <!--Nombre-->
-	              <div class="row nombre">
+	              <div class="row row-ver" id="row-ver-nombre">
 	              	<span class="card-title center-align" id="nombre">{{preguntaObtenida.nombre}}</span>
 	              </div>
-	              
 	              <!--Creado por-->
-	              <div class="row creador">
-	              	<p class="center-align">{{preguntaObtenida.creador}}</p>
+	              <div class="row row-ver" id="row-ver-creador">
+	              	<p class="center-align">Creada por: {{preguntaObtenida.creador}}</p>
 	              </div>
-	              
 	              <!--Descripcion-->
-	              <div class="row descripcion">
+	              <div class="row row-ver" id="row-ver-descripcion">
 	              	<label>Descripción</label>
 		              <div id="divDescripcion">
 		              	<p v-html="preguntaObtenida.descripcion"></p>	
 		              </div>
 	              </div>
-	              
-	              
 	              <!--Tipos-->
-	              <div class="tipos row">
+	              <div class="row row-ver" id="row-ver-tipos">
 	              	<div class="pull left">
 	              		<label>Tipo de pregunta:</label>
 	              		<p>{{preguntaObtenida.tipoPregunta}}</p>
@@ -79,7 +76,7 @@
 									</div>
 	              </div>
 	              <!--Tiempo y puntaje-->
-	              <div class="tiempo-puntaje row">
+	              <div class="row row-ver" id="row-tiempo-puntaje">
 	              	<div class="pull left">
 	              		<label>Tiempo estimado:</label>
 	              		<p>{{preguntaObtenida.tiempoEstimado}} minutos</p>
@@ -90,33 +87,134 @@
 									</div>
 	              </div>
 	              <!--Capitulo/laboratorio/tutorial-->
-	              <div class="capitulo row" v-if="preguntaObtenida.tipoLeccion=='estimacion'">
+	              <div class="row row-ver" id="row-ver-capitulo" v-if="preguntaObtenida.tipoLeccion=='estimacion'">
 	              	<label>Capítulo</label>
 	              	<p>{{preguntaObtenida.capitulo}}</p>
 	              </div>
 	              <!--Laboratorio-->
-	              <div class="laboratorio row" v-if="preguntaObtenida.tipoLeccion=='laboratorio'">
+	              <div class="row row-ver" id="row-ver-laboratorio" v-if="preguntaObtenida.tipoLeccion=='laboratorio'">
 	              	<label>Laboratorio</label>
 	              	<p>{{preguntaObtenida.laboratorio}}</p>
 	              </div>
 	              <!--Tutorial-->
-	              <div class="tutorial row" v-if="preguntaObtenida.tipoLeccion=='tutorial'">
+	              <div class="row row-ver" id="row-ver-tutorial" v-if="preguntaObtenida.tipoLeccion=='tutorial'">
 	              	<label>Tutorial</label>
 	              	<p>{{preguntaObtenida.tutorial}}</p>
 	              </div>
+	            	<div class="row row-ver" id="row-ver-btn">
+	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar">Editar</a>
+	            		<a class="waves-effect waves-light btn">Eliminar</a>
+	            	</div>
 	            </div>
 	            
 	          </div>
 	        </div>
 	      </div>
+	      <!--Editar pregunta-->
+	      <div class="row" id="row-editar-pregunta" v-show="!aux">
+					<div class="col s12">
+						<div class="card">
+							<div class="card-content">
+								<div class="row row-editar">
+									<h1 class="center-align">Editar pregunta</h1>
+									<p class="center-align">Creada por: </p>
+								</div>
+								<div class="row" id="row-editar-form">
+									<form class="col s12">
+										<!--Nombre-->
+										<div class="row row-editar" id="row-editar-nombre">
+											<div class="input-field col s12">
+												<input type="text" id="nombreEditar" v-model="preguntaEditar.nombre">
+												<label for="nombreEditar" class="lblEditar">Nombre</label>
+											</div>
+										</div>
+										<!--Descripcion-->
+										<div class="row row-editar" id="row-editar-descripcion">
+											<div class="input-field col s12">
+												<div id="firstEditor" class="myEditor">
+								        	
+								        </div>
+											</div>
+										</div>
+										<!--File uploader-->
+										<!--Tipos de preguntas y de leccion-->
+										<div class="row row-editar" id="row-editar-tipos">
+											<div class="input-field col s6">
+												<select id="select-editar-tipo-pregunta" v-model="preguntaEditar.tipoPregunta">
+													<option value="" disabled selected></option>
+													<option value="opcion">Opcion multiple</option>
+													<option value="v_f">V/F</option>
+													<option value="justificacion">Justificacion</option>
+												</select>
+												<label>Tipo de pregunta:</label>
+											</div>
+											<div class="input-field col s6">
+												<select id="select-editar-tipo-leccion" v-model="preguntaEditar.tipoLeccion">
+													<option value="" disabled selected></option>
+													<option value='estimacion'>Estimación</option>
+										      <option value='tutorial'>Tutorial</option>
+										      <option value='laboratorio'>Laboratorio</option>
+												</select>
+												<label>Tipo de leccion:</label>
+											</div>
+										</div>
+										
+										<!--Capitulo-->
+										<div class="row row-editar" id="row-editar-capitulo">
+											<div class="input-field col s12">
+												<input type="text" id="in-editar-capitulo" v-model="preguntaEditar.capitulo">
+												<label for="in-editar-capitulo" class="lblEditar">Capítulo</label>
+											</div>
+										</div>
+										<!--Tutorial-->
+										<div class="row row-editar" id="row-editar-tutorial">
+											<div class="input-field col s12">
+												<input type="text" id="in-editar-tutorial" v-model="preguntaEditar.tutorial">
+												<label for="in-editar-tutorial" class="lblEditar">Tutorial</label>
+											</div>
+										</div>
+										<!--Laboratorio-->
+										<div class="row row-editar" id="row-editar-laboratorio" >
+											<div class="input-field col s12">
+												<input type="text" id="in-editar-laboratorio" v-model="preguntaEditar.laboratorio">
+												<label for="in-editar-laboratorio" class="lblEditar">Laboratorio</label>
+											</div>
+										</div>
+
+										<!--Tiempo y puntaje-->
+										<div class="row row-editar" id="row-editar-tiempo-puntaje">
+											<div class="input-field col s6">
+												<input type="number" id="in-editar-tiempo" v-model="preguntaEditar.tiempoEstimado">
+												<label for="in-editar-tiempo" class="lblEditar">Tiempo estimado</label>
+											</div>
+											<div class="input-field col s6">
+												<input type="number" id="in-editar-puntaje" v-model="preguntaEditar.puntaje">
+												<label for="in-editar-puntaje" class="lblEditar">Puntaje</label>
+											</div>
+										</div>
+										<!--Botones-->
+										<div class="buttons row">
+			            		<a class="waves-effect waves-light btn pull right" @click="actualizarPregunta">Aceptar</a>
+			            		<a class="waves-effect waves-light btn" @click="mostrarEditar">Cancelar</a>
+			            	</div>
+			            	{{preguntaEditar}}
+									</form>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+	      </div>
 
 			</div>	
 		</main>
 		<footer>
-			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/materialnote/lib/jquery-2.1.4.js"></script>
 			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/bower_components/materialnote/js/ckMaterializeOverrides.js"></script>
+			<script src="/bower_components/materialnote/js/materialNote.js"></script>
 			<script src="./verPreguntaScript.js"></script>
 		</footer>
 	</body>

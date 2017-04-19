@@ -6,21 +6,18 @@ var App = new Vue({
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
     this.getPreguntas();
-    this.getParalelos();
-    $('select').material_select();
+
   },
   el: '#app',
   data: {
-    leccion_nueva: {
+    leccion: {
       nombre: '',
       tiempoEstimado: '',
       tipo: '',
       fechaInicio: '',
       preguntas: [],
-      puntaje: 0,
-      paralelo: ''
+      puntaje: 0
     },
-    paralelos: [],
     preguntas: [],
     capitulos: [],
     preguntas_escogidas: {
@@ -29,21 +26,12 @@ var App = new Vue({
     }
   },
   methods: {
-    crearLeccion() {
-      var crearLeccionURL = '/api/lecciones'
-      /*this.$http.post(crearLeccionURL, this.leccion_nueva)
+    modificarLeccion() {
+      var modificarLeccionURL = '/api/lecciones'
+      this.$http.get(modificarLeccionURL, this.leccion)
         .then(res => {
           console.log(res.body)
         })
-      */
-      var self = this;
-          this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-            //success callback
-            console.log(response)
-            }, response => {
-            //error callback
-            console.log(response)
-          });
     },
     getPreguntas: function(){
       /*
@@ -56,6 +44,8 @@ var App = new Vue({
       var c = 0;
       var self = this;
       var flag = false;
+      console.log('Inicialmente self.capitulos: ')
+      console.log(self.capitulos)
       //Llamada a la api       
       this.$http.get('/api/preguntas').then(response => {
         //success callback        
@@ -65,8 +55,13 @@ var App = new Vue({
           if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
             //Si la pregunta es de estimacion entonces se tiene que almacenar para mostrarla al usuario
             c++
+            console.log('Pregunta #' + c);
+            console.log(pregunta.nombre);
+            console.log(pregunta.capitulo);
             $.each(self.capitulos, function(index, capitulo){
               //Recorre el array de capitulos del script. Si encuentra el capitulo al que pertenece la pregunta, lo añade.
+              console.log('Se recorre self.capitulos para ver si pertenece a alguno')
+              console.log('Revisando el capitulo: ' + capitulo.nombre)
               if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
                 console.log('Encontró el capítulo dentro de self.capitulos. Se añadirá la pregunta...')
                 capitulo.preguntas.push(pregunta);
@@ -79,6 +74,7 @@ var App = new Vue({
             });
             //Si no encontro el capitulo, la bandera sigue en falso indicando que el capitulo no existe. Entonces se crea el capitulo y se agrega la pregunta
             if (!flag) {
+              console.log('No se encontro el capitulo en self.capitulos... Se procede a crearlo')
               self.crearCapitulo(pregunta)
             }
           }
@@ -122,61 +118,37 @@ var App = new Vue({
       capitulo.preguntas.push(pregunta);
       self.capitulos.push(capitulo);
     },
-    getParalelos: function(){
-        url = '/api/paralelos/profesores/mis_paralelos'
-        var self = this;
-        this.$http.get(url).then(response =>{
-              //successfull callback
-              for (var x = 0; x < response.body.datos.length; x++){
-                self.paralelos.push(response.body.datos[x].nombre);
-              }
-          }, response => {
-              //error callback
-              console.log("EEEEEERRRROOOOOOOOOOOOOR!")
-          });
-    },
   }
 })
 function preguntaSeleccionada(_element) {
-  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)
+  var existe = App.leccion.preguntas.some(pregunta => _element.id == pregunta)
   if (!existe) {
-    App.leccion_nueva.preguntas.push(_element.id)
+    App.leccion.preguntas.push(_element.id)
   } else {
-    App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta)
+    App.leccion.preguntas = App.leccion.preguntas.filter(pregunta => _element.id != pregunta)
   }
   //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
   var selected = App.preguntas.filter(filtrarPreguntas);
-  //Por ahora, preguntas_escogidas tendrá TODA la información en cuanto a las preguntas escogidas, también habrá un total de tiempos para feedback del usuario.
   App.preguntas_escogidas.preguntas = selected;
-
-  App.preguntas_escogidas.tiempoTotal = sumatoria(selected, "tiempo");
-  App.leccion_nueva.tiempoEstimado = App.preguntas_escogidas.tiempoTotal;
-
-  App.leccion_nueva.puntaje = sumatoria(selected, "calificacion");
+  App.preguntas_escogidas.tiempoTotal = sumarTiempos(selected);
+  /*
+  url = '/api/preguntas/' + _element.id;
+        $.get(url, function(data){
+          console.log(data);
+      });
+  */
 }
-
-//Funcion 'Compare' para el uso de filter
 function filtrarPreguntas(elemento){
-  for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
-      if(elemento._id == App.leccion_nueva.preguntas[x])
+  for(var x = 0; x < App.leccion.preguntas.length; x++){
+      if(elemento._id == App.leccion.preguntas[x])
         return true;
       }
   return false;
 }
-//Función que suma los tiempos... ;D
-//Recibe un objeto de tipo object[M].Int, retorna un entero.
-function sumatoria(objeto_preguntas, str_elemento){
+function sumarTiempos(objeto_preguntas){
   var acumulador = 0;
-  if(str_elemento == "tiempo"){
-    for (var x = 0; x < objeto_preguntas.length; x++){
+  for (var x = 0; x < objeto_preguntas.length; x++){
       acumulador = acumulador + parseInt(objeto_preguntas[x].tiempoEstimado);
-    }
-  }
-  if(str_elemento == "calificacion"){
-    for (var x = 0; x < objeto_preguntas.length; x++){
-      acumulador = acumulador + parseInt(objeto_preguntas[x].puntaje);
-      console.log(acumulador)
-    }
   }
   return acumulador;
 }
