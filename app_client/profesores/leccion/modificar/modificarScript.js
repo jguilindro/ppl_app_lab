@@ -5,6 +5,7 @@ var App = new Vue({
     $('.scrollspy').scrollSpy();
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
+	this.getLeccion();
     this.getPreguntas();
 
   },
@@ -27,12 +28,27 @@ var App = new Vue({
   },
   methods: {
     modificarLeccion() {
-      var modificarLeccionURL = '/api/lecciones'
-      this.$http.get(modificarLeccionURL, this.leccion)
+      var modificarLeccionURL = '/api/lecciones/'+id
+      this.$http.put(modificarLeccionURL, this.leccion)
         .then(res => {
           console.log(res.body)
         })
     },
+	//carga la lección que se quiere editar y la muestra en los campos
+	getLeccion: function(){
+	var preguntaId = window.location.href.toString().split('/')[6];
+	var modificarLeccionURL = '/api/lecciones/'+ preguntaId;
+      this.$http.get(modificarLeccionURL, this.leccion)
+        .then(res => {
+          console.log(res.body);
+		   var leccion2= res.body.datos;
+		   App.leccion.nombre= leccion2.nombre;
+		   App.leccion.puntaje= leccion2.puntaje;
+		   App.leccion.fechaInicio= leccion2.fechaInicioTomada.substr(0,10);
+		  //console.log(leccion.fechaInicio);
+        })
+	}
+	,
     getPreguntas: function(){
       /*
         Esta función hará lo siguiente:
