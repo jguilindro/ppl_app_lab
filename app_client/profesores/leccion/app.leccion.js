@@ -139,6 +139,7 @@ function preguntaSeleccionada(_element) {
   } else {
     App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta.pregunta)
   }
+
   //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
   var selected = App.preguntas.filter(filtrarPreguntas);
   //Por ahora, preguntas_escogidas tendrá TODA la información en cuanto a las preguntas escogidas, también habrá un total de tiempos para feedback del usuario.
@@ -154,7 +155,7 @@ function preguntaSeleccionada(_element) {
 //Funcion 'Compare' para el uso de filter
 function filtrarPreguntas(elemento){
   for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
-      if(elemento._id == App.leccion_nueva.preguntas[x])
+      if(elemento._id == App.leccion_nueva.preguntas[x].pregunta)
         return true;
       }
   return false;
