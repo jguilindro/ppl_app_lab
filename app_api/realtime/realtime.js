@@ -79,6 +79,7 @@ function realtime(io) {
       if (estudiante) {
         const grupo = yield obtenerGrupo(estudiante)
         const paralelo = yield obtenerParaleloDeEstudiante(estudiante)
+        // buscar leccion y emitir al estudiante
         socket.join(grupo._id)
         socket.join(paralelo._id)
         socket.to(grupo._id).emit('mi grupo', estudiante);
