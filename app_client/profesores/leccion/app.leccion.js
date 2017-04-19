@@ -16,9 +16,11 @@ var App = new Vue({
       tiempoEstimado: '',
       tipo: '',
       fechaInicio: '',
-      preguntas: [],
-      puntaje: 0,
-      paralelo: ''
+      preguntas: {
+        pregunta: [],
+        ordenPregunta: []
+      },
+      puntaje: 0
     },
     paralelos: [],
     preguntas: [],
@@ -31,11 +33,6 @@ var App = new Vue({
   methods: {
     crearLeccion() {
       var crearLeccionURL = '/api/lecciones'
-      /*this.$http.post(crearLeccionURL, this.leccion_nueva)
-        .then(res => {
-          console.log(res.body)
-        })
-      */
       var self = this;
           this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
             //success callback
@@ -68,7 +65,6 @@ var App = new Vue({
             $.each(self.capitulos, function(index, capitulo){
               //Recorre el array de capitulos del script. Si encuentra el capitulo al que pertenece la pregunta, lo añade.
               if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
-                console.log('Encontró el capítulo dentro de self.capitulos. Se añadirá la pregunta...')
                 capitulo.preguntas.push(pregunta);
                 flag = true;  //Cambia la bandera indicando que encontro el capitulo
                 
@@ -138,11 +134,11 @@ var App = new Vue({
   }
 })
 function preguntaSeleccionada(_element) {
-  var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta)
+  var existe = App.leccion_nueva.preguntas.pregunta.some(pregunta => _element.id == pregunta)
   if (!existe) {
-    App.leccion_nueva.preguntas.push(_element.id)
+    App.leccion_nueva.preguntas.pregunta.push(_element.id)
   } else {
-    App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta)
+    App.leccion_nueva.preguntas.pregunta = App.leccion_nueva.preguntas.pregunta.filter(pregunta => _element.id != pregunta)
   }
   //Esta variable me dará toda la información de las preguntas escogidas, esta información se guardará en preguntas_escogidas del data.
   var selected = App.preguntas.filter(filtrarPreguntas);
@@ -153,12 +149,13 @@ function preguntaSeleccionada(_element) {
   App.leccion_nueva.tiempoEstimado = App.preguntas_escogidas.tiempoTotal;
 
   App.leccion_nueva.puntaje = sumatoria(selected, "calificacion");
+  ordenPreguntas(App.leccion_nueva.preguntas);
 }
 
 //Funcion 'Compare' para el uso de filter
 function filtrarPreguntas(elemento){
-  for(var x = 0; x < App.leccion_nueva.preguntas.length; x++){
-      if(elemento._id == App.leccion_nueva.preguntas[x])
+  for(var x = 0; x < App.leccion_nueva.preguntas.pregunta.length; x++){
+      if(elemento._id == App.leccion_nueva.preguntas.pregunta[x])
         return true;
       }
   return false;
@@ -179,6 +176,14 @@ function sumatoria(objeto_preguntas, str_elemento){
     }
   }
   return acumulador;
+}
+//Esta función devuelve null, pero llena el campo de orden de preguntas
+//de acuerdo a como han sido grabadas sus ID
+function ordenPreguntas(preguntas){
+  App.leccion_nueva.preguntas.ordenPregunta = [];
+  for(var x = 0; x < preguntas.pregunta.length; x++){
+    App.leccion_nueva.preguntas.ordenPregunta.push(x);
+  }
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
