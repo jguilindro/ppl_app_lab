@@ -27,7 +27,7 @@ var app = new Vue({
 				console.log(response)
 				//ELIMINAR LA PREGUNTA DE SELF.CAPITULOS
 				self.leccion= [];
-				this.getLeccion();			
+				this.getLecciones();			
 			}, response => {
 				//error callback
 				console.log(response)

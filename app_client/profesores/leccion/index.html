@@ -48,9 +48,11 @@
 			  	<div class="col s12 m9 l10">
 				  	
 				  		<ul class="preguntas">
-				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion.id">
-				  				<a v-bind:href="leccion.id">{{leccion.nombre}}</a>
-				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion.id" v-on:click="crearModalEliminarLeccion(leccion.id)"><i class="material-icons tiny">delete</i></a>
+				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion._id">
+				  				<a v-bind:href="leccion._id">{{leccion.nombre}}</a>
+								<a v-bind:href="leccion._id">| Puntaje: {{leccion.puntaje}} |</a>
+								<a v-bind:href="leccion._id">Tiempo: {{leccion.tiempoEstimado}}</a>
+				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id)"><i class="material-icons tiny">delete</i></a>
 				  			</li>
 				  		</ul>
 				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
