@@ -2,7 +2,7 @@ var App = new Vue({
   el: '#app',
   mounted: function(){
     this.obtenerLogeado();
-    this.obtenerLeccion();
+    // this.obtenerLeccion();
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
   },
@@ -13,13 +13,11 @@ var App = new Vue({
         then(res => {
           if (res.body.estado) {
             self.estudiante = res.body.datos;
-            console.log(self.estudiante)
           }
         });
     },
-    obtenerLeccion: function(){
+    obtenerLeccion: function(leccionId){
       var self = this;
-      var leccionId = 'Byz7_vE0l'   //reemplazar esto luego
       var url = '/api/lecciones/' + leccionId;
       this.$http.get(url).then(response => {
         //succcess callback
@@ -27,7 +25,7 @@ var App = new Vue({
         self.obtenerPreguntas();
       }, response => {
         //error callback
-        
+
       });
     },
     obtenerPreguntas: function(){
@@ -41,7 +39,7 @@ var App = new Vue({
         apiPreguntasUrl = apiPreguntasUrl + id;
         //Hago la llamada a la api por cada pregunta
         self.$http.get(apiPreguntasUrl).then(response => {
-          //successful callback 
+          //successful callback
           //Añado cada pregunta al array preguntas.
           self.preguntas.push(response.body.datos);
         }, response => {
@@ -61,7 +59,7 @@ var App = new Vue({
     estudiante: {}
   }
 });
-/*
+
 var socket = io('/tomando_leccion')
 socket.emit('hola', 'sdsads')
 
@@ -77,4 +75,7 @@ socket.on('terminado leccion', function(match) {
   window.location.href = `/estudiantes`
 	console.log('se ha terminado la leccion')
 })
-*/
+
+socket.on('leccion id', function(id_leccion) {
+  App.obtenerLeccion(id_leccion)
+})

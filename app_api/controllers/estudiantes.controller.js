@@ -32,6 +32,7 @@ const obtenerEstudiante = (req, res) => {
 
 // mensajes error dos: si no es del curso, o si ingreso mal la contrasena leccion
 // restrigir acceso al lecciones si no ha ingresado el codigo
+// TODO: IMPORTANTE CALLBACK HELL
 const verificarEstudiantePuedeDarLeccion = (req, res) => {
   const { _id } = req.session
   const { codigo_leccion } = req.params
@@ -43,10 +44,14 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
         if (err) return respuesta.serverError(res);
         if (!leccion) return respuesta.noOK(res);
         EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
+          if (err) return respuesta.serverError(res);
+          if (!estudiante) return respuesta.noOK(res);
+          EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
             if (err) return respuesta.serverError(res)
             req.app.set('habilitado_para_leccion', true)
             return respuesta.okAnadido(res);
           // TODO: setearle al estudiante la leccion y que la esta dando
+          })
         })
       })
     } else {

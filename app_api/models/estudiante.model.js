@@ -38,6 +38,10 @@ const EstudianteSchema = mongoose.Schema({
     type: Boolean,
     'default': false
   },
+  leccion: { // que leccion esta dando estudiante en realtime
+    type: String,
+    ref: 'Leccion'
+  },
 	lecciones: [{
 		leccion: {
 			type: String,
@@ -88,6 +92,8 @@ EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante
 }
 
 // Realtime
+
+// usada cuando se ingresa el codigo de la leccion
 EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,id_leccion,callback) {
   let fecha = moment();
   let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
@@ -98,10 +104,15 @@ EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,i
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
 }
 
+EstudianteSchema.statics.anadirLeccionActualDando = function(id_estudiante, id_leccion, callback) {
+  this.update({_id: id_estudiante}, {$set: {leccion: id_leccion}}, callback)
+}
+
 EstudianteSchema.statics.anadirEstudianteLeccion = function(id_estudiante, id_leccion,callback) {
   this.update({_id: id_estudiante}, {$set: {'lecciones': id_leccion}},{ safe: true, upsert: true },callback)
 }
 
+// para middleware y no va en realtime
 EstudianteSchema.statics.veficarPuedeDarLeccion = function(id_estudiante, callback) {
   this.findOne({_id:id_estudiante}, callback)
 }
@@ -112,6 +123,10 @@ EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}}, callback)
+}
+
+EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudiante, callback) {
+  this.findOne({_id: id_estudiante}, callback)
 }
 
 module.exports = mongoose.model('Estudiante', EstudianteSchema)

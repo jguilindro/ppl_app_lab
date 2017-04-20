@@ -1,4 +1,6 @@
 /*http://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript*/
+var moment = require('moment')
+var tz = require('moment-timezone')
 const random = () => {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -7,6 +9,13 @@ const random = () => {
   return text;
 }
 
+const timezone = () => {
+  let fecha = moment();
+  let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
+  return current_time_guayaquil
+}
+
 module.exports = {
-  random
+  random,
+  timezone
 }

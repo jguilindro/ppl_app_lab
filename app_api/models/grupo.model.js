@@ -18,36 +18,7 @@ const GrupoSchema = mongoose.Schema({
 	paralelo: {
 		type: String,
 		ref: 'Paralelo'
-	},
-	lecciones: [{
-		leccion: {
-			type: String, 
-			ref: 'Leccion'
-		},
-		tiempoBono: {
-			type: String
-		},
-		preguntas: [{
-			pregunta: {
-				type: String,
-				ref: 'Pregunta'
-			},
-			respuestaGrupal:{
-				type: String,
-				ref: 'respuestaGrupal'
-			}
-		}],
-		fechaEmpezado:{
-			type: Date
-		},
-		fechaTerminado: {
-			type: Date
-		},
-		participantes: [{
-			type: String,
-			ref: 'Estudiante'
-		}]
-	}]
+	}
 },{versionKey: false, timestamps: true, collection: 'grupos'})
 
 GrupoSchema.statics.obtenerTodosGrupos = function(callback) {
@@ -86,5 +57,10 @@ GrupoSchema.statics.obtenerGrupoDeEstudiante = function(id_estudiante, callback)
 GrupoSchema.statics.anadirLeccion = function(id_grupo, id_leccion, id_pregunta){
 
 }
+
+// REALTIME
+// GrupoSchema.statics.guardarParticipanteLeccionGrupo = function(id_grupo, id_leccion, id_estudiante, callback){
+//   this.findOne({_id: id_grupo},)
+// }
 
 module.exports = mongoose.model('Grupo', GrupoSchema)

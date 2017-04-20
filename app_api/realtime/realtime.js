@@ -7,7 +7,7 @@ co           = require('co');
 
 require("moment-duration-format");
 
-const url       = require('../utils/change_database').session(),
+const URL       = require('../utils/change_database').session(),
 EstudianteModel = require('../models/estudiante.model'),
 ProfesorModel   = require('../models/profesor.model'),
 ParaleloModel   = require('../models/paralelo.model'),
@@ -25,7 +25,7 @@ function realtime(io) {
           if (!profesor) return resolve(false)
           obtenerParaleloProfesor(profesor._id,paralelo => {
             if (!paralelo) return resolve(false)
-            // undefined si el paralelo no esta para dar leccion if(!paralelo)
+            // FIXME: undefined si el paralelo no esta para dar leccion if(!paralelo)
             paralelo.grupos.forEach(grupo => {
               socket.join(paralelo._id)
               socket.join(grupo._id) // crear los room para cada grupo
@@ -48,47 +48,49 @@ function realtime(io) {
     }
     var interval
     co(function *() {
-      const cookie = yield mongoSession(cook)
-      const profesor = yield obtenerProfesor(cookie)
-      const estudiante = yield obtenerEstudiante(cookie)
+      const COOKIE = yield mongoSession(cook)
+      const profesor = yield obtenerProfesor(COOKIE)
+      const estudiante = yield obtenerEstudiante(COOKIE)
       if (profesor) {
-        const hora_local = moment();
-        const current_time_guayaquil = moment(hora_local.tz('America/Guayaquil').format());
-        const paralelo = yield obtenerParaleloProfesorPromise(profesor)
-        const leccion_tomando = yield obtenerLeccion(paralelo.leccion)
-        const inicio_leccion = moment(leccion_tomando.fechaInicioTomada)
-        console.log(`fecha inicio ${inicio_leccion.format('YY/MM/DD hh:mm:ss')}`);
-        const tiempo_maximo = inicio_leccion.add(leccion_tomando.tiempoEstimado, 'm')
-        console.log(`tiempo maximo ${tiempo_maximo.format('YY/MM/DD hh:mm:ss')}`);
+        const HORA_LOCAL = moment();
+        const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
+        const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+        const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
+        const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
+        console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
+        const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
+        console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
         interval = setInterval(function() {
-          let tiempo_rest = tiempo_maximo.subtract(1, 's');
-          var duration = moment.duration(tiempo_rest.diff(current_time_guayaquil)).format("h:mm:ss");
+          let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+          var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
           // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
           // console.log(`tiempo restante ${duration}`);
           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
           if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
-                        if (parseInt(duration) == 0) {
+            if (parseInt(duration) == 0) {
               clearInterval(interval);
-              leccionTerminada(paralelo, paralelo.leccion)
-                            leccion.in(paralelo._id).emit('terminado leccion', true)
-                        }
-                    }
-          leccion.in(paralelo._id).emit('tiempo restante', duration)
+              leccionTerminada(PARALELO, PARALELO.leccion)
+              leccion.in(PARALELO._id).emit('terminado leccion', true)
+            }
+          }
+          leccion.in(PARALELO._id).emit('tiempo restante', duration)
         }, 1000)
       }
       if (estudiante) {
-        const grupo = yield obtenerGrupo(estudiante)
-        const paralelo = yield obtenerParaleloDeEstudiante(estudiante)
+        const GRUPO = yield obtenerGrupo(estudiante)
+        const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
+        const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
         // buscar leccion y emitir al estudiante
-        socket.join(grupo._id)
-        socket.join(paralelo._id)
-        socket.to(grupo._id).emit('mi grupo', estudiante);
+        socket.join(GRUPO._id)
+        socket.join(PARALELO._id)
+        socket.to(GRUPO._id).emit('mi grupo', estudiante)
         socket.estudiante = estudiante
         socket.broadcast.emit('estudiante conectado', estudiante)
+        socket.emit('leccion id', LECCION_ID)
       }
     }).catch(fail => console.log(fail))
     socket.on('disconnect', function() {
-      clearInterval(interval);
+      clearInterval(interval)
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
     socket.on('parar leccion', function() {
@@ -101,7 +103,7 @@ module.exports = realtime
 
 function mongoSession(cook) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(URL, function(err, db) {
       var collection = db.collection('sessions');
       collection.findOne({_id: cook}, function(err, docs) {
         var usuario_cookie = JSON.parse(docs.session)
@@ -114,47 +116,35 @@ function mongoSession(cook) {
   })
 }
 
-function obtenerGrupo(_estudiante) {
-  return new Promise((resolve, reject) => {
-    GrupoModel.obtenerGrupoDeEstudiante(_estudiante._id, (err, grupo) => {
-      if (err) return reject(err)
-      if (!grupo) return resolve('no existe en grupo')
-      return resolve(grupo)
-    })
-  })
-}
-
 function obtenerCook(cookie_socket) {
   var cookies = cookie.parse(cookie_socket);
   var cook = cookies['connect.sid'].split('.').filter((ele,index) => index == 0)[0].split(':')[1]
   return cook
 }
 
-function obtenerParaleloProfesorPromise(_profesor) {
-  return new Promise((resolve, reject) => {
-    ParaleloModel.obtenerParalelosProfesor(_profesor._id, (err, paralelos) => {
-      let para = paralelos.find(paralelo => paralelo.dandoLeccion)
-      if (err) return reject(null)
-      return resolve(para)
-    })
-  })
-}
+// ORGANIZACION FUNCIONES
+// se hara por medio de lecciones segun en que estado este la leccion
+/*
+* LECCION ANTES TOMANDO
+ */
 
+// obtener paralelo, leccion => globales ` grupo,pregunta` => dependiente de estudiante
 function obtenerParaleloProfesor(_id, callback) {
-    ParaleloModel.obtenerParalelosProfesor(_id, (err, paralelos) => {
-      let para = paralelos.find(paralelo => paralelo.dandoLeccion)
-      if (err) return callback(null)
-      callback(para)
-    })
+   ParaleloModel.obtenerParalelosProfesor(_id, (err, paralelos) => {
+     let para = paralelos.find(paralelo => paralelo.dandoLeccion)
+     if (err) return callback(null)
+     callback(para)
+   })
 }
 
-function obtenerParaleloDeEstudiante(estudiante, callback) {
-  return new Promise((resolve, reject) => {
-    ParaleloModel.obtenerParaleloDeEstudiante(estudiante._id, (err, paralelo) => {
-      if (err) return reject(null)
-      return resolve(paralelo)
-    })
-  })
+function obtenerParaleloProfesorPromise(_profesor) {
+ return new Promise((resolve, reject) => {
+   ParaleloModel.obtenerParalelosProfesor(_profesor._id, (err, paralelos) => {
+     let para = paralelos.find(paralelo => paralelo.dandoLeccion)
+     if (err) return reject(null)
+     return resolve(para)
+   })
+ })
 }
 
 function obtenerLeccion(_id_leccion) {
@@ -167,40 +157,194 @@ function obtenerLeccion(_id_leccion) {
   })
 }
 
-function leccionTerminada(paralelo, id_leccion) {
-  LeccionModel.leccionTerminada(id_leccion, (err, res) => {
-    if (err) return console.log(err);
-    console.log('leccion terminado ' + id_leccion);
-  })
-  ParaleloModel.leccionTerminada(paralelo._id, (err, res) => {
-    if (err) return console.log(err);
-    console.log('leccion terminada ' + paralelo._id);
-  })
-  var promises = []
-  paralelo.estudiantes.forEach(estudiante => {
-    promises.push(new Promise((resolve, reject) => {
-      EstudianteModel.leccionTerminada(estudiante._id, (err, e) => {
-        if (err) return reject(err)
-        return resolve(true)
-      })
-    }))
-  })
-  Promise.all(promises).then(values => {
-    console.log('terminado leccion estudiantes');
-  }, fail => {
-    console.log(fail);
-  })
+/**
+ * En `paralelo` buscar los grupos y luego ir a GrupoLeccion y settear la `leccion` id y el grupo id, fecha empezado
+ * @param  {Object} paralelo
+ * @param  {Object} leccion
+ */
+function anadirLeccionAGrupos(paralelo, leccion) {
 
 }
 
-// Reemplazar por co
-// function run(generator) {
-//   const iterator = generator()
-//   const iteration = iterator.next()
-//   const promise = iteration.value
-//   promise.then(x => {
-//     const anotherIterator = iterator.next(x)
-//     const anotherPromise = anotherIterator.value
-//     anotherPromise.then(y => iterator.next(y))
-//   })
+/**
+ * Con `estudiante` busco en Estudiante.leccion y obtengo la leccion que esta dando
+ * @param  {Object} estudiante
+ * @return {Promise}            id leccion
+ */
+function queLeccionEstaDandoEstudiante(estudiante) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.obtenerLeccionEstudianteRealtime(estudiante._id, (err, est) => {
+      if (err) return resolve(false)
+      return resolve(est.leccion)
+    })
+  })
+}
+
+// /**
+//  * Con `estudiante` busco en Estudiante y le anado la `leccion` y le anado tambien Estudiante.lecciones.fechaEmpezado
+//  * @param  {Object} estudiante
+//  * @param  {Object} leccion
+//  */
+// function estudianteComenzadoLeccion(estudiante, leccion) {
+//
 // }
+
+
+/**
+ * Con `grupo` busco el grupo y la `leccion` que el `estudiante` este dando y anadirlo a GrupoLeccion.participantes
+ * @param  {Object} grupo
+ * @param  {Object} leccion
+ * @param  {Object} estudiante
+ * @see    si un estudiante se reconecta, si el estudiante existe no agregalo, si se desconecta eliminarlo
+ */
+function guardarParticipanteLeccionGrupo(grupo, leccion, estudiante) {
+
+}
+
+// TODO: para que me servira?
+function guardarSocketIdEstudiante(grupo) {
+
+}
+
+/*
+* LECCION DURANTE TOMADO
+ */
+function obtenerParaleloDeEstudiante(estudiante, callback) {
+ return new Promise((resolve, reject) => {
+   ParaleloModel.obtenerParaleloDeEstudiante(estudiante._id, (err, paralelo) => {
+     if (err) return reject(null)
+     return resolve(paralelo)
+   })
+ })
+}
+
+function obtenerGrupo(_estudiante) {
+ return new Promise((resolve, reject) => {
+   GrupoModel.obtenerGrupoDeEstudiante(_estudiante._id, (err, grupo) => {
+     if (err) return reject(err)
+     if (!grupo) return resolve('no existe en grupo')
+     return resolve(grupo)
+   })
+ })
+}
+
+/**
+ * Con `grupo` obtengo el Grupo.preguntaActual y con `leccion` busco en Leccion para encontrar a que pregunta pertence Grupo.preguntaActual
+ * @param {Object} grupo
+ */
+function obtenerSiguientePregunta(grupo, leccion) {
+  //
+}
+
+/**
+ * Con `grupo` busco de Grupo y dentro a `leccion` y dentro a `estudiante` y cambiar el valor Grupo.participantes.estudiante.preguntaActual a true. Actualizar la Grupo.preguntaActual por + 1
+ * @param {Object} grupo
+ * @param {Object} leccion
+ * @param {Object} estudiante
+ * @see   como saber que ha terminado la pregunta {@link obtenerNumeroUltimaPregunta} y verificar con {@link obtenerPreguntaActual} si son las mismas
+ */
+function preguntaTerminada(grupo, leccion, estudiante) {
+
+}
+
+/**
+ * Obtener de un `grupo` el valor Grupo.preguntaActual
+ * @param  {String} grupo
+ * @return {Promise}       number de la pregunta
+ */
+function obtenerPreguntaActual(grupo) {
+
+}
+
+/**
+ * Obtener el numero de la ultima pregunta de una determinada `leccion`
+ * @param  {Object} leccion
+ * @return {Promise} numero de la ultima pregunta
+ */
+function obtenerNumeroUltimaPregunta(leccion) {
+
+}
+
+/**
+ * Busca a `grupo` en el modelo Grupo y actualiza a false el valor participantes.contestadoPreguntaActual a false de todos
+ * @param  {Object} grupo
+ */
+function preguntaComenzando(grupo) {
+
+}
+
+/**
+ * Verificar si todos los del `grupo` contestaron todas la preguntas en la que estan actualmente en una `leccion`
+ * @param {Object} grupo
+ * @param {Object} leccion
+ * @returns {Promise} true si todos los del grupo contestaron la pregunta que les tocaba
+ */
+function todosEstudiantesGrupoContestaron() {
+  // esto se hara buscando en cada Grupo.participantes y si todos los campos contestadoPreguntaActual estan en true
+}
+
+/**
+ * Guardar la respuesta que da el estudiante
+ * @param  {Object} paralelo
+ * @param  {Object} leccion
+ * @param  {Object} pregunta
+ * @param  {Object} grupo
+ * @param  {Object} estudiante
+ * @param  {String} respuestaEstudiante lo que el estudiante contesto
+ * @return {Promise}            si la accion a sido completada
+ */
+function guardarRespuestaIndividual(paralelo, leccion, pregunta, grupo, estudiante, respuestaEstudiante) {
+
+}
+
+
+/*
+* LECCION FINALIZADO
+ */
+
+/**
+  * Anade a cada estudiante la leccion, cambia valor boolean
+  * @param {Object} paralelo
+  * @param {String} id_leccion
+*/
+function leccionTerminada(paralelo, id_leccion) {
+ // TODO: limpiar el GRUPO.participantes por vacio
+ // TODO: cambiar GRUPO.preguntaActual por 0
+
+ // ingresa la fecha de culminacion de la leccion y cambi el campo estado por 'terminado'
+ LeccionModel.leccionTerminada(id_leccion, (err, res) => {
+   if (err) return console.log(err);
+   console.log('leccion terminado ' + id_leccion);
+ })
+ // cambia valor dandoLeccion en paralelo por false
+ ParaleloModel.leccionTerminada(paralelo._id, (err, res) => {
+   if (err) return console.log(err);
+   console.log('leccion terminada ' + paralelo._id);
+ })
+ var promises = []
+ // anade a cada estudiante la leccion y cambia el boolean dandoLeccion por false
+ // TODO: anadir fecha empezado leccion
+ paralelo.estudiantes.forEach(estudiante => {
+   promises.push(new Promise((resolve, reject) => {
+     EstudianteModel.leccionTerminada(estudiante._id, (err, e) => {
+       if (err) return reject(err)
+       return resolve(true)
+     })
+   }))
+ })
+ Promise.all(promises).then(values => {
+   console.log('terminado leccion estudiantes');
+ }, fail => {
+   console.log(fail);
+ })
+}
+
+
+/*
+* Desconecciones  y reconecciones
+ */
+// TODO: lista de todos los estudiantes conectador durante la leccion para reconeccion profesor
+// TODO: cuando un estudiante de desconecta y no se vuelte a reconectar (se va del curso)
+// TODO: cuando un estudiante se reconecta
+// TODO: cuando un profesor recarga la pagina, reconectar todos los estudiantes
+// TODO: cuando un estudiante recarga la pagina

@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise;
 
 const RespuestaGrupalSchema = mongoose.Schema({
 	_id: {
-		type: String, 
+		type: String,
 		unique: true,
 		'default' : shortid.generate
 	},
@@ -26,9 +26,11 @@ const RespuestaGrupalSchema = mongoose.Schema({
 		type: String,
 		ref: 'Leccion'
 	},
+  fechaIniciada: {
+    type: Date
+  },
 	fechaContestada: {
 		type: Date
 	}
 
-}, {versionKey: false, timestamps: true, collection: 'respuestas'})
-
+}, {versionKey: false, timestamps: true, collection: 'respuestasGrupal'})

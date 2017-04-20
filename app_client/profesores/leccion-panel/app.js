@@ -57,7 +57,12 @@ leccion.on('estudiante conectado', function(_estudiante) {
   if (!existe) {
     App.estudiantes_conectados.push(_estudiante)
     let grupo_index = App.obtenerGrupoEstudiante(_estudiante)
-    App.grupos[grupo_index].estudiantes_conectados.push(_estudiante)
+    if(grupo_index == -1) {
+      // TODO: mensaje que un estudiante no tiene grupo
+      console.log(`${_estudiante} no existe estudiante en grupo`);
+    } else {
+      App.grupos[grupo_index].estudiantes_conectados.push(_estudiante)
+    }
   }
 })
 
