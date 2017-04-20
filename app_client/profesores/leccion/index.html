@@ -49,9 +49,9 @@
 				  	
 				  		<ul class="preguntas">
 				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion._id">
-				  				<a v-bind:href="leccion._id">{{leccion.nombre}}</a>
-								<a v-bind:href="leccion._id">| Puntaje: {{leccion.puntaje}} |</a>
-								<a v-bind:href="leccion._id">Tiempo: {{leccion.tiempoEstimado}}</a>
+				  				<a v-bind:href="'./modificar/'+ leccion._id">{{leccion.nombre}}</a>
+								<a v-bind:href="'./modificar/'+ leccion._id">| Puntaje: {{leccion.puntaje}} |</a>
+								<a v-bind:href="'./modificar/'+ leccion._id">Tiempo: {{leccion.tiempoEstimado}}</a>
 				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id)"><i class="material-icons tiny">delete</i></a>
 				  			</li>
 				  		</ul>
