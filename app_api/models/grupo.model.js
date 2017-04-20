@@ -14,6 +14,39 @@ const GrupoSchema = mongoose.Schema({
 	estudiantes: [{
 		type: String,
 		ref: 'Estudiante',
+	}],
+	paralelo: {
+		type: String,
+		ref: 'Paralelo'
+	},
+	lecciones: [{
+		leccion: {
+			type: String, 
+			ref: 'Leccion'
+		},
+		tiempoBono: {
+			type: String
+		},
+		preguntas: [{
+			pregunta: {
+				type: String,
+				ref: 'Pregunta'
+			},
+			respuestaGrupal:{
+				type: String,
+				ref: 'respuestaGrupal'
+			}
+		}],
+		fechaEmpezado:{
+			type: Date
+		},
+		fechaTerminado: {
+			type: Date
+		},
+		participantes: [{
+			type: String,
+			ref: 'Estudiante'
+		}]
 	}]
 },{versionKey: false, timestamps: true, collection: 'grupos'})
 
@@ -46,6 +79,12 @@ GrupoSchema.statics.eliminarEstudiante = function(id_grupo, id_estudiante, callb
 
 GrupoSchema.statics.obtenerGrupoDeEstudiante = function(id_estudiante, callback) {
   this.findOne({estudiantes: id_estudiante}, callback)
+}
+/*
+	Lecciones
+*/
+GrupoSchema.statics.anadirLeccion = function(id_grupo, id_leccion, id_pregunta){
+
 }
 
 module.exports = mongoose.model('Grupo', GrupoSchema)
