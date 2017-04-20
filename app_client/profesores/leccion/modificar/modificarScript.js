@@ -161,6 +161,10 @@ function filtrarPreguntas(elemento){
       }
   return false;
 }
+
+function regresar(){
+	window.location.href = '/profesores/leccion/'
+}
 function sumarTiempos(objeto_preguntas){
   var acumulador = 0;
   for (var x = 0; x < objeto_preguntas.length; x++){
