@@ -1,192 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="./leccionStyle.css">
-    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-    <title>Nueva Leccion</title>
-  </head>
-  <body>
-    <header>
-		<nav>
-			<!-- Dropdown Structure -->
-			<ul id="dropdownPreguntasDesktop" class="dropdown-content">
-			  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-			  <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
-			  <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
-			</ul>
-			<ul id="dropdownPreguntasMobile" class="dropdown-content">
-			  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-			  <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
-			  <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
-			</ul>
-			<div class="nav-wrapper">
-				<a href="/profesores" class="brand-logo">Profesor</a>
-				<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-				<ul class="right hide-on-med-and-down">
-	        <li><a href="/profesores/leccion">Leccion</a></li>
-	        <li><a href="/profesores/grupos/">Grupos</a></li>
-	        <!--Dropdown button-->
-	        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-	      </ul>
-	      <ul class="side-nav" id="mobile-demo">
-	        <li><a href="#">Lecciones</a></li>
-	        <li><a href="../../grupos">Grupos</a></li>
-	        <!--Dropdown button-->
-	        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-	      </ul>
-			</div>
-		</nav>
-	</header>
-  <div id="app">
-    <div id="pages">
-      <div class="row">
-      <br>
-        <div class="col s6 offset-s3">
-          <ul class="tabs" id="tabs-swipe-demo">
-            <li class="tab col s4"><a class="active" href="#test1">Setup</a></li>
-            <li class="tab col s4"><a href="#test2">Select</a></li>
-            <li class="tab col s4"><a href="#test4">Overview</a></li>
-          </ul>
-        </div>
-      </div>
-      <!--        .::Paso 1, SETUP::.           -->
-      <div id="test1" class="col s12">
-        <div class="page">
-          <div class="seccion-1 row container">
-           <h2 class="center-align">Crear un nueva leccion</h2>
-            <form>
-              <div class="form-group col s10 offset-2">
-                <label for="nombre">nombre</label>
-                <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
-              </div>
-              <!--
-				<div class="form-group input-field offset-2 col s6">
-	                <select v-model="leccion_nueva.tipo">
-	                  <option value="leccion">estimacion</option>
-	                  <option value="tutorial">tutorial</option>
-	                  <option value="experimento">experimento</option>
-		            </select>
-	            </div>
-              -->
-                <!--
-					<div class="form-group input-field col s6">
-	                	<select v-model="leccion_nueva.paralelo" name="paralelo" class="col s6">
-						  <option>{{paralelos}}</option>
-						</select>
-                	</div>
-                -->
-              <div class="form-group col s6">
-                <label for="fechaInicio">fecha inicio</label>
-                <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
-              </div>
-              <div class="form-group col s6">
-              	<form action="#">
-              	<p>
-              		<input name="tipo" type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion" />
-	      			<label for="Estimacion">Estimación</label>
-              	</p>
-              	<p>
-              		<input name="tipo" type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="tutorial" />
-	      			<label for="Tutorial">Tutorial</label>
-              	</p>
-              	<p>
-              		<input name="tipo" type="radio" id="Experimento" v-model="leccion_nueva.tipo" value="experimento" />
-	      			<label for="Experimento">Experimento</label>
-              	</p>
-              </form>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <!--       Paso 2, SELECTION!      -->
-      <div id="test2" class="col s12">
-        <div class="page">
-          <div class="strike">
-            <span>escoger las preguntas</span>
-          </div>
-            <main>
-              <div class="container">
-                <div class="row">
-                  <div class="col s12 m9 l10">
-                    <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
-                      <h5>{{capitulo.nombre}}</h5>
-                      <ul class="preguntas">
-                        <li v-for="pregunta in capitulo.preguntas" class="question">
-                        <p>
-                          <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                          <label v-bind:for="pregunta._id">
-                            {{pregunta.nombre}}
-                          </label>
-                        </p>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+<html>
+	<head>
+		<title>Profesor</title>
+		<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="./leccionStyles.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+	</head>
+	<body>
+		<header>
+			<nav>
+				<!-- Dropdown Structure -->
+				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
+				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+				  <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
+				  <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
+				</ul>
+				<ul id="dropdownPreguntasMobile" class="dropdown-content">
+				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+				  <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
+				  <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
+				</ul>
+				<div class="nav-wrapper">
+					<a href="/profesores" class="brand-logo">Profesor</a>
+					<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+					<ul class="right hide-on-med-and-down">
+		        <li><a href="/profesores/leccion/crear">Crear Leccion</a></li>
+		        <li><a href="/profesores/grupos/">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+		      <ul class="side-nav" id="mobile-demo">
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+				</div>
+			</nav>
+		</header>
+		<main>
+			<div class="container" id="preguntas">
+				<h2 class="center-align">Lecciones</h2>
+			  <div class="row">
+			  	<div class="col s12 m9 l10">
+				  	
+				  		<ul class="preguntas">
+				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion._id">
+				  				<a v-bind:href="'./modificar/'+ leccion._id">{{leccion.nombre}}</a>
+								<a v-bind:href="'./modificar/'+ leccion._id">| Puntaje: {{leccion.puntaje}} |</a>
+								<a v-bind:href="'./modificar/'+ leccion._id">Tiempo: {{leccion.tiempoEstimado}}</a>
+				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id)"><i class="material-icons tiny">delete</i></a>
+				  			</li>
+				  		</ul>
+				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
+				  
+			  	</div>
 
-                  <div class="col hide-on-small-only m3 l2">
-                    <ul class="section table-of-contents">
-                      <li v-for="capitulo in capitulos">
-                        <a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                </div>
-            </main>
-        </div>
-      </div>
+			
+			  	
+		  	</div>
 
+		  	<!-- Modal Eliminar Pregunta Structure -->
+			  <div id="modalEliminarPregunta" class="modal">
+			    <div class="modal-content" id="modalEliminarPreguntaContent">
+			      
+			    </div>
+			    <div class="modal-footer" id="modalEliminarPreguntaFooter">
+			    	
+			    </div>
+			  </div>
 
-      <!--     Paso 3, OVERVIEW       -->
-        <div id="test4" class="col s12">
-          <div class="page">
-          <div class="strike">
-            <span>Resumen</span>
-          </div>
-          <div class="container">
-          <p>Nombre: {{leccion_nueva.nombre}}</p>
-          <p>Tiempo total estimado: {{preguntas_escogidas.tiempoTotal}} minutos</p>
-          <p>Tipo de lección: {{leccion_nueva.tipo}}</p>
-          <p>Fecha prevista: {{leccion_nueva.fechaInicio}}</p>
-          <p>Puntaje total: {{leccion_nueva.puntaje}}</p>
-          <!-- Preguntas Seleccionadas-->
-          <div class="preguntas-selected">
-	            <ul class="preguntas">
-	              <h2>Preguntas escogidas</h2>
-	              <div class="collection">
-	                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
-	                <li v-for="pregunta in preguntas_escogidas.preguntas">
-	                  <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
-	                    <label v-bind:for="pregunta._id" class="maxWidth">
-	                      <p class="collection-item"><span class="badge">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
-	                    </label>
-	                </li>
-	              </div>
-	            </ul>
-	            <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>
-          </div>
+				<!-- Modal Nuevo Capitulo Structure -->
+			 <!-- <div id="modalNuevoCapitulo" class="modal">
+			    <div class="modal-content" id="modalNuevoCapituloContent">
+			    	<h4 class="center-align">Nuevo capítulo</h4>
+			      <div class="row row-capitulo-nuevo">
+			      	<div class="input-field col s12">
+			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo">
+			      		<label for="nombreCapitulo">Nombre del capítulo</label>
+			      	</div>
+			      </div>
+			    </div>
+			    <div class="modal-footer">
+			    	
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoCapitulo($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>-->
 
-          </div>
-        </div>
-      </div>
-    </div>
-    <ul class="pagination" id="myPager"></ul>
-  </div>
-    <footer>
-      <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-      <script src="/bower_components/vue/dist/vue.min.js"></script>
-      <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
-      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-
-      <script src="/bower_components/materialize/bin/materialize.js"></script>
-      <script src="./app.leccion.js"></script>
-      <script src="/js/summernote.js"></script>
-    </footer>
-  </body>
+		  </div>
+		</main>
+		<footer>
+			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
+			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="./verLeccionScript.js"></script>
+		</footer>
+	</body>
 </html>
