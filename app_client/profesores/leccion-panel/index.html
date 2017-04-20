@@ -4,31 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./panelStyle.css">
   <title>Profesor</title>
 </head>
 <body>
   <div id="app">
-    <p v-show="false">{{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
-    <!-- <p>{{grupos}}</p> -->
-    <!-- <p>{{paralelo}}</p> -->
-    <h3>Tiempo {{tiempo}}</h3>
-    <h3>El codigo de la leccion {{leccion.codigo}}</h3>
-    <!-- <div v-for="estudiante in estudiantes_conectados">
-      <p>{{estudiante.nombres}}</p>
-    </div> -->
-    <div v-for="grupo in paralelo.grupos">
-      <div style="">
-        <p>{{grupo.nombre}} {{grupo._id}}</p>
-        <div v-for="estudiante in grupo.estudiantes_conectados">
-          <p>{{estudiante.nombres}} {{estudiante.correo}}</p>
-        </div>
-      </div>
-    </div>
+  	<div class="container">
+	    <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
+	    <!-- <p>{{grupos}}</p> -->
+	    <!-- <p>{{paralelo}}</p> -->
+	    <h3>Tiempo: {{tiempo}} </h3>
+	    <span class="center-align">
+	    	<h3>Código</h3>
+		    <h3 class="code">{{leccion.codigo}}</h3>
+	    </span>
+	    <!-- <div v-for="estudiante in estudiantes_conectados">
+	      <p>{{estudiante.nombres}}</p>
+	    </div> -->
+	    <div class="estudiantes row">
+	    	<div v-for="grupo in paralelo.grupos" class="col s10 offset-s1 grupin">
+		      <div style="" class="col s4">
+		        <p class="group-name center-align">{{grupo.nombre}} {{grupo._id}}</p>
+		        <div v-for="estudiante in grupo.estudiantes_conectados">
+		          <p>{{estudiante.nombres}} {{estudiante.correo}}</p>
+		        </div>
+		      </div>
+		    </div>
+	    </div>
+
+  	</div>
   </div>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/bower_components/vue/dist/vue.min.js"></script>
   <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
   <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
+  <script src="/bower_components/materialize/bin/materialize.js"></script>
   <script src="./app.js" async></script>
 </body>
 </html>
