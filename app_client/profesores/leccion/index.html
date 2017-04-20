@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profesor</title>
+		<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="./leccionStyles.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+	</head>
+	<body>
+		<header>
+			<nav>
+				<!-- Dropdown Structure -->
+				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
+				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+				  <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
+				  <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
+				</ul>
+				<ul id="dropdownPreguntasMobile" class="dropdown-content">
+				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+				  <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
+				  <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
+				</ul>
+				<div class="nav-wrapper">
+					<a href="/profesores" class="brand-logo">Profesor</a>
+					<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+					<ul class="right hide-on-med-and-down">
+		        <li><a href="/profesores/leccion/crear">Crear Leccion</a></li>
+		        <li><a href="/profesores/grupos/">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+		      <ul class="side-nav" id="mobile-demo">
+		        <li><a href="#">Lecciones</a></li>
+		        <li><a href="../../grupos">Grupos</a></li>
+		        <!--Dropdown button-->
+		        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+		      </ul>
+				</div>
+			</nav>
+		</header>
+		<main>
+			<div class="container" id="preguntas">
+				<h2 class="center-align">Lecciones</h2>
+			  <div class="row">
+			  	<div class="col s12 m9 l10">
+				  	
+				  		<ul class="preguntas">
+				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion.id">
+				  				<a v-bind:href="leccion.id">{{leccion.nombre}}</a>
+				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion.id" v-on:click="crearModalEliminarLeccion(leccion.id)"><i class="material-icons tiny">delete</i></a>
+				  			</li>
+				  		</ul>
+				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
+				  
+			  	</div>
+
+			
+			  	
+		  	</div>
+
+		  	<!-- Modal Eliminar Pregunta Structure -->
+			  <div id="modalEliminarPregunta" class="modal">
+			    <div class="modal-content" id="modalEliminarPreguntaContent">
+			      
+			    </div>
+			    <div class="modal-footer" id="modalEliminarPreguntaFooter">
+			    	
+			    </div>
+			  </div>
+
+				<!-- Modal Nuevo Capitulo Structure -->
+			 <!-- <div id="modalNuevoCapitulo" class="modal">
+			    <div class="modal-content" id="modalNuevoCapituloContent">
+			    	<h4 class="center-align">Nuevo capítulo</h4>
+			      <div class="row row-capitulo-nuevo">
+			      	<div class="input-field col s12">
+			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo">
+			      		<label for="nombreCapitulo">Nombre del capítulo</label>
+			      	</div>
+			      </div>
+			    </div>
+			    <div class="modal-footer">
+			    	
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoCapitulo($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>-->
+
+		  </div>
+		</main>
+		<footer>
+			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
+			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="./verLeccionScript.js"></script>
+		</footer>
+	</body>
+</html>
