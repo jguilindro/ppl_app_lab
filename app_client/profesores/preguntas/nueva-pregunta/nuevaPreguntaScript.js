@@ -31,7 +31,7 @@ var app = new Vue({
 		crearPregunta: function(){
 			var self = this;
 			console.log(this.pregunta);
-			var url = 'http://localhost:5000/api/preguntas';
+			var url = '/api/preguntas';
 			this.$http.post(url, self.pregunta).then(response => {
 				//success callback
 				console.log(response)
