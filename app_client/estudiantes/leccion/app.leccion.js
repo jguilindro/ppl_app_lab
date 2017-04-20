@@ -5,6 +5,7 @@ var App = new Vue({
     // this.obtenerLeccion();
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
+    $('.modal').modal();
   },
   methods: {
     obtenerLogeado: function() {
@@ -22,13 +23,13 @@ var App = new Vue({
       this.$http.get(url).then(response => {
         //succcess callback
         self.leccion = response.body.datos;
-        self.obtenerPreguntas();
+        self.obtenerPreguntas(leccionId);
       }, response => {
         //error callback
 
       });
     },
-    obtenerPreguntas: function(){
+    obtenerPreguntas: function(leccionId){
       //Como la api solo devuelve el id de cada pregunta dentro de la leccion, necesitamos hacer llamadas a la api por cada pregunta para obtener su info
       var self = this;
       var id = '';
@@ -41,7 +42,21 @@ var App = new Vue({
         self.$http.get(apiPreguntasUrl).then(response => {
           //successful callback
           //Añado cada pregunta al array preguntas.
-          self.preguntas.push(response.body.datos);
+          var pregunta = response.body.datos
+          console.log(pregunta)
+          pregunta.respuesta = '';
+          pregunta.respondida = false;
+          self.preguntas.push(pregunta);
+          var respuesta = {
+            respuesta: '',
+            feedback: '',
+            calificacion: 0,
+            fechaRespuesta: '',
+            grupo: '',
+            pregunta: pregunta.pregunta,
+            leccion: leccionId
+          }
+          self.respuestas.push(respuesta);
         }, response => {
           //error callback
           consle.log('ERROR');
@@ -49,14 +64,42 @@ var App = new Vue({
         });
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
-
+      console.log(self.respuestas)
+    },
+    responder: function(pregunta){
+      if(!pregunta.respondida){
+        var respuesta = {
+          respuesta: pregunta.respuesta,
+          feedback: '',
+          calificacion: 0,
+          fechaRespuesta: new Date($.now()),
+          grupo: '',
+          pregunta: pregunta._id,
+          leccion: 'Byz7_vE0l'
+        }
+        console.log(respuesta)
+        pregunta.respondida = true;
+      }else{
+        console.log('La pregunta ya fue respondida');
+        $('#modal1').modal('open');
+      }
     }
   },
   data: {
     tiempo: '',
     leccion: {},
     preguntas: [],
-    estudiante: {}
+    estudiante: {},
+    respuesta: {
+      respuesta: '',
+      feedback: '',
+      calificacion: 0,
+      fechaRespuesta: '',
+      grupo: '',
+      pregunta: '',
+      leccion: ''
+    },
+    respuestas: []
   }
 });
 
@@ -75,7 +118,6 @@ socket.on('terminado leccion', function(match) {
   window.location.href = `/estudiantes`
 	console.log('se ha terminado la leccion')
 })
-
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
 })

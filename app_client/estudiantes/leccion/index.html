@@ -38,29 +38,29 @@
                 <p>No se olviden de enviar cada respuesta luego de completarla. Si responen una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
               </div>
             </div>
-            <div class="col s12" v-bind:id="pregunta._id" v-for="pregunta in preguntas" style="display: none">
+            <div class="col s12" v-bind:id="pregunta._id" v-for="(pregunta, index) in preguntas" style="display: none">
               <div class="row row-pregunta">
                 <section id="descripcion-pregunta" class="col s6">
                   <p class="center-align nombre-pregunta">{{pregunta.nombre}}</p>
                   <label>Descripción: {{pregunta.descripcion}}</label>
                   <p v-html="pregunta.descripcion"></p>
-
+                  <label>Respuesta:</label>
+                  <p>{{pregunta.respuesta}}</p>
                 </section>
                 <section id="area-respuesta" class="col s6">
                   <div class="row">
                     <form class="col s12">
                       <div class="row" id="row-area-respuesta">
                         <div class="col s12 input-field">
-                          <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea"></textarea>
+                          <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
                           <label for="textarea-respuesta">Escriba aquí su respuesta</label>
                         </div>
                       </div>
                       <div class="row" id="botones">
-                        <a class="waves-effect waves-light btn pull right">Responder</a>
+                        <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)">Responder</a>
                       </div>
                     </form>
                   </div>
-
                 </section>
               </div>
             </div>
@@ -74,6 +74,15 @@
             </div>
           </div>
         </section>
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <p class="center-align">No se puede corregir una respuesta ya enviada.</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+          </div>
+        </div>
       </div>
     </main>
     <footer>
