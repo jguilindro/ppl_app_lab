@@ -43,7 +43,6 @@ var App = new Vue({
           //successful callback
           //Añado cada pregunta al array preguntas.
           var pregunta = response.body.datos
-          console.log(pregunta)
           pregunta.respuesta = '';
           pregunta.respondida = false;
           self.preguntas.push(pregunta);
@@ -64,7 +63,6 @@ var App = new Vue({
         });
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
-      console.log(self.respuestas)
     },
     responder: function(pregunta){
       if(!pregunta.respondida){
@@ -120,4 +118,8 @@ socket.on('terminado leccion', function(match) {
 })
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
+})
+
+socket.on('pregunta actual', function(pregunta) {
+  console.log(pregunta);
 })

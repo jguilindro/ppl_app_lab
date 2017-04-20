@@ -134,7 +134,7 @@ var App = new Vue({
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
   if (!existe) {
-    let tamano = App.leccion_nueva.preguntas.length
+    let tamano = App.leccion_nueva.preguntas.length + 1
     App.leccion_nueva.preguntas.push({pregunta: _element.id, ordenPregunta: tamano})
   } else {
     App.leccion_nueva.preguntas = App.leccion_nueva.preguntas.filter(pregunta => _element.id != pregunta.pregunta)
