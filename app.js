@@ -63,6 +63,7 @@ app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfe
 
 
 app.use('/estudiantes/', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.use('/estudiantes/ver-leccion', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
 app.use('/estudiantes/tomar-leccion', authEstudiante , function(req, res, next) {
   var EstudianteController = require('./app_api/controllers/estudiantes.controller')
   EstudianteController.verificarPuedeDarLeccion(req.session._id, (match) => {
