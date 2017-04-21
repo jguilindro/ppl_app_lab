@@ -2,7 +2,6 @@ var App = new Vue({
   el: '#app',
   mounted: function(){
     this.obtenerLogeado();
-    // this.obtenerLeccion();
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
     $('.modal').modal();
@@ -14,8 +13,35 @@ var App = new Vue({
         then(res => {
           if (res.body.estado) {
             self.estudiante = res.body.datos;
+            self.obtenerGrupoDeEstudiante();
+            self.obtenerParaleloDeEstudiante();
           }
         });
+    },
+    obtenerGrupoDeEstudiante: function(){
+      var self = this;
+      var url = '/api/grupos/estudiante/'
+      url = url + self.estudiante._id;
+      this.$http.get(url).then(response => {
+        //Success callback
+        self.estudiante.grupo = response.body.datos._id;
+      }, response => {
+        //Error callback
+        console.log(response);
+      });
+    },
+    obtenerParaleloDeEstudiante: function(){
+      var self = this;
+      var url = '/api/paralelos/estudiante/'
+      url = url + self.estudiante._id;
+      this.$http.get(url).then(response => {
+        //SUCCESS CALLBACK
+        self.estudiante.paralelo = response.body.datos._id;
+      }, response => {
+        //ERROR CALLBACK
+        console.log('Error')
+        console.log(response);
+      })
     },
     obtenerLeccion: function(leccionId){
       var self = this;
@@ -30,68 +56,45 @@ var App = new Vue({
       });
     },
     obtenerPreguntas: function(leccionId){
-      //Como la api solo devuelve el id de cada pregunta dentro de la leccion, necesitamos hacer llamadas a la api por cada pregunta para obtener su info
       var self = this;
-      var id = '';
+      var idPregunta = '';
       var apiPreguntasUrl = '/api/preguntas/'
       $.each(self.leccion.preguntas, function(index, pregunta){
-        //Recorro las preguntas de la leccion y obtengo el id de cada una de ellas. Para cada una armo la url de la api con su id
-        id = pregunta.pregunta;
-        apiPreguntasUrl = apiPreguntasUrl + id;
-        //Hago la llamada a la api por cada pregunta
+        idPregunta = pregunta.pregunta;
+        apiPreguntasUrl = apiPreguntasUrl + idPregunta;
         self.$http.get(apiPreguntasUrl).then(response => {
-          //successful callback
-          //Añado cada pregunta al array preguntas.
-          var pregunta = response.body.datos
-          pregunta.respuesta = '';
-          pregunta.respondida = false;
+          //SUCCESS CALLBACK
+          var pregunta = self.crearPregunta(response);
           self.preguntas.push(pregunta);
-          var respuesta = {
-            respuesta: '',
-            feedback: '',
-            calificacion: 0,
-            fechaRespuesta: '',
-            grupo: '',
-            pregunta: pregunta.pregunta,
-            leccion: leccionId
-          }
-          self.respuestas.push(respuesta);
         }, response => {
-          //error callback
+          //ERROR CALLBACK
           consle.log('ERROR');
           console.log(response);
         });
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
     },
-    obtenerGrupoDeEstudiante: function(){
-      var self = this;
-      var url = '/api/grupos/estudiante/'
-      url = url + self.estudiante._id;
-      this.$http.get(url).then(response => {
-        //Success callback
-        console.log('mira lo siguiente')
-        console.log(response)
-        self.estudiante.grupo = response.datos._id;
-      }, response => {
-        //Error callback
-      });
+    crearPregunta: function(res){
+      var pregunta = res.body.datos;
+      pregunta.respuesta = '';
+      pregunta.respondida = false;
+      return pregunta;
     },
     responder: function(pregunta){
       var self = this;
+      var respuesta = self.crearRespuesta(pregunta);
+        console.log(respuesta);
+        var url = '/api/respuestas/'
+        this.$http.post(url, respuesta).then(response => {
+          //Success callback
+          console.log(response);
+          pregunta.respondida = true;
+        }, response => {
+          //Error callback
+          console.log(response);
+        });/*
       if(!pregunta.respondida){
-        var respuesta = {
-          estudiante: self.estudiante._id,
-          leccion: self.leccion._id,
-          pregunta: pregunta._id,
-          paralelo: '',
-          grupo: self.estudiante.grupo,
-          contestado: true,
-          respuesta: pregunta.respuesta,
-          feedback: '',
-          calificacion: 0
-          //fechaRespuesta: new Date($.now())
-        }
+        var respuesta = self.crearRespuesta(pregunta);
         console.log(respuesta);
         var url = '/api/respuestas/'
         this.$http.post(url, respuesta).then(response => {
@@ -106,7 +109,22 @@ var App = new Vue({
       }else{
         console.log('La pregunta ya fue respondida');
         $('#modal1').modal('open');
+      }*/
+    },
+    crearRespuesta: function(pregunta){
+      var self = this;
+      var respuesta = {
+        estudiante: self.estudiante._id,
+        leccion: self.leccion._id,
+        pregunta: pregunta._id,
+        paralelo: self.estudiante.paralelo,
+        grupo: self.estudiante.grupo,
+        contestado: true,
+        respuesta: pregunta.respuesta,
+        feedback: '',
+        calificacion: 0
       }
+      return respuesta;
     }
   },
   data: {

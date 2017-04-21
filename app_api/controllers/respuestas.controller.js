@@ -23,12 +23,6 @@ const crearRespuesta = (req, res) => {
 }
 
 const obtenerRespuestasPorGrupoAPregunta = (req, res) => {
-	let query = {
-		leccion: req.body.leccion,
-		pregunta: req.body.pregunta,
-		grupo: req.body.grupo
-	}
-	console.log(query)
 	RespuestaModel.obtenerRespuestasPorGrupoAPregunta(req.body.leccion, req.body.pregunta, req.body.grupo, (err, respuesta) => {
 		if(err) return response.serverError(res);
 		return response.ok(res, respuesta);
