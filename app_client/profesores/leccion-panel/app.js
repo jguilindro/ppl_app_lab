@@ -80,11 +80,18 @@ leccion.on('tiempo restante', function(tiempo) {
 })
 
 leccion.on('terminado leccion', function(match) {
-  App.tiempo = 'leccion terminada'
+  App.tiempo = 'leccion detenida'
 	console.log('se ha terminado la leccion')
 })
 
+function terminarLeccion() {
+  document.getElementById('terminar-leccion').disabled = true
+  leccion.emit('parar leccion', 'la leccion ha sido detenida')
+}
 
+function terminarLeccionDevelopment() {
+  leccion.emit('parar leccion development', 'la leccion ha sido detenida')
+}
 
 // grupos del curso
 // var no_codigo_ingresado = io('/no_codigo')
