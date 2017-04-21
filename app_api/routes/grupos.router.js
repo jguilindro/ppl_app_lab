@@ -11,4 +11,6 @@ router.post('/:id_grupo/estudiantes/:id_estudiante', GruposController.anadirEstu
 router.delete('/:id_grupo/estudiantes/:id_estudiante', GruposController.eliminarEstudiante);
 
 
+router.get('/estudiante/:id_estudiante', GruposController.obtenerGrupoDeEstudiante);
+
 module.exports = router

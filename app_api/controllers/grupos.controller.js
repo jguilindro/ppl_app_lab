@@ -60,6 +60,14 @@ const eliminarEstudiante = (req, res) => {
   })
 }
 
+
+const obtenerGrupoDeEstudiante = (req, res) => {
+  GrupoModel.obtenerGrupoDeEstudiante(req.params.id_estudiante, (err, doc) => {
+    if(err) return respuesta.serverError(res);
+    return respuesta.ok(res, doc);
+  })
+}
+
 module.exports = {
   obtenerTodosGrupos,
   crearGrupo,
@@ -69,4 +77,5 @@ module.exports = {
   // estudiantes
   anadirEstudiante,
   eliminarEstudiante,
+  obtenerGrupoDeEstudiante
 }

@@ -14,6 +14,7 @@ var App = new Vue({
         then(res => {
           if (res.body.estado) {
             self.estudiante = res.body.datos;
+            self.obtenerGrupoDeEstudiante();
           }
         });
     },
@@ -64,19 +65,45 @@ var App = new Vue({
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
     },
+    obtenerGrupoDeEstudiante: function(){
+      var self = this;
+      var url = '/api/grupos/estudiante/'
+      url = url + self.estudiante._id;
+      this.$http.get(url).then(response => {
+        //Success callback
+        console.log('mira lo siguiente')
+        console.log(response)
+        self.estudiante.grupo = response.datos._id;
+      }, response => {
+        //Error callback
+      });
+    },
     responder: function(pregunta){
+      var self = this;
       if(!pregunta.respondida){
         var respuesta = {
+          estudiante: self.estudiante._id,
+          leccion: self.leccion._id,
+          pregunta: pregunta._id,
+          paralelo: '',
+          grupo: self.estudiante.grupo,
+          contestado: true,
           respuesta: pregunta.respuesta,
           feedback: '',
-          calificacion: 0,
-          fechaRespuesta: new Date($.now()),
-          grupo: '',
-          pregunta: pregunta._id,
-          leccion: 'Byz7_vE0l'
+          calificacion: 0
+          //fechaRespuesta: new Date($.now())
         }
-        console.log(respuesta)
-        pregunta.respondida = true;
+        console.log(respuesta);
+        var url = '/api/respuestas/'
+        this.$http.post(url, respuesta).then(response => {
+          //Success callback
+          console.log(response);
+          pregunta.respondida = true;
+        }, response => {
+          //Error callback
+          console.log(response);
+        });
+
       }else{
         console.log('La pregunta ya fue respondida');
         $('#modal1').modal('open');
