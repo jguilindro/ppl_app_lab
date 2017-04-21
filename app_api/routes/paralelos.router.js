@@ -19,6 +19,7 @@ router.get('/profesores/mis_paralelos', ParalelosController.obtenerParalelosProf
 // estudiantes
 router.post('/:id_paralelo/estudiantes/:id_estudiante', ParalelosController.anadirEstudianteAParalelo);
 router.delete('/:id_paralelo/estudiantes/:id_estudiante', ParalelosController.eliminarEstudianteDeParalelo);
+router.get('/estudiante/:id_estudiante', ParalelosController.obtenerParaleloDeEstudiante);
 
 
 // Lecciones
