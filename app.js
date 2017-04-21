@@ -93,7 +93,7 @@ app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
 app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
-app.use('/api/respuestas', require('./app_api/routes/respuestaIndividual.router'));
+app.use('/api/respuestas', require('./app_api/routes/respuestas.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

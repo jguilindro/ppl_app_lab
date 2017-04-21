@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 mongoose.Promise = global.Promise;
 
-const respuestasEstudiantesSchema = mongoose.Schema({
+const respuestasSchema = mongoose.Schema({
 	_id: {
 		type: String,
 		unique: true,
@@ -47,10 +47,15 @@ const respuestasEstudiantesSchema = mongoose.Schema({
 	feedback: {
 		type: String
 	}
-}, {versionKey: false, timestamps: true, collection: 'respuestasEstudiantes'})
+}, {versionKey: false, timestamps: true, collection: 'respuestas'})
 
-respuestasEstudiantesSchema.methods.crearRespuesta = function(callback){
+respuestasSchema.methods.crearRespuesta = function(callback){
   this.save(callback);
 }
 
-module.exports = mongoose.model('Respuesta', respuestasEstudiantesSchema);
+respuestasSchema.statics.obtenerRespuestasPorGrupoAPregunta = function(id_leccion, id_pregunta, id_grupo, callback){
+  this.find({$and: [{leccion:id_leccion}, {pregunta:id_pregunta}, {grupo:id_grupo}]}, callback);
+}
+
+
+module.exports = mongoose.model('Respuesta', respuestasSchema);

@@ -1,8 +1,8 @@
-const RespuestaIndividualModel = require('../models/respuestaIndividual');
+const RespuestaModel = require('../models/respuestas.model');
 var response = require('../utils/responses');
 
 const crearRespuesta = (req, res) => {
-	let resp = new RespuestaIndividualModel({
+	let resp = new RespuestaModel({
 		estudiante: req.body.estudiante,
 		leccion: req.body.leccion,
 		pregunta: req.body.pregunta,
@@ -22,6 +22,21 @@ const crearRespuesta = (req, res) => {
 	});
 }
 
-module.exports = {
-	crearRespuesta
+const obtenerRespuestasPorGrupoAPregunta = (req, res) => {
+	let query = {
+		leccion: req.body.leccion,
+		pregunta: req.body.pregunta,
+		grupo: req.body.grupo
+	}
+	console.log(query)
+	RespuestaModel.obtenerRespuestasPorGrupoAPregunta(req.body.leccion, req.body.pregunta, req.body.grupo, (err, respuesta) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, respuesta);
+	})
 }
+
+module.exports = {
+	crearRespuesta,
+	obtenerRespuestasPorGrupoAPregunta
+}
+
