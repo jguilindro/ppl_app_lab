@@ -126,6 +126,13 @@ const eliminarEstudianteDeParalelo = (req, res) => {
   })
 }
 
+const obtenerParaleloDeEstudiante = (req, res) => {
+  ParaleloModel.obtenerParaleloDeEstudiante(req.params.id_estudiante, (err, doc) => {
+    if(err) return respuesta.serverError(res);
+    return respuesta.ok(res, doc);
+  })
+}
+
 
 /*
 Lecciones
@@ -161,6 +168,8 @@ const dandoLeccion = (req, res) => {
 }
 
 
+
+
 module.exports = {
   obtenerTodosParalelos,
   crearParalelo,
@@ -177,6 +186,7 @@ module.exports = {
   // estudiante
   anadirEstudianteAParalelo,
   eliminarEstudianteDeParalelo,
+  obtenerParaleloDeEstudiante,
 	// lecciones
 	dandoLeccion,
 }
