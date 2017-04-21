@@ -14,7 +14,6 @@ var App = new Vue({
         then(res => {
           if (res.body.estado) {
             self.estudiante = res.body.datos;
-            self.obtenerGrupoDeEstudiante();
           }
         });
     },
