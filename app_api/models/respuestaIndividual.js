@@ -48,3 +48,9 @@ const respuestasEstudiantesSchema = mongoose.Schema({
 		type: String
 	}
 }, {versionKey: false, timestamps: true, collection: 'respuestasEstudiantes'})
+
+respuestasEstudiantesSchema.methods.crearRespuesta = function(callback){
+  this.save(callback);
+}
+
+module.exports = mongoose.model('Respuesta', respuestasEstudiantesSchema);

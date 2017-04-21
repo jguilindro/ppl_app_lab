@@ -6,6 +6,7 @@ var pregunta = new Vue({
 		$('.myEditor').materialnote();
 		$(".note-editor").find("button").attr("type", "button");		//No borrar. Corrige el error estupido de materialNote
 		$('select').material_select();
+		 $('.modal').modal();
 	},
 	data: {
 		aux: true,
@@ -78,6 +79,19 @@ var pregunta = new Vue({
 				location.reload();
 			}, response => {
 				//error callback
+			});
+		},
+		eliminarPregunta: function(){
+			var self = this;
+			var url = '/api/preguntas/'
+			var preguntaId = window.location.href.toString().split('/')[6];
+			url = url + preguntaId;
+			this.$http.delete(url).then(response => {
+				//Successful callback
+				console.log(response);
+				window.location.href = '../';
+			}, response => {
+				console.log(response)
 			});
 		}
 	}

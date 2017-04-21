@@ -103,7 +103,7 @@
 	              </div>
 	            	<div class="row row-ver" id="row-ver-btn">
 	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar">Editar</a>
-	            		<a class="waves-effect waves-light btn">Eliminar</a>
+	            		<a class="waves-effect waves-light btn"  href="#modalEliminar">Eliminar</a>
 	            	</div>
 	            </div>
 	            
@@ -204,7 +204,17 @@
 						</div>
 					</div>
 	      </div>
-
+	       <!-- Modal Structure -->
+			  <div id="modalEliminar" class="modal">
+			    <div class="modal-content">
+			      <h4>Eliminar</h4>
+			      <p>¿Desea eliminar la pregunta?</p>
+			    </div>
+			    <div class="modal-footer">
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="eliminarPregunta">Eliminar</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			    </div>
+			  </div>
 			</div>	
 		</main>
 		<footer>
