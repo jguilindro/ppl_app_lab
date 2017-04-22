@@ -80,6 +80,7 @@ var app = new Vue({
 			var encontroCapitulo = false;
 			this.$http.get('/api/preguntas').then(response => {
 				//success callback				
+				self.preguntas = response.body.datos
 				$.each(self.preguntas, function(index, pregunta){
 					pregunta['show'] = true;
 					if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
