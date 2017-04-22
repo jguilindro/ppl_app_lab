@@ -85,12 +85,13 @@ leccion.on('terminado leccion', function(match) {
 })
 
 function terminarLeccion() {
-  document.getElementById('terminar-leccion').disabled = true
   leccion.emit('parar leccion', 'la leccion ha sido detenida')
+  document.getElementById('terminar-leccion').disabled = true
 }
 
 function terminarLeccionDevelopment() {
   leccion.emit('parar leccion development', 'la leccion ha sido detenida')
+  document.getElementById('terminar-leccion-delelopment').disabled = true
 }
 
 // grupos del curso
