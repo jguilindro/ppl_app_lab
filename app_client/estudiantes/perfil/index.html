@@ -36,7 +36,7 @@
 									<td>{{leccion.leccion.calificacion}}</td>
 									<td>{{leccion.fechaEmpezado}}</td>
 									<td v-if="leccion.leccion.estado=='terminado'">
-										<button class="btn waves-effect waves-light">Ver</button>
+											<button class="btn waves-effect waves-light" v-bind:id=leccion.leccion._id v-on:click="verLeccion($event)">Ver</button>
 									</td>
 									<td v-else-if="leccion.leccion.estado=='pendiente'">
 										<button class="btn waves-effect waves-light blue lighten-1" v-on:click="tomarLeccion()">Tomar</button>
