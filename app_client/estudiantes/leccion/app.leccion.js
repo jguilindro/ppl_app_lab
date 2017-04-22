@@ -82,20 +82,8 @@ var App = new Vue({
     },
     responder: function(pregunta){
       var self = this;
-      var respuesta = self.crearRespuesta(pregunta);
-        console.log(respuesta);
-        var url = '/api/respuestas/'
-        this.$http.post(url, respuesta).then(response => {
-          //Success callback
-          console.log(response);
-          pregunta.respondida = true;
-        }, response => {
-          //Error callback
-          console.log(response);
-        });/*
       if(!pregunta.respondida){
         var respuesta = self.crearRespuesta(pregunta);
-        console.log(respuesta);
         var url = '/api/respuestas/'
         this.$http.post(url, respuesta).then(response => {
           //Success callback
@@ -109,7 +97,7 @@ var App = new Vue({
       }else{
         console.log('La pregunta ya fue respondida');
         $('#modal1').modal('open');
-      }*/
+      }
     },
     crearRespuesta: function(pregunta){
       var self = this;
@@ -125,6 +113,15 @@ var App = new Vue({
         calificacion: 0
       }
       return respuesta;
+    },
+    responderTodas: function(){
+      var self = this;
+      $.each(self.preguntas, function(index, pregunta){
+        if(!pregunta.respondida){
+          self.responder(pregunta);
+        }
+      });
+      window.location.href = "/estudiantes";
     }
   },
   data: {
@@ -157,7 +154,8 @@ socket.on('tiempo restante', function(tiempo) {
 })
 
 socket.on('terminado leccion', function(match) {
-  window.location.href = `/estudiantes`
+  App.responderTodas();
+  //window.location.href = `/estudiantes`
 	console.log('se ha terminado la leccion')
 })
 socket.on('leccion id', function(id_leccion) {

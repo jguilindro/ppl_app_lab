@@ -109,7 +109,7 @@ var laboratorio = new Vue({
 								laboratorio.preguntas.push(pregunta);
 								flag = true;	//Cambia la bandera indicando que encontro el laboratorio
 								
-								return;
+								return false;
 							}else{
 								flag=false;
 							}

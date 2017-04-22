@@ -3,12 +3,12 @@ var App = new Vue({
   mounted: function(){
     this.obtenerLogeado();
     this.obtenerLeccion();
-    this.obtenerGrupo();
+    $('ul.tabs').tabs();
   },
   data: {
     estudiante: {},
     leccion: {},
-    grupos: {}
+    grupos: []
   },
   methods: {
     tomarLeccion : function(){
@@ -20,44 +20,58 @@ var App = new Vue({
         then(res => {
           if (res.body.estado) {
             self.estudiante = res.body.datos;
+            var grupo = this.obtenerGrupoDeEstudiante(self.estudiante)
           }
         });
     },
     obtenerLeccion: function(){
       //  rkK9Xv8Ax id de la lección para pruebas inmediatas.
       var self = this;
-      this.$http.get('/api/lecciones/rkK9Xv8Ax').
+      path = window.location.pathname;
+            
+      //Break the path into segments
+      segments = path.split("/");
+      url = '/api/lecciones/' + segments[3]
+      this.$http.get(url).
         then(res => {
           if (res.body.estado) {
             self.leccion = res.body.datos;
           }
         }); 
     },
-    obtenerGrupo: function(){
-      //  rkK9Xv8Ax id de la lección para pruebas inmediatas.
+    obtenerGrupoDeEstudiante: function(estudiante){
       var self = this;
-      this.$http.get('/api/grupos').
-        then(res => {
-          if (res.body.estado) {
-            self.grupos = res.body.datos;
-            var grupo = datoFiltrado();
-          }
-        }); 
+      var url = '/api/grupos/estudiante/'
+      url = url + estudiante._id;
+      this.$http.get(url).then(response => {
+        //Success callback
+        for(var x = 0; x < this.leccion.preguntas.length; x++){
+          this.obtenerRespuestas(response.body.datos._id, self.leccion._id, this.leccion.preguntas[x].pregunta);
+        }        
+      }, response => {
+        //Error callback
+      });    
+    },
+    obtenerRespuestas: function(grupo_id, leccion_id, pregunta_id){
+      var url = '/api/respuestas/buscar'
+      var self = this;
+      var param = {
+        grupo: grupo_id,
+        leccion: leccion_id,
+        pregunta: pregunta_id
+      }
+      this.$http.post(url, param).then(response => {
+        //success callback
+        this.grupos.push(response.body.datos)
+        }, response => {
+        //error callback
+        console.log(response)
+      });
     }
   }
 })
-function datoFiltrado(){
-  var grupo = App.grupos.filter(filterGrupo);
-}
-function filterGrupo(){
-  for(var y = 0; y < App.grupos.length; y++){
-    for(var x = 0; x < App.grupos[y].estudiantes.length; x++){
-      if (App.estudiante._id == App.grupos[y].estudiantes[x]._id)
-        return true;
-    }
-  }
-  return false;
-}
+      //  rkK9Xv8Ax id de la lección para pruebas inmediatas.
+
 //App.leccion_nueva.preguntas
 
 /*
@@ -71,3 +85,9 @@ function filtrarPreguntas(elemento){
 */
 
 //   var selected = App.preguntas.filter(filtrarPreguntas);
+
+/*
+
+
+
+*/

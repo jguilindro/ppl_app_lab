@@ -10,11 +10,26 @@
 </head>
 <body id="grad">
 	<div id="app">
-		<p>{{estudiante}}</p>
-		<br>
-		<p>{{leccion}}</p>
-		<br><hr>
-		<p>{{grupos}}</p>
+		<div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<ul class="tabs">
+					<div v-for="pregunta in leccion.preguntas">
+						<li class="tab col s3">
+							<a v-bind:href="'#' + pregunta.pregunta" >
+								{{pregunta.ordenPregunta}}
+							</a>
+						</li>
+					</div>
+				</ul>
+			</div>
+				<div v-for="grupo in grupos">
+					<div v-bind:id=grupo[0].pregunta class="col s12">
+						{{grupo[0].respuesta}}
+					</div>
+				</div>
+		</div>
 	</div>
 	<footer>
 		<script src="/bower_components/jquery/dist/jquery.js"></script>

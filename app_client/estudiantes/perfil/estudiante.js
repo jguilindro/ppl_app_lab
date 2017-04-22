@@ -22,6 +22,11 @@ var app = new Vue({
             console.log(self.estudiante)
           }
         });
+    },
+    verLeccion: function(event){
+      leccion = event.currentTarget.id;
+      window.location.href = '/estudiantes/ver-leccion/' + leccion;
     }
   }
 });
+
