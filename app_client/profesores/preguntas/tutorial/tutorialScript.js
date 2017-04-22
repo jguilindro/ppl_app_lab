@@ -109,7 +109,7 @@ var practica = new Vue({
 								tutorial.preguntas.push(pregunta);
 								flag = true;	//Cambia la bandera indicando que encontro el tutorial
 								
-								return;
+								return false;
 							}else{
 								flag=false;
 							}
