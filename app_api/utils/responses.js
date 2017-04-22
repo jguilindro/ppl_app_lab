@@ -73,6 +73,10 @@ function noOK (res) {
   return res.status(200).json({estado: false});
 }
 
+function noOKMensaje (res, datos) {
+  return res.status(200).json({estado: false, datos: datos});
+}
+
 function ok (res, datos) {
   return res.status(200).json({estado: true, datos: datos});
 }
@@ -87,6 +91,10 @@ function okAnadido (res) {
 
 function okActualizado (res) {
   return res.status(200).json({estado: true});
+}
+
+function okMensaje (res, datos) {
+  return res.status(200).json({estado: true, datos: datos});
 }
 
 function creado (res, datos) {
@@ -109,6 +117,7 @@ module.exports = {
     // validos
     ok,
     creado,
+    noOKMensaje,
     // no validos
     noOK
   }

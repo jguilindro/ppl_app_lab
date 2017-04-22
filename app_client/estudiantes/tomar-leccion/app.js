@@ -10,14 +10,24 @@ app = new Vue({
         })
     },
     verificarEstudiantPuedeDarLeccion() {
-      this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
-        then(res => {
-          if (res.body.estado) {
-            window.location.href = `/estudiantes/leccion`
-          } else {
-            console.log(res.body)
-          }
-        })
+      if (!this.codigo_leccion) {
+        Materialize.toast('Ingrese el codigo', 4000)
+      } else {
+        this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
+          then(res => {
+            console.log(res.body);
+            if (res.body.estado) {
+              window.location.href = `/estudiantes/leccion`
+            } else {
+              if (res.body.datos) {
+                Materialize.toast(res.body.datos.mensaje, 4000)
+              } else {
+                Materialize.toast('no hay lecciones por dar', 4000)
+              }
+              console.log(res.body)
+            }
+          })
+      }
     }
   },
   data: {

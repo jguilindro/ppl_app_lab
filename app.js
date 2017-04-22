@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 app.use(session({
 	secret: 'MY-SESSION-DEMO',
-	resave: true,
+	resave: false,
 	saveUninitialized: false,
   store: new MongoStore({ url: require('./app_api/utils/change_database').session() })
 }));
@@ -61,7 +61,7 @@ app.use('/profesores/leccion/modificar/:id',authProfesor, express.static(path.jo
 app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 
 
-
+const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 app.use('/estudiantes/', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 app.use('/estudiantes/ver-leccion/:id', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
 app.use('/estudiantes/tomar-leccion', authEstudiante , function(req, res, next) {
@@ -86,6 +86,8 @@ app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
     }
   })
 },express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
+app.use('/estudiantes/tomar-leccion', authEstudiante , estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+app.use('/estudiantes/leccion', authEstudiante,estudianteDandoLeccion ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));

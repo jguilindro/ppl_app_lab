@@ -1,6 +1,8 @@
 const EstudianteModel = require('../models/estudiante.model');
 const ParaleloModel = require('../models/paralelo.model');
 const LeccionModel = require('../models/leccion.model');
+const GrupoModel = require('../models/grupo.model');
+const co = require('co')
 
 var respuesta = require('../utils/responses');
 /*
@@ -40,19 +42,26 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
     if (err) {
       return respuesta.serverError(res)
     }else if (paralelo.dandoLeccion) {
-      LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
-        if (err) return respuesta.serverError(res);
-        if (!leccion) return respuesta.noOK(res);
-        EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
-          if (err) return respuesta.serverError(res);
-          if (!estudiante) return respuesta.noOK(res);
-          EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
-            if (err) return respuesta.serverError(res)
-            req.app.set('habilitado_para_leccion', true)
-            return respuesta.okAnadido(res);
-          // TODO: setearle al estudiante la leccion y que la esta dando
+      GrupoModel.obtenerGrupoDeEstudiante(_id, (err, grupo) => {
+        if (err ) return respuesta.serverError(res)
+        if (!grupo) {
+          return respuesta.noOKMensaje(res, {mensaje: 'no esta anadido en ningun paralelo'})
+        } else {
+          LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
+            if (err) return respuesta.serverError(res);
+            if (!leccion) return respuesta.noOK(res);
+            EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
+              if (err) return respuesta.serverError(res);
+              if (!estudiante) return respuesta.noOK(res);
+              EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
+                if (err) return respuesta.serverError(res)
+                req.app.set('habilitado_para_leccion', true)
+                return respuesta.okAnadido(res);
+              // TODO: setearle al estudiante la leccion y que la esta dando
+              })
+            })
           })
-        })
+        }
       })
     } else {
       return respuesta.noOK(res); // DOCUMENTACION
