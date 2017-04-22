@@ -132,7 +132,6 @@ var app = new Vue({
       // $('#grupo-nombre').val('');
       if (this.grupos != 0) {
         ultimo_grupo = this.grupos[this.grupos.length - 1].nombre.split(' ')
-        console.log(ultimo_grupo)
         nombre_grupo = `Grupo ${parseInt(ultimo_grupo[1]) + 1}`
       } else {
         nombre_grupo = `Grupo 1`
@@ -318,3 +317,53 @@ $('.grid').masonry({
   itemSelector: '.grid-item',
   columnWidth: 80
 });
+
+function escogerEstudiante(element) {
+  // let ele = document.getElementById(element.id)
+  let ele = document.getElementById(element.id).firstChild;
+  let button = document.createElement('button')
+  button.setAttribute('id', `${element.id}1`)
+  button.setAttribute('onmousemove', 'borrarBotonEliminar(this)')
+  button.innerHTML = 'x'
+  //button.onclick = borrarAlumno(element)
+  ele.appendChild(button)
+  console.log(element.id);
+}
+
+function borrarBotonEliminar(element) {
+
+  if (element) {
+    console.log(element);
+  }
+  var ele = document.getElementById(`${element.id}1`);
+  // if (ele) {
+  //
+  //   ele.outerHTML = "";
+  //   delete ele;
+  // }
+}
+
+/* drag and drop scrolling*/
+var stop = true;
+$(".nombres-estudiantes-grupo").on("drag", function (e) {
+  stop = true;
+  if (e.originalEvent.clientY < 150) {
+    stop = false;
+    scroll(-1)
+  }
+  if (e.originalEvent.clientY > ($(window).height() - 150)) {
+    stop = false;
+    scroll(1)
+  }
+});
+
+$(".nombres-estudiantes-grupo").on("dragend", function (e) {
+    stop = true;
+  });
+var scroll = function (step) {
+  var scrollY = $(window).scrollTop();
+  $(window).scrollTop(scrollY + step);
+  if (!stop) {
+    setTimeout(function () { scroll(step) }, 20);
+  }
+}

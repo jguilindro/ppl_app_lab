@@ -18,6 +18,14 @@ div#grupos {
 	background: #F5F5F5;
   overflow-y: scroll;
   overflow-x: hidden;
+  border-radius: 10px;
+}
+
+/*input custom*/
+
+.scrollbar::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .force-overflow
@@ -43,7 +51,7 @@ div#grupos {
 
  #style-4::-webkit-scrollbar-thumb
  {
- 	background-color: #ee6e73;
+ 	background-color: #ebebeb;
  	border: 2px solid #555555;
  }
 
@@ -79,16 +87,18 @@ div.nombre-grupo {
 }
 
 div.grupo-completo {
-  background-color: #ee6e73;
+  background-color: #cccccc;
 }
 
-span.nombres-estudiante {
-  font-size: 1em;
+div.nombres-estudiante {
+  font-size: 1.1em;
+  padding: 2%;
 }
 
 div.nombres-estudiantes-grupo {
   margin-top: 2%;
   margin-bottom: 2%;
+  text-align: center;
 }
 
 button.boton-borrar {
@@ -133,7 +143,7 @@ div.divisor {
 .grid-item {
   width: 31.333%;
   float: left;
-  margin-top: 2%;
+  margin-top: 0%;
   margin-left: 1%;
   margin-right: 1%;
   display:inline-block;
@@ -146,7 +156,7 @@ div.divisor {
 .grid-item-clear {
   width: 31.333%;
   float: left;
-  margin-top: 2%;
+  margin-top: 0%;
   margin-left: 1%;
   margin-right: 1%;
   display:inline-block;
@@ -164,5 +174,5 @@ span.nombres-estudiantes-sin-grupo {
 }
 
 span.nombres-estudiantes-sin-grupo:hover{
-  background-color: #CC444B;
+  background-color: #D9d9d9;
 }

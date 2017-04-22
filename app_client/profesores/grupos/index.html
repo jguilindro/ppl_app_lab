@@ -45,20 +45,10 @@
 				</div>
 			</nav>
 		</header>
-		<div class="row" id="grupos">
-			<!-- Select de Paralelos -->
-        <!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
-          <span class="glyphicon glyphicon-remove icono"></span>
-        </button> -->
+    <!-- fin del nav -->
 
-      <!-- inicio estudiantes sin grupos -->
-      <!-- <div class="col s6">
-        <div class="" v-for="estudiante in estudiantesSinGrupo">
-          <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
-            <span class="">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
-          </div>
-        </div>
-      </div> -->
+    <!-- inicio de estudiantes sin grupo -->
+		<div class="row" id="grupos">
       <div class="col s4 center">
         <div class="estudiantes-sin-grupo">
           <div class="scrollbar" id="style-4">
@@ -77,42 +67,34 @@
 
       <!-- inicio grupos -->
       <div class="col s8">
+        <!-- selector proximamente no borrar -->
+        <!-- <select id="selector" onchange="obtenerParaleloEscogido(this)">
+ 					<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
+ 				</select> -->
         <section>
           <div class="grid">
 					<div v-for="(grupo, index) in grupos">
-						<!-- <li class="" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)"> {{grupo.nombre}}
-							<div class="" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-								<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="">
-									<i class="">delete</i>
-								</button>
-								<span class="">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
-							</div>
-						</li> -->
-            <div v-if="index%3 == 0" class="divisor">
+            <div v-if="index%3 == 0" class="divisor"> <!--divisor para separar por grupos de tres-->
             </div>
               <div v-bind:class="[index%3 == 2 ? grid_item : grid_item_clear]">
-                <!-- col s4 center grupos  -->
                 <div class="grupos-drop" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-                  <div class="grupo-completo z-depth-5">
+                  <div class="grupo-completo z-depth-4">
                     <div class="nombre-grupo">
                       <span class="nombre-grupo">{{grupo.nombre}}</span>
                     </div>
-      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
-      								<!-- <button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="boton-borrar"> -->
-      									<a class="btn-floating" v-bind:id="estudiante._id" onclick="borrarAlumno(this)"><i class="material-icons">delete</i></a>
-      								<!-- </button> -->
-      								<span class="nombres-estudiante">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
+      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes" onclick="escogerEstudiante(this)">
+                      <!-- onmouseout="borrarBotonEliminar(this)" -->
+      								<div class="nombres-estudiante">{{estudiante.nombres}} {{estudiante.apellidos}}</div>
       							</div>
                   </div>
                 </div>
               </div>
-
 					</div>
 				</section>
       </div>
       <!-- fin grupos -->
     </div>
-    <!-- fin del grid -->
+    <!-- fin del grid materialize-->
 		</div>
     <!-- fin del app -->
 		<footer>
