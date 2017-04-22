@@ -16,15 +16,19 @@
     "tests"
   ],
   "dependencies": {
+    "animate.css": "^3.5.2",
     "bootstrap": "^3.3.7",
-    "font-awesome": "^4.7.0",
+    "hover": "^2.1.1",
+    "flatpickr": "flatpickr-calendar#^2.4.8",
     "materialize": "^0.98.0",
+    "async": "^2.3.0",
+    "Sortable": "^1.5.1",
     "socket.io-client": "^1.7.2",
     "vue-resource": "^1.2.1",
-    "vuex": "^2.2.1",
-    "vue-router": "^2.4.0",
     "vue-strap": "^1.1.37",
-    "flatpickr": "flatpickr-calendar#^2.4.8",
-    "vue": "^2.2.6"
+    "font-awesome": "^4.7.0",
+    "vuex": "^2.2.1",
+    "vue": "^2.2.6",
+    "vue-router": "^2.4.0"
   }
 }

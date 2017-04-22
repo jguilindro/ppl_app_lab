@@ -8,7 +8,10 @@
 	    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
-		<link rel="stylesheet" type="text/css" href="./gruposStyles.css">
+		<!-- <link rel="stylesheet" type="text/css" href="./gruposStyles.css"> -->
+    <link rel="stylesheet" type="text/css" href="./grupo.css">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
 	</head>
 	<body>
 		<header>
@@ -42,52 +45,79 @@
 				</div>
 			</nav>
 		</header>
-		<div class="container" id="grupos">
-
+		<div class="row" id="grupos">
 			<!-- Select de Paralelos -->
-			<div class="clearer"></div> <br><br>
-			<div class="col-md-12 col-md-offset-5">
-				<form class="form-inline">
-					<label for="usr">Paralelo: </label>
-					<select id="selector" onchange="obtenerParaleloEscogido(this)" class="bigger">
-						<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
-					</select>
-				</form>
-			</div>
-			<div class="clearer"></div><br><br>
+        <!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
+          <span class="glyphicon glyphicon-remove icono"></span>
+        </button> -->
 
-			<div class="row">
-			<!-- LISTA DE LA IZQUIERDA DE ESTUDIANTES -->
-				<div class="col s2 panel-izquierdo">
-					<p>Estudiantes sin grupo</p>
-					<div class="estudiantes-sin-grupo" v-for="estudiante in estudiantesSinGrupo">
-						<div v-bind:id="estudiante._id" draggable="true"
-						ondragstart="drag(event)"><span class="text-justify">{{estudiante.nombres}} {{estudiante.apellidos}}</span></div>
-					</div>
-				</div>
+      <!-- inicio estudiantes sin grupos -->
+      <!-- <div class="col s6">
+        <div class="" v-for="estudiante in estudiantesSinGrupo">
+          <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
+            <span class="">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
+          </div>
+        </div>
+      </div> -->
+      <div class="col s4 center">
+        <div class="estudiantes-sin-grupo">
+          <div class="scrollbar" id="style-4">
+            <input id="estudiante-buscar" type="text" placeholder="Buscar estudiante" v-model="buscarEstudiante">
+            <div class="">
+              <div class="" v-for="estudiante in tableFiler">
+                <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
+                  <span class="nombres-estudiantes-sin-grupo hvr-grow">{{estudiante.nombres.toUpperCase() }} {{estudiante.apellidos.toUpperCase() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fin estudiantes sin grupo -->
 
-				<div class="col s9 offset-s3">
-				<section>
-					<div v-for="grupo in grupos" class="col s4 grupin">
-						<li class="grupo-estudiantes" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
-						{{grupo.nombre}}
-							<!-- <button v-on:click="eliminarGrupo(grupo._id)" class="cruz">
-								<span class="glyphicon glyphicon-remove icono"></span>
-							</button> -->
-							<div class="grup" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes" class="grupos">
-								<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="cruz">
-									<i class="tiny material-icons">delete</i>
+      <!-- inicio grupos -->
+      <div class="col s8">
+        <section>
+          <div class="grid">
+					<div v-for="(grupo, index) in grupos">
+						<!-- <li class="" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)"> {{grupo.nombre}}
+							<div class="" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
+								<button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="">
+									<i class="">delete</i>
 								</button>
-								<span class="estudiante-nombre col-sm-8">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
+								<span class="">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
 							</div>
-						</li>
+						</li> -->
+            <div v-if="index%3 == 0" class="divisor">
+            </div>
+              <div v-bind:class="[index%3 == 2 ? grid_item : grid_item_clear]">
+                <!-- col s4 center grupos  -->
+                <div class="grupos-drop" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
+                  <div class="grupo-completo z-depth-5">
+                    <div class="nombre-grupo">
+                      <span class="nombre-grupo">{{grupo.nombre}}</span>
+                    </div>
+      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes">
+      								<!-- <button v-bind:id="estudiante._id" onclick="borrarAlumno(this)" class="boton-borrar"> -->
+      									<a class="btn-floating" v-bind:id="estudiante._id" onclick="borrarAlumno(this)"><i class="material-icons">delete</i></a>
+      								<!-- </button> -->
+      								<span class="nombres-estudiante">{{estudiante.nombres}} {{estudiante.apellidos}}</span>
+      							</div>
+                  </div>
+                </div>
+              </div>
+
 					</div>
 				</section>
-				</div>
-			</div>
+      </div>
+      <!-- fin grupos -->
+    </div>
+    <!-- fin del grid -->
 		</div>
+    <!-- fin del app -->
 		<footer>
 			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 			<script src="/bower_components/vue/dist/vue.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>

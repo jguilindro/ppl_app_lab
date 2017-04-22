@@ -189,12 +189,30 @@ var app = new Vue({
       }
       cont = cont + 1
     })
+  },
+  findBy: function (estudiantes, query) {
+    // return list.filter(function (item) {
+    //    return item[column].includes(value)
+    //  })
+    // console.log(estudiantes);
+    // console.log(query);
+    let estudian = estudiantes.filter((estudiante) => {
+      let nombres = estudiante.nombres.toLowerCase()
+      let apellidos = estudiante.apellidos.toLowerCase()
+      let queryLower = query.toLowerCase()
+      let n = `${nombres} ${apellidos}`
+      return n.includes(queryLower)
+    })
+    return estudian
   }
   },
 	data: {
       grupos: [
       ],
       estudiantesSinGrupo: [
+      ],
+      estudiantesSinGrupoBackup: [
+
       ],
       estudiantes: [
       ],
@@ -203,13 +221,25 @@ var app = new Vue({
       paralelos: [
       ],
       paralelo_seleccionado: '',
-      contador_global: 0
+      contador_global: 0,
+      grid_item: 'grid-item',
+      grid_item_clear: 'grid-item-clear',
+      buscarEstudiante: ''
 	},
   watch: {
     grupos: function(val) {
       if (this.grupos[this.grupos.length - 1])
         if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 )
           this.nuevoGrupo()
+    },
+    buscarEstudiante: function(val) {
+      // buscar por lo que da el imput y colocarlo primero
+      //console.log(this.buscarEstudiante);
+    }
+  },
+  computed: {
+    tableFiler: function() {
+      return this.findBy(this.estudiantesSinGrupo, this.buscarEstudiante)
     }
   }
 });
@@ -282,3 +312,9 @@ window.onbeforeunload = function () {
       url: `/api/grupos/${grupo._id}`
     })
 };
+
+$('.grid').masonry({
+  // options...
+  itemSelector: '.grid-item',
+  columnWidth: 80
+});
