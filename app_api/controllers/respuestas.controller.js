@@ -37,7 +37,7 @@ const obtenerRespuestaDeEstudiante = (req, res) => {
 }
 
 const actualizarRespuesta = (req, res) => {
-	RespuestaModel.actualizarRespuesta(req.params.id_respuesta, res.body.respuesta, (err, doc) => {
+	RespuestaModel.actualizarRespuesta(req.params.id_respuesta, req.body.respuesta, (err, doc) => {
 		if (!doc.nModified) return response.mongoError(res, 'La respuesta no existe');
 		if(err) return response.serverError(res);
 		return response.okActualizado(res);

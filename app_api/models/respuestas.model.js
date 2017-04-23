@@ -62,7 +62,7 @@ respuestasSchema.statics.obtenerRespuestaDeEstudiante = function(id_leccion, id_
 }
 
 respuestasSchema.statics.actualizarRespuesta = function(id_respuesta, actualizar, callback){
-  this.update({_id:id_respuesta}, {$set : {respuesta: actualizar.respuesta}}, callback);
+  this.update({_id:id_respuesta}, {$set : {respuesta: actualizar}}, callback);
 }
 
 module.exports = mongoose.model('Respuesta', respuestasSchema);

@@ -179,7 +179,6 @@ var App = new Vue({
       });
     },
     corregirRespuesta: function(pregunta){
-      //TODO
       var self = this;
       var url = "/api/respuestas/buscar/leccion/" + self.leccion._id + "/pregunta/" + pregunta._id + "/estudiante/" + self.estudiante._id
       self.$http.get(url).then(response => {
