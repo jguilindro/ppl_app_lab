@@ -100,7 +100,7 @@
 
         <section>
           <div class="grid">
-					<div v-for="(grupo, index) in estudianteGrupoFilter"> <!-- grupos model -->
+					<div v-for="(grupo, index) in grupos"> <!-- estudianteGrupoFilter model -->
             <div v-if="index%3 == 0" class="divisor"> <!--divisor para separar por grupos de tres-->
             </div>
               <div v-bind:class="[index%3 == 2 ? grid_item : grid_item_clear]">

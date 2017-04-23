@@ -5,6 +5,7 @@ Flujo: profesorLogeado => obtenerTodosParalelosProfesor => obtenerTodosGrupos =>
 // TODO: que no recage todo el dom al eliminar, cambiar de grupo o anadir a grupo
 // TODO: al crear un grupo que lo anada a los grupos
 
+var grupos_animation
 
 var app = new Vue({
   mounted: function(){
@@ -128,6 +129,7 @@ var app = new Vue({
 
     },
     nuevoGrupo() {
+      listeners() // OJO listenrs paralelo
       var ultimo_grupo = []
       // var nombre_grupo = $('#grupo-nombre').val()
       // $('#grupo-nombre').val('');
@@ -242,9 +244,13 @@ var app = new Vue({
 	},
   watch: {
     grupos: function(val) {
-      if (this.grupos[this.grupos.length - 1])
-        if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 )
+      console.log(this.grupos[this.grupos.length - 1]);
+      if (this.grupos[this.grupos.length - 1]) {
+        if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 ) {
+          console.log('nuevo grupo');
           this.nuevoGrupo()
+        }
+      }
     },
     buscarEstudiante: function() { // no borrar, necesario para filtro
     },
@@ -258,10 +264,7 @@ var app = new Vue({
     estudianteGrupoFilter: function() {
       return this.buscarEstudianteFilter(this.grupos, this.buscarEstudianteEnGrupo)
     }
-  },
-  mounted() {
-    console.log('ready');
-  },
+  }
 });
 app.profesorLogeado()
 
@@ -431,7 +434,22 @@ setTimeout(function() {
   });
 }, 1000)
 
+function listeners() {
+  grupos_animation = document.querySelectorAll('.grupos-drop');
+  // console.log(grupos_animation);
+  [].forEach.call(grupos_animation, function(col) {
+    col.addEventListener('dragstart', handleDragStart, false);
+    col.addEventListener('dragover', handleDragOver, false);
+    col.addEventListener('drop', handleDrop, false);
+    col.addEventListener('dragend', handleDragEnd, false);
+    col.addEventListener('dragenter', handleDragEnter, false)
+    col.addEventListener('dragleave', handleDragLeave, false);
+    col.addEventListener('dragexit', handleDragExit, false);
+  });
+}
+
 function handleDragExit(e) {
+  grupos_animation = document.querySelectorAll('.grupos-drop');
   [].forEach.call(grupos_animation, function (col) {
     col.removeAttribute("style")
   });
