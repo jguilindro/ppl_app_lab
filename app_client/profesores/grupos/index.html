@@ -71,6 +71,20 @@
         <!-- <select id="selector" onchange="obtenerParaleloEscogido(this)">
  					<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
  				</select> -->
+
+        <!-- Modal datos estudiante-->
+        <div id="modal1" class="modal">
+          <div class="modal-content modal-estudiante">
+            <h4>{{mostrarDatosEstudiante.correo}}</h4>
+            <h4>{{mostrarDatosEstudiante.nombres}} {{mostrarDatosEstudiante.apellidos}}</h4>
+            <h4>{{mostrarDatosEstudiante.matricula}}</h4>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">cerrar</a>
+          </div>
+        </div>
+        <!-- Fin modal datos estudiante -->
+
         <section>
           <div class="grid">
 					<div v-for="(grupo, index) in grupos">
@@ -82,9 +96,11 @@
                     <div class="nombre-grupo">
                       <span class="nombre-grupo">{{grupo.nombre}}</span>
                     </div>
-      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes" onclick="escogerEstudiante(this)">
-                      <!-- onmouseout="borrarBotonEliminar(this)" -->
-      								<div class="nombres-estudiante">{{estudiante.nombres}} {{estudiante.apellidos}}</div>
+      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes"  v-bind:value="grupo._id">
+                      <!-- onmouseout="borrarBotonEliminar(this)" onclick="escogerEstudiante(this)"-->
+      								<div  ondblclick="mostrarDatosEstudiante(this)" v-bind:id="estudiante._id">
+      								  <a class="nombres-estudiante" v-bind:id="estudiante._id">{{estudiante.nombres}} {{estudiante.apellidos}}</a>
+      								</div>
       							</div>
                   </div>
                 </div>

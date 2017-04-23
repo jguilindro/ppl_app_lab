@@ -223,7 +223,8 @@ var app = new Vue({
       contador_global: 0,
       grid_item: 'grid-item',
       grid_item_clear: 'grid-item-clear',
-      buscarEstudiante: ''
+      buscarEstudiante: '',
+      mostrarDatosEstudiante: {}
 	},
   watch: {
     grupos: function(val) {
@@ -346,12 +347,13 @@ function borrarBotonEliminar(element) {
 /* drag and drop scrolling*/
 var stop = true;
 $(".nombres-estudiantes-grupo").on("drag", function (e) {
+  console.log('asdas');
   stop = true;
-  if (e.originalEvent.clientY < 150) {
+  if (e.originalEvent.clientY < 300) {
     stop = false;
     scroll(-1)
   }
-  if (e.originalEvent.clientY > ($(window).height() - 150)) {
+  if (e.originalEvent.clientY > ($(window).height() - 300)) {
     stop = false;
     scroll(1)
   }
@@ -364,6 +366,30 @@ var scroll = function (step) {
   var scrollY = $(window).scrollTop();
   $(window).scrollTop(scrollY + step);
   if (!stop) {
-    setTimeout(function () { scroll(step) }, 20);
+    setTimeout(function () { scroll(step) }, 10);
   }
 }
+
+
+/*mostar estudiante*/
+
+function mostrarDatosEstudiante(element) {
+  var estudiante_id = element.id
+  var estudiante = {}
+  $('#modal1').modal('open');
+  // var grupo_id
+  let grupo = app.grupos.find(grupo => {
+    let est = grupo.estudiantes.find(est => {
+      return est._id == estudiante_id
+    })
+    if (est) {
+      estudiante = est
+      return est
+    }
+  })
+  app.mostrarDatosEstudiante = estudiante
+}
+
+$(document).ready(function(){
+   $('.modal').modal();
+ });

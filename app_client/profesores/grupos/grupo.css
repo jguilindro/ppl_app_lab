@@ -90,9 +90,11 @@ div.grupo-completo {
   background-color: #cccccc;
 }
 
-div.nombres-estudiante {
+a.nombres-estudiante {
   font-size: 1.1em;
   padding: 2%;
+  color: inherit;
+  text-decoration: none;
 }
 
 div.nombres-estudiantes-grupo {
@@ -175,4 +177,10 @@ span.nombres-estudiantes-sin-grupo {
 
 span.nombres-estudiantes-sin-grupo:hover{
   background-color: #D9d9d9;
+}
+
+
+/*modal estudainte*/
+div.modal-estudiante{
+  text-align: center;
 }
