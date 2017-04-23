@@ -1,29 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Profesor</title>
+  <title>Profesor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+  <style type="text/css">
+    #info div{
+      height: 40vh;
+    }
+    a{
+      color: black;
+    }
+    a:hover{
+      color:grey;
+    }
+    span a{
+      color: #039be5;
+    }
+  </style>
 </head>
 <body>
+  <header>
+      <nav>
+        <!-- Dropdown Structure -->
+        <ul id="dropdownPreguntasDesktop" class="dropdown-content">
+          <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+          <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
+          <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
+        </ul>
+        <ul id="dropdownPreguntasMobile" class="dropdown-content">
+          <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
+          <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
+          <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
+        </ul>
+        <div class="nav-wrapper">
+          <a href="/profesores" class="brand-logo">Profesor</a>
+          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="/profesores/leccion">Leccion</a></li>
+            <li><a href="/profesores/grupos/">Grupos</a></li>
+            <!--Dropdown button-->
+            <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+          <ul class="side-nav" id="mobile-demo">
+            <li><a href="#">Lecciones</a></li>
+            <li><a href="../../grupos">Grupos</a></li>
+            <!--Dropdown button-->
+            <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+        </div>
+      </nav>
+  </header>
+  <div class="container">
+    <div class="row">
+      <div class="col s12" id="info">
+              <a href="/profesores/leccion">
+                <div class="col s4">
+                  <p class="center-align"><i class="large material-icons" id="pru">visibility</i></p>  
+                  <h4 class="center-align">Ver lecciones</h4>
+                  <p class="center-align">Mira y edita las lecciones de tus paralelos.</p>
+                </div>
+              </a>
+              <a href="/profesores/leccion/crear">
+                <div class="col s4">
+                  <p class="center-align"><i class="large material-icons" id="pru">note_add</i></p>  
+                  <h4 class="center-align">Crea lecciones</h4>
+                  <p class="center-align">Usa el banco de pregunta y crea de manera rápido y sencilla una lección para los paralelos.</p>
+                </div>
+              </a>
+              <a href="/profesores/grupos">
+                <div class="col s4">
+                  <p class="center-align"><i class="large material-icons" id="pru">mode_edit</i></p>  
+                  <h4 class="center-align">Editar grupo</h4>
+                  <p class="center-align">¿Tienes duda de los grupos?, si un estudiante se retira o entran nuevos, aquí será la sección para editar esos grupos, mover a los estudiantes o crear nuevos grupos </p>
+                </div>
+              </a>
+                <div class="col s6">
+                  <p class="center-align"><i class="large material-icons" id="pru">list</i></p>  
+                  <h4 class="center-align">Banco de pregunta</h4>
+                  <p class="center-align">Dale una visita al banco de preguntas, crea preguntas en cualquier capítulo y revisa las preguntas de otros profesores, saber cuales preguntas hay puede ayudar a crear una lección más rápidamente.
+                  revisa la pregunta de
+                  <span>
+                  <a href="/profesores/preguntas/estimacion">estimación</a> <a href="/profesores/preguntas/laboratorio">laboratorio</a> <a href="/profesores/preguntas/tutorial">tutorial</a>  
+                  </span></p></p>
+                </div>
+              <div class="col s6">
+                  <p class="center-align"><i class="large material-icons" id="pru">add</i></p>  
+                  <h4 class="center-align">Crea una pregunta</h4>
+                  <p class="center-align">Ó ten un acceso rápido para crear preguntas y sean de 
+                  <span>
+                  <a href="/profesores/preguntas/estimacion">estimación</a> <a href="/profesores/preguntas/laboratorio">laboratorio</a> <a href="/profesores/preguntas/tutorial">tutorial</a>  
+                  </span></p>
+              </div>
+              <form method="post" action="/api/session/logout">
+                <button type="submit" onclick="" name="button">logout</button>
+              </form>
+      </div>
+      
+    </div>
+  </div>
 
-	<h1>joel</h1>
-  <form method="post" action="/api/session/logout">
-    <button type="submit" onclick="" name="button">logout</button>
-  </form>
-  <button onclick="usuarioConectado()">getUsuarioConectado</button>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript">
-    function usuarioConectado() {
-      $.ajax({
-        type: 'GET',
-        url: '/api/session/usuario_conectado',
-        success: (json) => {
-          console.log(json)
-        }
-      })
-    }
-  </script>
+  <footer>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript">
+      function usuarioConectado() {
+        $.ajax({
+          type: 'GET',
+          url: '/api/session/usuario_conectado',
+          success: (json) => {
+            console.log(json)
+          }
+        })
+      }
+    </script>
+    <script src="/bower_components/vue/dist/vue.min.js"></script>
+    <script src="/bower_components/materialize/bin/materialize.js"></script>
+    <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+
+  </footer>
 </body>
 </html>
