@@ -80,23 +80,19 @@ var App = new Vue({
       pregunta.respondida = false;
       return pregunta;
     },
-    responder: function(pregunta){
+    responder: function(pregunta, event){
       var self = this;
-      if(!pregunta.respondida){
-        var respuesta = self.crearRespuesta(pregunta);
-        var url = '/api/respuestas/'
-        this.$http.post(url, respuesta).then(response => {
-          //Success callback
-          console.log(response);
-          pregunta.respondida = true;
-        }, response => {
-          //Error callback
-          console.log(response);
-        });
-
-      }else{
-        console.log('La pregunta ya fue respondida');
-        $('#modal1').modal('open');
+      //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
+      if(!pregunta.respondida&&!self.corregirHabilitado){
+        self.enviarRespuesta(pregunta);
+      }
+      //Después de haber respondido todas las preguntas, si quiere corregir alguna
+      else if(pregunta.respondida&&self.corregirHabilitado){
+        self.corregirRespuesta(pregunta);
+      }
+      //Durante la lección, si aún no ha respondido todas las preguntas y quiere volver a enviar una respuesta
+      else{
+         $('#modalCorregirRespuesta').modal('open');
       }
     },
     crearRespuesta: function(pregunta){
@@ -122,6 +118,80 @@ var App = new Vue({
         }
       });
       window.location.href = "/estudiantes";
+    },
+    verificarTodasRespondidas: function(){
+      var self = this;
+      var todasRespondidas = true;
+      $.each(self.preguntas, function(index, pregunta){
+        if(!pregunta.respondida){
+          todasRespondidas = false;
+          return false;
+        }
+      });
+      return todasRespondidas;
+    },
+    bloquearBtnRespuesta: function(event){
+      var self = this;
+      var btnId = event.currentTarget.id;
+      btnId = '#' + btnId;
+      $(btnId).attr("disabled", true);
+    },
+    bloquearTextAreaRespondida: function(pregunta){
+      var self = this;
+      var textAreaId = "#textarea-respuesta-" + pregunta._id;
+      $(textAreaId).attr("disabled", true);
+    },
+    revisarLeccion: function(){
+      var self = this;
+      self.corregirHabilitado = true;
+      $.each(self.preguntas, function(index, pregunta){
+        self.desbloquearBtnRespuesta(pregunta);
+        self.desbloquearTextAreaRespondida(pregunta);
+      });
+
+    },
+    desbloquearTextAreaRespondida: function(pregunta){
+      var self = this;
+      var textAreaId = "#textarea-respuesta-" + pregunta._id;
+      $(textAreaId).attr("disabled", false);
+    },
+    desbloquearBtnRespuesta: function(pregunta){
+      var self = this;
+      var btnId = "#btn-responder-" + pregunta._id;
+      $(btnId).attr("disabled", false);
+    },
+    enviarRespuesta: function(pregunta){
+      var self = this;
+      var respuesta = self.crearRespuesta(pregunta);
+      var url = '/api/respuestas/';
+      this.$http.post(url, respuesta).then(response => {
+        //Success callback
+        pregunta.respondida = true;
+        self.bloquearBtnRespuesta(event);
+        self.bloquearTextAreaRespondida(pregunta);
+        if(verificarTodasRespondidas){
+          $('#modalRevisarRespuestas').modal('open');
+        }
+      }, response => {
+        //Error callback
+        console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
+        console.log(response);
+      });
+    },
+    corregirRespuesta: function(pregunta){
+      var self = this;
+      var url = "/api/respuestas/buscar/leccion/" + self.leccion._id + "/pregunta/" + pregunta._id + "/estudiante/" + self.estudiante._id
+      self.$http.get(url).then(response => {
+        var idRespuesta = response.body.datos._id;
+        var urlPut = "/api/respuestas/" + idRespuesta;
+        self.$http.put(urlPut, pregunta.respuesta).then(response => {
+          console.log('yaaaa')
+        }, response => {
+
+        });
+      }, response => {
+
+      })
     }
   },
   data: {
@@ -138,7 +208,8 @@ var App = new Vue({
       pregunta: '',
       leccion: ''
     },
-    respuestas: []
+    respuestas: [],
+    corregirHabilitado: false
   }
 });
 
@@ -165,3 +236,4 @@ socket.on('leccion id', function(id_leccion) {
 socket.on('pregunta actual', function(pregunta) {
   console.log(pregunta);
 })
+

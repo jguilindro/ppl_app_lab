@@ -57,5 +57,12 @@ respuestasSchema.statics.obtenerRespuestasPorGrupoAPregunta = function(id_leccio
   this.find({$and: [{leccion:id_leccion}, {pregunta:id_pregunta}, {grupo:id_grupo}]}, callback);
 }
 
+respuestasSchema.statics.obtenerRespuestaDeEstudiante = function(id_leccion, id_pregunta, id_estudiante, callback){
+  this.findOne({$and: [{leccion:id_leccion}, {pregunta:id_pregunta}, {estudiante:id_estudiante}]}, callback);
+}
+
+respuestasSchema.statics.actualizarRespuesta = function(id_respuesta, actualizar, callback){
+  this.update({_id:id_respuesta}, {$set : {respuesta: actualizar}}, callback);
+}
 
 module.exports = mongoose.model('Respuesta', respuestasSchema);

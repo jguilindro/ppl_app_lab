@@ -7,29 +7,47 @@
 	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body id="grad">
 	<div id="app">
-		<div>
-		</div>
-		<div class="row">
-			<div class="col s12">
-				<ul class="tabs">
-					<div v-for="pregunta in leccion.preguntas">
-						<li class="tab col s3">
-							<a v-bind:href="'#' + pregunta.pregunta" >
-								{{pregunta.ordenPregunta}}
-							</a>
-						</li>
-					</div>
-				</ul>
-			</div>
+		<a href="/estudiantes">[regresar]</a>
+		<section class="center-align v-center">
+				<h2>{{estudiante.nombres}}</h2>
+		</section>
+		<section class="leccion center-align ">
+			<div class="row" id="row-tabs">
+				<div class="col s12">
+					<ul class="tabs-fixed-width tabs">
+						<li class="tab"><a href="#index" class="active">Instrucciones</a></li>
+						<div v-for="pregunta in leccion.preguntas">
+							<li class="tab"><a v-bind:href="'#' + pregunta.pregunta" >{{pregunta.ordenPregunta}}</a></li>
+						</div>
+					</ul>
+				</div>
+				<div id="index" class="col s12">
+					<h1>Instrucciones</h1>
+				</div>
 				<div v-for="grupo in grupos">
-					<div v-bind:id=grupo[0].pregunta class="col s12">
-						{{grupo[0].respuesta}}
+					<div v-bind:id=grupo[0].pregunta class="col s12" style='display: none'>
+						<!-- La pregunta-->
+						<div class="col s6">
+							<p class="capitulo right-align">{{grupo[0].contestado.capitulo}}</p>
+							<h3>{{grupo[0].contestado.nombre}}</h3>
+							<p>{{grupo[0].contestado.descripcion}}</p>
+						</div>
+						<!--Ahora se debe colocar todas las respuestas-->
+						<div class="col s6">
+							<div v-for="respuesta in grupo">
+								<p>{{respuesta.estudiante}}</p>
+								<p>{{respuesta.respuesta}}</p>
+								<hr>
+							</div>
+						</div>
 					</div>
 				</div>
-		</div>
+			</div>
+		</section>
 	</div>
 	<footer>
 		<script src="/bower_components/jquery/dist/jquery.js"></script>

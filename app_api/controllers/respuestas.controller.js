@@ -29,8 +29,25 @@ const obtenerRespuestasPorGrupoAPregunta = (req, res) => {
 	})
 }
 
+const obtenerRespuestaDeEstudiante = (req, res) => {
+	RespuestaModel.obtenerRespuestaDeEstudiante(req.params.id_leccion, req.params.id_pregunta, req.params.id_estudiante, (err, doc) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, doc);
+	})
+}
+
+const actualizarRespuesta = (req, res) => {
+	RespuestaModel.actualizarRespuesta(req.params.id_respuesta, req.body.respuesta, (err, doc) => {
+		if (!doc.nModified) return response.mongoError(res, 'La respuesta no existe');
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	});
+}
+
 module.exports = {
 	crearRespuesta,
-	obtenerRespuestasPorGrupoAPregunta
+	obtenerRespuestasPorGrupoAPregunta,
+	obtenerRespuestaDeEstudiante,
+	actualizarRespuesta
 }
 

@@ -34,6 +34,8 @@ var App = new Vue({
       var self = this;
           this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
             //success callback
+            alert("Su lección ha sido creada con éxito!");
+            window.location.href = '/profesores/leccion/';
             console.log(response)
             }, response => {
             //error callback
