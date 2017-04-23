@@ -1,0 +1,15 @@
+.leccion{
+			margin: auto;
+		}
+#app{
+	padding-top: 1%;
+	padding-right: 10%;
+	padding-left: 10%;
+	height: 100vh;
+	background-color: rgba(255,255,255,0.8);
+	width: 80%;
+	margin: auto;
+}
+.capitulo{
+	color: grey;
+}
