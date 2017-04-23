@@ -125,6 +125,7 @@ var app = new Vue({
         }
         return grupoActual
       })
+
     },
     nuevoGrupo() {
       var ultimo_grupo = []
@@ -147,6 +148,7 @@ var app = new Vue({
           })
         }
       })
+
     },
     eliminarGrupo(id_grupo) {
       this.$http.delete(`/api/paralelos/${this.paralelo_seleccionado}/grupos/${id_grupo}`).
@@ -190,11 +192,6 @@ var app = new Vue({
     })
   },
   findBy: function (estudiantes, query) {
-    // return list.filter(function (item) {
-    //    return item[column].includes(value)
-    //  })
-    // console.log(estudiantes);
-    // console.log(query);
     let estudian = estudiantes.filter((estudiante) => {
       let nombres = estudiante.nombres.toLowerCase()
       let apellidos = estudiante.apellidos.toLowerCase()
@@ -203,6 +200,21 @@ var app = new Vue({
       return n.includes(queryLower)
     })
     return estudian
+  },
+  buscarEstudianteFilter: function(grupos, estudiante) {
+    var queryLower = estudiante.toLowerCase()
+    let grupo = grupos.filter((grupo) => {
+      let es = grupo.estudiantes.find(est => {
+        let nombres = est.nombres.toLowerCase()
+        let apellidos = est.apellidos.toLowerCase()
+        let n = `${nombres} ${apellidos}`
+        return n.includes(queryLower)
+      })
+      if (es) {
+        return es
+      }
+    })
+    return grupo
   }
   },
 	data: {
@@ -224,7 +236,9 @@ var app = new Vue({
       grid_item: 'grid-item',
       grid_item_clear: 'grid-item-clear',
       buscarEstudiante: '',
-      mostrarDatosEstudiante: {}
+      mostrarDatosEstudiante: {},
+      buscarEstudianteEnGrupo: '',
+      buscarGrupo: ''
 	},
   watch: {
     grupos: function(val) {
@@ -232,16 +246,22 @@ var app = new Vue({
         if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 )
           this.nuevoGrupo()
     },
-    buscarEstudiante: function(val) {
-      // buscar por lo que da el imput y colocarlo primero
-      //console.log(this.buscarEstudiante);
+    buscarEstudiante: function() { // no borrar, necesario para filtro
+    },
+    buscarEstudianteEnGrupo: function() { // no borrar, necesario para filtro
     }
   },
   computed: {
     tableFiler: function() {
       return this.findBy(this.estudiantesSinGrupo, this.buscarEstudiante)
+    },
+    estudianteGrupoFilter: function() {
+      return this.buscarEstudianteFilter(this.grupos, this.buscarEstudianteEnGrupo)
     }
-  }
+  },
+  mounted() {
+    console.log('ready');
+  },
 });
 app.profesorLogeado()
 
@@ -393,3 +413,68 @@ function mostrarDatosEstudiante(element) {
 $(document).ready(function(){
    $('.modal').modal();
  });
+
+
+/* drag and drop efects*/
+var grupos_animation
+setTimeout(function() {
+  grupos_animation = document.querySelectorAll('.grupos-drop');
+  // console.log(grupos_animation);
+  [].forEach.call(grupos_animation, function(col) {
+    col.addEventListener('dragstart', handleDragStart, false);
+    col.addEventListener('dragover', handleDragOver, false);
+    col.addEventListener('drop', handleDrop, false);
+    col.addEventListener('dragend', handleDragEnd, false);
+    col.addEventListener('dragenter', handleDragEnter, false)
+    col.addEventListener('dragleave', handleDragLeave, false);
+    col.addEventListener('dragexit', handleDragExit, false);
+  });
+}, 1000)
+
+function handleDragExit(e) {
+  [].forEach.call(grupos_animation, function (col) {
+    col.removeAttribute("style")
+  });
+}
+
+function handleDragStart(e) {
+  this.style.opacity = '0.4';
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+
+function handleDragEnter(e) {
+  this.classList.add('over');
+}
+
+function handleDragLeave(e) {
+ var rect = this.getBoundingClientRect();
+ if(e.x > rect.left + rect.width || e.x < rect.left || e.y > rect.top + rect.height || e.y < rect.top) {
+     $(this).removeClass('over');
+ }
+}
+
+function handleDrop(e) {
+  [].forEach.call(grupos_animation, function (col) {
+    col.removeAttribute("style")
+    col.classList.remove('over')
+  });
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+  return false;
+}
+
+function handleDragEnd(e) {
+  grupos_animation = document.querySelectorAll('.grupos-drop');
+  [].forEach.call(grupos_animation, function (col) {
+    col.removeAttribute("style")
+    col.classList.remove('over')
+  });
+}
