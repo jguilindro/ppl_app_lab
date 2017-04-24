@@ -129,7 +129,6 @@ var app = new Vue({
 
     },
     nuevoGrupo() {
-      listeners() // OJO listenrs paralelo
       var ultimo_grupo = []
       // var nombre_grupo = $('#grupo-nombre').val()
       // $('#grupo-nombre').val('');
@@ -263,12 +262,25 @@ var app = new Vue({
       return this.buscarEstudianteFilter(this.grupos, this.buscarEstudianteEnGrupo)
     }
   },
+  // HOOKS VUEJS
   ready() {
 
   },
   mounted() {
+
   },
   created() {
+
+  },
+  beforeMount() {
+
+  },
+  compiled() {
+
+  },
+  updated() {
+    listeners() // OJO listenrs paralelo
+    selector()
   }
 });
 app.profesorLogeado()
@@ -302,8 +314,7 @@ function drop(ev, target) {
         return grupo
       }
     })
-
-    if (enmismogrupo._id != target.id) {
+    if(!enmismogrupo || enmismogrupo._id != target.id) {
       app.grupos.forEach(grupo => {
         if (grupo._id == target.id) {
           app.anadirEstudianteAGrupo(index_grupo,estudiante_drop)
@@ -432,19 +443,6 @@ $(document).ready(function(){
 
 /* drag and drop efects*/
 var grupos_animation
-setTimeout(function() {
-  grupos_animation = document.querySelectorAll('.grupos-drop');
-  // console.log(grupos_animation);
-  [].forEach.call(grupos_animation, function(col) {
-    col.addEventListener('dragstart', handleDragStart, false);
-    col.addEventListener('dragover', handleDragOver, false);
-    col.addEventListener('drop', handleDrop, false);
-    col.addEventListener('dragend', handleDragEnd, false);
-    col.addEventListener('dragenter', handleDragEnter, false)
-    col.addEventListener('dragleave', handleDragLeave, false);
-    col.addEventListener('dragexit', handleDragExit, false);
-  });
-}, 500)
 
 function listeners() {
   grupos_animation = document.querySelectorAll('.grupos-drop');
@@ -515,12 +513,11 @@ document.addEventListener("dragover", function( event ) {
 }, false);
 
 /*sleector*/
-
-setTimeout(function(){
+function selector () {
   $('select').material_select();
   var opt = $('option')
   opt[0].selected = true
-}, 1000)
+}
 
 document.addEventListener("DOMContentLoaded", function(event) {
   $.get({
