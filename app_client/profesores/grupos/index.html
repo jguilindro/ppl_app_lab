@@ -11,20 +11,20 @@
 	    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
 	    <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
 	    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+
 	</head>
 	<body>
-		<header id="#navbar">
-		</header>
+		<header id="#navbar"></header>
     <!-- fin del nav -->
 
     <!-- inicio de estudiantes sin grupo -->
 	<div class="row" id="grupos">
-      <div class="col s4 center">
-        <div class="estudiantes-sin-grupo">
+      <div class="col s4 estudiantes-sin-grupo" id="sidebar">
+        <div class="">
           <div class="scrollbar" id="style-4">
             <input id="estudiante-buscar" type="text" placeholder="BUSCAR ESTUDIANTE" v-model="buscarEstudiante">
             <div class="">
-              <div class="" v-for="estudiante in tableFiler">
+              <div class="estudiantes-sin" v-for="estudiante in tableFiler">
                 <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
                   <span class="nombres-estudiantes-sin-grupo hvr-grow">{{estudiante.nombres.toUpperCase() }} {{estudiante.apellidos.toUpperCase() }}</span>
                 </div>
@@ -34,9 +34,12 @@
         </div>
       </div>
       <!-- fin estudiantes sin grupo -->
+      <!-- <div class="col s4">
+        asds
+      </div> -->
 
       <!-- inicio grupos -->
-      <div class="col s8">
+      <div class="col s8 grupos-todos">
         <!-- selector proximamente no borrar -->
         <div class="buscadores row">
           <div class="col s4">
@@ -87,15 +90,16 @@
                 </div>
               </div>
 					</div>
-				</section>
-      </div>
+        </div>
+			</section>
       <!-- fin grupos -->
     </div>
     <!-- fin del grid materialize-->
+  </div>
     <!-- fin del app -->
 		<footer>
 			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-      <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+      <script src="/bower_components/sticky-kit/jquery.sticky-kit.min.js"></script>
 			<script src="/bower_components/vue/dist/vue.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>

@@ -527,3 +527,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   })
 });
+
+$("#sidebar").stick_in_parent();
