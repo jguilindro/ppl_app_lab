@@ -244,10 +244,8 @@ var app = new Vue({
 	},
   watch: {
     grupos: function(val) {
-      console.log(this.grupos[this.grupos.length - 1]);
       if (this.grupos[this.grupos.length - 1]) {
         if (this.grupos[this.grupos.length - 1].estudiantes.length != 0 ) {
-          console.log('nuevo grupo');
           this.nuevoGrupo()
         }
       }
@@ -264,6 +262,13 @@ var app = new Vue({
     estudianteGrupoFilter: function() {
       return this.buscarEstudianteFilter(this.grupos, this.buscarEstudianteEnGrupo)
     }
+  },
+  ready() {
+
+  },
+  mounted() {
+  },
+  created() {
   }
 });
 app.profesorLogeado()
@@ -336,11 +341,6 @@ window.onbeforeunload = function () {
     })
 };
 
-$('.grid').masonry({
-  // options...
-  itemSelector: '.grid-item',
-  columnWidth: 80
-});
 
 function escogerEstudiante(element) {
   // let ele = document.getElementById(element.id)
@@ -496,3 +496,12 @@ function handleDragEnd(e) {
     col.classList.remove('over')
   });
 }
+
+
+/*sleector*/
+
+setTimeout(function(){
+  $('select').material_select();
+  var opt = $('option')
+  opt[0].selected = true
+}, 500)

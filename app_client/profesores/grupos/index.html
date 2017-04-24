@@ -52,7 +52,7 @@
       <div class="col s4 center">
         <div class="estudiantes-sin-grupo">
           <div class="scrollbar" id="style-4">
-            <input id="estudiante-buscar" type="text" placeholder="BUSCAR ESTUDIANTE" v-model="buscarEstudiante">
+            <input id="estudiante-buscar" class="input-field" type="text" placeholder="BUSCAR ESTUDIANTE" v-model="buscarEstudiante">
             <div class="">
               <div class="" v-for="estudiante in tableFiler">
                 <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
@@ -68,20 +68,17 @@
       <!-- inicio grupos -->
       <div class="col s8">
         <!-- selector proximamente no borrar -->
-        <!-- <select id="selector" onchange="obtenerParaleloEscogido(this)">
- 					<option v-for="paralelo in paralelos" v-bind:id="paralelo._id">{{paralelo.nombre}}</option>
- 				</select> -->
         <div class="buscadores row">
           <div class="col s4">
-            <input type="text"  v-model="buscarEstudianteEnGrupo" placeholder="BUSCAR ESTUDIANTE">
+            <!-- <input type="text"  v-model="buscarEstudianteEnGrupo" placeholder="BUSCAR ESTUDIANTE"> -->
           </div>
           <div class="col s4">
-            <input type="text" v-model="buscarGrupo" placeholder="BUSCAR GRUPO">
+            <select id="selector" onchange="obtenerParaleloEscogido(this)">
+       				<option v-for="(paralelo, index) in paralelos" v-bind:id="paralelo._id" v-bind:value="index">{{paralelo.nombre}}</option>
+     				</select>
           </div>
           <div class="col s4">
-            <select class="" name="">
-              <option value="">curso</option>
-            </select>
+            <!-- <input type="text" v-model="buscarGrupo" placeholder="BUSCAR GRUPO"> -->
           </div>
         </div>
 
