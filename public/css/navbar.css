@@ -1,13 +1,39 @@
+#logo{
+	background-color: #001a43;
+	border-bottom: 	solid 1px;
+	border-color: 	#F5b400;
+}
+#logo img{
+	padding-top: 	20px;
+}
+#logo h3, #logo h4{
+	color: #ebebeb	
+}
+#logo .row{
+	padding-top: 50px;
+	padding-bottom: 46px;
+	margin-bottom: 	0px;
+}
+
 nav{
-	background-color: rgba(255,255,255,0.2);
+	background-color: #001a43;
 	border: 0px;
+	border-top: solid 1px;
+	border-color: #F5b400;
 }
 nav ul a{
-	color: #8da9c6;
+	color: #ebebeb;
 }
 nav .brand-logo{
 	color: #8da9c6;	
 }
 nav a{
 	color: #8da9c6;	
+}
+@font-face {
+    font-family: 'Heuristica-Regular';
+    src: url('../font/Heuristica-Regular.eot');
+    src: url('../font/Heuristica-Regular.eot?#iefix') format('embedded-opentype'),
+    url('../font/Heuristica-Regular.ttf') format("opentype");
+    font-style: normal;
 }
