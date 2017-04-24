@@ -284,7 +284,7 @@ function drag(ev) {
 // TODO: mejorar no recarga
 function drop(ev, target) {
     ev.preventDefault();
-    let estudiante_drop;
+    var estudiante_drop;
     var index_grupo = 0;
     var data = ev.dataTransfer.getData("text");
     app.estudiantes.forEach((estudiante) => {
@@ -292,13 +292,25 @@ function drop(ev, target) {
         estudiante_drop = estudiante
       }
     })
-
-    app.grupos.forEach(grupo => {
-      if (grupo._id == target.id) {
-        app.anadirEstudianteAGrupo(index_grupo,estudiante_drop)
+    let enmismogrupo = app.grupos.find(grupo => {
+      let est = grupo.estudiantes.find(est => {
+        if (estudiante_drop._id == est._id) {
+          return est
+        }
+      })
+      if (est) {
+        return grupo
       }
-      index_grupo = index_grupo + 1
     })
+
+    if (enmismogrupo._id != target.id) {
+      app.grupos.forEach(grupo => {
+        if (grupo._id == target.id) {
+          app.anadirEstudianteAGrupo(index_grupo,estudiante_drop)
+        }
+        index_grupo = index_grupo + 1
+      })
+    }
 }
 
 // TODO: mejorar no recarga
@@ -432,7 +444,7 @@ setTimeout(function() {
     col.addEventListener('dragleave', handleDragLeave, false);
     col.addEventListener('dragexit', handleDragExit, false);
   });
-}, 1000)
+}, 500)
 
 function listeners() {
   grupos_animation = document.querySelectorAll('.grupos-drop');
@@ -497,6 +509,10 @@ function handleDragEnd(e) {
   });
 }
 
+document.addEventListener("dragover", function( event ) {
+      // prevent default to allow drop
+      event.preventDefault();
+}, false);
 
 /*sleector*/
 
@@ -504,7 +520,7 @@ setTimeout(function(){
   $('select').material_select();
   var opt = $('option')
   opt[0].selected = true
-}, 500)
+}, 1000)
 
 document.addEventListener("DOMContentLoaded", function(event) {
   $.get({
