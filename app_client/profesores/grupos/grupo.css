@@ -22,29 +22,29 @@ div#grupos {
 }
 
 /*input custom*/
-/* label underline focus color */
-.input-field input[type=text]:focus {
+
+#estudiante-buscar:focus {
  border-bottom: 1px solid #000;
  box-shadow: 0 1px 0 0 #000;
 }
 
-.input-field label {
- color: #000;
-}
-/* label focus color */
-.input-field input[type=text]:focus + label {
- color: #000;
+#estudiante-buscar.valid {
+ border-bottom: 1px solid #000;
+ box-shadow: 0 1px 0 0 #000;
 }
 
-/* valid color */
-.input-field input[type=text].valid {
+#estudiante-buscar.invalid {
  border-bottom: 1px solid #000;
  box-shadow: 0 1px 0 0 #000;
 }
-/* invalid color */
-.input-field input[type=text].invalid {
+
+#selector:focus {
  border-bottom: 1px solid #000;
  box-shadow: 0 1px 0 0 #000;
+}
+
+ul.dropdown-content.select-dropdown li span {
+    color: #000; /* no need for !important :) */
 }
 
 .scrollbar::-webkit-scrollbar-thumb {

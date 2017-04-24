@@ -505,3 +505,12 @@ setTimeout(function(){
   var opt = $('option')
   opt[0].selected = true
 }, 500)
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  $.get({
+    url: "../partials/navbar.html",
+    success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+    }
+  })
+});

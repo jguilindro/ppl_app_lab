@@ -14,36 +14,7 @@
     <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
 	</head>
 	<body>
-		<header>
-			<nav>
-				<!-- Dropdown Structure -->
-				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
-				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-				  <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
-				  <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
-				</ul>
-				<ul id="dropdownPreguntasMobile" class="dropdown-content">
-				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-				  <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
-				  <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
-				</ul>
-				<div class="nav-wrapper">
-					<a href="/profesores" class="brand-logo">Profesor</a>
-					<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-					<ul class="right hide-on-med-and-down">
-		        <li><a href="/profesores/leccion">Leccion</a></li>
-		        <li><a href="/profesores/grupos/">Grupos</a></li>
-		        <!--Dropdown button-->
-		        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-		      </ul>
-		      <ul class="side-nav" id="mobile-demo">
-		        <li><a href="#">Lecciones</a></li>
-		        <li><a href="../../grupos">Grupos</a></li>
-		        <!--Dropdown button-->
-		        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-		      </ul>
-				</div>
-			</nav>
+		<header id="#navbar">
 		</header>
     <!-- fin del nav -->
 
@@ -52,7 +23,7 @@
       <div class="col s4 center">
         <div class="estudiantes-sin-grupo">
           <div class="scrollbar" id="style-4">
-            <input id="estudiante-buscar" class="input-field" type="text" placeholder="BUSCAR ESTUDIANTE" v-model="buscarEstudiante">
+            <input id="estudiante-buscar" type="text" placeholder="BUSCAR ESTUDIANTE" v-model="buscarEstudiante">
             <div class="">
               <div class="" v-for="estudiante in tableFiler">
                 <div v-bind:id="estudiante._id" draggable="true" ondragstart="drag(event)">
@@ -73,6 +44,7 @@
             <!-- <input type="text"  v-model="buscarEstudianteEnGrupo" placeholder="BUSCAR ESTUDIANTE"> -->
           </div>
           <div class="col s4">
+            <label for="">PARALELO</label>
             <select id="selector" onchange="obtenerParaleloEscogido(this)">
        				<option v-for="(paralelo, index) in paralelos" v-bind:id="paralelo._id" v-bind:value="index">{{paralelo.nombre}}</option>
      				</select>
