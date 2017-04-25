@@ -1,15 +1,15 @@
-html #st-full-pg {
+/*html #st-full-pg {
    height: 100%;
    margin: 0;
-  /*position: absolute;*/
-    height: 100%;
-    /*overflow: hidden;*/
-}
 
+    height: 100%;
+
+}*/
+/*
 body {
   height: 100%;
-    /*overflow: auto;*/
-}
+
+}*/
 
 div#grupos {
   margin-left: 2%;

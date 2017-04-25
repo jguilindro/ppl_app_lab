@@ -281,6 +281,14 @@ var app = new Vue({
   updated() {
     listeners() // OJO listenrs paralelo
     selector()
+    $.get({
+      url: "../partials/navbar.html",
+      success: function(data) {
+        document.getElementById('#navbar').innerHTML = data;
+        $(".button-collapse").sideNav();
+        $(".dropdown-button").dropdown();
+      }
+    })
   }
 });
 app.profesorLogeado()
@@ -518,14 +526,5 @@ function selector () {
   var opt = $('option')
   opt[0].selected = true
 }
-
-document.addEventListener("DOMContentLoaded", function(event) {
-  $.get({
-    url: "../partials/navbar.html",
-    success: function(data) {
-      document.getElementById('#navbar').innerHTML = data;
-    }
-  })
-});
 
 $("#sidebar").stick_in_parent();

@@ -4,31 +4,68 @@
 	border-color: 	#F5b400;
 }
 #logo img{
-	padding-top: 	20px;
+	padding-top: 	0px;
+  padding-bottom: 0px;
+  margin-bottom: 0px
 }
-#logo h3, #logo h4{
-	color: #ebebeb
+#logo h5, #logo h4{
+	color: #ebebeb;
+  margin-bottom: 0px;
+  margin-top: 1%;
 }
-#logo .row{
-	padding-top: 50px;
-	padding-bottom: 46px;
+div.contenedor{
+  background-color: #001a43;
+	padding-top: 35px;
+	/*padding-bottom: 46px;*/
 	margin-bottom: 	0px;
+}
+
+div.logos {
+  padding-bottom: 35px;
+  margin-bottom: 0px;
 }
 
 nav{
 	background-color: #001a43;
 	border: 0px;
-	border-top: solid 1px;
+	border-top: solid 2px;
+  height: 50px; /* por el border top */
 	border-color: #F5b400;
 }
 nav ul a{
 	color: #ebebeb;
+  height: auto;
 }
 nav .brand-logo{
 	color: #8da9c6;
 }
 nav a{
 	color: #8da9c6;
+}
+
+li {
+  height: 48px;
+}
+
+a {
+  height: 48px !important;
+  font-size: 1.1em;
+}
+
+.dropdown-content li>span {
+  color: #000 !important;
+}
+
+.dropdown-content li>a {
+  color: #000 !important;
+}
+
+.select-content li>span {
+  color: #000 !important;
+}
+
+.select-content li>a {
+  color: #000 !important;
 }
 @font-face {
     font-family: 'Heuristica-Regular';
