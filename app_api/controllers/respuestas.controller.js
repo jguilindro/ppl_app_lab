@@ -44,10 +44,18 @@ const actualizarRespuesta = (req, res) => {
 	});
 }
 
+const obtenerRespuestaPorId = (req, res) => {
+	RespuestaModel.obtenerRespuestaPorId(req.params.id_respuesta, (err, respuesta) => {
+		if (err) return response.serverError(res);
+    return response.ok(res, respuesta);
+	})
+}
+
 module.exports = {
 	crearRespuesta,
 	obtenerRespuestasPorGrupoAPregunta,
 	obtenerRespuestaDeEstudiante,
-	actualizarRespuesta
+	actualizarRespuesta,
+	obtenerRespuestaPorId
 }
 
