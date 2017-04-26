@@ -51,10 +51,10 @@
    </div>
     <form>
       <div class="form-group col s12">
-        <div v-for="pregunta in preguntas">
+        <div v-for="(pregunta, index) in preguntas">
 		<div class="row">
 		<div class="col s6">
-		<h4>{{counter}}</h4>
+		<h4>Pregunta #{{index+1}}</h4>
 		<label for="nombre">Nombre de la Pregunta</label>
         <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
 		<label for="descripcion">Descripcion</label>
@@ -69,7 +69,9 @@
 	</div>
 	</br>
 	</br>
-      </div>
+	</div>
+	<button type="button" v-on:click="enviarFeedback()" class="btn ">Enviar Calificaciones</button>
+	<button type="button" v-on:click="regresar()" class="btn " style="float: right;">Regresar</button> 		  
 	  </div>
      </form>
       <!--<div class="form-group col s6">

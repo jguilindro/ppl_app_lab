@@ -18,8 +18,7 @@ var App = new Vue({
       puntaje: 0
     },
 	preguntas: [],
-	respuestas: [],
-	counter: 0
+	respuestas: []
   },
   methods: {
 	//carga la lección que se quiere va a calificar con cada pregunta
@@ -53,11 +52,20 @@ var App = new Vue({
     this.$http.get(obtenerRespuestaURL).then(res => {
 		console.log(res.body.datos);
 		self.respuestas.push(res.body.datos);
+		
 	});
 	}
+	
       }
 
-})
+});
 
+function regresar(){
+	window.location.href = '/profesores/grupos/'
+}
+
+function enviarFeedback(){
+	window.location.href = '/profesores/grupos/'
+}
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")

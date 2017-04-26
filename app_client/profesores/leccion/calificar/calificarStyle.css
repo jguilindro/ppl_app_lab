@@ -47,3 +47,34 @@ p.collection-item{
     left: 100%;
     margin-left: 15px;
 }
+
+input::-webkit-input-placeholder {
+color: black;
+}
+ 
+input:-moz-placeholder { /* Firefox 18- */
+color: black;  
+}
+ 
+input::-moz-placeholder {  /* Firefox 19+ */
+color: black;  
+}
+ 
+input:-ms-input-placeholder {  
+color: black; 
+}
+textarea::-webkit-input-placeholder {
+color: black;
+}
+ 
+textarea:-moz-placeholder { /* Firefox 18- */
+color: black;
+}
+ 
+textarea::-moz-placeholder {  /* Firefox 19+ */
+color: black; 
+}
+ 
+textarea:-ms-input-placeholder {  
+color: black; 
+}
