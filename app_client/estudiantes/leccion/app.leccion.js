@@ -78,7 +78,7 @@ var App = new Vue({
       //FALTA PROBAR ESTO, SON LAS 2 DE LA MAÑANA, LO HARÉ CUANDO ESTÉ MÁS CONSCIENTE DE LO QUE HAGO AHORA
       var self = this;
       var pregunta = res.body.datos;
-      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + self.pregunta._id + '/estudiante/' + self.estudiante._id;
+      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
       self.$http.get(url).then(response => {
         //SUCCESS CALLBACK
         pregunta.respuesta = response.body.datos.respuesta;
@@ -87,7 +87,7 @@ var App = new Vue({
         //ERROR CALLBACK
         pregunta.respuesta = '';
         pregunta.respondida = false;
-      });      
+      });
       return pregunta;
     },
     responder: function(pregunta, event){
@@ -246,4 +246,3 @@ socket.on('leccion id', function(id_leccion) {
 socket.on('pregunta actual', function(pregunta) {
   console.log(pregunta);
 })
-
