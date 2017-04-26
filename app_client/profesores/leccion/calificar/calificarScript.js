@@ -18,7 +18,10 @@ var App = new Vue({
       puntaje: 0
     },
 	preguntas: [],
-	respuestas: []
+	respuestas: [],
+	estudiante:{
+	nombre: ''
+	}
   },
   methods: {
 	//carga la lección que se quiere va a calificar con cada pregunta
@@ -54,10 +57,14 @@ var App = new Vue({
 		self.respuestas.push(res.body.datos);
 		
 	});
+	},
+	
+	getEstudiante: function(){
+	var estudianteId = window.location.href.toString().split('/')[7];
+	
 	}
 	
       }
-
 });
 
 function regresar(){

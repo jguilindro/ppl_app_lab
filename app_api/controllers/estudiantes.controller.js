@@ -29,7 +29,10 @@ const crearEstudiante = (req, res) => {
 }
 
 const obtenerEstudiante = (req, res) => {
-	res.send(`obtenerEstudiante ${req.params.id_estudiante}`);
+	EstudianteModel.obtenerEstudiante(req.params.id_estudiante, (err, estudiante) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res, estudiante);
+  })
 }
 
 // mensajes error dos: si no es del curso, o si ingreso mal la contrasena leccion
