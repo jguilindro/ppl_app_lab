@@ -12,6 +12,7 @@
 	<body id="grad">
 		<main>
 			<div class="container" id="app">
+			
 				<div class="row">
 					<section class="center-align">
 						<img class="responsive-img circle" src="https://placehold.it/100x100">
@@ -30,7 +31,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="leccion in estudiante.lecciones">
+								<tr v-for="leccion in lecciones">
 									<td>{{leccion.leccion.nombre}}</td>
 									<td>{{leccion.leccion.estado}}</td>
 									<td>{{leccion.leccion.calificacion}}</td>
@@ -38,7 +39,7 @@
 									<td v-if="leccion.leccion.estado=='terminado'">
 											<button class="btn waves-effect waves-light" v-bind:id=leccion.leccion._id v-on:click="verLeccion($event)">Ver</button>
 									</td>
-									<td v-else-if="leccion.leccion.estado=='pendiente'">
+									<td v-else>
 										<button class="btn waves-effect waves-light blue lighten-1" v-on:click="tomarLeccion()">Tomar</button>
 									</td>
 								</tr>
