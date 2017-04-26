@@ -45,6 +45,7 @@
     "schema-inspector": "^1.6.8",
     "serve-favicon": "~2.3.2",
     "shortid": "^2.2.8",
+    "soap": "^0.19.0",
     "socket.io": "^1.7.3",
     "tracer": "^0.8.7",
     "uuid": "^3.0.1",

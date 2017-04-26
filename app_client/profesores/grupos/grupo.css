@@ -242,6 +242,7 @@ div.modal-estudiante{
 
 /*drag and drop animations*/
 .grupos-drop.over {
+  transition-delay: 0.17s;
   border: 3px dashed #ccc;
 }
 

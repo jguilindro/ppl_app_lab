@@ -80,10 +80,11 @@
                     <div class="nombre-grupo">
                       <span class="nombre-grupo">{{grupo.nombre}}</span>
                     </div>
-      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="estudiante in grupo.estudiantes"  v-bind:value="grupo._id">
+      							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="(estudiante, index) in grupo.estudiantes"  v-bind:value="grupo._id">
                       <!-- onmouseout="borrarBotonEliminar(this)" onclick="escogerEstudiante(this)"-->
-      								<div  ondblclick="mostrarDatosEstudiante(this)" v-bind:id="estudiante._id">
+      								<div  onclick="mostrarDatosEstudiante(this)" v-bind:id="estudiante._id">
       								  <a class="nombres-estudiante" v-bind:id="estudiante._id">{{estudiante.nombres}} {{estudiante.apellidos}}</a>
+                        <div class="divider" v-if="(grupo.estudiantes.length- 1) != index"></div>
       								</div>
       							</div>
                   </div>

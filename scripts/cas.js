@@ -22,7 +22,7 @@ var cas = new CASAuthentication({
 // this route once authenticated.
 app.get( '/app', cas.bounce, function ( req, res ) {
     console.log(req.session);
-    res.send( '<html><body>Hello!</body></html>' );
+    res.send( `<html><body>Hello!</body></html>` );
 });
 
 // Unauthenticated clients will receive a 401 Unauthorized response instead of
