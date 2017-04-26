@@ -43,45 +43,29 @@ var App = new Vue({
           });
     },
     getPreguntas: function(){
-      /*
-        Esta función hará lo siguiente:
-          Hará una llamada a la api de preguntas
-          Obtendrá todas las preguntas de la base de datos
-          Escogerá solamente las que son de Estimación
-          Las dividirá por capítulos para poder mostrarlas al usuario
-      */
-      var c = 0;
       var self = this;
-      var flag = false;
-      //Llamada a la api
+      var encontroCapitulo = false;
       this.$http.get('/api/preguntas').then(response => {
         //success callback
-        self.preguntas = response.body.datos;   //Se almacenarán temporalmente todas las preguntas de la base de datos
+        self.preguntas = response.body.datos
         $.each(self.preguntas, function(index, pregunta){
           pregunta['show'] = true;
           if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
-            //Si la pregunta es de estimacion entonces se tiene que almacenar para mostrarla al usuario
-            c++
             $.each(self.capitulos, function(index, capitulo){
-              //Recorre el array de capitulos del script. Si encuentra el capitulo al que pertenece la pregunta, lo añade.
               if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
                 capitulo.preguntas.push(pregunta);
-                flag = true;  //Cambia la bandera indicando que encontro el capitulo
-
-                return;
+                encontroCapitulo = true;
+                return false;
               }else{
-                flag=false;
+                encontroCapitulo=false;
               }
             });
-            //Si no encontro el capitulo, la bandera sigue en falso indicando que el capitulo no existe. Entonces se crea el capitulo y se agrega la pregunta
-            if (!flag) {
+            if (!encontroCapitulo) {
               self.crearCapitulo(pregunta)
             }
           }
 
         })
-        console.log("Finalmente self.capitulos: ")
-        console.log(self.capitulos)
       }, response => {
         //error callback
         console.log(response)
@@ -189,3 +173,11 @@ function ordenPreguntas(preguntas){
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
+document.addEventListener("DOMContentLoaded", function(event) {
+  $.get({
+    url: "../../partials/navbar.html",
+    success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+    }
+  })
+});
