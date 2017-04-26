@@ -6,13 +6,15 @@ var app = new Vue({
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoCapitulo').modal();
 		this.getPreguntas();
+		this.obtenerLogeado();
 
 	},
 
 	el: '#preguntas',
 	data: {
 		preguntas: [],
-		capitulos: []
+		capitulos: [],
+		profesor: {}
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -79,7 +81,7 @@ var app = new Vue({
 			var self = this;
 			var encontroCapitulo = false;
 			this.$http.get('/api/preguntas').then(response => {
-				//success callback				
+				//success callback
 				self.preguntas = response.body.datos
 				$.each(self.preguntas, function(index, pregunta){
 					pregunta['show'] = true;
@@ -124,7 +126,23 @@ var app = new Vue({
 			var self = this;
 			console.log(self.capitulos)
 			console.log(self.preguntas)
-		}
+		},
+		checkCreador: function(pregunta){
+			var self = this;
+			//if(pregunta.creador=='') return true;
+			if(pregunta.creador==self.profesor.correo) return true;
+			return false
+		},
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    }
+
 	}
 });
 

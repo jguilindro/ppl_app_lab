@@ -2,7 +2,8 @@ var laboratorio = new Vue({
 	el: '#laboratorio',
 	data: {
 		laboratorios: [],
-		preguntas: []
+		preguntas: [],
+		profesor: {}
 	},
 	mounted: function(){
 		$('.button-collapse').sideNav();
@@ -11,6 +12,7 @@ var laboratorio = new Vue({
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoLab').modal();
 		this.getPreguntas();
+		this.obtenerLogeado();
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -159,7 +161,22 @@ var laboratorio = new Vue({
 			}
 			laboratorio.preguntas.push(pregunta);
 			self.laboratorios.push(laboratorio);
-		}
+		},
+		checkCreador: function(pregunta){
+			var self = this;
+			//if(pregunta.creador=='') return true;
+			if(pregunta.creador==self.profesor.correo) return true;
+			return false
+		},
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    }
 	}
 });
 

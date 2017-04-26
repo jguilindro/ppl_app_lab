@@ -36,6 +36,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', express.static(path.join(__dirname, 'app_client/login')));
 app.use('/api/session', require('./app_api/routes/login.router'));
+app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 // Auth middleware
 const { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
@@ -59,7 +60,7 @@ app.use('/profesores/lecciones',authProfesor, express.static(path.join(__dirname
 app.use('/profesores/leccion/modificar/:id',authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
 
 app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
-
+app.use('/profesores/leccion/calificar', authProfesor, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')));
 
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 app.use('/estudiantes/', authEstudiante, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
@@ -115,5 +116,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
+
+
+//Espero que sirva
+
+
 
 module.exports = {app: app, server: server};

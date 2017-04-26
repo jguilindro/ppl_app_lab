@@ -2,7 +2,8 @@ var practica = new Vue({
 	el: '#tutorial',
 	data: {
 		tutoriales: [],
-		preguntas: []
+		preguntas: [],
+		profesor: {}
 	},
 	mounted: function(){
 		$('.button-collapse').sideNav();
@@ -11,6 +12,7 @@ var practica = new Vue({
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevaPractica').modal();
 		this.getPreguntas();
+		this.obtenerLogeado();
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -159,7 +161,22 @@ var practica = new Vue({
 			}
 			tutorial.preguntas.push(pregunta);
 			self.tutoriales.push(tutorial);
-		}
+		},
+		checkCreador: function(pregunta){
+			var self = this;
+			//if(pregunta.creador=='') return true;
+			if(pregunta.creador==self.profesor.correo) return true;
+			return false
+		},
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    }
 	}
 });
 

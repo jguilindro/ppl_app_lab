@@ -2,6 +2,7 @@
 var app = new Vue({
 	mounted: function(){
 		$('#summernote').summernote();
+		this.obtenerLogeado();
 
 
 	},
@@ -44,7 +45,19 @@ var app = new Vue({
 		},
 		ok: function(){
 			window.location.href = '/profesores/preguntas/estimacion'
-		}
+		},
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+            //self.estudiante = res.body.datos;
+            //console.log(self.estudiante)
+            console.log(res.body.datos)
+            self.pregunta.creador = res.body.datos.correo;
+          }
+        });
+    }
 	}
 });
 

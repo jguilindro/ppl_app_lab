@@ -102,11 +102,12 @@
 	              	<p>{{preguntaObtenida.tutorial}}</p>
 	              </div>
 	            	<div class="row row-ver" id="row-ver-btn">
-	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar">Editar</a>
-	            		<a class="waves-effect waves-light btn"  href="#modalEliminar">Eliminar</a>
+	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar" v-if="editable">Editar</a>
+	            		<a class="waves-effect waves-light btn"  href="#modalEliminar" v-if="eliminable">Eliminar</a>
 	            	</div>
 	            </div>
-	            
+	            {{editable}}
+	            {{eliminable}}
 	          </div>
 	        </div>
 	      </div>

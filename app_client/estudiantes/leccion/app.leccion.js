@@ -75,9 +75,19 @@ var App = new Vue({
       });
     },
     crearPregunta: function(res){
+      //FALTA PROBAR ESTO, SON LAS 2 DE LA MAÑANA, LO HARÉ CUANDO ESTÉ MÁS CONSCIENTE DE LO QUE HAGO AHORA
+      var self = this;
       var pregunta = res.body.datos;
-      pregunta.respuesta = '';
-      pregunta.respondida = false;
+      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + self.pregunta._id + '/estudiante/' + self.estudiante._id;
+      self.$http.get(url).then(response => {
+        //SUCCESS CALLBACK
+        pregunta.respuesta = response.body.datos.respuesta;
+        pregunta.respondida = true;
+      }, response => {
+        //ERROR CALLBACK
+        pregunta.respuesta = '';
+        pregunta.respondida = false;
+      });      
       return pregunta;
     },
     responder: function(pregunta, event){

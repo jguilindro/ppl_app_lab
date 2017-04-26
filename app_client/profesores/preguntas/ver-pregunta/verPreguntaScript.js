@@ -2,6 +2,8 @@ var pregunta = new Vue({
 	el: '#pregunta',
 	mounted: function(){
 		this.getPregunta();
+		this.obtenerLogeado();
+		//this.checkCreador();
 		$('.button-collapse').sideNav();
 		$('.myEditor').materialnote();
 		$(".note-editor").find("button").attr("type", "button");		//No borrar. Corrige el error estupido de materialNote
@@ -27,7 +29,10 @@ var pregunta = new Vue({
 			laboratorio: '',	//Se llena solo si tipoLeccion=='Laboratorio'
 			puntaje: 0
 
-		}
+		},
+		profesor: {},
+		editable: false,
+		eliminable: false
 	},
 	methods: {
 		getPregunta: function(){
@@ -51,16 +56,21 @@ var pregunta = new Vue({
 		mostrarEditar: function(){
 			//Hago visible la parte de editar pregunta e invisible la parte de ver pregunta
 			var self = this;
-			self.aux = !self.aux;
-			//Copio los valores de la pregutaObtenida en preguntaEditar que será un temporal
-			self.preguntaEditar = self.preguntaObtenida;
-			console.log(self.preguntaEditar.tipoPregunta)
-			//$('.myEditor').materialnote('code', self.preguntaEditar.descripcion)
-			$('#firstEditor').code(self.preguntaEditar.descripcion);
-			//$('#select-editar-tipo-pregunta').material_select('destroy');
-			//$('#select-editar-tipo-pregunta').material_select();
-			$('#select-editar-tipo-pregunta option:selected').val('opcion')
-			$('.lblEditar').addClass('active')
+			if(editable){
+				self.aux = !self.aux;
+				//Copio los valores de la pregutaObtenida en preguntaEditar que será un temporal
+				self.preguntaEditar = self.preguntaObtenida;
+				console.log(self.preguntaEditar.tipoPregunta)
+				//$('.myEditor').materialnote('code', self.preguntaEditar.descripcion)
+				$('#firstEditor').code(self.preguntaEditar.descripcion);
+				//$('#select-editar-tipo-pregunta').material_select('destroy');
+				//$('#select-editar-tipo-pregunta').material_select();
+				$('#select-editar-tipo-pregunta option:selected').val('opcion')
+				$('.lblEditar').addClass('active')
+			}
+			else{
+				alert('Usted no puede editar ni eliminar esta pregunta');
+			}			
 		},
 		prueba: function(){
 			console.log($('#firstEditor').code())
@@ -93,7 +103,25 @@ var pregunta = new Vue({
 			}, response => {
 				console.log(response)
 			});
-		}
+		},
+		checkCreador: function(){
+			var self = this;
+			//if(pregunta.creador=='') return true;
+			if(self.preguntaObtenida.creador==self.profesor.correo){
+				self.editable = true;
+				self.eliminable = true;
+			}
+		},
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          	self.checkCreador();
+          }
+        });
+    }
 	}
 });
 

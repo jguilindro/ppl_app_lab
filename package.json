@@ -49,6 +49,7 @@
     "tracer": "^0.8.7",
     "uuid": "^3.0.1",
     "validator": "^7.0.0",
+    "vue-material": "^0.7.1",
     "xss": "^0.3.3"
   },
   "devDependencies": {
