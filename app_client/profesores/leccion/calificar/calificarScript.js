@@ -6,6 +6,7 @@ var App = new Vue({
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
 	this.getLeccion();
+	this.getEstudiante();
   },
   el: '#app',
   data: {
@@ -19,8 +20,10 @@ var App = new Vue({
     },
 	preguntas: [],
 	respuestas: [],
-	estudiante:{
-	nombre: ''
+	estudiante: {
+	nombres: '',
+	apellidos: '',
+	correo: ''
 	}
   },
   methods: {
@@ -53,7 +56,6 @@ var App = new Vue({
 	var estudianteId = window.location.href.toString().split('/')[7];
 	var obtenerRespuestaURL = '/api/respuestas/buscar/leccion/'+ leccionId+ '/pregunta/'+preguntaId+ '/estudiante/'+estudianteId;
     this.$http.get(obtenerRespuestaURL).then(res => {
-		console.log(res.body.datos);
 		self.respuestas.push(res.body.datos);
 		
 	});
@@ -61,7 +63,13 @@ var App = new Vue({
 	
 	getEstudiante: function(){
 	var estudianteId = window.location.href.toString().split('/')[7];
-	
+	var obtenerEstudianteURL = '/api/estudiantes/' + estudianteId;
+	this.$http.get(obtenerEstudianteURL).then(res => {
+		App.estudiante.nombres=res.body.datos.nombres;
+		App.estudiante.apellidos=res.body.datos.apellidos;
+		App.estudiante.correo=res.body.datos.correo;
+		console.log(App.estudiante);
+	});
 	}
 	
       }
