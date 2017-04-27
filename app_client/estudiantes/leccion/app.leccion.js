@@ -243,6 +243,6 @@ socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
 })
 
-socket.on('pregunta actual', function(pregunta) {
-  console.log(pregunta);
-})
+// socket.on('pregunta actual', function(pregunta) {
+//   console.log(pregunta);
+// })

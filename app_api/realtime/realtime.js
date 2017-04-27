@@ -84,8 +84,8 @@ function realtime(io) {
         const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
         const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
         anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
-        const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
-        const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
+        // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
+        // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
         socket.join(GRUPO._id) // unir estudiante al canal grupo
         socket.join(PARALELO._id) // unir al estudiante al canal paralelo
         socket.estudiante = estudiante
@@ -97,7 +97,7 @@ function realtime(io) {
           socket.on('grupo bandera amarilla') // emite a profesor
           socket.on('grupo bandera roja') // emit a profesor
         */
-        socket.emit('pregunta actual', PREGUNTA_ID)
+        // socket.emit('pregunta actual', PREGUNTA_ID)
         socket.emit('leccion id', LECCION_ID)
       }
     }).catch(fail => console.log(fail))
@@ -326,8 +326,9 @@ function obtenerPreguntaActual(grupo, id_leccion) {
       }
       // FIXME: fatal error, da error al coger la leccion, sale que leccion no existe
       if(!leccion) {
+        // logout estudiante OJO
         logger.error('Error de obtenerPreguntaActual')
-        resolve(false)
+        return resolve(false)
       }
       return resolve(leccion.preguntaActual)
     })
