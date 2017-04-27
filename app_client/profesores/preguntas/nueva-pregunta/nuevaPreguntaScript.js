@@ -21,9 +21,10 @@ var app = new Vue({
 			capitulo: '',		//Se llena solo si tipoLeccion=='leccion'
 			tutorial: '',		//Se llena solo si tipoLeccion=='tutorial'
 			laboratorio: '',	//Se llena solo si tipoLeccion=='Laboratorio'
-			puntaje: 2
-
-		}
+			puntaje: 2,
+			nombreCreador: ''
+		},
+		profesor: {}
 	},
 	methods: {
 		cancelar: function(){
@@ -51,10 +52,10 @@ var app = new Vue({
       this.$http.get('/api/session/usuario_conectado').
         then(res => {
           if (res.body.estado) {
-            //self.estudiante = res.body.datos;
-            //console.log(self.estudiante)
-            console.log(res.body.datos)
-            self.pregunta.creador = res.body.datos.correo;
+            self.profesor = res.body.datos;
+            console.log(self.profesor)
+            self.pregunta.creador = self.profesor._id;
+            self.pregunta.nombreCreador = self.profesor.nombres + self.profesor.apellidos;
           }
         });
     }

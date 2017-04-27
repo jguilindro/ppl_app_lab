@@ -14,6 +14,9 @@ const PreguntaSchema = mongoose.Schema({
     type: String,
     ref: 'Profesor'
   },
+  nombreCreador: {
+    type: String
+  },
   tipoLeccion: {  // <= DOCUMENTACION
     type: String,
     enum: ['estimacion', 'tutorial', 'laboratorio'],

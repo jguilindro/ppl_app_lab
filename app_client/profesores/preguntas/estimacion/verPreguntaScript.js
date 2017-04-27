@@ -129,8 +129,7 @@ var app = new Vue({
 		},
 		checkCreador: function(pregunta){
 			var self = this;
-			//if(pregunta.creador=='') return true;
-			if(pregunta.creador==self.profesor.correo) return true;
+			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
 		obtenerLogeado: function() {

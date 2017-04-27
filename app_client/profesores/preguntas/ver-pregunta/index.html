@@ -55,7 +55,7 @@
 	              </div>
 	              <!--Creado por-->
 	              <div class="row row-ver" id="row-ver-creador">
-	              	<p class="center-align">Creada por: {{preguntaObtenida.creador}}</p>
+	              	<p class="center-align">Creada por: {{preguntaObtenida.nombreCreador}}</p>
 	              </div>
 	              <!--Descripcion-->
 	              <div class="row row-ver" id="row-ver-descripcion">
@@ -104,10 +104,9 @@
 	            	<div class="row row-ver" id="row-ver-btn">
 	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar" v-if="editable">Editar</a>
 	            		<a class="waves-effect waves-light btn"  href="#modalEliminar" v-if="eliminable">Eliminar</a>
+
 	            	</div>
 	            </div>
-	            {{editable}}
-	            {{eliminable}}
 	          </div>
 	        </div>
 	      </div>
@@ -118,7 +117,7 @@
 							<div class="card-content">
 								<div class="row row-editar">
 									<h1 class="center-align">Editar pregunta</h1>
-									<p class="center-align">Creada por: </p>
+									<p class="center-align">Creada por: {{preguntaObtenida.nombreCreador}}</p>
 								</div>
 								<div class="row" id="row-editar-form">
 									<form class="col s12">
@@ -161,21 +160,21 @@
 										</div>
 										
 										<!--Capitulo-->
-										<div class="row row-editar" id="row-editar-capitulo">
+										<div class="row row-editar" id="row-editar-capitulo" v-show="preguntaEditar.tipoLeccion=='estimacion'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-capitulo" v-model="preguntaEditar.capitulo">
 												<label for="in-editar-capitulo" class="lblEditar">Capítulo</label>
 											</div>
 										</div>
 										<!--Tutorial-->
-										<div class="row row-editar" id="row-editar-tutorial">
+										<div class="row row-editar" id="row-editar-tutorial" v-show="preguntaEditar.tipoLeccion=='tutorial'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-tutorial" v-model="preguntaEditar.tutorial">
 												<label for="in-editar-tutorial" class="lblEditar">Tutorial</label>
 											</div>
 										</div>
 										<!--Laboratorio-->
-										<div class="row row-editar" id="row-editar-laboratorio" >
+										<div class="row row-editar" id="row-editar-laboratorio" v-show="preguntaEditar.tipoLeccion=='laboratorio'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-laboratorio" v-model="preguntaEditar.laboratorio">
 												<label for="in-editar-laboratorio" class="lblEditar">Laboratorio</label>
@@ -205,15 +204,15 @@
 						</div>
 					</div>
 	      </div>
-	       <!-- Modal Structure -->
+	       <!-- Modal Eliminar Structure -->
 			  <div id="modalEliminar" class="modal">
 			    <div class="modal-content">
-			      <h4>Eliminar</h4>
-			      <p>¿Desea eliminar la pregunta?</p>
+			      <h4 class="center-align">Eliminar</h4>
+			      <p class="center-align">¿Desea eliminar la pregunta?</p>
 			    </div>
 			    <div class="modal-footer">
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="eliminarPregunta">Eliminar</a>
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat pull left">Cancelar</a>
 			    </div>
 			  </div>
 			</div>	
