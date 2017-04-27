@@ -76,13 +76,26 @@ var App = new Vue({
     },
     crearPregunta: function(res){
       //FALTA PROBAR ESTO, SON LAS 2 DE LA MAÑANA, LO HARÉ CUANDO ESTÉ MÁS CONSCIENTE DE LO QUE HAGO AHORA
+      //Obviamente hubo un error y se descubrió durante la presentación como es costumbre...
+      //console.log(res)
       var self = this;
       var pregunta = res.body.datos;
+      pregunta.respuesta = ''
+      //console.log(pregunta)
+      //Busca si la pregunta ya fue respondida, busca en la base de datos si existe una respuesta del estudiante a la pregunta escogida
       var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
       self.$http.get(url).then(response => {
         //SUCCESS CALLBACK
-        pregunta.respuesta = response.body.datos.respuesta;
-        pregunta.respondida = true;
+        //Si la respuesta existe
+        if (response.body.datos!=null) {
+          pregunta.respuesta = response.body.datos.respuesta;
+          pregunta.respondida = true;
+        }else{ //Si la respuesta no existe
+          pregunta.respuesta = '';
+          pregunta.respondida = false;
+        }
+        console.log(response)
+
       }, response => {
         //ERROR CALLBACK
         pregunta.respuesta = '';
@@ -94,6 +107,8 @@ var App = new Vue({
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
       if(!pregunta.respondida&&!self.corregirHabilitado){
+        console.log('Va a responder por primera vez a la pregunta: ')
+        console.log(pregunta)
         self.enviarRespuesta(pregunta);
       }
       //Después de haber respondido todas las preguntas, si quiere corregir alguna
@@ -131,12 +146,20 @@ var App = new Vue({
     },
     verificarTodasRespondidas: function(){
       var self = this;
+      console.log(self.preguntas)
+      var self = this;
       var todasRespondidas = true;
       $.each(self.preguntas, function(index, pregunta){
+        console.log('----------------------------')
+        console.log('Verificando la pregunta: ');
+        console.log(pregunta);
+        console.log('Ha sido respondida: ' + pregunta.respondida);
         if(!pregunta.respondida){
+          console.log('La pregunta no ha sido respondida');
           todasRespondidas = false;
           return false;
         }
+        console.log('----------------------------')
       });
       return todasRespondidas;
     },
@@ -173,13 +196,16 @@ var App = new Vue({
     enviarRespuesta: function(pregunta){
       var self = this;
       var respuesta = self.crearRespuesta(pregunta);
+      console.log('Va a enviar la respuesta: ')
+      console.log(respuesta);
       var url = '/api/respuestas/';
       this.$http.post(url, respuesta).then(response => {
         //Success callback
+        console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
         pregunta.respondida = true;
         self.bloquearBtnRespuesta(event);
         self.bloquearTextAreaRespondida(pregunta);
-        if(verificarTodasRespondidas){
+        if(self.verificarTodasRespondidas()){
           $('#modalRevisarRespuestas').modal('open');
         }
       }, response => {
@@ -193,15 +219,22 @@ var App = new Vue({
       var url = "/api/respuestas/buscar/leccion/" + self.leccion._id + "/pregunta/" + pregunta._id + "/estudiante/" + self.estudiante._id
       self.$http.get(url).then(response => {
         var idRespuesta = response.body.datos._id;
-        var urlPut = "/api/respuestas/" + idRespuesta;
-        self.$http.put(urlPut, pregunta.respuesta).then(response => {
-          console.log('yaaaa')
-        }, response => {
-
-        });
+        self.enviarCorreccion(idRespuesta, pregunta);
       }, response => {
 
       })
+    },
+    enviarCorreccion: function(idRespuesta, pregunta){
+      var self = this;
+      var urlPut = "/api/respuestas/" + idRespuesta;
+      self.$http.put(urlPut, {respuesta: pregunta.respuesta}).then(response => {
+        //SUCCESS CALLBACK
+        console.log('yaaaa')
+      }, response => {
+        //ERROR CALLBACK
+        console.log(response);
+        alert('Hubo un error al enviar la corrección. De alguna forma esto es culpa de Xavier')
+      });
     }
   },
   data: {

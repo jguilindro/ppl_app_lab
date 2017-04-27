@@ -65,4 +65,8 @@ respuestasSchema.statics.actualizarRespuesta = function(id_respuesta, actualizar
   this.update({_id:id_respuesta}, {$set : {respuesta: actualizar}}, callback);
 }
 
+respuestasSchema.statics.obtenerRespuestaPorId = function(id_respuesta, callback){
+  this.findOne({_id: id_respuesta}, callback);
+}
+
 module.exports = mongoose.model('Respuesta', respuestasSchema);
