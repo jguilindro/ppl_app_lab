@@ -26,6 +26,7 @@ var App = new Vue({
       this.$http.get(`/api/paralelos/profesores/mis_paralelos`).then(response => {
         if (response.body.estado) {
           this.paralelos = response.body.datos
+          console.log(this.paralelos)
         }
       }, response => {
         console.error('error')

@@ -7,7 +7,7 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     this.getPreguntas();
     this.getParalelos();
-    $('select').material_select();
+    //$('select').material_select();
   },
   el: '#app',
   data: {
@@ -18,7 +18,8 @@ var App = new Vue({
       fechaInicio: '',
       preguntas: [
       ],
-      puntaje: 0
+      puntaje: 0,
+      paralelo: ''
     },
     paralelos: [],
     preguntas: [],
@@ -26,21 +27,29 @@ var App = new Vue({
     preguntas_escogidas: {
       preguntas: [],
       tiempoTotal: 0
+    },
+    paraleloEscogido: {
+      nombre: '',
+      id: ''
     }
   },
   methods: {
+    prueba: function(){
+      console.log($('#select-paralelos option:selected').val())
+    },
     crearLeccion() {
-      var crearLeccionURL = '/api/lecciones'
+      var crearLeccionURL = '/api/lecciones/'
       var self = this;
-          this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-            //success callback
-            alert("Su lección ha sido creada con éxito!");
-            window.location.href = '/profesores/leccion/';
-            console.log(response)
-            }, response => {
-            //error callback
-            console.log(response)
-          });
+      self.leccion_nueva.paralelo = self.paraleloEscogido.id
+      this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
+        //success callback
+        alert("Su lección ha sido creada con éxito!");
+        window.location.href = '/profesores/leccion/';
+        console.log(response)
+        }, response => {
+        //error callback
+        console.log(response)
+      });
     },
     getPreguntas: function(){
       var self = this;
@@ -73,21 +82,6 @@ var App = new Vue({
     },
     crearCapitulo: function(pregunta){
       var self = this;
-      //console.log(pregunta)
-      /*
-        Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
-        Se revisará a cada pregunta el capítulo al que pertenece
-        Si pertenece a un capítulo que ya se encuentra en self.capitulos entonces no entrará a esta función
-        Si no pertenece a un capítulo que ya se encuentra en self.capitulos entones hay que crear ese capítulo y añadirlo al array self.capitulos
-        Luego se añadirá la pregunta al capítulo ya creado
-        Formato de capitulo:
-        capitulo = {
-          nombre: 'Capítulo 1: Electrodinámica',
-          id: 'capitulo1'.
-          href: '#capitulo1',
-          preguntas: []
-        }
-      */
       var nombreCapitulo = pregunta.capitulo;
       var idCapitulo = nombreCapitulo.toLowerCase();
       idCapitulo = idCapitulo.split(":")[0];
@@ -103,18 +97,43 @@ var App = new Vue({
       self.capitulos.push(capitulo);
     },
     getParalelos: function(){
-        url = '/api/paralelos/profesores/mis_paralelos'
-        var self = this;
-        this.$http.get(url).then(response =>{
-              //successfull callback
-              for (var x = 0; x < response.body.datos.length; x++){
-                self.paralelos.push(response.body.datos[x].nombre);
-              }
-          }, response => {
-              //error callback
-              console.log("EEEEEERRRROOOOOOOOOOOOOR!")
-          });
+      url = '/api/paralelos/profesores/mis_paralelos'
+      var self = this;
+      self.$http.get(url).then(response =>{
+        //successfull callback
+        if(response.body.estado) {
+          self.paralelos = response.body.datos
+          console.log(self.paralelos);
+          self.crearSelectParalelos();
+        }
+        /*
+          for (var x = 0; x < response.body.datos.length; x++){
+            self.paralelos.push(response.body.datos[x].nombre);
+          }
+        */
+        }, response => {
+          //error callback
+          console.log("EEEEEERRRROOOOOOOOOOOOOR!")
+        });
     },
+    crearSelectParalelos: function(){
+      var self = this;
+      var select = $('<select>').attr({"id":"select-paralelos"});
+      select.change(function(){
+        console.log('holaaa');
+        self.paraleloEscogido.id = $('#select-paralelos option:selected').val();
+        self.paraleloEscogido.nombre = $('#select-paralelos option:selected').text();
+        console.log(self.paraleloEscogido)
+      })
+      var optDisabled = $('<option>').val("").text("");
+      select.append(optDisabled);
+      $.each(self.paralelos, function(index, paralelo){
+        var option = $('<option>').val(paralelo._id).text(paralelo.nombre);
+        select.append(option);
+      });
+      $('#div-select').append(select);
+      $('#select-paralelos').material_select();
+    }
   }
 })
 function preguntaSeleccionada(_element) {
@@ -180,4 +199,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
       document.getElementById('#navbar').innerHTML = data;
     }
   })
+});
+
+$('#select-paralelos').change(function(){ 
+  console.log('holaaa')
+  console.log($('#select-paralelos option:selected').val())
+  console.log($('#select-paralelos option:selected').text())
+  //pregunta.$data.preguntaEditar.tipoPregunta = $('#select-editar-tipo-pregunta option:selected').val();
+  //console.log(pregunta.$data.preguntaEditar.tipoPregunta)
+  //console.log($('#select-editar-tipo-pregunta option:selected').text())
+  //console.log(pregunta.$data.preguntaEditar)
 });

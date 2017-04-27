@@ -30,11 +30,19 @@
         <div class="page">
           <div class="seccion-1 row container">
            <h2 class="center-align">Crear un nueva leccion</h2>
+            <button @click="prueba">Prueba</button>
             <form>
-              <div class="form-group col s10 offset-2">
-                <label for="nombre">nombre</label>
-                <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
+              <div class="row">
+                 <div class="input-field col s6">
+                  <label for="nombre">nombre</label>
+                  <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
+                </div>
+                <div class="input-field col s6" id="div-select">
+                  
+                  <label class="active">Paralelo:</label>
+                </div>
               </div>
+             
               <!--
 				<div class="form-group input-field offset-2 col s6">
 	                <select v-model="leccion_nueva.tipo">
@@ -51,6 +59,9 @@
 						</select>
                 	</div>
                 -->
+              <div>
+                
+              </div>
               <div class="form-group col s6">
                 <label for="fechaInicio">fecha inicio</label>
                 <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
@@ -126,6 +137,7 @@
           <p>Tipo de lección: {{leccion_nueva.tipo}}</p>
           <p>Fecha prevista: {{leccion_nueva.fechaInicio}}</p>
           <p>Puntaje total: {{leccion_nueva.puntaje}}</p>
+          <p>Paralelo: {{paraleloEscogido.nombre}}</p>
           <!-- Preguntas Seleccionadas-->
           <div class="preguntas-selected">
 	            <ul class="preguntas">

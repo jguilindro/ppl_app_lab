@@ -11,8 +11,9 @@ var practica = new Vue({
 		$(".dropdown-button").dropdown();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevaPractica').modal();
-		this.getPreguntas();
 		this.obtenerLogeado();
+		//this.getPreguntas();
+		
 	},
 	methods: {
 		nuevaPregunta: function(){
@@ -120,7 +121,7 @@ var practica = new Vue({
 		},
 		checkCreador: function(pregunta){
 			var self = this;
-			if(pregunta.creador==self.profesor.correo) return true;
+			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
 		obtenerLogeado: function() {
@@ -129,6 +130,7 @@ var practica = new Vue({
         then(res => {
           if (res.body.estado) {
           	self.profesor = res.body.datos;
+          	self.getPreguntas();
           }
         });
     }
