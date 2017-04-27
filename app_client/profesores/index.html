@@ -9,7 +9,9 @@
   <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="/bower_components/hover/css/hover-min.css">
+  <!-- navbar -->
   <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+  <script src="/js/navbar.js"></script>
   <style type="text/css">
     body{
       background-color:   #d3dbdb;
@@ -41,27 +43,27 @@
       <div class="col s12" id="info">
               <a href="/profesores/leccion">
                 <div class="col s4">
-                  <p class="center-align"><i class="large material-icons" id="pru">visibility</i></p>  
+                  <p class="center-align"><i class="large material-icons" id="pru">visibility</i></p>
                   <h4 class="center-align">Ver lecciones</h4>
                   <p class="center-align">Mira y edita las lecciones de tus paralelos.</p>
                 </div>
               </a>
               <a href="/profesores/leccion/crear">
                 <div class="col s4">
-                  <p class="center-align"><i class="large material-icons" id="pru">note_add</i></p>  
+                  <p class="center-align"><i class="large material-icons" id="pru">note_add</i></p>
                   <h4 class="center-align">Crea lecciones</h4>
                   <p class="center-align">Usa el banco de pregunta y crea de manera rápido y sencilla una lección para los paralelos.</p>
                 </div>
               </a>
               <a href="/profesores/grupos">
                 <div class="col s4">
-                  <p class="center-align"><i class="large material-icons" id="pru">mode_edit</i></p>  
+                  <p class="center-align"><i class="large material-icons" id="pru">mode_edit</i></p>
                   <h4 class="center-align">Editar grupo</h4>
                   <p class="center-align">¿Tienes duda de los grupos?, si un estudiante se retira o entran nuevos, aquí será la sección para editar esos grupos, mover a los estudiantes o crear nuevos grupos </p>
                 </div>
               </a>
                 <div class="col s6">
-                  <p class="center-align"><i class="large material-icons" id="pru">list</i></p>  
+                  <p class="center-align"><i class="large material-icons" id="pru">list</i></p>
                   <h4 class="center-align">Banco de pregunta</h4>
                   <p class="center-align">Dale una visita al banco de preguntas, crea preguntas en cualquier capítulo y revisa las preguntas de otros profesores, saber cuales preguntas hay puede ayudar a crear una lección más rápidamente.
                   revisa la pregunta de
@@ -70,18 +72,18 @@
                   </span></p></p>
                 </div>
               <div class="col s6">
-                  <p class="center-align"><i class="large material-icons" id="pru">add</i></p>  
+                  <p class="center-align"><i class="large material-icons" id="pru">add</i></p>
                   <h4 class="center-align">Crea una pregunta</h4>
-                  <p class="center-align">Ó ten un acceso rápido para crear preguntas y sean de 
+                  <p class="center-align">Ó ten un acceso rápido para crear preguntas y sean de
                   <span>
-                  <a href="/profesores/preguntas/estimacion">estimación</a>, <a href="/profesores/preguntas/laboratorio">laboratorio</a>, <a href="/profesores/preguntas/tutorial">tutorial</a>.  
+                  <a href="/profesores/preguntas/estimacion">estimación</a>, <a href="/profesores/preguntas/laboratorio">laboratorio</a>, <a href="/profesores/preguntas/tutorial">tutorial</a>.
                   </span></p>
               </div>
               <form method="post" action="/api/session/logout">
                 <button type="submit" onclick="" name="button">logout</button>
               </form>
       </div>
-      
+
     </div>
   </div>
 

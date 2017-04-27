@@ -50,11 +50,23 @@ var App = new Vue({
     leccion: {},
     paralelo: [],
     tiempo: ''
+  },
+  updated() {
+    $.get({
+      url: "/navbar/profesores",
+      success: function(data) {
+        document.getElementById('#navbar').innerHTML = data;
+        $(".button-collapse").sideNav();
+        $(".dropdown-button").dropdown();
+      }
+    })
   }
 })
 
 App.obtenerLeccion()
 App.obtenerParalelo()
+
+
 
 var leccion = io('/tomando_leccion');
 
