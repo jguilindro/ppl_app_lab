@@ -56,7 +56,11 @@ const LeccionSchema = mongoose.Schema({
     ordenPregunta: {
       type: Number
     }
-  }]
+  }],
+  paralelo: {
+    type: String,
+    ref: 'Paralelo'
+  }
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
 
 

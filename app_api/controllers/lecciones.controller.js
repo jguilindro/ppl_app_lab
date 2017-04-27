@@ -27,7 +27,8 @@ const crearLeccion = (req, res) => {
     puntaje: parseInt(req.body.puntaje),
     tipo: req.body.tipo,
     fechaInicio: req.body.fechaInicio,
-    preguntas: req.body.preguntas
+    preguntas: req.body.preguntas,
+    paralelo: req.body.paralelo
   })
   leccion.crearLeccion((err, doc) => {
     if (err) return respuesta.serverError(res);

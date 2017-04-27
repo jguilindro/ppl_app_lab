@@ -6,11 +6,11 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  	<link rel="stylesheet" type="text/css" href="./leccionStyles.css">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="./leccionStyles.css">
 	</head>
 	<body>
-			<header>
+		<header>
 			<nav>
 				<!-- Dropdown Structure -->
 				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
@@ -45,51 +45,43 @@
 			<div class="container" id="preguntas">
 				<h2 class="center-align">Lecciones</h2>
 			  <div class="row">
-			  	<div class="col s12 m9 l10">
-				  	
-				  		<ul class="preguntas">
-				  			<li v-for="leccion in lecciones" class="question" v-bind:id="leccion._id">
-				  				<a v-bind:href="'./modificar/'+ leccion._id">{{leccion.nombre}}</a>
-								<a v-bind:href="'./modificar/'+ leccion._id">| Puntaje: {{leccion.puntaje}} |</a>
-								<a v-bind:href="'./modificar/'+ leccion._id">Tiempo: {{leccion.tiempoEstimado}}</a>
-				  				<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id)"><i class="material-icons tiny">delete</i></a>
-				  			</li>
-				  		</ul>
-				  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right"><i class="material-icons">add</i></a>
-				  
+			  	<div class="col s12">
+			  		<table class="bordered highlight centered responsive-table">
+			  			<thead>
+			  				<tr>
+			  					<th>Nombre</th>
+				  				<th>Tipo</th>
+				  				<th>Paralelo</th>
+				  				<th>Fecha</th>
+				  				<th>Estado</th>
+				  				<th>Acción</th>
+			  				</tr>
+			  			</thead>
+			  			<tbody>
+			  				<tr v-for="leccion in lecciones">
+			  					<td><a v-bind:href="'./modificar/' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
+			  					<td>{{leccion.tipo}}</td>
+			  					<td>{{leccion.paralelo}}</td>
+			  					<td>{{leccion.fechaInicio}}</td>
+			  					<td>{{leccion.estado}}</td>
+			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a></td>
+			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new" @click="calificarLeccion(leccion._id)">Calificar</a></td>
+			  					<td v-else-if="leccion.estado=='tomando'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a></td>
+			  					<td><a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a></td>
+			  				</tr>
+			  			</tbody>
+			  		</table>
+			  		<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right" id="btn-nueva-leccion"><i class="material-icons">add</i></a>
 			  	</div>
-
-			
-			  	
 		  	</div>
 
-		  	<!-- Modal Eliminar Pregunta Structure -->
-			  <div id="modalEliminarPregunta" class="modal">
-			    <div class="modal-content" id="modalEliminarPreguntaContent">
-			      
+		  	<!-- Modal Eliminar Leccion Structure -->
+			  <div id="modalEliminarLeccion" class="modal">
+			    <div class="modal-content" id="modalEliminarLeccionContent">
 			    </div>
-			    <div class="modal-footer" id="modalEliminarPreguntaFooter">
-			    	
+			    <div class="modal-footer" id="modalEliminarLeccionFooter">
 			    </div>
 			  </div>
-
-				<!-- Modal Nuevo Capitulo Structure -->
-			 <!-- <div id="modalNuevoCapitulo" class="modal">
-			    <div class="modal-content" id="modalNuevoCapituloContent">
-			    	<h4 class="center-align">Nuevo capítulo</h4>
-			      <div class="row row-capitulo-nuevo">
-			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo">
-			      		<label for="nombreCapitulo">Nombre del capítulo</label>
-			      	</div>
-			      </div>
-			    </div>
-			    <div class="modal-footer">
-			    	
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoCapitulo($event)">Crear</a>
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-			    </div>
-			  </div>-->
 
 		  </div>
 		</main>
