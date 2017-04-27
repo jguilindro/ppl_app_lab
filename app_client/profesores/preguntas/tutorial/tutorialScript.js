@@ -37,16 +37,12 @@ var practica = new Vue({
 			var nombrePractica = $('#nombrePractica').val();
 			var idPractica = nombrePractica.replace(/\s+/g, '');
 			var hrefPractica = '#' + idPractica;
-			//console.log(nombrePractica)
-			//console.log(idPractica)
-			//console.log(hrefPractica)
 			var practica = {
 				nombre: nombrePractica,
 				id:  idPractica,
 				href: hrefPractica,
 				preguntas: []
 			}
-			console.log(practica)
 			this.practicas.push(practica)
 		},
 		crearModalEliminarPregunta: function(id){
@@ -78,54 +74,29 @@ var practica = new Vue({
 			$('#modalEliminarPregunta').modal('open');
 		},
 		getPreguntas: function(){
-			/*
-				Esta función hará lo siguiente:
-					Hará una llamada a la api de preguntas
-					Obtendrá todas las preguntas de la base de datos
-					Escogerá solamente las que son de Tutorial
-					Las dividirá por tutoriales para poder mostrarlas al usuario
-			*/
-			var c = 0;
 			var self = this;
 			var flag = false;
-			console.log('Inicialmente self.tutoriales: ')
-			console.log(self.tutoriales)
-			//Llamada a la api			
 			this.$http.get('/api/preguntas').then(response => {
 				//success callback				
 				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
 				$.each(self.preguntas, function(index, pregunta){
-					//pregunta['show'] = true;
+					pregunta['show'] = true;
 					if (pregunta.tipoLeccion.toLowerCase()=='tutorial') {
-						//Si la pregunta es de tutorial entonces se tiene que almacenar para mostrarla al usuario
-						c++
-						console.log('Pregunta #' + c);
-						console.log(pregunta.nombre);
-						console.log(pregunta.tutorial);
 						$.each(self.tutoriales, function(index, tutorial){
-							//Recorre el array de tutoriales del script. Si encuentra el tutorial al que pertenece la pregunta, lo añade.
-							console.log('Se recorre self.tutoriales para ver si pertenece a alguno')
-							console.log('Revisando el tutorial: ' + tutorial.nombre)
 							if (tutorial.nombre.toLowerCase()==pregunta.tutorial.toLowerCase()) {
-								console.log('Encontró el tutorial dentro de self.laboratorios. Se añadirá la pregunta...')
 								tutorial.preguntas.push(pregunta);
 								flag = true;	//Cambia la bandera indicando que encontro el tutorial
-								
 								return false;
 							}else{
 								flag=false;
 							}
 						});
-						//Si no encontro el tutorial, la bandera sigue en falso indicando que el tutorial no existe. Entonces se crea el tutorial y se agrega la pregunta
 						if (!flag) {
-							console.log('No se encontro el tutorial en self.laboratorios... Se procede a crearlo')
 							self.crearTutorial(pregunta)
 						}
 					}
 
 				})
-				console.log("Finalmente self.tutoriales: ")
-				console.log(self.tutoriales)
 			}, response => {
 				//error callback
 				console.log(response)
@@ -133,21 +104,6 @@ var practica = new Vue({
 		},
 		crearTutorial: function(pregunta){
 			var self = this;
-			//console.log(pregunta)
-			/*
-				Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
-				Se revisará a cada pregunta el tutorial al que pertenece
-				Si pertenece a un tutorial que ya se encuentra en self.laboratorios entonces no entrará a esta función
-				Si no pertenece a un tutorial que ya se encuentra en self.laboratorios entones hay que crear ese tutorial y añadirlo al array self.laboratorios
-				Luego se añadirá la pregunta al tutorial ya creado
-				Formato de tutorial:
-				tutorial = {
-					nombre: 'Laboratorio 1: Electrodinámica',
-					id: 'laboratorio1'.
-					href: '#laboratorio1',
-					preguntas: []
-				}
-			*/
 			var nombreTutorial = pregunta.tutorial;
 			var idTutorial = nombreTutorial.toLowerCase();
 			idTutorial = idTutorial.split(":")[0];
@@ -164,7 +120,6 @@ var practica = new Vue({
 		},
 		checkCreador: function(pregunta){
 			var self = this;
-			//if(pregunta.creador=='') return true;
 			if(pregunta.creador==self.profesor.correo) return true;
 			return false
 		},
@@ -181,7 +136,5 @@ var practica = new Vue({
 });
 
 $('body').on("click", '#btnPracticaNueva', function(){
-	//console.log('Esto va a funcionar carajo');
-	//console.log($(this).attr('id'))
 	$('#modalNuevaPractica').modal('open');
 })

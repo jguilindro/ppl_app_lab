@@ -78,54 +78,28 @@ var laboratorio = new Vue({
 			$('#modalEliminarPregunta').modal('open');
 		},
 		getPreguntas: function(){
-			/*
-				Esta función hará lo siguiente:
-					Hará una llamada a la api de preguntas
-					Obtendrá todas las preguntas de la base de datos
-					Escogerá solamente las que son de Laboratorio
-					Las dividirá por laboratorios para poder mostrarlas al usuario
-			*/
-			var c = 0;
 			var self = this;
 			var flag = false;
-			console.log('Inicialmente self.laboratorios: ')
-			console.log(self.laboratorios)
-			//Llamada a la api			
 			this.$http.get('/api/preguntas').then(response => {
 				//success callback				
 				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
 				$.each(self.preguntas, function(index, pregunta){
-					//pregunta['show'] = true;
+					pregunta['show'] = true;
 					if (pregunta.tipoLeccion.toLowerCase()=='laboratorio') {
-						//Si la pregunta es de laboratorio entonces se tiene que almacenar para mostrarla al usuario
-						c++
-						console.log('Pregunta #' + c);
-						console.log(pregunta.nombre);
-						console.log(pregunta.laboratorio);
 						$.each(self.laboratorios, function(index, laboratorio){
-							//Recorre el array de laboratorios del script. Si encuentra el laboratorio al que pertenece la pregunta, lo añade.
-							console.log('Se recorre self.laboratorios para ver si pertenece a alguno')
-							console.log('Revisando el laboratorio: ' + laboratorio.nombre)
 							if (laboratorio.nombre.toLowerCase()==pregunta.laboratorio.toLowerCase()) {
-								console.log('Encontró el laboratorio dentro de self.laboratorios. Se añadirá la pregunta...')
 								laboratorio.preguntas.push(pregunta);
 								flag = true;	//Cambia la bandera indicando que encontro el laboratorio
-								
 								return false;
 							}else{
 								flag=false;
 							}
 						});
-						//Si no encontro el laboratorio, la bandera sigue en falso indicando que el laboratorio no existe. Entonces se crea el laboratorio y se agrega la pregunta
 						if (!flag) {
-							console.log('No se encontro el laboratorio en self.laboratorios... Se procede a crearlo')
 							self.crearLaboratorio(pregunta)
 						}
 					}
-
 				})
-				console.log("Finalmente self.laboratorios: ")
-				console.log(self.laboratorios)
 			}, response => {
 				//error callback
 				console.log(response)
@@ -133,21 +107,6 @@ var laboratorio = new Vue({
 		},
 		crearLaboratorio: function(pregunta){
 			var self = this;
-			//console.log(pregunta)
-			/*
-				Esta funcion se va a utilizar cuando al momento de hacer el requerimiento a /api/preguntas obtengamos todas las preguntas
-				Se revisará a cada pregunta el laboratorio al que pertenece
-				Si pertenece a un laboratorio que ya se encuentra en self.laboratorios entonces no entrará a esta función
-				Si no pertenece a un laboratorio que ya se encuentra en self.laboratorios entones hay que crear ese laboratorio y añadirlo al array self.laboratorios
-				Luego se añadirá la pregunta al laboratorio ya creado
-				Formato de laboratorio:
-				laboratorio = {
-					nombre: 'Laboratorio 1: Electrodinámica',
-					id: 'laboratorio1'.
-					href: '#laboratorio1',
-					preguntas: []
-				}
-			*/
 			var nombreLaboratorio = pregunta.laboratorio;
 			var idLaboratorio = nombreLaboratorio.toLowerCase();
 			idLaboratorio = idLaboratorio.split(":")[0];
@@ -165,7 +124,7 @@ var laboratorio = new Vue({
 		checkCreador: function(pregunta){
 			var self = this;
 			//if(pregunta.creador=='') return true;
-			if(pregunta.creador==self.profesor.correo) return true;
+			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
 		obtenerLogeado: function() {

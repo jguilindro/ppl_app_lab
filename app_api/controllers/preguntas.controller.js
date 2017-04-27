@@ -53,11 +53,14 @@ const actualizarPregunta = (req, res) => {
     tipoLeccion: req.body.tipoLeccion,
     tipoPregunta: req.body.tipoPregunta,
     capitulo: req.body.capitulo,
+    laboratorio: req.body.laboratorio,
+    tutorial: req.body.tutorial,
     tiempoEstimado: req.body.tiempoEstimado,
     tiempoMinimo: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   }
+  console.log(actualizar)
   PreguntaModel.actualizarPregunta(req.params.id_pregunta, actualizar, (err, doc) => {
     if (!doc.nModified) return respuesta.mongoError(res, 'El paralelo no existe');
     if (err) return respuesta.serverError(res);
