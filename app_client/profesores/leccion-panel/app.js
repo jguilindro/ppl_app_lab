@@ -26,6 +26,19 @@ var App = new Vue({
       })
       //console.log(grupo_index);
       return grupo_index
+    },
+    tomarLeccion() {
+      var id_leccion = window.location.href.toString().split('/')[5]
+      var id_paralelo = window.location.href.toString().split('/')[7]
+      this.$http.post(`/api/lecciones/comenzar_leccion/${id_leccion}`).then(res => {
+        if (res.body.estado) {
+          if (res.body.estado) {
+            comenzar()
+          }
+          // tomando leccion en paralelo
+          // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
+        }
+      })
     }
   },
   data: {
@@ -83,6 +96,10 @@ leccion.on('terminado leccion', function(match) {
   App.tiempo = 'leccion detenida'
 	console.log('se ha terminado la leccion')
 })
+
+function comenzar() {
+  leccion.emit('comenzar leccion', true)
+}
 
 function terminarLeccion() {
   leccion.emit('parar leccion', 'la leccion ha sido detenida')

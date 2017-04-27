@@ -7,11 +7,8 @@ var App = new Vue({
       })
     },
     tomarLeccion(id_leccion) {
-      // FIXME verificar que no esten vacios los this.paralelo_escogido y id_leccion
       this.$http.post(`/api/lecciones/tomar/${id_leccion}`).then(res => {
         if (res.body.estado) {
-          // tomando leccion en paralelo
-          // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
           this.$http.post(`/api/paralelos/${this.paralelo_escogido}/leccion/${id_leccion}`).
             then(res => {
               if (res.body.estado) {
@@ -20,6 +17,7 @@ var App = new Vue({
             })
         }
       })
+      // FIXME verificar que no esten vacios los this.paralelo_escogido y id_leccion
     },
     tomandoLeccion(id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${this.paralelo_escogido}`

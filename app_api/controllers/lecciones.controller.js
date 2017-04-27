@@ -67,6 +67,14 @@ const tomarLeccion = (req, res) => {
   })
 }
 
+const comenzarLeccion = (req, res) => {
+  const { id_leccion } = req.params
+  LeccionModel.comenzarLeccion(id_leccion, (err, docs) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.okActualizado(res);
+  })
+}
+
 const habilitarEstudiantesCursoParaLeccion = (req, res) => {
   const { id_paralelo } = req.params
   var estudiantes = []
@@ -102,5 +110,6 @@ module.exports = {
   eliminarLeccion,
   // realtime
   tomarLeccion,
+  comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
 }

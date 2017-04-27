@@ -15,9 +15,12 @@ app = new Vue({
       } else {
         this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
           then(res => {
-            console.log(res.body);
             if (res.body.estado) {
-              window.location.href = `/estudiantes/leccion`
+              var load = document.getElementById('loading')
+              load.setAttribute('class', 'enable')
+              var a = document.getElementById('app')
+              a.setAttribute('class', 'disabled')
+              console.log('spinkit aqui');
             } else {
               if (res.body.datos) {
                 Materialize.toast(res.body.datos.mensaje, 4000)
@@ -35,6 +38,12 @@ app = new Vue({
     codigo_leccion: ''
   }
 })
-
 app.obtenerLogeado()
-var socket = io('/no_codigo');
+var socket = io('/tomando_leccion');
+
+socket.on('empezar leccion', function(data) {
+  console.log('leccion empezada');
+  if (data) {
+    window.location.href = `/estudiantes/leccion`
+  }
+})

@@ -6,11 +6,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link rel="stylesheet" href="/css/estudiantesbackground.css">
+		<link rel="stylesheet" href="./estudiantesbackground.css">
 		<link rel="stylesheet" type="text/css" href="./tomarLeccion.css">
 	</head>
 	<body id="grad">
-		<main>
+    <div id="loading" class="disabled">
+      <div id="loader" class="loader">
+      </div>
+      <h2 class="mensaje">Esperando a que el profesor comienze la leccion</h2>
+    </div>
+		<div class="">
 			<div class="container" id="app">
 				<section class="center-align v-center">
 					<h1 class="center-align title">Bienvenido</h1>
@@ -29,11 +34,11 @@
 				<section>
 					<br><br><br>
 					<div class="right-align">
-						<a href="/estudiantes">O tomarlo después</a>
+						<!-- <a href="/estudiantes">O tomarlo después</a> -->
 					</div>
 				</section>
 			</div>
-		</main>
+		</div>
 		<footer>
       <script src="/bower_components/vue/dist/vue.min.js"></script>
 			<script src="/bower_components/jquery/dist/jquery.min.js"></script>

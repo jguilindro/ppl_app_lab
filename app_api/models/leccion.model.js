@@ -89,9 +89,13 @@ LeccionSchema.statics.eliminarLeccion = function(id_leccion, callback) {
 
 // realtime
 LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
+  this.update({_id: id_leccion}, {$set: {estado: 'tomando'}}, callback)
+}
+
+LeccionSchema.statics.comenzarLeccion = function(id_leccion, callback) {
   let fecha = moment();
   let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
-  this.update({_id: id_leccion}, {$set: {estado: 'tomando', fechaInicioTomada: current_time_guayaquil}}, callback)
+  this.update({_id: id_leccion}, {$set: {fechaInicioTomada: current_time_guayaquil}}, callback)
 }
 
 LeccionSchema.statics.leccionTerminada = function(id_leccion, callback) {
