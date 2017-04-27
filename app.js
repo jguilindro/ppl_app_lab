@@ -91,6 +91,9 @@ app.use('/estudiantes/leccion', authEstudiante, function(req, res, next) {
 app.use('/estudiantes/tomar-leccion', authEstudiante , estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 app.use('/estudiantes/leccion', authEstudiante,estudianteDandoLeccion ,express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
+// navbars
+app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))
+
 // app_api
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));

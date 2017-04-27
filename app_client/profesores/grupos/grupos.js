@@ -282,7 +282,7 @@ var app = new Vue({
     listeners() // OJO listenrs paralelo
     selector()
     $.get({
-      url: "../partials/navbar.html",
+      url: "/navbar/profesores",
       success: function(data) {
         document.getElementById('#navbar').innerHTML = data;
         $(".button-collapse").sideNav();
