@@ -24,7 +24,9 @@ var App = new Vue({
 	nombres: '',
 	apellidos: '',
 	correo: ''
-	}
+	},
+	feedback: [],
+	calificaciones: []
   },
   methods: {
 	//carga la lección que se quiere va a calificar con cada pregunta
@@ -80,7 +82,15 @@ function regresar(){
 }
 
 function enviarFeedback(){
-	window.location.href = '/profesores/leccion/'
+
+	$("input").each(function(index, calificacion){
+		App.calificaciones.push(calificacion.val());
+	});
+	$("textarea").each(function(index, feedback){
+		App.feedback.push(feedback.val());
+	});
+	console.log(App.calificaciones);
+	console.log(App.feedback);
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
