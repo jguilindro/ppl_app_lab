@@ -79,6 +79,16 @@ const verificarPuedeDarLeccion = (id_estudiante, callback) => {
   })
 }
 
+const calificarLeccion = (req, res) => {
+  EstudianteModel.calificarLeccion(req.params.id_estudiante, req.params.id_leccion, req.body.calificacion, (err, doc) => {
+    if (!doc.nModified) return respuesta.mongoError(res, 'La leccion no existe');
+    if(err) return respuesta.serverError(res);
+    return respuesta.okActualizado(res);
+  })
+}
+
+
+
 module.exports = {
 	obtenerTodosEstudiantes,
 	crearEstudiante,
@@ -86,4 +96,5 @@ module.exports = {
   // leccion
   verificarEstudiantePuedeDarLeccion,
   verificarPuedeDarLeccion,
+  calificarLeccion
 }

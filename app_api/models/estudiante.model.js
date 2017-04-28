@@ -134,4 +134,10 @@ EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudian
   this.findOne({_id: id_estudiante}, callback)
 }
 
+
+EstudianteSchema.statics.calificarLeccion = function(id_estudiante, id_leccion, calificacion_nueva, callback){
+  this.update({_id: id_estudiante, "lecciones.leccion": id_leccion}, {$set: {"lecciones.$.calificacion": calificacion_nueva}}, callback);
+}
+
+
 module.exports = mongoose.model('Estudiante', EstudianteSchema)
