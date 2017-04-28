@@ -50,7 +50,7 @@
              <h1 class="center-align flow-text">Escoger al Grupo a Revisar</h1>
               <form>
                 <div class="row">
-                   <div class="input-field col s12" v-for="(grupo, index) in grupos" v-if="index == grupos.length()">
+                   <div class="input-field col s12" v-for="(grupo, index) in grupos">
                     <p>
                     <input name="group1" type="radio" class="left-align flow-text" v-bind:id="grupo._id">
                     <label v-bind:for="grupo._id">{{grupo.nombre}}</label>
