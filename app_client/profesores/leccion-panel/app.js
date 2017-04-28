@@ -51,7 +51,7 @@ var App = new Vue({
     paralelo: [],
     tiempo: ''
   },
-  updated() {
+  mounted() {
     $.get({
       url: "/navbar/profesores",
       success: function(data) {
