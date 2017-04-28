@@ -76,11 +76,11 @@ var App = new Vue({
 });
 
 function regresar(){
-	window.location.href = '/profesores/grupos/'
+	window.location.href = '/profesores/leccion/'
 }
 
 function enviarFeedback(){
-	window.location.href = '/profesores/grupos/'
+	window.location.href = '/profesores/leccion/'
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")

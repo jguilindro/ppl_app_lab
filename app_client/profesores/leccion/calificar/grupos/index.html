@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Calificar Leccion</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./gruposLeccionStyle.css">
+    <!-- scripts del navbar-->
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <script src="/js/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(event) {
+      $.get({
+      url: "/navbar/profesores",
+      success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    }
+  })
+});
+    </script>
+    <!-- fin de scripts navbar-->
+  </head>
+
+  <body>
+
+  <header id="#navbar"></header>
+	
+  <div id="app">
+  
+
+  <div id="pages">
+        <div class="row" >
+        <br>
+          <div class="col s12">
+            <ul class="tabs" id="tabs-swipe-demo">
+              <li class="tab col s5"><a class="active" href="#test1">Escoger el Grupo</a></li>
+              <li class="tab col s5"><a href="#test2">Seleccionar Estudiante</a></li>
+            </ul>
+          </div>
+        </div>
+        <!--Paso 1, seleccionar Grupo           -->
+        <div id="test1" class="col s12">
+          <div class="page">
+            <div class="seccion-1 row container">
+             <h1 class="center-align flow-text">Escoger al Grupo a Revisar</h1>
+              <form>
+                <div class="row">
+                   <div class="input-field col s12" v-for="(grupo, index) in grupos">
+                    <p>
+                    <input name="group1" type="radio" class="left-align flow-text" v-bind:id="grupo._id" onclick="grupoSeleccionado(this)">
+                    <label v-bind:for="grupo._id">{{grupo.nombre}}</label>
+                    </p>
+                    <h5 class="left-align flow-text" v-for="estudiante in grupo.estudiantes">{{estudiante.nombres+' '+estudiante.apellidos}}</h5>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--       Paso 2, Seleccionar al estudiante a Revisar     -->
+        <div id="test2" class="col s12">
+          <div class="page">
+              <main>
+                <div class="seccion-2 row container">
+                  <form>
+                <div class="row">
+                   <div class="input-field col s12">
+                   <h1 class="left-align flow-text">{{grupoEscogido.nombre}}</h1>
+
+                    <p v-for="estudiante in grupoEscogido.estudiantes">
+                    <input v-bind:name="grupoEscogido._id" type="radio" class="left-align flow-text" v-bind:id="estudiante._id" onclick="estudianteSeleccionado(this)">
+                    <label v-bind:for="estudiante._id">{{estudiante.nombres+' '+estudiante.apellidos}}</label>
+                    </p>
+                    </div>
+                  </div>
+                  </form>
+                  <button type="button" v-on:click="calificarRedireccion()" class="btn " style="float: right;">Calificar Lección</button>
+                  <br/>
+                  <br/>
+                  <br/>
+                </div>
+
+                  
+                  </div>
+              </main>
+          </div>
+        </div>
+
+
+
+
+
+
+  </div>
+  </br>
+  </br>
+    <footer>
+      <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
+      <script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
+      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      
+      <script src="/bower_components/materialize/bin/materialize.js"></script>
+      <script src="./gruposLeccionScript.js"></script>
+      
+      <script src="/js/summernote.js"></script>
+    </footer>
+  </body>
+</html>
