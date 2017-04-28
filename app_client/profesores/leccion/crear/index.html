@@ -15,9 +15,9 @@
     </header>
   <div id="app">
     <div id="pages">
-      <div class="row">
+      <div class="row" >
       <br>
-        <div class="col s6 offset-s3">
+        <div class="col s12">
           <ul class="tabs" id="tabs-swipe-demo">
             <li class="tab col s4"><a class="active" href="#test1">Setup</a></li>
             <li class="tab col s4"><a href="#test2">Select</a></li>
@@ -29,7 +29,7 @@
       <div id="test1" class="col s12">
         <div class="page">
           <div class="seccion-1 row container">
-           <h2 class="center-align">Crear un nueva leccion</h2>
+           <h1 class="center-align flow-text">Crear un nueva leccion</h1>
             <form>
               <div class="row">
                  <div class="input-field col s6">
@@ -67,18 +67,18 @@
               </div>
               <div class="form-group col s6">
               	<form action="#">
-              	<p>
-              		<input name="tipo" type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion" />
-	      			<label for="Estimacion">Estimación</label>
-              	</p>
-              	<p>
-              		<input name="tipo" type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="tutorial" />
-	      			<label for="Tutorial">Tutorial</label>
-              	</p>
-              	<p>
-              		<input name="tipo" type="radio" id="Experimento" v-model="leccion_nueva.tipo" value="experimento" />
-	      			<label for="Experimento">Experimento</label>
-              	</p>
+                  	<p>
+                  		<input type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion" />
+    	      			    <label for="Estimacion">Estimación</label>
+                  	</p>
+                  	<p>
+                  		<input type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="tutorial" />
+    	      			    <label for="Tutorial">Tutorial</label>
+                  	</p>
+                  	<p>
+                      <input type="radio" id="Experimento" v-model="leccion_nueva.tipo" value="experimento" />
+    	      			    <label for="Experimento">Experimento</label>
+                  	</p>
               </form>
               </div>
             </form>
@@ -130,23 +130,23 @@
           <div class="strike">
             <span>Resumen</span>
           </div>
-          <div class="container">
-          <p>Nombre: {{leccion_nueva.nombre}}</p>
-          <p>Tiempo total estimado: {{preguntas_escogidas.tiempoTotal}} minutos</p>
-          <p>Tipo de lección: {{leccion_nueva.tipo}}</p>
-          <p>Fecha prevista: {{leccion_nueva.fechaInicio}}</p>
-          <p>Puntaje total: {{leccion_nueva.puntaje}}</p>
-          <p>Paralelo: {{paraleloEscogido.nombre}}</p>
+          <div class="container" id="overview">
+          <p class="flow-text"><span class="title">Nombre:                </span> {{leccion_nueva.nombre}}</p>
+          <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{preguntas_escogidas.tiempoTotal}} minutos</p>
+          <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion_nueva.tipo}}</p>
+          <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion_nueva.fechaInicio}}</p>
+          <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion_nueva.puntaje}}</p>
+          <p class="flow-text"><span class="title">Paralelo:              </span> {{paraleloEscogido.nombre}}</p>
           <!-- Preguntas Seleccionadas-->
           <div class="preguntas-selected">
-	            <ul class="preguntas">
-	              <h2>Preguntas escogidas</h2>
-	              <div class="collection">
+	            <ul class="preguntas collection">
+	              <h2 class="flow-text center-align">Preguntas escogidas</h2>
+	              <div>
 	                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
-	                <li v-for="pregunta in preguntas_escogidas.preguntas">
+	                <li v-for="pregunta in preguntas_escogidas.preguntas" class="collection-item">
 	                  <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
 	                    <label v-bind:for="pregunta._id" class="maxWidth">
-	                      <p class="collection-item"><span class="badge">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
+                        <p class="collection-item truncate"><span class="badge flow-text">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
 	                    </label>
 	                </li>
 	              </div>
