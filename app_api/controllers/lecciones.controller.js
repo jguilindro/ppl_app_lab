@@ -68,12 +68,16 @@ const tomarLeccion = (req, res) => {
   })
 }
 
+
 const comenzarLeccion = (req, res) => {
   const { id_leccion } = req.params
   LeccionModel.comenzarLeccion(id_leccion, (err, docs) => {
     if (err) return respuesta.serverError(res);
     return respuesta.okActualizado(res);
   })
+}
+
+const leccionYaComenzo = (req, res) => {
 }
 
 const habilitarEstudiantesCursoParaLeccion = (req, res) => {

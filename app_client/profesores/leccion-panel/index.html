@@ -14,13 +14,15 @@
   <header id="#navbar"></header>
   <div id="app">
   	<div class="container">
-      <button type="button" id="terminar-leccion-delelopment" onclick="terminarLeccionDevelopment()">parar development</button>
-      <button type="button" v-on:click="tomarLeccion()">comenzar leccion</button>
-      <button type="button" id="terminar-leccion" onclick="terminarLeccion()">parar leccion</button>
+      <div class="botones">
+        <button class="btn" type="button" id="terminar-leccion-delelopment" onclick="terminarLeccionDevelopment()">parar development</button>
+        <button class="btn boton"  type="button" v-on:click="tomarLeccion()">comenzar leccion</button>
+        <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">parar leccion</button>
+      </div>
 	    <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
 	    <!-- <p>{{grupos}}</p> -->
 	    <!-- <p>{{paralelo}}</p> -->
-	    <h3>Tiempo: {{tiempo}} </h3>
+	    <h4>Tiempo: {{tiempo}} </h4>
 	    <span class="center-align">
 	    	<h3>Código</h3>
 		    <h3 class="code">{{leccion.codigo}}</h3>
@@ -31,9 +33,9 @@
 	    <div class="estudiantes row">
 	    	<div v-for="grupo in paralelo.grupos" class="col s10 offset-s1 grupin">
 		      <div style="" class="col s4">
-		        <p class="group-name center-align">{{grupo.nombre}} {{grupo._id}}</p>
+		        <p class="group-name center-align">{{grupo.nombre}}</p>
 		        <div v-for="estudiante in grupo.estudiantes_conectados">
-		          <p>{{estudiante.nombres}} {{estudiante.correo}}</p>
+		          <p>{{estudiante.nombres}} {{estudiante.apellidos}}</p>
 		        </div>
 		      </div>
 		    </div>
