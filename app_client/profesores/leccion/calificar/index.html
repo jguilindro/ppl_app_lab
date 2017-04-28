@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>Calificar Leccion</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -8,40 +9,24 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./calificarStyle.css">
     <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-    <title>Calificar Leccion</title>
+    <script src="/js/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(event) {
+      $.get({
+      url: "/navbar/profesores",
+      success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    }
+  })
+});
+    </script>
+
   </head>
   <body>
-    <header>
-      <nav>
-        <!-- Dropdown Structure -->
-        <ul id="dropdownPreguntasDesktop" class="dropdown-content">
-          <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-          <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
-          <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
-        </ul>
-        <ul id="dropdownPreguntasMobile" class="dropdown-content">
-          <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-          <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
-          <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
-        </ul>
-        <div class="nav-wrapper">
-          <a href="/profesores" class="brand-logo">Profesor</a>
-          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-          <ul class="right hide-on-med-and-down">
-            <li><a href="/profesores/leccion">Leccion</a></li>
-            <li><a href="/profesores/grupos/">Grupos</a></li>
-            <!--Dropdown button-->
-            <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-          </ul>
-          <ul class="side-nav" id="mobile-demo">
-            <li><a href="#">Lecciones</a></li>
-            <li><a href="../../grupos">Grupos</a></li>
-            <!--Dropdown button-->
-            <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+
+  <header id="#navbar"></header>
 	
   <div id="app">
   <div class="seccion-1 row container">
@@ -65,7 +50,7 @@
 		<p v-for="respuesta in respuestas" v-if="pregunta._id == respuesta.pregunta" name="respuesta">{{respuesta.respuesta}}</p>
       </div>
 	<div class="col s6">
-		<input class="form-control" type="text" name="calificacion" placeholder="Calificación">
+		<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2">
 		<textarea class="materialize-textarea" name="feedback" placeholder="Feedback"></textarea>
 	</div>
 	</div>

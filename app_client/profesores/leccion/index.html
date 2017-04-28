@@ -10,37 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="./leccionStyles.css">
 	</head>
 	<body>
-		<header>
-			<nav>
-				<!-- Dropdown Structure -->
-				<ul id="dropdownPreguntasDesktop" class="dropdown-content">
-				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-				  <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
-				  <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
-				</ul>
-				<ul id="dropdownPreguntasMobile" class="dropdown-content">
-				  <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-				  <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
-				  <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
-				</ul>
-				<div class="nav-wrapper">
-					<a href="/profesores" class="brand-logo">Profesor</a>
-					<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-					<ul class="right hide-on-med-and-down">
-		        <li><a href="/profesores/leccion">Leccion</a></li>
-		        <li><a href="/profesores/grupos/">Grupos</a></li>
-		        <!--Dropdown button-->
-		        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-		      </ul>
-		      <ul class="side-nav" id="mobile-demo">
-		        <li><a href="#">Lecciones</a></li>
-		        <li><a href="../../grupos">Grupos</a></li>
-		        <!--Dropdown button-->
-		        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-		      </ul>
-				</div>
-			</nav>
-		</header>
+		<header id="#navbar"></header>
 		<main>
 			<div class="container" id="preguntas">
 				<h2 class="center-align">Lecciones</h2>
@@ -62,10 +32,10 @@
 			  					<td><a v-bind:href="'./modificar/' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
 			  					<td>{{leccion.tipo}}</td>
 			  					<td>{{leccion.paralelo}}</td>
-			  					<td>{{leccion.fechaInicio}}</td>
+			  					<td>{{date(leccion.fechaInicio)}}</td>
 			  					<td>{{leccion.estado}}</td>
 			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a></td>
-			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new" @click="calificarLeccion(leccion._id)">Calificar</a></td>
+			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new center-align" @click="calificarLeccion(leccion._id)">Calificar</a></td>
 			  					<td v-else-if="leccion.estado=='tomando'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a></td>
 			  					<td><a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a></td>
 			  				</tr>
@@ -90,7 +60,9 @@
 			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/bower_components/moment/moment.js"></script>
 			<script src="./verLeccionScript.js"></script>
+			<script src="/js/navbar.js"></script>
 		</footer>
 	</body>
 </html>

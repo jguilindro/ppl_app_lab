@@ -139,3 +139,13 @@ respuesta
 updatedAt
 _id
         */
+
+/*
+  nuevo atributo de estudiantes, lecciones. es array de objetos con:
+  id_leccion
+  calificado
+  fechas
+  grupo cuando dió la leccion
+
+  for each de lecciones y buscar leccion, 
+*/

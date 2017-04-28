@@ -19,7 +19,6 @@ var app = new Vue({
 	},
 	methods: {
 		nuevaPregunta: function(){
-
 			window.location.href = '/profesores/leccion/crear'
 
 		},
@@ -122,6 +121,7 @@ var app = new Vue({
     },
     calificarLeccion: function(id){
     	//Completar esto luego de que Julio termine su parte
+		window.location.href = '/profesores/leccion/calificar/grupos/'+id;
     },
     tomandoLeccion(paralelo, id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
@@ -130,11 +130,15 @@ var app = new Vue({
       this.$http.get(`/api/paralelos/profesores/mis_paralelos`).then(response => {
         if (response.body.estado) {
           this.paralelos = response.body.datos
-          console.log(this.paralelos)
         }
       }, response => {
         console.error('error')
       });
+    },moment: function (date) {
+      return moment(date);
+    },
+    date: function (date) {
+      return moment(date).format('MMMM Do YYYY, h:mm a');
     }
 		
 	}
@@ -143,3 +147,14 @@ var app = new Vue({
 $('body').on("click", '#btnCapituloNuevo', function(){
 	$('#modalNuevoCapitulo').modal('open');
 })
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  $.get({
+    url: "/../navbar/profesores",
+    success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    }
+  })
+});
