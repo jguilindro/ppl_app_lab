@@ -21,7 +21,7 @@
 							<ul class="preguntas">
 								<li v-for="pregunta in tutorial.preguntas" class="question" v-bind:id="pregunta._id">
 									<a v-bind:href="pregunta._id"><p class="pregunta flow-text">{{pregunta.nombre}}</p>
-						  				<p class="truncate descripcion flow-text">{{pregunta.descripcion}}</p>
+						  				<p class="truncate descripcion flow-text" v-html="pregunta.descripcion"></p>
 						  			</a>
 									<a href="#" class="right-align btn-eliminar pull right" v-bind:id="pregunta._id" v-on:click="crearModalEliminarPregunta(pregunta._id)" v-if="checkCreador(pregunta)"><i class="material-icons tiny">delete</i></a>
 								</li>
