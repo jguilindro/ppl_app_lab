@@ -9,9 +9,9 @@
 		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
 	</head>
 	<body>
+		<header id="#navbar"></header>
 		<main>
 			<div class="container" id="preguntaNueva">
-			{{pregunta}}
 				<h1 class="text-center">Nueva pregunta</h1>
 				<p class="text-center">Creada por: {{profesor.correo}}</p>
 				<form>
@@ -102,6 +102,7 @@
 			</div>	
 		</main>
 		<footer>
+			<script src="/js/navbar.js"></script>
 			<script src="https://unpkg.com/vue"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
