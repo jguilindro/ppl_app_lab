@@ -56,7 +56,7 @@ const calificarRespuestaGrupal = (req, res) => {
 		if (!doc.nModified) return response.mongoError(res, 'La respuesta no existe');
 		if(err) return response.serverError(res);
 		return response.okActualizado(res);
-	})
+	});
 }
 
 module.exports = {
@@ -65,6 +65,6 @@ module.exports = {
 	obtenerRespuestaDeEstudiante,
 	actualizarRespuesta,
 	obtenerRespuestaPorId,
-	calificarRespuestaGrupal
+	calificarRespuestaGrupal,
 }
 

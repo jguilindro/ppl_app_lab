@@ -6,6 +6,6 @@ router.post('/buscar', RespuestaController.obtenerRespuestasPorGrupoAPregunta);
 router.get('/buscar/leccion/:id_leccion/pregunta/:id_pregunta/estudiante/:id_estudiante', RespuestaController.obtenerRespuestaDeEstudiante);
 router.put('/:id_respuesta', RespuestaController.actualizarRespuesta);
 router.get('/:id_respuesta', RespuestaController.obtenerRespuestaPorId);
-router.put('/calificar/leccion/:id_leccion/pregunta/id_prgunta/grupo/:id_grupo', RespuestaController.calificarRespuestaGrupal);
+router.put('/calificar/leccion/:id_leccion/pregunta/:id_pregunta/grupo/:id_grupo', RespuestaController.calificarRespuestaGrupal);
 
 module.exports = router;
