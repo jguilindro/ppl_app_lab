@@ -90,8 +90,7 @@ function enviarFeedback(){
 		console.log(feedback);
 		App.feedback.push($(feedback).val());
 	});
-	console.log(App.calificaciones);
-	console.log(App.feedback);
+	window.location.href = '/profesores/leccion/'
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
