@@ -38,8 +38,8 @@
         <br>
           <div class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
-              <li class="tab col s4"><a class="active" href="#test1">Escoger el Grupo</a></li>
-              <li class="tab col s4"><a href="#test2">Seleccionar Estudiante</a></li>
+              <li class="tab col s5"><a class="active" href="#test1">Escoger el Grupo</a></li>
+              <li class="tab col s5"><a href="#test2">Seleccionar Estudiante</a></li>
             </ul>
           </div>
         </div>
@@ -52,7 +52,7 @@
                 <div class="row">
                    <div class="input-field col s12" v-for="(grupo, index) in grupos">
                     <p>
-                    <input name="group1" type="radio" class="left-align flow-text" v-bind:id="grupo._id">
+                    <input name="group1" type="radio" class="left-align flow-text" v-bind:id="grupo._id" onclick="grupoSeleccionado(this)">
                     <label v-bind:for="grupo._id">{{grupo.nombre}}</label>
                     </p>
                     <h5 class="left-align flow-text" v-for="estudiante in grupo.estudiantes">{{estudiante.nombres+' '+estudiante.apellidos}}</h5>
@@ -66,36 +66,27 @@
         <!--       Paso 2, Seleccionar al estudiante a Revisar     -->
         <div id="test2" class="col s12">
           <div class="page">
-            <div class="strike">
-              <span>escoger las preguntas</span>
-            </div>
               <main>
-                <div class="container">
-                  <!--<div class="row">
-                    <div class="col s12 m9 l10">
-                      <div v-for="capitulo in capitulos" class="capitulo scrollspy section" v-bind:id="capitulo.id">
-                        <h5>{{capitulo.nombre}}</h5>
-                        <ul class="preguntas">
-                          <li v-for="pregunta in capitulo.preguntas" class="question">
-                          <p>
-                            <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                            <label v-bind:for="pregunta._id">
-                              {{pregunta.nombre}}
-                            </label>
-                          </p>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+                <div class="seccion-2 row container">
+                  <form>
+                <div class="row">
+                   <div class="input-field col s12">
+                   <h1 class="left-align flow-text">{{grupoEscogido.nombre}}</h1>
 
-                    <div class="col hide-on-small-only m3 l2">
-                      <ul class="section table-of-contents">
-                        <li v-for="capitulo in capitulos">
-                          <a v-bind:href="capitulo.href">{{capitulo.nombre}}</a>
-                        </li>
-                      </ul>
+                    <p v-for="estudiante in grupoEscogido.estudiantes">
+                    <input v-bind:name="grupoEscogido._id" type="radio" class="left-align flow-text" v-bind:id="estudiante._id" onclick="estudianteSeleccionado(this)">
+                    <label v-bind:for="estudiante._id">{{estudiante.nombres+' '+estudiante.apellidos}}</label>
+                    </p>
                     </div>
-                  </div>-->
+                  </div>
+                  </form>
+                  <button type="button" v-on:click="calificarRedireccion()" class="btn " style="float: right;">Calificar Lección</button>
+                  <br/>
+                  <br/>
+                  <br/>
+                </div>
+
+                  
                   </div>
               </main>
           </div>

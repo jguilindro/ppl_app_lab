@@ -23,7 +23,9 @@ var app = new Vue({
       buscarEstudiante: '',
       mostrarDatosEstudiante: {},
       buscarEstudianteEnGrupo: '',
-      buscarGrupo: ''
+      buscarGrupo: '',
+      grupoEscogido: {},
+      estudianteEscogidoId: ''
 	},
   methods: {
 	
@@ -115,11 +117,39 @@ var app = new Vue({
     	console.log(this.estudiantes);
     	console.log("Profesor: ");
     	console.log(this.profesor);
-    }
+    },
+
+    
+
+
+
 	
-      }
+	}
+      
 });
 
+function grupoSeleccionado(_element){
+		  app.grupos.forEach( grupo=> {
+		  	if (grupo._id==_element.id){
+		  		app.grupoEscogido= grupo;
+		  	}
+		  });
+    }
+
+function estudianteSeleccionado(_element){
+		  app.grupoEscogido.estudiantes.forEach( estudiante=> {
+		  	if (estudiante._id==_element.id){
+		  		app.estudianteEscogidoId= _element.id;
+		  	}
+		  });
+    }
+
+function calificarRedireccion(){
+	if (app.estudianteEscogidoId){
+	var leccionId = window.location.href.toString().split('/')[7];
+	window.location.href = '/profesores/leccion/calificar/'+leccionId+'/'+app.estudianteEscogidoId;
+	}
+}
 
 function regresar(){
 	window.location.href = '/profesores/grupos/'
