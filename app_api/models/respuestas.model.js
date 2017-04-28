@@ -69,4 +69,10 @@ respuestasSchema.statics.obtenerRespuestaPorId = function(id_respuesta, callback
   this.findOne({_id: id_respuesta}, callback);
 }
 
+respuestasSchema.statics.calificarRespuestaGrupal = function(id_leccion, id_pregunta, id_grupo, calificacion_nueva, callback){
+  //Busca en la colección a todas las respuestas del grupo dado a la pregunta dada de la lección dada
+  //Actualiza el valor de la calificación de todas las respuestas encontradas (todas las respuestas del grupo) a valor de la nueva calificación
+  this.update({leccion: id_leccion, pregunta: id_pregunta, grupo: id_grupo}, {$set: {calificacion: calificacion_nueva}}, callback);
+}
+
 module.exports = mongoose.model('Respuesta', respuestasSchema);

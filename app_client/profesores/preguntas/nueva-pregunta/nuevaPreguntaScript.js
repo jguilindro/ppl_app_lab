@@ -2,8 +2,7 @@
 var app = new Vue({
 	mounted: function(){
 		$('#summernote').summernote();
-		this.obtenerLogeado();
-
+		
 
 	},
 	el: '#preguntaNueva',
@@ -53,7 +52,7 @@ var app = new Vue({
         then(res => {
           if (res.body.estado) {
             self.profesor = res.body.datos;
-            // console.log(self.profesor)
+            console.log(self.profesor)
             self.pregunta.creador = self.profesor._id;
             self.pregunta.nombreCreador = self.profesor.nombres + self.profesor.apellidos;
           }
@@ -86,6 +85,7 @@ var app = new Vue({
         }
       }
     });
+    this.obtenerLogeado();
   }
 });
 

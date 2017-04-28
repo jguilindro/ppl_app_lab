@@ -51,11 +51,20 @@ const obtenerRespuestaPorId = (req, res) => {
 	})
 }
 
+const calificarRespuestaGrupal = (req, res) => {
+	RespuestaModel.calificarRespuestaGrupal(req.params.id_leccion, req.params.id_pregunta, req.params.id_grupo, req.body.calificacion, (err, doc) => {
+		if (!doc.nModified) return response.mongoError(res, 'La respuesta no existe');
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	})
+}
+
 module.exports = {
 	crearRespuesta,
 	obtenerRespuestasPorGrupoAPregunta,
 	obtenerRespuestaDeEstudiante,
 	actualizarRespuesta,
-	obtenerRespuestaPorId
+	obtenerRespuestaPorId,
+	calificarRespuestaGrupal
 }
 
