@@ -5,16 +5,16 @@
 }
 #logo img{
 	padding-top: 	0px;
-  padding-bottom: 0px;
-  margin-bottom: 0px
+  	padding-bottom: 0px;
+  	margin-bottom: 0px
 }
 #logo h5, #logo h4{
 	color: #ebebeb;
-  margin-bottom: 0px;
-  margin-top: 1%;
+  	margin-bottom: 0px;
+  	margin-top: 1%;
 }
 div.contenedor{
-  background-color: #001a43;
+  	background-color: #001a43;
 	padding-top: 35px;
 	/*padding-bottom: 46px;*/
 	margin-bottom: 	0px;
@@ -29,28 +29,21 @@ nav{
 	background-color: #001a43;
 	border: 0px;
 	border-top: solid 2px;
-  height: 50px; /* por el border top */
+
 	border-color: #F5b400;
 }
 nav ul a{
 	color: #ebebeb;
-  height: auto;
+  	height: auto;
 }
 nav .brand-logo{
 	color: #8da9c6;
 }
 nav a{
 	color: #8da9c6;
+	font-size: 1.1em;
 }
 
-li {
-  height: 48px;
-}
-
-a {
-  height: 48px ;
-  font-size: 1.1em;
-}
 
 .dropdown-content li>span {
   color: #000 !important;
