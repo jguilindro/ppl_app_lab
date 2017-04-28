@@ -39,24 +39,24 @@
     <form>
       <div class="form-group col s12">
         <div v-for="(pregunta, index) in preguntas">
-		<div class="row">
-		<div class="col s6">
-		<h4>Pregunta #{{index+1}}</h4>
-		<label for="nombre">Nombre de la Pregunta</label>
-        <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
-		<label for="descripcion">Descripcion</label>
-		<p v-if="pregunta.tipoPregunta == 'justificacion'" name="descripcion">{{pregunta.descripcion}}</p>
-		<label for="respuesta">Respuesta del Estudiante</label>
-		<p v-for="respuesta in respuestas" v-if="pregunta._id == respuesta.pregunta" name="respuesta">{{respuesta.respuesta}}</p>
-      </div>
-	<div class="col s6">
-		<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2">
-		<textarea class="materialize-textarea" name="feedback" placeholder="Feedback"></textarea>
-	</div>
-	</div>
-	</br>
-	</br>
-	</div>
+      		<div class="row">
+      		  <div class="col s6">
+      		    <h4>Pregunta #{{index+1}}</h4>
+      		    <label for="nombre">Nombre de la Pregunta</label>
+              <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
+      		    <label for="descripcion">Descripcion</label>
+      		    <p v-if="pregunta.tipoPregunta == 'justificacion'" name="descripcion">{{pregunta.descripcion}}</p>
+      		    <label for="respuesta">Respuesta del Estudiante</label>
+      		    <p v-for="respuesta in respuestas" v-if="pregunta._id == respuesta.pregunta" name="respuesta">{{respuesta.respuesta}}</p>
+            </div>
+          	<div class="col s6">
+          		<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">
+          		<textarea class="materialize-textarea" name="feedback" placeholder="Feedback" v-bind:id="'feedback-' + pregunta._id"></textarea>
+          	</div>
+          </div>
+        	</br>
+        	</br>
+        </div>
 	<button type="button" v-on:click="enviarFeedback()" class="btn ">Enviar Calificaciones</button>
 	<button type="button" v-on:click="regresar()" class="btn " style="float: right;">Regresar</button> 		  
 	  </div>
