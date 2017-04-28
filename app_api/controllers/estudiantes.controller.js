@@ -53,13 +53,20 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
           LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
             if (err) return respuesta.serverError(res);
             if (!leccion) return respuesta.noOK(res);
+            console.log(leccion);
             EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
+              console.log(estudiante);
               if (err) return respuesta.serverError(res);
               if (!estudiante) return respuesta.noOK(res);
               EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
                 if (err) return respuesta.serverError(res)
                 req.app.set('habilitado_para_leccion', true)
-                return respuesta.okAnadido(res);
+                console.log('anadido');
+                if (leccion.leccionYaComenzo) {
+                  return respuesta.ok(res, {'mensaje': 'leccion_empezo'})
+                } else {
+                  return respuesta.okAnadido(res);
+                }
               // TODO: setearle al estudiante la leccion y que la esta dando
               })
             })
@@ -71,6 +78,7 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
     }
   })
 }
+
 
 const verificarPuedeDarLeccion = (id_estudiante, callback) => {
   EstudianteModel.veficarPuedeDarLeccion(id_estudiante, (err, estudiante) => {

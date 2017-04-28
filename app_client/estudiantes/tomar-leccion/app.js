@@ -15,7 +15,10 @@ app = new Vue({
       } else {
         this.$http.get(`/api/estudiantes/leccion/verificar/${this.codigo_leccion}`).
           then(res => {
-            if (res.body.estado) {
+            if (res.body.datos && res.body.datos.mensaje == 'leccion_empezo') {
+              window.location.href = `/estudiantes/leccion`
+            }
+            else if (res.body.estado) {
               var load = document.getElementById('loading')
               load.setAttribute('class', 'enable')
               var a = document.getElementById('app')

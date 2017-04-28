@@ -98,13 +98,12 @@ EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante
 // Realtime
 
 // usada cuando se ingresa el codigo de la leccion
-EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,id_leccion, id_grupo,callback) {
+EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,id_leccion,callback) {
   let fecha = moment();
   let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
   let leccion_nueva = {
     leccion: id_leccion,
     fechaEmpezado: current_time_guayaquil,
-    grupo: id_grupo,
   }
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
 }

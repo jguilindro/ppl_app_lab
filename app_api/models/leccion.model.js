@@ -48,6 +48,10 @@ const LeccionSchema = mongoose.Schema({
     ref: 'Profesor',
     unique: false
   },
+  leccionYaComenzo: {
+    type: Boolean,
+    'default': false
+  },
   preguntas: [{
     pregunta: {
       type: String,
@@ -93,23 +97,23 @@ LeccionSchema.statics.eliminarLeccion = function(id_leccion, callback) {
 
 // realtime
 LeccionSchema.statics.tomarLeccion = function(id_leccion, callback) {
-  this.update({_id: id_leccion}, {$set: {estado: 'tomando'}}, callback)
+  this.update({_id: id_leccion}, {$set: {estado: 'tomando', leccionYaComenzo: false}}, callback)
 }
 
 LeccionSchema.statics.comenzarLeccion = function(id_leccion, callback) {
   let fecha = moment();
   let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
-  this.update({_id: id_leccion}, {$set: {fechaInicioTomada: current_time_guayaquil}}, callback)
+  this.update({_id: id_leccion}, {$set: {fechaInicioTomada: current_time_guayaquil, leccionYaComenzo: true}}, callback)
 }
 
 LeccionSchema.statics.leccionTerminada = function(id_leccion, callback) {
   let fecha = moment();
-  this.update({_id: id_leccion}, {$set: {estado: 'terminado'}}, callback)
+  this.update({_id: id_leccion}, {$set: {estado: 'terminado',leccionYaComenzo: false}}, callback)
 }
 
 LeccionSchema.statics.leccionTerminadaDevelop = function(id_leccion, callback) {
   let fecha = moment();
-  this.update({_id: id_leccion}, {$set: {estado: 'pendiente'}}, callback)
+  this.update({_id: id_leccion}, {$set: {estado: 'pendiente',leccionYaComenzo: false }}, callback)
 }
 
 LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {
