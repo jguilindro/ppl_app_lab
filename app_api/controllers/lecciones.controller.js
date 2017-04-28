@@ -1,6 +1,7 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
 const EstudianteModel = require('../models/estudiante.model');
+const GrupoLeccionModel = require('../models/grupoLeccion.model');
 var respuesta = require('../utils/responses');
 
 const obtenerTodasLecciones = (req, res) => {
@@ -107,6 +108,13 @@ const habilitarEstudiantesCursoParaLeccion = (req, res) => {
   })
 }
 
+const obtenerEstudiantesDeLeccion = (req, res) => {
+  GrupoLeccionModel.obtenerGrupoLeccion(req.params.id_grupo, req.params.id_leccion, (err, doc) => {
+     if (err) return respuesta.serverError(res);
+     return respuesta.ok(res, doc);
+  })
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -117,4 +125,5 @@ module.exports = {
   tomarLeccion,
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
+  obtenerEstudiantesDeLeccion,
 }
