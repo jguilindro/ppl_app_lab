@@ -121,6 +121,7 @@ var app = new Vue({
     },
     calificarLeccion: function(id){
     	//Completar esto luego de que Julio termine su parte
+		window.location.href = '/profesores/leccion/calificar/grupos/'+id;
     },
     tomandoLeccion(paralelo, id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
