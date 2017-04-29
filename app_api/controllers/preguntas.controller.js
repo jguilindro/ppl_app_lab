@@ -16,8 +16,7 @@ const obtenerPregunta = (req, res) => {
 }
 
 const obtenerPreguntasPorCreador = (req, res) => {
-  const {id_creador} = req.params
-  PreguntaModel.obtenerPreguntasPorCreador(id_creador, (err, preguntas) => {
+  PreguntaModel.obtenerPreguntasPorCreador(req.params.id_profesor, (err, preguntas) => {
     if (err) return respuesta.serverError(res);
     return respuesta.ok(res, preguntas);
   })
@@ -25,10 +24,8 @@ const obtenerPreguntasPorCreador = (req, res) => {
 
 
 const crearPregunta = (req, res) => {
-  // con quien este loggeado anadir el id creador
   let pregunta = new PreguntaModel({
     creador: req.body.creador,
-    nombreCreador: req.body.nombreCreador,
     nombre: req.body.nombre,
     tipoLeccion: req.body.tipoLeccion,
     tipoPregunta: req.body.tipoPregunta,
@@ -36,14 +33,13 @@ const crearPregunta = (req, res) => {
     tutorial: req.body.tutorial,
     laboratorio: req.body.laboratorio,
     tiempoEstimado: req.body.tiempoEstimado,
-    // tiempoMinimo: req.body.tiempoEstimado,   //Ya no hay tiempo minimo
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   })
   console.log(pregunta)
   pregunta.crearPregunta((err, doc) => {
     if (err) return respuesta.serverError(res);
-    return respuesta.creado(res, pregunta);
+    return respuesta.creado(res);
   })
 }
 
@@ -56,7 +52,6 @@ const actualizarPregunta = (req, res) => {
     laboratorio: req.body.laboratorio,
     tutorial: req.body.tutorial,
     tiempoEstimado: req.body.tiempoEstimado,
-    tiempoMinimo: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   }

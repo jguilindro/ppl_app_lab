@@ -14,9 +14,6 @@ const PreguntaSchema = mongoose.Schema({
     type: String,
     ref: 'Profesor'
   },
-  nombreCreador: {
-    type: String
-  },
   tipoLeccion: {  // <= DOCUMENTACION
     type: String,
     enum: ['estimacion', 'tutorial', 'laboratorio'],
@@ -47,6 +44,7 @@ const PreguntaSchema = mongoose.Schema({
   }
 },{timestamps: true, versionKey: false, collection: 'preguntas'});
 
+//CRUD
 PreguntaSchema.statics.obtenerTodasPreguntas = function(callback) {
   this.find({}, callback);
 }
@@ -55,20 +53,22 @@ PreguntaSchema.statics.obtenerPregunta = function(id_pregunta, callback) {
   this.findOne({_id: id_pregunta}, callback);
 }
 
-PreguntaSchema.statics.obtenerPreguntasPorCreador = function(id_creador, callback) {
-  this.find({creador: id_creador}, callback);
-}
-
 PreguntaSchema.methods.crearPregunta = function(callback) {
   this.save(callback);
 }
 
 PreguntaSchema.statics.actualizarPregunta = function(id_pregunta, actualizar, callback) {
-  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, laboratorio: actualizar.laboratorio, tutorial: actualizar.tutorial, tiempoEstimado: actualizar.tiempoEstimado, tiempoMinimo: actualizar.tiempoMinimo, puntaje: actualizar.puntaje, descripcion: actualizar.descripcion}},callback);
+  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, laboratorio: actualizar.laboratorio, tutorial: actualizar.tutorial, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.puntaje, descripcion: actualizar.descripcion}},callback);
 }
 
 PreguntaSchema.statics.eliminarPregunta = function(id_pregunta, callback) {
   this.findOneAndRemove({_id: id_pregunta}, callback);
 }
+
+//METODOS APARTE
+PreguntaSchema.statics.obtenerPreguntasPorCreador = function(id_creador, callback) {
+  this.find({creador: id_creador}, callback);
+}
+
 
 module.exports = mongoose.model('Pregunta', PreguntaSchema);
