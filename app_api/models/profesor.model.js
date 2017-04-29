@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise
 
 const ProfesorSchema = mongoose.Schema({
   _id: {
@@ -17,6 +18,10 @@ const ProfesorSchema = mongoose.Schema({
   },
   foto: {
     type: String
+  },
+  tipo: {
+    type: String,
+    enum: ['titular', 'peer']
   },
   preguntasCreadas: [{
     type: String,

@@ -17,10 +17,6 @@ const EstudianteSchema = mongoose.Schema({
 	apellidos: {
 		type: String
 	},
-  genero: {
-    type: String,
-    enum: ['masculino', 'femenino']
-  },
 	correo: {
 		type: String
 	},

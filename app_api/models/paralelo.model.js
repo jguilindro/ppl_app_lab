@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise
 
 const ParaleloSchema = new mongoose.Schema({
   _id: {
@@ -7,6 +8,12 @@ const ParaleloSchema = new mongoose.Schema({
     'default': require('shortid').generate
   },
   nombre: {
+    type: String
+  },
+  nombreMateria: {
+    type: String
+  },
+  codigo: {
     type: String
   },
   dandoLeccion: {
@@ -20,7 +27,19 @@ const ParaleloSchema = new mongoose.Schema({
   limiteEstudiantes: {
     type: Number
   },
+  anio: {
+    type: String
+  },
+  termino: {
+    type: Number,
+    enum: [1,2]
+  },
   profesor: {
+    type: String,
+    ref: 'Profesor',
+    'default': ''
+  },
+  peers: {
     type: String,
     ref: 'Profesor',
     'default': ''
@@ -51,6 +70,12 @@ ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
 ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
   //this.find({_id: id_paralelo}, callback);
   this.findOne({_id: id_paralelo}).populate({path: 'grupos'}).exec(callback);
+}
+
+ParaleloSchema.statics.obtenerParaleloWebService = function(paralelo, codigomateria, anio, termino, callback) {
+  this.findOne({$and: [{nombre: paralelo}, {codigo: codigomateria},{anio: anio},{termino: termino}]}, callback)
+  // this.find({}, callback)
+  // this.findOne({codigo: codigomateria}, callback)
 }
 
 ParaleloSchema.methods.crearParalelo = function(callback) {
