@@ -84,13 +84,13 @@ function regresar(){
 function enviarFeedback(){
 
 	$("input").each(function(index, calificacion){
-		App.calificaciones.push(calificacion.val());
+		App.calificaciones.push($(calificacion).val());
 	});
 	$("textarea").each(function(index, feedback){
-		App.feedback.push(feedback.val());
+		console.log(feedback);
+		App.feedback.push($(feedback).val());
 	});
-	console.log(App.calificaciones);
-	console.log(App.feedback);
+	window.location.href = '/profesores/leccion/'
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
