@@ -18,12 +18,19 @@ const crearRespuesta = (req, res) => {
 	console.log(resp)
 	resp.crearRespuesta((err) => {
 		if(err) return response.serverError(res);
-		return response.creado(res, resp);
+		return response.creado(res);
 	});
 }
 
 const obtenerRespuestasPorGrupoAPregunta = (req, res) => {
 	RespuestaModel.obtenerRespuestasPorGrupoAPregunta(req.body.leccion, req.body.pregunta, req.body.grupo, (err, respuesta) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, respuesta);
+	})
+}
+
+const obtenerRespuestasPorGrupoAPreguntaGet = (req, res) => {
+	RespuestaModel.obtenerRespuestasPorGrupoAPregunta(req.params.id_leccion, req.params.id_pregunta, req.params.id_grupo, (err, respuesta) => {
 		if(err) return response.serverError(res);
 		return response.ok(res, respuesta);
 	})
@@ -66,5 +73,6 @@ module.exports = {
 	actualizarRespuesta,
 	obtenerRespuestaPorId,
 	calificarRespuestaGrupal,
+	obtenerRespuestasPorGrupoAPreguntaGet
 }
 
