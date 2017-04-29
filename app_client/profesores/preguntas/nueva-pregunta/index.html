@@ -4,111 +4,118 @@
 		<title>Profesor</title>
 		<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
-  	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
-  	<link href="/css/summernote.css" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
 		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
 		<header id="#navbar"></header>
 		<main>
 			<div class="container" id="preguntaNueva">
-				<h1 class="text-center">Nueva pregunta</h1>
-				<p class="text-center">Creada por: {{profesor.correo}}</p>
-				<form>
-					<!--Titulo-->
-					<div class="form-group">
-						<label for="nombre">Título</label>
-						<input type="text" name="nombre" id="nombre" class="form-control" v-model="pregunta.nombre">
-					</div>
-					<!--Descripcion-->
-	        <div id="summernote">
-	        	Descripción
-	        </div>
-	        <!--File uploader-->
+				<h1 class="center-align">Nueva pregunta</h1>
+				<p class="center-align">Creada por: {{profesor.correo}}</p>
 
-
-	        <!--Tipos de preguntas y de leccion-->
-	        <div class="row row-tipos-pregunta">
-	        	<div class="col-xs-6">
-	        		<label for="tipo-pregunta">Tipo de pregunta: </label>
-	        		  <select class="form-control" id="tipo-pregunta" v-model="pregunta.tipoPregunta">
-							    <option value="" disabled selected></option>
+				<div class="row" id="row-crear-pregunta">
+					<form class="col s12">
+						<!--Titulo-->
+						<div class="row" id="row-nombre">
+							<div class="input-field col s12">
+								<input type="text" name="nombre" id="nombre" v-model="pregunta.nombre">
+								<label for="nombre">Título</label>
+							</div>
+						</div>
+						<!--Descripcion-->
+						<div class="row" id="row-descripcion">
+							<div class="input-field col s12">
+								<div id="firstEditor" class="myEditor">
+				        	
+				        </div>
+							</div>
+						</div>
+						<!--Tipos de preguntas y de leccion-->
+						<div class="row" id="row-tipos">
+							<div class="input-field col s6">
+								<select id="tipo-pregunta">
+									<option value="" disabled selected></option>
 									<option value="opcion">Opcion multiple</option>
 									<option value="v_f">V/F</option>
 									<option value="justificacion">Justificacion</option>
-							  </select>
-	        	</div>
-	        	<div class="col-xs-6">
-	        		<label for="tipo-leccion">Tipo de lección: </label>
-	        		  <select class="form-control" id="tipo-leccion" v-model="pregunta.tipoLeccion">
-							    <option value="" disabled selected></option>
+								</select>
+								<label>Tipo de pregunta:</label>
+							</div>
+							<div class="input-field col s6">
+								<select id="tipo-leccion">
+									<option value="" disabled selected></option>
 									<option value='estimacion'>Estimación</option>
 						      <option value='tutorial'>Tutorial</option>
 						      <option value='laboratorio'>Laboratorio</option>
-							  </select>
-	        	</div>
-	        </div>					
-					<!--Capitulo-->
-					<div v-if="pregunta.tipoLeccion=='estimacion'" class="row">
-						<div class="col-xs-12" id="col-capitulo">
-							<label for="capitulo">Capítulo</label>
-							<input type="text" name="capitulo" id="capitulo" v-model="pregunta.capitulo" class="form-control">
+								</select>
+								<label>Tipo de leccion:</label>
+							</div>
 						</div>
-					</div>
-					<!--Tutorial-->
-					<div v-else-if="pregunta.tipoLeccion=='tutorial'" class="row">
-						<div class="col-xs-12" id="col-tutorial">
-							<label for="tutorial">Tutorial</label>
-							<input type="text" name="tutorial" id="tutorial" v-model="pregunta.tutorial" class="form-control">
+						<!--Capitulo-->
+						<div class="row" id="row-capitulo" v-show="pregunta.tipoLeccion=='estimacion'">
+							<div class="input-field col s12">
+								<input type="text" id="capitulo" v-model="pregunta.capitulo">
+								<label for="capitulo" class="lblEditar">Capítulo</label>
+							</div>
 						</div>
-					</div>
-					<!--Laboratorio-->
-					<div v-else-if="pregunta.tipoLeccion=='laboratorio'" class="row">
-						<div class="col-xs-12" id="col-laboratorio">
-							<label for="laboratorio">Laboratorio</label>
-							<input type="text" name="laboratorio" id="laboratorio" v-model="pregunta.laboratorio" class="form-control">
+						<!--Tutorial-->
+						<div class="row" id="row-tutorial" v-show="pregunta.tipoLeccion=='tutorial'">
+							<div class="input-field col s12">
+								<input type="text" id="tutorial" v-model="pregunta.tutorial">
+								<label for="tutorial" class="lblEditar">Tutorial</label>
+							</div>
 						</div>
-					</div>
-					<!--Tiempos estimados-->
-					<div class="row row-tiempo-puntaje">
-						<div class="col-xs-6">
-							<label for="tiempo-estimado">Tiempo estimado:</label>
-							<input type="number" name="tiempo-estimado" id="tiempo-estimado" v-model="pregunta.tiempoEstimado" class="form-control">
+						<!--Laboratorio-->
+						<div class="row" id="row-laboratorio" v-show="pregunta.tipoLeccion=='laboratorio'">
+							<div class="input-field col s12">
+								<input type="text" id="laboratorio" v-model="pregunta.laboratorio">
+								<label for="laboratorio" class="lblEditar">Laboratorio</label>
+							</div>
 						</div>
-						<div class="col-xs-6">
-							<label for="puntaje">Puntaje: </label>
-							<input type="number" name="puntaje" id="puntaje" v-model="pregunta.puntaje" class="form-control">
+						<!--Tiempo y puntaje-->
+						<div class="row" id="tiempo-puntaje">
+							<div class="input-field col s6">
+								<input type="number" id="tiempo" v-model="pregunta.tiempoEstimado">
+								<label for="tiempo" class="lblEditar">Tiempo estimado</label>
+							</div>
+							<div class="input-field col s6">
+								<input type="number" id="puntaje" v-model="pregunta.puntaje">
+								<label for="puntaje" class="lblEditar">Puntaje</label>
+							</div>
 						</div>
-					</div>
-						<div class="form-group botones">
-							<button type="button" class="btn btn-primary btn-md pull-right" @click="crearPregunta">Crear</button>
-							<button type="button" class="btn btn-danger btn-md pull-left" @click="cancelar">Cancelar</button>
-						</div>
-				</form>
+						<!--Botones-->
+						<div class="buttons row">
+          		<a class="waves-effect waves-light btn pull right" @click="crearPregunta">Aceptar</a>
+          		<a class="waves-effect waves-light btn" @click="cancelar">Cancelar</a>
+          	</div>
+					</form>
+				</div>
+			
 
-				<!-- Modal -->
-			  <div class="modal fade" id="myModal" role="dialog">
-			    <div class="modal-dialog modal-sm">
-			      <div class="modal-content">
-			        <div class="modal-body">
-			          <p class="text-center">Pregunta creada correctamente</p>
-			        </div>
-			        <div class="modal-footer text-center">
-			          <button type="button" class="btn btn-default" data-dismiss="modal" @click="ok">Close</button>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
+			 <!-- Modal Structure -->
+		  <div id="myModal" class="modal">
+		    <div class="modal-content">
+		      <p class="center-align">Pregunta creada correctamente</p>
+		    </div>
+		    <div class="modal-footer">
+		      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="ok">Aceptar</a>
+		    </div>
+		  </div>
 			</div>	
 		</main>
 		<footer>
-			<script src="/js/navbar.js"></script>
-			<script src="https://unpkg.com/vue"></script>
+			<script src="/materialnote/lib/jquery-2.1.4.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-			<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-			<script src="/js/summernote.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/materialnote/js/ckMaterializeOverrides.js"></script>
+			<script src="/materialnote/js/materialNote.js"></script>
 			<script src="./nuevaPreguntaScript.js"></script>
+			<script src="/js/navbar.js"></script>
 		</footer>
 	</body>
 </html>

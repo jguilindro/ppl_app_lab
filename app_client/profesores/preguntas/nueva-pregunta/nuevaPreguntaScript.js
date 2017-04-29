@@ -1,10 +1,5 @@
 
 var app = new Vue({
-	mounted: function(){
-		$('#summernote').summernote();
-		
-
-	},
 	el: '#preguntaNueva',
 	data: {
 		pregunta: {
@@ -36,11 +31,12 @@ var app = new Vue({
 			this.$http.post(url, self.pregunta).then(response => {
 				//success callback
 				console.log(response)
+				$('#myModal').modal('open')
 			}, response => {
 				//error callback
 				console.log(response)
 			});
-			$('#myModal').modal()
+			
 
 		},
 		ok: function(){
@@ -54,12 +50,12 @@ var app = new Vue({
             self.profesor = res.body.datos;
             console.log(self.profesor)
             self.pregunta.creador = self.profesor._id;
-            self.pregunta.nombreCreador = self.profesor.nombres + self.profesor.apellidos;
           }
         });
     }
 	},
   mounted() {
+  	/*
     $('#summernote').on('summernote.image.upload', function(we, files, otor) {
       var clientId = "300fdfe500b1718";
       var xhr = new XMLHttpRequest();
@@ -84,11 +80,54 @@ var app = new Vue({
           app.$data.pregunta.descripcion = contents;
         }
       }
+    });*/
+    this.obtenerLogeado();/*
+    $('.myEditor').on('summernote.image.upload', function(we, files, otor) {
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+       xhr.onreadystatechange = function () {
+          if (xhr.status === 200 && xhr.readyState === 4) {
+            console.log('subido');
+            var url = JSON.parse(xhr.responseText)
+            console.log(url.data.link);
+            $('.myEditor').summernote('editor.insertImage', url.data.link);
+          }
+       }
+       xhr.send(files[0]);
+    });*/
+    $('.myEditor').materialnote({
+    	height: "500px",
+    	onImageUpload: function(files, editor, $editable) {
+    		var clientId = "300fdfe500b1718";
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+	      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+	       xhr.onreadystatechange = function () {
+	          if (xhr.status === 200 && xhr.readyState === 4) {
+	            console.log('subido');
+	            var url = JSON.parse(xhr.responseText)
+	            console.log(url.data.link);
+	            $('.myEditor').materialnote('editor.insertImage', url.data.link);
+	          }
+	       }
+	       xhr.send(files[0]);
+      }
     });
-    this.obtenerLogeado();
+    $(".note-editor").find("button").attr("type", "button");
+    $('select').material_select();
+
+    this.$http.get("/../navbar/profesores").then(response =>{
+    	console.log(response)
+    	document.getElementById('#navbar').innerHTML = response.body;
+    	$(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    });
+    $('.modal').modal();
   }
 });
-
+/*
 document.addEventListener("DOMContentLoaded", function(event) {
   $.get({
     url: "/../navbar/profesores",
@@ -99,37 +138,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   })
 });
+*/
 
-
-/*
+//2 way data binding de los selects y del wysiwyg
 $('#tipo-leccion').change(function(){
-	//console.log('asdfsdfsd')
-	console.log(app.$data.pregunta.tipoLeccion)
-	console.log($('#tipo-leccion option:selected').text())
-	//app.set('select', $('#jurisdiction').val());
-	//console.log( 'Text: ' + $('#tipo-leccion option:selected').text())
-	//console.log('Antes: ' + app.$data.pregunta.tipoLeccion)
-	//app.$data.pregunta.tipoLeccion = $('#tipo-leccion option:selected').text();
-	//console.log('Despues: ' + app.$data.pregunta.tipoLeccion)
+	app.$data.pregunta.tipoLeccion = $('#tipo-leccion option:selected').val();
 });
 
 $('#tipo-pregunta').change(function(){
-	//app.set('select', $('#jurisdiction').val());
-	//console.log( 'Text: ' + $('#tipo-pregunta option:selected').text())
-	//console.log('Antes: ' + app.$data.pregunta.tipoPregunta)
-	app.$data.pregunta.tipoPregunta = $('#tipo-pregunta option:selected').text();
-	//console.log('Despues: ' + app.$data.pregunta.tipoPregunta)
-});*/
-/*
-$('#aaa').click(function(){
-	console.log($('#summernote').summernote('code'))
+	app.$data.pregunta.tipoPregunta = $('#tipo-pregunta option:selected').val();
+});
 
-	//console.log('asdfafsd')
-})*/
+$('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
+ 	app.$data.pregunta.descripcion = contents;
+});
 
-// $('#summernote').on('summernote.change', function(we, contents, $editable) {
-// app.$data.pregunta.descripcion = contents;
-// })
+
+
 //
 // $('#summernote').on('summernote.image.upload', function(we, files) {
 //   // upload image to server and create imgNode...
