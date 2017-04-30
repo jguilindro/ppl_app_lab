@@ -31,19 +31,19 @@ const ParaleloSchema = new mongoose.Schema({
     type: String
   },
   termino: {
-    type: Number,
-    enum: [1,2]
+    type: String,
+    enum: ['1','2']
   },
   profesor: {
     type: String,
     ref: 'Profesor',
     'default': ''
   },
-  peers: {
+  peers: [{
     type: String,
     ref: 'Profesor',
     'default': ''
-  },
+  }],
   horario: { // DOCUMENTACION
     type: String,
   },
@@ -115,6 +115,11 @@ ParaleloSchema.statics.eliminarProfesorDeParalelo = function(id_paralelo, callba
 
 ParaleloSchema.statics.obtenerParalelosProfesor = function(id_profesor, callback) {
   this.find({profesor: id_profesor}).populate({path: 'grupos.estudiantes estudiantes grupos '}).exec(callback);
+}
+
+/* PEERS*/
+ParaleloSchema.statics.anadirPeerAParalelo = function(id_paralelo, id_profesor, callback) {
+  this.update({_id: id_paralelo}, {$addToSet: {'peers': id_profesor}}, callback);
 }
 
 /*

@@ -23,10 +23,11 @@
     "cron": "^1.2.1",
     "csv": "^1.1.1",
     "debug": "~2.6.0",
+    "deep-diff": "^0.3.6",
     "express": "~4.14.1",
     "express-messages": "^1.0.1",
     "express-session": "^1.15.1",
-    "jsonfile": "^2.4.0",
+    "jsondiffpatch": "^0.2.4",
     "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
     "materialnote": "^1.2.1",
@@ -58,6 +59,7 @@
     "browser-sync": "^2.18.8",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1",
+    "jsonfile": "^3.0.0",
     "nodemon": "^1.11.0",
     "prettyjson": "^1.2.1"
   }
