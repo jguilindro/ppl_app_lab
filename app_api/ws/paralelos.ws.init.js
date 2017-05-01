@@ -43,4 +43,4 @@ function crearParalelo(paralelo_nuevo) {
 }
 
 
-module.exports = inicial
+module.exports = inicial()

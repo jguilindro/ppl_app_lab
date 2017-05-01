@@ -118,9 +118,10 @@ const profesoresWS = function(callback) {
           let paralelo = $('PARALELO').text().trim()
           let codigomateria = $('CODIGOMATERIA').text().trim()
           let nombremateria = $('NOMBRE').text().trim()
+          let correo = nombres.split(' ')[0] + '@espol.edu.ec'
           let anio = ANIO
           let termino = TERMINO.split('')[0]
-          profesor = { nombres, apellidos, paralelo, codigomateria, nombremateria, anio, termino}
+          profesor = { nombres, apellidos, paralelo, codigomateria, nombremateria, anio, termino, correo}
           if (profesor.nombres) {
             return resolve(profesor)
           } else {
@@ -205,7 +206,6 @@ const paralelosWS = function(callback) {
 }
 
 const estudiantesDB = function(callback) {
-  console.log('es');
   co(function* () {
     var paralelos = yield obtenerTodosParalelos()
     var estudiantes = []

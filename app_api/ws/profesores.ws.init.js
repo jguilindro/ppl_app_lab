@@ -15,13 +15,13 @@ function inicial() {
           let profe = profesores_titulares[i]
           let nombres = profe.nombres
           let apellidos = profe.apellidos
-          //let correo = profe.correo
+          let correo = profe.correo
           let tipo = profe.tipo
           let profesor_nuevo = new ProfesorModel({
             nombres,
             apellidos,
             tipo,
-            //correo
+            correo
           })
           let profesor_creado = yield crearProfesor(profesor_nuevo)
           let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
@@ -37,7 +37,8 @@ function inicial() {
           return JSON.stringify({
             nombres: profe.nombres,
             apellidos: profe.apellidos,
-            tipo: profe.tipo
+            tipo: profe.tipo,
+            correo: profe.correo
           })
         })
         let profesores_peers_uniq = [...new Set(profesores_peers_stringify)].map(info => {
@@ -47,13 +48,13 @@ function inicial() {
             let profe = profesores_peers_uniq[i]
             let nombres = profe.nombres
             let apellidos = profe.apellidos
-            //let correo = profe.correo
+            let correo = profe.correo
             let tipo = profe.tipo
             let profesor_nuevo = new ProfesorModel({
               nombres,
               apellidos,
               tipo,
-              //correo
+              correo
             })
             let profesor_creado = yield crearProfesor(profesor_nuevo)
             if (!profesor_creado) {
@@ -152,4 +153,4 @@ function obtenerProfesorPorNombres(nombres) {
 }
 
 
-module.exports = inicial
+module.exports = inicial()

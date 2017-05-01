@@ -25,9 +25,9 @@ module.exports = {
     var estudiantes = require('./estudiantes.ws.init')
     var profesores = require('./profesores.ws.init')
     co(function* () {
-      var p = yield paralelos()
-      var e = yield estudiantes()
-      var pro = yield profesores()
+      var p = yield paralelos
+      var e = yield estudiantes
+      var pro = yield profesores
     }).catch(fail => {
       console.log(fail);
     })
@@ -36,17 +36,22 @@ module.exports = {
 
   },
   update: function() {
-    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV == 'production') {
       new CronJob('00 30 04 * * 1-7', function() {
-        logger.info('actualizando db')
-        require('./update/estudiantes.ws.update')
+        var estudiantes = require('./update/estudiantes.ws.update')
+        co(function* () {
+          var e = yield estudiantes
+          logger.info('actualizando db')
+        })
       }, null, true, 'America/Guayaquil');
     }
     if (process.env.NODE_ENV == 'development') {
       new CronJob('00 30 * * * 1-7', function() {
-        logger.info('actualizando db')
-        require('./update/estudiantes.ws.update')
+        var estudiantes = require('./update/estudiantes.ws.update')
+        co(function* () {
+          var e = yield estudiantes
+          logger.info('actualizando db')
+        })
       }, null, true, 'America/Guayaquil');
     }
     // require(./update/paralelos.ws.update)
