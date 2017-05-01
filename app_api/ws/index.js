@@ -14,6 +14,7 @@ db.on('connected', function() {
 })
 
 var co = require('co')
+var CronJob = require('cron').CronJob;
 
 module.exports = {
   init: function() {
@@ -32,8 +33,12 @@ module.exports = {
   paralelos_nuevo_semestre() {
 
   },
-  upload: function() {
-    require('./profesores.ws.update')
-    require('./estudiantes.ws.update')
+  update: function() {
+    // new CronJob('00 30 04 * * 1-7', function() {
+    //
+    // }, null, true, 'America/Guayaquil');
+    // require(./update/paralelos.ws.update)
+    // require('./update/profesores.ws.update')
+    require('./update/estudiantes.ws.update')
   }
 }

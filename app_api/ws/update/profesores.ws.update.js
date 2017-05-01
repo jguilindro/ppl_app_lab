@@ -1,6 +1,3 @@
-const diff = require('diff')
-const jsondiff = require('jsondiffpatch')
-
 function verificarProfesorExiste(id_correo) {
 
 }

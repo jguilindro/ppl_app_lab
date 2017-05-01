@@ -3,11 +3,13 @@ logger     = require('tracer').console(),
 co         = require('co'),
 cheerio    = require('cheerio');
 
-const url = 'https://ws.espol.edu.ec/saac/wsPPL.asmx?WSDL';
+const EstudianteModel = require('../models/estudiante.model');
+const ParaleloModel   = require('../models/paralelo.model');
 
-const ANIO = '2017'
-const TERMINO = '1s'
-const PARALELOS = ['FISG1002', 'FISG1003']
+const url = 'https://ws.espol.edu.ec/saac/wsPPL.asmx?WSDL',
+ANIO      = '2017',
+TERMINO   = '1s',
+PARALELOS = ['FISG1002', 'FISG1003'];
 
 var argumentosEstudiantes = {
   anio: ANIO, // 2017
@@ -60,7 +62,7 @@ const estudiantesWS = function(callback) {
             let paralelo = c('PARALELO').text().trim()
             let codigomateria  = c('COD_MATERIA_ACAD').text().trim()
             let anio = ANIO
-            let termino = parseInt(TERMINO.split('')[0])
+            let termino = TERMINO.split('')[0]
             let ext = { nombres, apellidos, matricula, correo, paralelo, codigomateria, anio, termino }
             estudiantes_y_paralelo.push(ext)
           })
@@ -202,8 +204,30 @@ const paralelosWS = function(callback) {
   })
 }
 
-const estudiantesDB = function() {
-
+const estudiantesDB = function(callback) {
+  console.log('es');
+  co(function* () {
+    var paralelos = yield obtenerTodosParalelos()
+    var estudiantes = []
+    for (var i = 0; i < paralelos.length; i++) {
+      var paralelo_temp = paralelos[i]
+      for (var j = 0; j < paralelos[i].estudiantes.length; j++) {
+        let estudiante_encontrado = paralelos[i].estudiantes[j]
+        let estudiante = yield obtenerEstudiante(estudiante_encontrado)
+        estudiantes.push({
+          nombres: estudiante.nombres,
+          apellidos: estudiante.apellidos,
+          matricula: estudiante.matricula,
+          correo: estudiante.correo,
+          paralelo: paralelo_temp.nombre,
+          codigomateria: paralelo_temp.codigo,
+          anio: paralelo_temp.anio,
+          termino: paralelo_temp.termino
+        })
+      }
+    }
+    callback(estudiantes)
+  })
 }
 
 const profesoresDB = function() {
@@ -214,6 +238,41 @@ const paralelosDB = function() {
 
 }
 
+function obtenerEstudiante(id_estudiante) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante,(err, estudiantes) => {
+      if (err) {
+        logger.error('Error al obtener todos los estudiantes', err)
+        resolve(null)
+      }
+      resolve(estudiantes)
+    })
+  })
+}
+
+function obtenerTodosParalelos() {
+  return new Promise((resolve, reject) => {
+    ParaleloModel.obtenerTodosParalelos((err, paralelos) => {
+      if (err) {
+        logger.error('Error al obtener todos los paralelos', err)
+        return resolve(null)
+      }
+      resolve(paralelos)
+    })
+  })
+}
+
+function obtenerParaleloDeEstudiante(id_estudiante) {
+  return new Promise((resolve, reject) => {
+    ParaleloModel.obtenerParaleloDeEstudiante((err, paralelo) => {
+      if (err) {
+        logger.error('Error al encontrar paralelo', err)
+        return resolve(null)
+      }
+      resolve(paralelo)
+    })
+  })
+}
 
 
 module.exports = {

@@ -67,6 +67,11 @@ ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
   this.find({}, callback)
 }
 
+ParaleloSchema.statics.obtenerTodosParalelosNoPopulate = function(callback) {
+  //this.find({}).populate({path: 'estudiantes grupos'}).exec(callback);
+  this.find({}, callback)
+}
+
 ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
   //this.find({_id: id_paralelo}, callback);
   this.findOne({_id: id_paralelo}).populate({path: 'grupos'}).exec(callback);

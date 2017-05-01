@@ -1,2 +1,2 @@
-// var init = require('./index')
-// init.init()
+var init = require('./index')
+init.update()
