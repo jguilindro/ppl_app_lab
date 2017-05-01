@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise
 
 const ParaleloSchema = new mongoose.Schema({
   _id: {
@@ -7,6 +8,12 @@ const ParaleloSchema = new mongoose.Schema({
     'default': require('shortid').generate
   },
   nombre: {
+    type: String
+  },
+  nombreMateria: {
+    type: String
+  },
+  codigo: {
     type: String
   },
   dandoLeccion: {
@@ -20,11 +27,23 @@ const ParaleloSchema = new mongoose.Schema({
   limiteEstudiantes: {
     type: Number
   },
+  anio: {
+    type: String
+  },
+  termino: {
+    type: String,
+    enum: ['1','2']
+  },
   profesor: {
     type: String,
     ref: 'Profesor',
     'default': ''
   },
+  peers: [{
+    type: String,
+    ref: 'Profesor',
+    'default': ''
+  }],
   horario: { // DOCUMENTACION
     type: String,
   },
@@ -48,9 +67,20 @@ ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
   this.find({}, callback)
 }
 
+ParaleloSchema.statics.obtenerTodosParalelosNoPopulate = function(callback) {
+  //this.find({}).populate({path: 'estudiantes grupos'}).exec(callback);
+  this.find({}, callback)
+}
+
 ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
   //this.find({_id: id_paralelo}, callback);
   this.findOne({_id: id_paralelo}).populate({path: 'grupos'}).exec(callback);
+}
+
+ParaleloSchema.statics.obtenerParaleloWebService = function(paralelo, codigomateria, anio, termino, callback) {
+  this.findOne({$and: [{nombre: paralelo}, {codigo: codigomateria},{anio: anio},{termino: termino}]}, callback)
+  // this.find({}, callback)
+  // this.findOne({codigo: codigomateria}, callback)
 }
 
 ParaleloSchema.methods.crearParalelo = function(callback) {
@@ -90,6 +120,11 @@ ParaleloSchema.statics.eliminarProfesorDeParalelo = function(id_paralelo, callba
 
 ParaleloSchema.statics.obtenerParalelosProfesor = function(id_profesor, callback) {
   this.find({profesor: id_profesor}).populate({path: 'grupos.estudiantes estudiantes grupos '}).exec(callback);
+}
+
+/* PEERS*/
+ParaleloSchema.statics.anadirPeerAParalelo = function(id_paralelo, id_profesor, callback) {
+  this.update({_id: id_paralelo}, {$addToSet: {'peers': id_profesor}}, callback);
 }
 
 /*

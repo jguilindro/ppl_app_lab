@@ -17,10 +17,6 @@ const EstudianteSchema = mongoose.Schema({
 	apellidos: {
 		type: String
 	},
-  genero: {
-    type: String,
-    enum: ['masculino', 'femenino']
-  },
 	correo: {
 		type: String
 	},
@@ -83,6 +79,10 @@ EstudianteSchema.statics.obtenerTodosEstudiantes = function(callback) {
   this.find({}).populate({path: 'lecciones.leccion'}).exec(callback);
 }
 
+EstudianteSchema.statics.obtenerTodosEstudiantesNoPopulate = function(callback) {
+  this.find({},callback)
+}
+
 EstudianteSchema.methods.crearEstudiante = function(callback) {
   this.save(callback)
 }
@@ -91,8 +91,20 @@ EstudianteSchema.statics.obtenerEstudiante = function(id_estudiante, callback) {
   this.findOne({_id: id_estudiante}).populate({path: 'lecciones.leccion'}).exec(callback);
 }
 
+EstudianteSchema.statics.obtenerEstudianteNoPopulate = function(id_estudiante, callback) {
+  this.findOne({_id: id_estudiante},callback);
+}
+
 EstudianteSchema.statics.obtenerEstudiantePorCorreo = function(correo_estudiante, callback) {
   this.findOne({correo: correo_estudiante}).populate({path: 'lecciones.leccion'}).exec(callback);
+}
+
+EstudianteSchema.statics.obtenerEstudiantePorCorreoNoPopulate = function(correo_estudiante, callback) {
+  this.findOne({correo: correo_estudiante},callback)
+}
+
+EstudianteSchema.statics.eliminarEstudiante = function(id_estudiante, callback) {
+  this.findOneAndRemove({_id: id_estudiante}, callback)
 }
 
 // Realtime

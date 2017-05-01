@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise
 
 const ProfesorSchema = mongoose.Schema({
   _id: {
@@ -18,6 +19,10 @@ const ProfesorSchema = mongoose.Schema({
   foto: {
     type: String
   },
+  tipo: {
+    type: String,
+    enum: ['titular', 'peer']
+  },
   preguntasCreadas: [{
     type: String,
     ref: 'Pregunta'
@@ -30,6 +35,10 @@ ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
 
 ProfesorSchema.statics.obtenerProfesorPorCorreo = function(correo_profesor, callback) {
   this.findOne({correo: correo_profesor}, callback)
+}
+
+ProfesorSchema.statics.obtenerProfesorPorNombres = function(nombres_profesor, callback) {
+  this.findOne({nombres: nombres_profesor}, callback)
 }
 
 ProfesorSchema.methods.crearProfesor = function(callback) {
