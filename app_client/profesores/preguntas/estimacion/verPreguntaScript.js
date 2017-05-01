@@ -5,18 +5,93 @@ var app = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoCapitulo').modal();
-		this.getPreguntas();
+		//this.getPreguntas();
 		this.obtenerLogeado();
+		this.obtenerCapitulos();
 
 	},
 
 	el: '#preguntas',
 	data: {
 		preguntas: [],
+		preguntasEstimacion: [],
+		capitulosObtenidos: [],
 		capitulos: [],
-		profesor: {}
+		profesor: {},
+		capitulo: {
+			nombre: '',
+			tipo: 'estimacion'
+		}
 	},
 	methods: {
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    },
+    obtenerCapitulos: function(){
+    	var self = this;
+    	var url = '/api/capitulos/'
+    	self.$http.get(url).then(response => {
+    		//SUCCESS CALLBACK
+    		self.capitulosObtenidos = response.body.datos;
+    		$.each(self.capitulosObtenidos, function(index, capitulo){
+    			if(capitulo.tipo.toLowerCase()=='estimacion'){
+    				self.capitulos.push(capitulo);
+    			}
+    		});
+    		self.obtenerPreguntas();
+    	}, response => {
+    		//ERROR CALLBACK
+    		console.log('Hubo un error al obtener los capítulos de la base de datos.');
+    		console.log(response);
+    	})
+    },
+    obtenerPreguntas: function(){
+    	var self = this;
+    	var url = '/api/preguntas/';
+    	self.$http.get(url).then(response => {
+    		//SUCCESS CALLBACK
+    		self.preguntas = response.body.datos;
+    		//Selecciono solo las que son de estimacion
+    		$.each(self.preguntas, function(index, pregunta){
+    			if(pregunta.tipoLeccion.toLowerCase()=='estimacion'){
+    				self.preguntasEstimacion.push(pregunta);
+    			}
+    		});
+    		self.dividirPreguntasEnCapitulos();
+    	}, response => {
+    		//ERROR CALLBACK
+    		console.log('Hubo un error al obtener las preguntas de la base de datos');
+    	});
+    },
+    dividirPreguntasEnCapitulos: function(){
+    	var self = this;
+    	$.each(self.preguntasEstimacion, function(index, pregunta){
+    		$.each(self.capitulos, function(j, capitulo){
+    			if(pregunta.capitulo.toLowerCase()==capitulo.nombre.toLowerCase()){
+    				capitulo.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    	});
+    },
+    crearCapitulo: function(){
+    	var self = this;
+    	var url = '/api/capitulos/'
+    	self.$http.post(url, self.capitulo).then(response => {
+    		self.capitulos.push(self.capitulo);
+    		self.capitulo.nombre = '';
+    	}, response => {
+    		console.log('Hubo un error al crear el capítulo.')
+    		console.log(response);
+    	})
+    },
+
 		nuevaPregunta: function(){
 
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
@@ -35,18 +110,6 @@ var app = new Vue({
 				console.log(response)
 			});
 			
-		},
-		nuevoCapitulo: function(event){
-			var nombreCapitulo = $('#nombreCapitulo').val();
-			var idCapitulo = nombreCapitulo.replace(/\s+/g, '');
-			var hrefCapitulo = '#' + idCapitulo;
-			var capitulo = {
-				nombre: nombreCapitulo,
-				id:  idCapitulo,
-				href: hrefCapitulo,
-				preguntas: []
-			}
-			this.capitulos.push(capitulo)
 		},
 		crearModalEliminarPregunta: function(id){
 			var self = this;
@@ -77,51 +140,7 @@ var app = new Vue({
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
 		},
-		getPreguntas: function(){
-			var self = this;
-			var encontroCapitulo = false;
-			this.$http.get('/api/preguntas').then(response => {
-				//success callback
-				self.preguntas = response.body.datos
-				$.each(self.preguntas, function(index, pregunta){
-					pregunta['show'] = true;
-					if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
-						$.each(self.capitulos, function(index, capitulo){
-							if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
-								capitulo.preguntas.push(pregunta);
-								encontroCapitulo = true;
-								return false;
-							}else{
-								encontroCapitulo=false;
-							}
-						});
-						if (!encontroCapitulo) {
-							self.crearCapitulo(pregunta)
-						}
-					}
-
-				})
-			}, response => {
-				//error callback
-				console.log(response)
-			})
-		},
-		crearCapitulo: function(pregunta){
-			var self = this;
-			var nombreCapitulo = pregunta.capitulo;
-			var idCapitulo = nombreCapitulo.toLowerCase();
-			idCapitulo = idCapitulo.split(":")[0];
-			idCapitulo - idCapitulo.replace(/\s+/g, '');
-			var hrefCapitulo = '#' + idCapitulo;
-			var capitulo = {
-				nombre: nombreCapitulo,
-				id:  idCapitulo,
-				href: hrefCapitulo,
-				preguntas: []
-			}
-			capitulo.preguntas.push(pregunta);
-			self.capitulos.push(capitulo);
-		},
+		
 		prueba: function(){
 			var self = this;
 			console.log(self.capitulos)
@@ -132,15 +151,8 @@ var app = new Vue({
 			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
-		obtenerLogeado: function() {
-      var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-          	self.profesor = res.body.datos;
-          }
-        });
-    }
+		
+    
 
 	}
 });

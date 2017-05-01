@@ -53,14 +53,14 @@
 			    	<h4 class="center-align">Nuevo laboratorio</h4>
 			      <div class="row row-lab-nuevo">
 			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreLab" id="nombreLab">
+			      		<input type="text" name="nombreLab" id="nombreLab" v-model="laboratorio.nombre">
 			      		<label for="nombreLab">Nombre del laboratorio</label>
 			      	</div>
 			      </div>
 			    </div>
 			    <div class="modal-footer">
 			    	
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoLab($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="crearLaboratorio()">Crear</a>
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>

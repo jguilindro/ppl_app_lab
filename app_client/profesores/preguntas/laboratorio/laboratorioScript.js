@@ -1,21 +1,96 @@
 var laboratorio = new Vue({
 	el: '#laboratorio',
 	data: {
+		laboratoriosObtenidos: [],
 		laboratorios: [],
 		preguntas: [],
-		profesor: {}
+		preguntasLaboratorio: [],
+		profesor: {},
+		laboratorio: {
+			nombre: '',
+			tipo: 'laboratorio'
+		}
 	},
 	mounted: function(){
+		//Materialize
 		$('.button-collapse').sideNav();
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoLab').modal();
-		this.getPreguntas();
+		//Flujo:  obtiene el usuario loggeado -> obtiene los laboratorios de la base de datos -> obtiene las preguntas de la base de datos -> clasifica las preguntas por laboratorios
 		this.obtenerLogeado();
+		this.obtenerLaboratorios();
 	},
 	methods: {
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    },
+    obtenerLaboratorios: function(){
+    	var self = this;
+    	var url = '/api/capitulos';
+    	self.$http.get(url).then(response => {
+    		self.laboratoriosObtenidos = response.body.datos;
+    		$.each(self.laboratoriosObtenidos, function(index, laboratorio){
+    			if(laboratorio.tipo.toLowerCase()=='laboratorio'){
+    				self.laboratorios.push(laboratorio);
+    			}
+    		});
+    		self.obtenerPreguntas();
+    	}, response => {
+    		console.log('Hubo un error al obtener los laboratorios de la base de datos.');
+    		console.log(response);
+    	});
+    },
+    obtenerPreguntas: function(){
+    	var self = this;
+    	var url = '/api/preguntas/';
+    	self.$http.get(url).then(response => {
+    		self.preguntas = response.body.datos;
+    		//Selecciono solo las que son de laboratorio
+    		$.each(self.preguntas, function(index, pregunta){
+    			if(pregunta.tipoLeccion.toLowerCase()=='laboratorio'){
+    				self.preguntasLaboratorio.push(pregunta);
+    			}
+    		});
+    		self.dividirPreguntasEnLaboratorios();
+    	}, response => {
+    		console.log('Hubo un error al obtener las preguntas de la base de datos');
+    		console.log(response);
+    	})
+    },
+    dividirPreguntasEnLaboratorios: function(){
+    	var self = this;
+    	$.each(self.preguntasLaboratorio, function(index, pregunta){
+    		$.each(self.laboratorios, function(j, laboratorio){
+    			if(pregunta.laboratorio.toLowerCase()==laboratorio.nombre.toLowerCase()){
+    				laboratorio.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    	});
+    },
+    //Funciones
+    crearLaboratorio: function(){
+    	var self = this;
+    	var url = '/api/capitulos/';
+    	self.$http.post(url, self.laboratorio).then(response => {
+    		self.laboratorios.push(self.laboratorio);
+    		self.laboratorio.nombre = '';
+    	}, response => {
+    		console.log('Hubo un error al crear el laboratorio.')
+    		console.log(response);
+    	});
+
+    },
 		nuevaPregunta: function(){
+			
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
 
 		},
@@ -32,22 +107,6 @@ var laboratorio = new Vue({
 				console.log(response)
 			});
 			
-		},
-		nuevoLab: function(event){
-			var nombreLab = $('#nombreLab').val();
-			var idLab = nombreLab.replace(/\s+/g, '');
-			var hrefLab = '#' + idLab;
-			//console.log(nombreLab)
-			//console.log(idLab)
-			//console.log(hrefLab)
-			var laboratorio = {
-				nombre: nombreLab,
-				id:  idLab,
-				href: hrefLab,
-				preguntas: []
-			}
-			console.log(laboratorio)
-			this.laboratorios.push(laboratorio)
 		},
 		crearModalEliminarPregunta: function(id){
 			var self = this;
@@ -77,71 +136,17 @@ var laboratorio = new Vue({
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
 		},
-		getPreguntas: function(){
-			var self = this;
-			var flag = false;
-			this.$http.get('/api/preguntas').then(response => {
-				//success callback				
-				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
-				$.each(self.preguntas, function(index, pregunta){
-					pregunta['show'] = true;
-					if (pregunta.tipoLeccion.toLowerCase()=='laboratorio') {
-						$.each(self.laboratorios, function(index, laboratorio){
-							if (laboratorio.nombre.toLowerCase()==pregunta.laboratorio.toLowerCase()) {
-								laboratorio.preguntas.push(pregunta);
-								flag = true;	//Cambia la bandera indicando que encontro el laboratorio
-								return false;
-							}else{
-								flag=false;
-							}
-						});
-						if (!flag) {
-							self.crearLaboratorio(pregunta)
-						}
-					}
-				})
-			}, response => {
-				//error callback
-				console.log(response)
-			})
-		},
-		crearLaboratorio: function(pregunta){
-			var self = this;
-			var nombreLaboratorio = pregunta.laboratorio;
-			var idLaboratorio = nombreLaboratorio.toLowerCase();
-			idLaboratorio = idLaboratorio.split(":")[0];
-			idLaboratorio - idLaboratorio.replace(/\s+/g, '');
-			var hrefLaboratorio = '#' + idLaboratorio;
-			var laboratorio = {
-				nombre: nombreLaboratorio,
-				id:  idLaboratorio,
-				href: hrefLaboratorio,
-				preguntas: []
-			}
-			laboratorio.preguntas.push(pregunta);
-			self.laboratorios.push(laboratorio);
-		},
 		checkCreador: function(pregunta){
 			var self = this;
 			//if(pregunta.creador=='') return true;
 			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
-		obtenerLogeado: function() {
-      var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-          	self.profesor = res.body.datos;
-          }
-        });
-    }
+
 	}
 });
 
 $('body').on("click", '#btnLabNuevo', function(){
-	//console.log('Esto va a funcionar carajo');
-	//console.log($(this).attr('id'))
 	$('#modalNuevoLab').modal('open');
 })
 

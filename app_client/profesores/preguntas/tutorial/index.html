@@ -35,7 +35,7 @@
 			  			<li v-for="tutorial in tutoriales">
 			  				<a v-bind:href="tutorial.href">{{tutorial.nombre}}</a>
 			  			</li>
-			  			<button class="btn waves-effect waves-light btn-small-new" id="btnPracticaNueva">Nuevo tutorial</button>
+			  			<button class="btn waves-effect waves-light btn-small-new" id="btnTutorialNuevo">Nuevo tutorial</button>
 			  		</ul>	
 					</div>
 
@@ -51,20 +51,19 @@
 			    </div>
 			  </div>
 
-				<!-- Modal Nueva Practica Structure -->
-			  <div id="modalNuevaPractica" class="modal">
-			    <div class="modal-content" id="modalNuevaPracticaContent">
-			    	<h4 class="center-align">Nueva práctica</h4>
-			      <div class="row row-practica-nueva">
+				<!-- Modal Nuevo Tutorial Structure -->
+			  <div id="modalNuevoTutorial" class="modal">
+			    <div class="modal-content">
+			    	<h4 class="center-align">Nuevo tutorial</h4>
+			      <div class="row">
 			      	<div class="input-field col s12">
-			      		<input type="text" name="nombrePractica" id="nombrePractica">
-			      		<label for="nombrePractica">Nombre de la práctica</label>
+			      		<input type="text" name="nombreTutorial" id="nombreTutorial" v-model="tutorial.nombre">
+			      		<label for="nombreTutorial">Nombre del tutorial</label>
 			      	</div>
 			      </div>
 			    </div>
 			    <div class="modal-footer">
-			    	
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevaPractica($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoTutorial()">Crear</a>
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>

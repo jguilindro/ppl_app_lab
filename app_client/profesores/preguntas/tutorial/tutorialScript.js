@@ -1,10 +1,17 @@
 var practica = new Vue({
 	el: '#tutorial',
 	data: {
+		tutorialesObtenidos: [],
 		tutoriales: [],
 		preguntas: [],
-		profesor: {}
+		preguntasTutorial: [],
+		profesor: {},
+		tutorial: {
+			nombre: '',
+			tipo: 'tutorial'
+		}
 	},
+
 	mounted: function(){
 		$('.button-collapse').sideNav();
 		$('.scrollspy').scrollSpy();
@@ -12,10 +19,78 @@ var practica = new Vue({
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevaPractica').modal();
 		this.obtenerLogeado();
+		this.obtenerTutoriales();
 		//this.getPreguntas();
 		
 	},
 	methods: {
+		obtenerLogeado: function() {
+      var self = this;
+      this.$http.get('/api/session/usuario_conectado').
+        then(res => {
+          if (res.body.estado) {
+          	self.profesor = res.body.datos;
+          }
+        });
+    },
+    obtenerTutoriales: function(){
+    	var self = this;
+    	var url = '/api/capitulos/'
+    	self.$http.get(url).then(response => {
+    		//SUCCESS CALLBACK
+    		self.tutorialesObtenidos = response.body.datos;
+    		$.each(self.tutorialesObtenidos, function(index, tutorial){
+    			if(tutorial.tipo.toLowerCase()=='tutorial'){
+    				self.tutoriales.push(tutorial);
+    			}
+    		});
+    		self.obtenerPreguntas();
+    	}, response => {
+    		//ERROR CALLBACK
+    		console.log('Hubo un error al obtener los tutoriales de la base de datos.');
+    		console.log(response);
+    	})
+    },
+    obtenerPreguntas: function(){
+    	var self = this;
+    	var url = '/api/preguntas/';
+    	self.$http.get(url).then(response => {
+    		//SUCCESS CALLBACK
+    		self.preguntas = response.body.datos;
+    		//Selecciono solo las que son de tutorial
+    		$.each(self.preguntas, function(index, pregunta){
+    			if(pregunta.tipoLeccion.toLowerCase()=='tutorial'){
+    				self.preguntasTutorial.push(pregunta);
+    			}
+    		});
+    		self.dividirPreguntasEnTutoriales();
+    	}, response => {
+    		//ERROR CALLBACK
+    		console.log('Hubo un error al obtener las preguntas de la base de datos');
+    	});
+    },
+    dividirPreguntasEnTutoriales: function(){
+    	var self = this;
+    	$.each(self.preguntasTutorial, function(index, pregunta){
+    		$.each(self.tutoriales, function(j, tutorial){
+    			if(pregunta.tutorial.toLowerCase()==tutorial.nombre.toLowerCase()){
+    				tutorial.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    	});
+    },
+    crearTutorial: function(){
+    	var self = this;
+    	var url = '/api/capitulos/'
+    	self.$http.post(url, self.tutorial).then(response => {
+    		self.tutoriales.push(self.tutorial);
+    		self.tutorial.nombre = '';
+    	}, response => {
+    		console.log('Hubo un error al crear el tutorial.')
+    		console.log(response);
+    	})
+    },
 		nuevaPregunta: function(){
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
 
@@ -33,18 +108,6 @@ var practica = new Vue({
 				console.log(response)
 			});
 			
-		},
-		nuevaPractica: function(event){
-			var nombrePractica = $('#nombrePractica').val();
-			var idPractica = nombrePractica.replace(/\s+/g, '');
-			var hrefPractica = '#' + idPractica;
-			var practica = {
-				nombre: nombrePractica,
-				id:  idPractica,
-				href: hrefPractica,
-				preguntas: []
-			}
-			this.practicas.push(practica)
 		},
 		crearModalEliminarPregunta: function(id){
 			var self = this;
@@ -74,71 +137,16 @@ var practica = new Vue({
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
 		},
-		getPreguntas: function(){
-			var self = this;
-			var flag = false;
-			this.$http.get('/api/preguntas').then(response => {
-				//success callback				
-				self.preguntas = response.body.datos;		//Se almacenarán temporalmente todas las preguntas de la base de datos
-				$.each(self.preguntas, function(index, pregunta){
-					pregunta['show'] = true;
-					if (pregunta.tipoLeccion.toLowerCase()=='tutorial') {
-						$.each(self.tutoriales, function(index, tutorial){
-							if (tutorial.nombre.toLowerCase()==pregunta.tutorial.toLowerCase()) {
-								tutorial.preguntas.push(pregunta);
-								flag = true;	//Cambia la bandera indicando que encontro el tutorial
-								return false;
-							}else{
-								flag=false;
-							}
-						});
-						if (!flag) {
-							self.crearTutorial(pregunta)
-						}
-					}
-
-				})
-			}, response => {
-				//error callback
-				console.log(response)
-			})
-		},
-		crearTutorial: function(pregunta){
-			var self = this;
-			var nombreTutorial = pregunta.tutorial;
-			var idTutorial = nombreTutorial.toLowerCase();
-			idTutorial = idTutorial.split(":")[0];
-			idTutorial - idTutorial.replace(/\s+/g, '');
-			var hrefTutorial = '#' + idTutorial;
-			var tutorial = {
-				nombre: nombreTutorial,
-				id:  idTutorial,
-				href: hrefTutorial,
-				preguntas: []
-			}
-			tutorial.preguntas.push(pregunta);
-			self.tutoriales.push(tutorial);
-		},
 		checkCreador: function(pregunta){
 			var self = this;
 			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
-		obtenerLogeado: function() {
-      var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-          	self.profesor = res.body.datos;
-          	self.getPreguntas();
-          }
-        });
-    }
 	}
 });
 
-$('body').on("click", '#btnPracticaNueva', function(){
-	$('#modalNuevaPractica').modal('open');
+$('body').on("click", '#btnTutorialNuevo', function(){
+	$('#modalNuevoTutorial').modal('open');
 })
 
 document.addEventListener("DOMContentLoaded", function(event) {

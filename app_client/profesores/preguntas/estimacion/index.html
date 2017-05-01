@@ -54,16 +54,17 @@
 			  <div id="modalNuevoCapitulo" class="modal">
 			    <div class="modal-content" id="modalNuevoCapituloContent">
 			    	<h4 class="center-align">Nuevo capítulo</h4>
+			    	<p class="center-align">Tipo: Estimación</p>
 			      <div class="row row-capitulo-nuevo">
 			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo">
+			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo" v-model="capitulo.nombre">
 			      		<label for="nombreCapitulo">Nombre del capítulo</label>
 			      	</div>
 			      </div>
 			    </div>
 			    <div class="modal-footer">
 			    	
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="nuevoCapitulo($event)">Crear</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" v-on:click="crearCapitulo()">Crear</a>
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>

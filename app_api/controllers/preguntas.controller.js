@@ -37,7 +37,7 @@ const crearPregunta = (req, res) => {
     descripcion: req.body.descripcion
   })
   console.log(pregunta)
-  pregunta.crearPregunta((err, doc) => {
+  pregunta.crearPregunta((err, pregunta) => {
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res);
   })
