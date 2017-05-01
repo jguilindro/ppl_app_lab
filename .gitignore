@@ -1,6 +1,5 @@
 node_modules/
 public/bower_components
 npm-debug.log
-.env
 app_api/ws/update/*.json
 scripts/tmp

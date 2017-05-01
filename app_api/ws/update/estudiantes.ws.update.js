@@ -51,6 +51,13 @@ function init() {
       estudiantesWS = _.sortBy(estudiantesWS, ['nombres']);
       estudiantesDB = _.sortBy(estudiantesDB, ['nombres']);
       var diferencias = jsondiffpatch.diff(estudiantesDB, estudiantesWS);
+      // console.log(diferencias);
+      // if (diferencias) {
+      //   console.log(estudiantesDB[131]);
+      //   // console.log(estudiantesDB[131]);
+      //   console.log(diferencias);
+      //   return
+      // }
       if (estudiantesDB.length == estudiantesWS.length && !diferencias) {
           // POSIBILIDAD 2
         logger.info('sync db y web service; sin nada que cambiar')
@@ -128,7 +135,17 @@ function init() {
           estudiantesWS = _.sortBy(estudiantesWS, ['nombres']);
         }
         logger.info('detectado POSIBILIDAD 1')
-        eliminarEstudiantesDB(estudiantes_salidos)
+        co(function* () {
+          var paralelos = yield obtenerTodosParalelos()
+          for (var i = 0; i < estudiantes_salidos.length; i++) {
+            let est = estudiantes_salidos[i]
+            var paralelo = encontrarParalelo(est.paralelo, est.codigomateria, est.anio, est.termino, paralelos)
+            var hecho = yield eliminarEstudianteDB(est.correo, paralelo._id)
+            if (!hecho) {
+              logger.error('error al eliminar')
+            }
+          }
+        })
         for (var i = 0; i < estudiantes_salidos.length; i++) {
           estudiantesDB = estudiantesDB.filter(est => {
             return !estudiantesIguales(estudiantes_salidos[i], est)
@@ -279,7 +296,7 @@ function obtenerTodosParalelos() {
 
 function encontrarParalelo(paralelo, codigomateria, anio, termino, paralelos) {
   return paralelos.find(para => {
-    if (termino == para.termino && paralelo == para.nombre && anio == para.anio && codigomateria && para.codigo) {
+    if (termino == para.termino && paralelo == para.nombre && anio == para.anio && codigomateria == para.codigo) {
       return para
     }
   })
@@ -322,6 +339,12 @@ function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
   for (var i = 0; i < (indexes.length - 1); i++) {
     let estudiante_camb = estudiantesDB[indexes[i]]
     estudiante_camb.paralelo_nuevo = diferencias[indexes[i]].paralelo[1]
+    // if (diferencias[indexes[i]].paralelo) {
+    //   estudiante_camb.paralelo_nuevo = diferencias[indexes[i]].paralelo[1]
+    // }
+    // if (diferencias[indexes[i]].codigomateria) {
+    //   estudiante_camb.codigomateria_nuevo = diferencias[indexes[i]].codigomateria[1]
+    // }
     estudiantes_cambiados.push(estudiante_camb)
   }
   co(function* () {
@@ -330,6 +353,12 @@ function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
       var est = estudiantes_cambiados[i]
       var estudiante = yield obtenerEstudiantePorCorreo(est.correo)
       var paralelo = encontrarParalelo(est.paralelo, est.codigomateria, est.anio, est.termino, paralelos)
+      // if (!est.paralelo_nuevo) {
+      //   est.paralelo_nuevo = est.paralelo
+      // }
+      // if (!est.codigomateria_nuevo) {
+      //   est.codigomateria_nuevo = est.codigomateria
+      // } est.codigomateria_nuevo
       var paralelo_nuevo = encontrarParalelo(est.paralelo_nuevo, est.codigomateria, est.anio, est.termino, paralelos)
       var logrado = yield cambiarEstudianteDeParalelo(paralelo._id, paralelo_nuevo._id, estudiante._id)
       if (!logrado) {

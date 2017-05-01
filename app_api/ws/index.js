@@ -1,20 +1,23 @@
-const mongoose = require('mongoose');
-const dbURL = require('../config/main');
-const URL_LOCAL = require('../config/main').local
-const URL_MLAB = require('../config/main').mlab
-mongoose.connect(URL_LOCAL)
-const db = mongoose.connection;
-
-db.on('error', function(err) {
-  console.log(`error ${err}`);
-})
-
-db.on('connected', function() {
-  console.log(`base de datos conectada`);
-})
+// const mongoose = require('mongoose');
+// const URL_LOCAL = require('../config/main').local
+// const URL_MLAB = require('../config/main').mlab
+// mongoose.connect(URL_LOCAL)
+// const db = mongoose.connection;
+//
+// db.on('error', function(err) {
+//   console.log(`error ${err}`);
+// })
+//
+// db.on('connected', function() {
+//   console.log(`base de datos conectada`);
+// })
 
 var co = require('co')
 var CronJob = require('cron').CronJob;
+var colors = require('colors');
+var logger        = require('tracer').colorConsole({
+  filters : [colors.underline, colors.yellow]
+});
 
 module.exports = {
   init: function() {
@@ -25,7 +28,6 @@ module.exports = {
       var p = yield paralelos()
       var e = yield estudiantes()
       var pro = yield profesores()
-      mongoose.connection.close()
     }).catch(fail => {
       console.log(fail);
     })
@@ -34,11 +36,20 @@ module.exports = {
 
   },
   update: function() {
-    // new CronJob('00 30 04 * * 1-7', function() {
-    //
-    // }, null, true, 'America/Guayaquil');
+    console.log(process.env.NODE_ENV);
+    if (process.env.NODE_ENV == 'production') {
+      new CronJob('00 30 04 * * 1-7', function() {
+        logger.info('actualizando db')
+        require('./update/estudiantes.ws.update')
+      }, null, true, 'America/Guayaquil');
+    }
+    if (process.env.NODE_ENV == 'development') {
+      new CronJob('00 30 * * * 1-7', function() {
+        logger.info('actualizando db')
+        require('./update/estudiantes.ws.update')
+      }, null, true, 'America/Guayaquil');
+    }
     // require(./update/paralelos.ws.update)
     // require('./update/profesores.ws.update')
-    require('./update/estudiantes.ws.update')
   }
 }

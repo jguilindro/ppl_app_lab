@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm install && npm run gulp",
+    "production": "NODE_ENV=production node ./bin/www",
     "postinstall": "bower install",
     "gulp": "gulp"
   },
@@ -24,6 +25,7 @@
     "csv": "^1.1.1",
     "debug": "~2.6.0",
     "deep-diff": "^0.3.6",
+    "dotenv": "^4.0.0",
     "express": "~4.14.1",
     "express-messages": "^1.0.1",
     "express-session": "^1.15.1",

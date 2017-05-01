@@ -1,7 +1,7 @@
 const express = require('express');
 path          = require('path');
 favicon       = require('serve-favicon');
-logger        = require('morgan');
+morgan        = require('morgan');
 cookieParser  = require('cookie-parser');
 cors          = require('cors');
 bodyParser    = require('body-parser'),
@@ -10,7 +10,9 @@ session       = require('express-session'),
 MongoStore    = require('connect-mongo')(session);
 
 // base de datos mongoose
+require('dotenv').config()
 require('./app_api/models/db')
+require('./app_api/ws').update()
 //require('./app_api/utils/telegram_bot')
 
 var app = express();
@@ -20,7 +22,7 @@ app.use(function(req, res, next){
   res.io = io;
   next();
 });
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
