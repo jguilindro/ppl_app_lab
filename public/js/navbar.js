@@ -1,11 +1,13 @@
 function salir () {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location.href = `/` 
-    //  document.getElementById("demo").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("POST", "/api/session/logout", true);
-  xhttp.send();
+  window.location.href = `/api/session/logout`
+  // var xhttp = new XMLHttpRequest();
+  // xhttp.onreadystatechange = function() {
+  //   if (this.readyState == 4 ) { //&& this.status == 302
+  //     console.log('terminado');
+  //
+  //   //  document.getElementById("demo").innerHTML = this.responseText;
+  //   }
+  // };
+  // xhttp.open("GET", "/api/session/logout", true);
+  // xhttp.send();
 }

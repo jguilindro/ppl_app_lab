@@ -25,9 +25,9 @@ module.exports = {
     var estudiantes = require('./estudiantes.ws.init')
     var profesores = require('./profesores.ws.init')
     co(function* () {
-      var p = yield paralelos
-      var e = yield estudiantes
-      var pro = yield profesores
+      var p = yield paralelos()
+      var e = yield estudiantes()
+      var pro = yield profesores()
     }).catch(fail => {
       console.log(fail);
     })
@@ -41,7 +41,7 @@ module.exports = {
         var estudiantes = require('./update/estudiantes.ws.update')
         co(function* () {
           var e = yield estudiantes
-          logger.info('actualizando db')
+          logger.info('actualizada db')
         })
       }, null, true, 'America/Guayaquil');
     }
@@ -50,7 +50,7 @@ module.exports = {
         var estudiantes = require('./update/estudiantes.ws.update')
         co(function* () {
           var e = yield estudiantes
-          logger.info('actualizando db')
+          logger.info('actualizada db')
         })
       }, null, true, 'America/Guayaquil');
     }

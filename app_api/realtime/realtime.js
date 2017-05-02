@@ -8,7 +8,7 @@ co           = require('co');
 
 require("moment-duration-format");
 
-const URL         = require('../utils/change_database').session(),
+const URL         = require('../utils/change_database').local(),
 EstudianteModel   = require('../models/estudiante.model'),
 ProfesorModel     = require('../models/profesor.model'),
 ParaleloModel     = require('../models/paralelo.model'),

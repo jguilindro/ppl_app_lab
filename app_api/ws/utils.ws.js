@@ -43,7 +43,7 @@ var argumentosProfesores = {
  */
 
  // objeto base creado a partir de leer el ws
-
+var profesores_json = require('./profesores.json')
 const estudiantesWS = function(callback) {
   soap.createClient(url, function(err, client) {
     const wsConsultaEstudiantes = function(_argumentosEstudiantes) {
@@ -118,7 +118,8 @@ const profesoresWS = function(callback) {
           let paralelo = $('PARALELO').text().trim()
           let codigomateria = $('CODIGOMATERIA').text().trim()
           let nombremateria = $('NOMBRE').text().trim()
-          let correo = nombres.split(' ')[0] + '@espol.edu.ec'
+          let correo = nombres ? obtenerProfesorJsonPorNombres(nombres).correo : ''
+          // let correo = ''
           let anio = ANIO
           let termino = TERMINO.split('')[0]
           profesor = { nombres, apellidos, paralelo, codigomateria, nombremateria, anio, termino, correo}
@@ -136,39 +137,35 @@ const profesoresWS = function(callback) {
       var profesores_peers = []
 
       /* profesores titular */
-      argumentosProfesores.paralelo = 0
-      argumentosProfesores.tipo = 0
-      var curso = 0
-      while (true) {
-        argumentosProfesores.codigomateria = PARALELOS[curso]
-        ++argumentosProfesores.paralelo;
-        var profe = yield wsConsultaProfesores(argumentosProfesores)
-        if (!profe) {
-          if ( (PARALELOS.length - 1) != curso) {
-            ++curso
-            argumentosProfesores.paralelo = 0
-          } else {
+      for (var i = 0; i < PARALELOS.length; i++) {
+        argumentosProfesores.tipo = 0
+        argumentosProfesores.codigomateria = PARALELOS[i]
+        argumentosProfesores.paralelo = 1
+        while (true) {
+          var profe = yield wsConsultaProfesores(argumentosProfesores)
+          argumentosProfesores.paralelo = argumentosProfesores.paralelo + 1;
+          if (!profe) {
             break
           }
-        }
-        if (profe) {
-          profe.tipo = 'titular'
-          profesores_titular.push(profe)
+          if (profe) {
+            profe.tipo = 'titular'
+            profesores_titular.push(profe)
+          }
         }
       }
 
       /*peers*/
       argumentosProfesores.tipo = 1
-      argumentosProfesores.paralelo = 0
+      argumentosProfesores.paralelo = 1
       curso = 0
       while (true) {
         argumentosProfesores.codigomateria = PARALELOS[curso]
-        ++argumentosProfesores.paralelo;
         var profe = yield wsConsultaProfesores(argumentosProfesores)
+        ++argumentosProfesores.paralelo;
         if (!profe) {
           if ( (PARALELOS.length - 1) != curso) {
             ++curso
-            argumentosProfesores.paralelo = 0
+            argumentosProfesores.paralelo = 1
           } else {
             break
           }
@@ -230,14 +227,6 @@ const estudiantesDB = function(callback) {
   })
 }
 
-const profesoresDB = function() {
-
-}
-
-const paralelosDB = function() {
-
-}
-
 function obtenerEstudiante(id_estudiante) {
   return new Promise((resolve, reject) => {
     EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante,(err, estudiantes) => {
@@ -274,11 +263,16 @@ function obtenerParaleloDeEstudiante(id_estudiante) {
   })
 }
 
+function obtenerProfesorJsonPorNombres(nombres) {
+  return profesores_json.find(profe => {
+    if (profe.nombres == nombres)
+      return profe
+  })
+}
 
 module.exports = {
   estudiantesWS,
   profesoresWS,
   paralelosWS,
   estudiantesDB,
-  profesoresDB
 }

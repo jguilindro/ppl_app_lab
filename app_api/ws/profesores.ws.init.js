@@ -75,7 +75,7 @@ function inicial() {
         }
         logger.info('terminado anadir peers a curso')
         resolve(true)
-      })
+      }).catch(fail => console.log(fail))
     })
   })
 }
@@ -153,4 +153,4 @@ function obtenerProfesorPorNombres(nombres) {
 }
 
 
-module.exports = inicial()
+module.exports = inicial

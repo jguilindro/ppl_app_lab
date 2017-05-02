@@ -27,7 +27,7 @@ function inicial() {
         }
         logger.info('terminado de crear todos los estudiantes')
         resolve(true)
-      })
+      }).catch(fail => console.log(fail))
     })
 
   })
@@ -55,6 +55,6 @@ function crearEstudianteYAnadirloAParalelo(id_paralelo, estudiante_nuevo) {
 }
 
 
-module.exports = inicial()
+module.exports = inicial
 // VALIDACIONES
 // Si el estudiante ya existe, es decir, si ya tomo la materia y esta repitiendo

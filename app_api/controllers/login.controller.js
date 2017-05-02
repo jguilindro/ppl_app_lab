@@ -6,7 +6,7 @@ function login(req, res) {
   let estudiante = new Promise(( resolve, reject ) => {
     EstudianteModel.obtenerEstudiantePorCorreo(req.body.correo, ( err, estudiante ) => {
       if ( err ) return reject('error');
-      if ( !estudiante ) return resolve(false); 
+      if ( !estudiante ) return resolve(false);
       req.session.privilegios = 'estudiante';
       req.session.correo = req.body.correo;
       req.session._id = estudiante._id;
@@ -52,6 +52,7 @@ function logout( req, res ) {
 
 function obtenerUsuarioLoggeado(req, res) {
   if ( req.session.privilegios == 'profesor' ) {
+    console.log(req.session.correo);
     ProfesorModel.obtenerProfesorPorCorreo(req.session.correo, (err, profesor) => {
       if ( err ) return res.json({errorMensaje: 'error'});
       if ( !profesor ) return res.json({errorMensaje: 'profesor no encontrado'});
