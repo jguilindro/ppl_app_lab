@@ -8,14 +8,22 @@ function session (req, res, next) {
   }
   co(function* () {
     let profesor = yield obtenerProfesorPorCorreo(req.session.cas_user)
+    let estudiante = yield obtenerEstudiantePorCorreo(req.session.cas_user)
     if (profesor) {
       req.session.privilegios = 'profesor';
       req.session.correo = profesor.correo;
       req.session._id = profesor._id;
       req.session.login = true;
       next()
-    } else {
-      res.redirect('/')
+    }
+    if (estudiante) {
+      req.session.privilegios = 'estudiante';
+      req.session.correo = estudiante.correo;
+      req.session._id = estudiante._id;
+      req.session.login = true;
+      next()
+    } else if (!estudiante && !profesor) {
+      res.redirect('/otros')
     }
   })
 }
@@ -61,7 +69,37 @@ function obtenerEstudiantePorCorreo(cas_user) {
   })
 }
 
+function middlewareControlEstudiante(req, res, next) {
+  if (process.env.NODE_ENV == 'development') {
+    next()
+    return
+  }
+  if (req.session.privilegios == 'estudiante') {
+    next()
+    return
+  }
+  if (req.session.privilegios == 'profesor') {
+    res.redirect('/profesores')
+  }
+}
+
+function middlewareControlProfesor(req, res, next) {
+  if (process.env.NODE_ENV == 'development') {
+    next()
+    return
+  }
+  if (req.session.privilegios == 'estudiante') {
+    res.redirect('/estudiantes')
+  }
+  if (req.session.privilegios == 'profesor') {
+    next()
+    return
+  }
+}
+
 module.exports = {
   session,
   sessionEstudiante,
+  middlewareControlProfesor,
+  middlewareControlEstudiante,
 }
