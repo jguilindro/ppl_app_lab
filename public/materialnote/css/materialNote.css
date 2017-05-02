@@ -8288,7 +8288,7 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
   z-index: 1057 !important;
   backface-visibility: hidden; }
   .editorDialogs .modal .input-field input:not([readonly]), .editorDialogs .modal .input-field input.datepicker, .note-editor .modal .input-field input:not([readonly]), .note-editor .modal .input-field input.datepicker {
-    border-color: #fafafa !important; }
+    border-color: #F5b400 !important; }
   .editorDialogs .modal .input-field input:focus:not([readonly]), .editorDialogs .modal .input-field input.datepicker:focus, .editorDialogs .modal textarea.materialize-textarea:focus:not([readonly]), .note-editor .modal .input-field input:focus:not([readonly]), .note-editor .modal .input-field input.datepicker:focus, .note-editor .modal textarea.materialize-textarea:focus:not([readonly]) {
     box-shadow: 0 1px 0 0 #9c27b0 !important;
     border-color: #9c27b0 !important; }

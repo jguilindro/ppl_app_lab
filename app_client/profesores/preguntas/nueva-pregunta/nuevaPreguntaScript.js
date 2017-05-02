@@ -4,15 +4,17 @@ var app = new Vue({
     this.obtenerCapitulos();
     //MaterialNote
     $('.myEditor').materialnote({
-      height: "500px",
-      onImageUpload: function(files, editor, $editable) {
+        height: "50vh",
+        onImageUpload: function(files, editor, $editable) {
         var clientId = "300fdfe500b1718";
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://api.imgur.com/3/upload', true);
         xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+        app.loading(true);
          xhr.onreadystatechange = function () {
             if (xhr.status === 200 && xhr.readyState === 4) {
               console.log('subido');
+              app.loading(false);
               var url = JSON.parse(xhr.responseText)
               console.log(url.data.link);
               $('.myEditor').materialnote('editor.insertImage', url.data.link);
@@ -200,6 +202,18 @@ var app = new Vue({
         console.log('Error al crear el tutorial');
         console.log(response);
       });
+    },
+    loading: function(estado){
+      //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
+      //Requiere el estado, si está cargando algo o no.
+      if (estado){
+        $(".note-editable").append('<div id="onLoad" class="preloader-wrapper big active"></div>');
+        $("#onLoad").append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
+        $("#load-2").append('<div id="load-3" class="circle-clipper left"></div>');
+        $("#load-3").append('<div id="load-4" class="circle"></div>');
+      }else{
+        $("#onLoad").remove();
+      }
     },
     crearLaboratorio: function(){
       var self = this;

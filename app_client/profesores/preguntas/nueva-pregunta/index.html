@@ -7,15 +7,15 @@
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   	<link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
-		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
-		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+	<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
+	<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
 		<header id="#navbar"></header>
 		<main>
 			<div class="container" id="preguntaNueva">
-				<h1 class="center-align">Nueva pregunta</h1>
-				<p class="center-align">Creada por: {{profesor.correo}}</p>
+				<h1 class="center-align"><b>Nueva pregunta</b></h1>
+				<p class="center-align" id="created"><b>Creada por:</b> {{profesor.correo}}</p>
 				<div class="row" id="row-crear-pregunta">
 					<form class="col s12">
 						<!--Titulo-->
@@ -37,7 +37,7 @@
 						<div class="row" id="row-tipos">
 							<div class="input-field col s6">
 								<select id="tipo-pregunta">
-									<option value="" disabled selected></option>
+									<option value="" disabled selected>seleccione...</option>
 									<option value="opcion">Opcion multiple</option>
 									<option value="v_f">V/F</option>
 									<option value="justificacion">Justificacion</option>
@@ -46,7 +46,7 @@
 							</div>
 							<div class="input-field col s6">
 								<select id="tipo-leccion">
-									<option value="" disabled selected></option>
+									<option value="" disabled selected>seleccione...</option>
 									<option value='estimacion'>Estimación</option>
 						      <option value='tutorial'>Tutorial</option>
 						      <option value='laboratorio'>Laboratorio</option>
