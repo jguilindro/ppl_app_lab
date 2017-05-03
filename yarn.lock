@@ -1541,7 +1541,16 @@ gulp-nodemon@^2.2.1:
     gulp "^3.9.1"
     nodemon "^1.10.2"
 
-gulp-util@^3.0.0:
+gulp-open@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-open/-/gulp-open-2.0.0.tgz#a16f67e95cea8b2061b63a3b8c389bc559b8e1ce"
+  dependencies:
+    colors "^1.1.2"
+    gulp-util "^3.0.2"
+    open "0.0.5"
+    through2 "^2.0.1"
+
+gulp-util@^3.0.0, gulp-util@^3.0.2:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -2762,6 +2771,10 @@ once@^1.3.1, once@~1.3.0, once@~1.3.3:
   dependencies:
     wrappy "1"
 
+open@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/open/-/open-0.0.5.tgz#42c3e18ec95466b6bf0dc42f3a2945c3f0cad8fc"
+
 openurl@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/openurl/-/openurl-1.1.0.tgz#e2f2189d999c04823201f083f0f1a7cd8903187a"
@@ -3719,7 +3732,7 @@ through2@^0.6.1:
     readable-stream ">=1.0.33-1 <1.1.0-0"
     xtend ">=4.0.0 <4.1.0-0"
 
-through2@^2.0.0:
+through2@^2.0.0, through2@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
   dependencies:
