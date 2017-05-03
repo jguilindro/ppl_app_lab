@@ -28,6 +28,27 @@ body{
 .modal-content{
 	background-color: #001a43;
 }
+.modal-content h4{
+	color: white;
+}
+.modal-content p{
+	color: grey;
+}
+#nombreCapitulo, #nombreTutorial, #nombreLaboratorio{
+	border-bottom-color: #F5b400 !important;
+	color: white; 
+}
+.modal .modal-footer{
+	background-color: #001a43;
+}
 .editorDialogs .modal .modal-footer, .note-editor .modal .modal-footer{
 	background-color: #001a43;
+}
+#crear{
+	background-color: #B71C1C;
+	color: white;
+}
+#cancelar{
+	background-color: #4a148c;
+	color: white;
 }
