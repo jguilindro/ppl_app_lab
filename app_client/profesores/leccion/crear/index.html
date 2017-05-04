@@ -36,50 +36,27 @@
                   <label for="nombre">nombre</label>
                   <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
                 </div>
-                <div class="input-field col s6" id="div-select">
-                  
+                <div class="input-field col s6" id="div-select">                  
                   <label class="active">Paralelo:</label>
                 </div>
               </div>
-             
-              <!--
-				<div class="form-group input-field offset-2 col s6">
-	                <select v-model="leccion_nueva.tipo">
-	                  <option value="leccion">estimacion</option>
-	                  <option value="tutorial">tutorial</option>
-	                  <option value="experimento">experimento</option>
-		            </select>
-	            </div>
-              -->
-                <!--
-					<div class="form-group input-field col s6">
-	                	<select v-model="leccion_nueva.paralelo" name="paralelo" class="col s6">
-						  <option>{{paralelos}}</option>
-						</select>
-                	</div>
-                -->
-              <div>
-                
-              </div>
+
               <div class="form-group col s6">
                 <label for="fechaInicio">fecha inicio</label>
                 <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
               </div>
+
               <div class="form-group col s6">
               	<form action="#">
                   	<p>
-                  		<input type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion" />
-    	      			    <label for="Estimacion">Estimación</label>
+                  		<input type="radio" id="Estimacion" v-model="leccion_nueva.tipo" value="estimacion/Laboratorio" />
+	    	      			<label for="Estimacion">Estimación/Laboratorio</label>
                   	</p>
                   	<p>
                   		<input type="radio" id="Tutorial" v-model="leccion_nueva.tipo" value="tutorial" />
-    	      			    <label for="Tutorial">Tutorial</label>
+    	      			<label for="Tutorial">Tutorial</label>
                   	</p>
-                  	<p>
-                      <input type="radio  " id="Experimento" v-model="leccion_nueva.tipo" value="experimento" />
-    	      			    <label for="Experimento">Experimento</label>
-                  	</p>
-              </form>
+              	</form>
               </div>
             </form>
           </div>

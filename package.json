@@ -4,10 +4,6 @@
   "private": true,
   "scripts": {
     "start": "npm install && npm run gulp",
-    "pro": "env $(cat .env.production) node ./bin/www",
-    "pro-t": "env $(cat .env.production.test) node ./bin/www",
-    "dev": "env $(cat .env.development) nodemon ./bin/www",
-    "test": "env $(cat .env.testing) nodemon ./bin/www",
     "postinstall": "bower install",
     "gulp": "gulp"
   },
@@ -61,6 +57,7 @@
     "browser-sync": "^2.18.8",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1",
+    "gulp-open": "^2.0.0",
     "jsonfile": "^3.0.0",
     "nodemon": "^1.11.0",
     "prettyjson": "^1.2.1"
