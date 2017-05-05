@@ -115,6 +115,21 @@ const obtenerEstudiantesDeLeccion = (req, res) => {
   })
 }
 
+const obtenerRegistroPorLeccion = (req, res) => {
+  GrupoLeccionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, doc) => {
+    if(err) return respuesta.serverError(res);
+    return respuesta.ok(res, doc);
+  })
+}
+
+const calificarLeccionPorGrupo = (req, res) => {
+  GrupoLeccionModel.calificarLeccionPorGrupo(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, (err, doc) => {
+    if(err) return respuesta.serverError(res);
+    return respuesta.okActualizado(res);
+  })
+}
+
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -126,4 +141,6 @@ module.exports = {
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
   obtenerEstudiantesDeLeccion,
+  obtenerRegistroPorLeccion,
+  calificarLeccionPorGrupo,
 }

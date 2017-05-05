@@ -46,7 +46,13 @@ const GrupoLeccionSchema = mongoose.Schema({
       type: Boolean,
       'default': false
     }
-  }]
+  }],
+  calificacion: {
+    type: Number
+  },
+  calificada: {
+    type: Boolean
+  }
 },{versionKey: false, timestamps: true, collection: 'grupoLeccion'})
 
 GrupoLeccionSchema.methods.crearGrupoLeccion = function(callback) {
@@ -67,5 +73,14 @@ GrupoLeccionSchema.statics.participanteExiste = function(id_grupo, id_leccion, i
 GrupoLeccionSchema.statics.obtenerGrupoLeccion = function(id_grupo, id_leccion, callback) {
   this.findOne({$and: [{grupo: id_grupo}, {leccion: id_leccion}]}, callback)
 }
+
+GrupoLeccionSchema.statics.calificarLeccionPorGrupo = function(id_leccion, id_grupo, calificacion_nueva, callback){
+  this.update({grupo: id_grupo, leccion: id_leccion}, {$set: {calificacion: calificacion_nueva, calificada: true }}, callback);
+}
+
+GrupoLeccionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, callback){
+  tihs.find({leccion: id_leccion}, callback);
+}
+
 
 module.exports = mongoose.model('GrupoLeccion', GrupoLeccionSchema)
