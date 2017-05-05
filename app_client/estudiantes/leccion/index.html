@@ -58,6 +58,22 @@
                     <form class="col s12">
                       <div class="row" id="row-area-respuesta">
                         <div class="col s12 input-field">
+                          <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
+                          <label for="textarea-respuesta">Escriba aquí su respuesta</label>
+                        </div>
+                      </div>
+                      <div class="row" id="botones">
+                        <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+            <!--
+                <section id="area-respuesta" class="col s6">
+                  <div class="row">
+                    <form class="col s12">
+                      <div class="row" id="row-area-respuesta">
+                        <div class="col s12 input-field">
                           <div v-bind:id="'editor-' + pregunta._id" class="myEditor">      
                           </div>
                         </div>
@@ -68,6 +84,7 @@
                     </form>
                   </div>
                 </section>
+            -->
               </div>
             </div>
             <div id="terminar" class="col s12">
