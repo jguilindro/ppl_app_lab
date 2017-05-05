@@ -23,7 +23,8 @@ var App = new Vue({
 	estudiante: {
 	nombres: '',
 	apellidos: '',
-	correo: ''
+	correo: '',
+	grupo: ''
 	},
 	feedback: [],
 	calificaciones: []
@@ -67,9 +68,12 @@ var App = new Vue({
 	var estudianteId = window.location.href.toString().split('/')[7];
 	var obtenerEstudianteURL = '/api/estudiantes/' + estudianteId;
 	this.$http.get(obtenerEstudianteURL).then(res => {
+		console.log("Estudiante get: ");
+		console.log(res.body.datos);
 		App.estudiante.nombres=res.body.datos.nombres;
 		App.estudiante.apellidos=res.body.datos.apellidos;
 		App.estudiante.correo=res.body.datos.correo;
+		App.estudiante.grupo=res.body.datos.grupo;
 		console.log(App.estudiante);
 	});
 	}
@@ -83,14 +87,27 @@ function regresar(){
 
 function enviarFeedback(){
 
+	var leccionId = window.location.href.toString().split('/')[6];
+	var self = this;
 	$("input").each(function(index, calificacion){
 		App.calificaciones.push($(calificacion).val());
+		console.log(App.calificaciones);
 	});
 	$("textarea").each(function(index, feedback){
-		console.log(feedback);
+		
 		App.feedback.push($(feedback).val());
+		console.log(App.feedback);
 	});
-	window.location.href = '/profesores/leccion/'
+
+	$.each(App.leccion.preguntas, function(index, pregunta){
+		var calificarURL = '/api/respuestas/calificar/leccion/'+ leccionId+ '/pregunta/'+pregunta._id+ '/grupo/'+App.estudiante.grupo;
+	    App.$http.put(calificarURL, App.calificaciones[index]).then(res => {
+	    	console.log("Calificacion lista "+ index);
+		});
+
+
+	});
+	//window.location.href = '/profesores/leccion/'
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
