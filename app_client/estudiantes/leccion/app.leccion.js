@@ -1,5 +1,12 @@
 /*
   Flujos:
+    Inicial:
+      1. obtenerLogeado()
+      2. obtenerGrupoDeEstudiante() | obtenerParaleloDeEstudiante()
+      3. obtenerLeccion()
+      4. obtenerPreguntas() | crearPregunta(pregunta)
+
+
     Responder:
       1. El estudiante escribe su respuesta en el wysiwyg.
       2. Selecciona el botón de enviar respuesta.
@@ -19,7 +26,7 @@ var App = new Vue({
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
     $('.modal').modal();{
-    $('.myEditor').materialnote({
+    /*$('.myEditor').materialnote({
         height: "50vh",
         onImageUpload: function(files, editor, $editable) {
         var clientId = "300fdfe500b1718";
@@ -40,10 +47,11 @@ var App = new Vue({
       }
     });
     $(".note-editor").find("button").attr("type", "button");
-
+    */
     }
   },
   methods: {
+    //Funciones iniciales
     obtenerLogeado: function() {
       var self = this;
       this.$http.get('/api/session/usuario_conectado').
@@ -112,27 +120,20 @@ var App = new Vue({
       });
     },
     crearPregunta: function(res){
-      //FALTA PROBAR ESTO, SON LAS 2 DE LA MAÑANA, LO HARÉ CUANDO ESTÉ MÁS CONSCIENTE DE LO QUE HAGO AHORA
-      //Obviamente hubo un error y se descubrió durante la presentación como es costumbre...
-      //console.log(res)
       var self = this;
       var pregunta = res.body.datos;
       pregunta.respuesta = ''
-      //console.log(pregunta)
       //Busca si la pregunta ya fue respondida, busca en la base de datos si existe una respuesta del estudiante a la pregunta escogida
       var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
       self.$http.get(url).then(response => {
         //SUCCESS CALLBACK
-        //Si la respuesta existe
-        if (response.body.datos!=null) {
+        if (response.body.datos!=null) {          //Si la respuesta existe
           pregunta.respuesta = response.body.datos.respuesta;
           pregunta.respondida = true;
-        }else{ //Si la respuesta no existe
+        }else{                                    //Si la respuesta no existe
           pregunta.respuesta = '';
           pregunta.respondida = false;
         }
-        console.log(response)
-
       }, response => {
         //ERROR CALLBACK
         pregunta.respuesta = '';
@@ -140,6 +141,7 @@ var App = new Vue({
       });
       return pregunta;
     },
+    //Eventos
     responder: function(pregunta, event){
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
@@ -168,8 +170,8 @@ var App = new Vue({
         console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
         pregunta.respondida = true;
         self.bloquearBtnRespuesta(event);
-        //self.bloquearTextAreaRespondida(pregunta);
-        self.bloquearEditor(pregunta);
+        self.bloquearTextAreaRespondida(pregunta);
+        //self.bloquearEditor(pregunta);
         if(self.verificarTodasRespondidas()){
           $('#modalRevisarRespuestas').modal('open');
         }
@@ -181,8 +183,8 @@ var App = new Vue({
     },
     crearRespuesta: function(pregunta){
       var self = this;
-      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      var respuestaEditor = $(idEditor).code(); //Obtengo la respuesta escrita
+      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      //var respuestaEditor = $(idEditor).code(); //Obtengo la respuesta escrita
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -190,7 +192,7 @@ var App = new Vue({
         paralelo: self.estudiante.paralelo,
         grupo: self.estudiante.grupo,
         contestado: true,
-        respuesta: respuestaEditor,
+        respuesta: pregunta.respuesta,
         feedback: '',
         calificacion: 0
       }
