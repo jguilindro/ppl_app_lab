@@ -1,17 +1,28 @@
 var App = new Vue({
   mounted: function(){
+    //Materialize initializers
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
-    this.getPreguntas();
-    this.getParalelos();
     $('select').material_select();
     $('.modal').modal();
+    //Flujo
+    //this.getPreguntas();
+    this.getParalelos();
+    this.obtenerCapitulos();
   },
   el: '#app',
   data: {
+    capitulosObtenidos: [],
+    capitulos: [],
+    tutoriales: [],
+    laboratorios: [],
+    preguntasEstimacion: [],
+    preguntasTutorial: [],
+    preguntasLaboratorio: [],
+    capitulosAMostrar: [],
     leccion_nueva: {
       nombre: '',
       tiempoEstimado: '',
@@ -24,8 +35,6 @@ var App = new Vue({
     },
     paralelos: [],
     preguntas: [],
-    capitulos: [],
-    tutoriales: [],
     pregunta_tutorial: [],
     preguntas_escogidas: {
       preguntas: [],
@@ -34,7 +43,8 @@ var App = new Vue({
     paraleloEscogido: {
       nombre: '',
       id: ''
-    }
+    },
+    tipoEscogido: ''
   },
   methods: {
     prueba: function(){
@@ -43,7 +53,8 @@ var App = new Vue({
     crearLeccion() {
       var crearLeccionURL = '/api/lecciones/'
       var self = this;
-      self.leccion_nueva.paralelo = self.paraleloEscogido.id
+      self.leccion_nueva.paralelo = self.paraleloEscogido.id;
+      self.leccion_nueva.tipo = self.tipoEscogido;
       this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
         //success callback
         $('#myModal').modal('open');
@@ -53,6 +64,86 @@ var App = new Vue({
         console.log(response)
       });
     },
+    obtenerCapitulos: function(){
+      var self = this;
+      var url = '/api/capitulos/'
+      self.$http.get(url).then(response => {
+        //SUCCESS CALLBACK
+        self.capitulosObtenidos = response.body.datos;
+        //Separo por estimacion|tutorial|laboratorio
+        $.each(self.capitulosObtenidos, function(index, capitulo){
+          if(capitulo.tipo.toLowerCase()=='estimacion'){
+            self.capitulos.push(capitulo);
+          }else if(capitulo.tipo.toLowerCase()=='tutorial'){
+            self.tutoriales.push(capitulo);
+          }else if(capitulo.tipo.toLowerCase()=='laboratorio'){
+            self.laboratorios.push(capitulo);
+          }
+        });
+        self.obtenerPreguntas();
+      }, response => {
+        //ERROR CALLBACK
+        console.log('Hubo un error al obtener los capítulos de la base de datos.');
+        console.log(response);
+      })
+    },
+    obtenerPreguntas: function(){
+      var self = this;
+      var url = '/api/preguntas/';
+      self.$http.get(url).then(response => {
+        //SUCCESS CALLBACK
+        self.preguntas = response.body.datos;
+        //Divido las preguntas por tipo
+        $.each(self.preguntas, function(index, pregunta){
+          if(pregunta.tipoLeccion.toLowerCase()=='estimacion'){
+            self.preguntasEstimacion.push(pregunta);
+          }else if(pregunta.tipoLeccion.toLowerCase()=='tutorial'){
+            self.preguntasTutorial.push(pregunta);
+          }else if(pregunta.tipoLeccion.toLowerCase()=='laboratorio'){
+            self.preguntasLaboratorio.push(pregunta);
+          }
+        });
+        self.dividirPreguntasEnCapitulos();
+        self.dividirPreguntasEnLaboratorios();
+        self.dividirPreguntasEnTutoriales();
+      }, response => {
+        //ERROR CALLBACK
+        console.log('Hubo un error al obtener las preguntas de la base de datos');
+      });
+    },
+    dividirPreguntasEnCapitulos: function(){
+      var self = this;
+      $.each(self.preguntasEstimacion, function(index, pregunta){
+        $.each(self.capitulos, function(j, capitulo){
+          if(pregunta.capitulo.toLowerCase()==capitulo.nombre.toLowerCase()){
+            capitulo.preguntas.push(pregunta);
+            return false;
+          }
+        });
+      });
+    },
+    dividirPreguntasEnLaboratorios: function(){
+      var self = this;
+      $.each(self.preguntasLaboratorio, function(index, pregunta){
+        $.each(self.laboratorios, function(j, laboratorio){
+          if(pregunta.laboratorio.toLowerCase()==laboratorio.nombre.toLowerCase()){
+            laboratorio.preguntas.push(pregunta);
+            return false;
+          }
+        });
+      });
+    },
+    dividirPreguntasEnTutoriales: function(){
+      var self = this;
+      $.each(self.preguntasTutorial, function(index, pregunta){
+        $.each(self.tutoriales, function(j, tutorial){
+          if(pregunta.tutorial.toLowerCase()==tutorial.nombre.toLowerCase()){
+            tutorial.preguntas.push(pregunta);
+            return false;
+          }
+        });
+      });
+    },/*
     getPreguntas: function(){
       var self = this;
       var encontroCapitulo = false;
@@ -92,13 +183,13 @@ var App = new Vue({
               self.crearCapitulo(pregunta)
             }
           } 
-          */
+          
         })
       }, response => {
         //error callback
         console.log(response)
       })
-    },
+    },*/
     crearCapitulo: function(pregunta){
       var self = this;
       var nombreCapitulo = pregunta.capitulo;
@@ -246,4 +337,16 @@ $('#select-paralelos').change(function(){
   //console.log(pregunta.$data.preguntaEditar.tipoPregunta)
   //console.log($('#select-editar-tipo-pregunta option:selected').text())
   //console.log(pregunta.$data.preguntaEditar)
+});
+
+$('#select-tipo-leccion').change(function(){
+  App.$data.tipoEscogido = $('#select-tipo-leccion option:selected').val();
+  App.$data.leccion_nueva.tipo = App.$data.tipoEscogido;
+  if($('#select-tipo-leccion option:selected').val()=='estimacion|laboratorio'){
+    App.$data.capitulosAMostrar = [];
+    App.$data.capitulosAMostrar = App.$data.capitulos.concat(App.$data.laboratorios);
+  }else if($('#select-tipo-leccion option:selected').val()=='tutorial'){
+    App.$data.capitulosAMostrar = [];
+    App.$data.capitulosAMostrar = App.$data.tutoriales;
+  }
 });

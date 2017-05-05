@@ -28,8 +28,8 @@ const LeccionSchema = mongoose.Schema({
   },
   tipo: {
     type: String,
-    enum: ['estimacion', 'tutorial', 'experimento'],
-    'default': 'estimacion',
+    enum: ['estimacion|laboratorio', 'tutorial'],
+    'default': 'estimacion|laboratorio',
     unique: false
   },
   fechaInicio: {
