@@ -11,7 +11,7 @@ CASAuthentication = require('cas-authentication');
 
 var URL_CAS_LOCAL = 'http://localhost:3000'
 var URL_CAS_PRODUCTION_TEST = 'http://localhost:3000'
-var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com/'
+var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
 var SERVICE_URL = ''
 if (process.env.NODE_ENV == 'development') {
   SERVICE_URL = URL_CAS_LOCAL
@@ -166,9 +166,6 @@ app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudiant
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
     ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-      console.log(estudiante.codigoIngresado);
-      console.log(paralelo.dandoLeccion);
-      console.log(estudiante.esperandoLeccion);
       if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
         next()
       } else {

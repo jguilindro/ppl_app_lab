@@ -106,5 +106,10 @@
     "apellidos" : "CUENCA",
     "correo": "mgcuenca@espol.edu.ec",
     "tipo": "peer"
+  },
+  {
+    "nombres": "JHOANATAN",
+    "apellidos": "MENDIETA",
+    "correo": "jonedmen@espol.edu.ec"
   }
 ]

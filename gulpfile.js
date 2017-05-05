@@ -24,7 +24,7 @@ gulp.task('realtime',['set-dev-node-env','nodemon','uri'], function () {
 gulp.task('uri', function(){
   var options = {
     uri: 'http://localhost:3000',
-    // app: 'chrome'
+    app: 'firefox'
   };
   gulp.src(__filename)
   .pipe(open(options));
