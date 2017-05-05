@@ -3,8 +3,7 @@ var App = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
-    $('#modalEliminarPregunta').modal();
-    $('#modalNuevoCapitulo').modal();
+    $('.modal').modal();
 	this.getLeccion();
 	this.getEstudiante();
   },
@@ -114,7 +113,7 @@ function enviarFeedback(){
 
 
 	});
-	//window.location.href = '/profesores/leccion/'
+	$('#myModal').modal('open');
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
