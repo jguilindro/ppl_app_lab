@@ -7,8 +7,8 @@
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   	<link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
-	<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
-	<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="./nuevaPreguntaStyles.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
 		<header id="#navbar"></header>
@@ -108,7 +108,7 @@
 			      <p class="center-align">Pregunta creada correctamente</p>
 			    </div>
 			    <div class="modal-footer">
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="ok">Aceptar</a>
+			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="ok">Aceptar</a>
 			    </div>
 			  </div>
 
@@ -125,8 +125,8 @@
 			      </div>
 			    </div>
 			    <div class="modal-footer">
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearCapitulo()">Crear</a>
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearCapitulo()">Crear</a>
+			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>
 				<!-- Modal Nuevo Tutorial Structure -->
@@ -142,8 +142,8 @@
 			      </div>
 			    </div>
 			    <div class="modal-footer">
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearTutorial()">Crear</a>
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearTutorial()">Crear</a>
+			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>
 			  <!-- Modal Nuevo Laboratorio Structure -->
@@ -159,8 +159,8 @@
 			      </div>
 			    </div>
 			    <div class="modal-footer">
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearLaboratorio()">Crear</a>
-			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearLaboratorio()">Crear</a>
+			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>
 			</div>	

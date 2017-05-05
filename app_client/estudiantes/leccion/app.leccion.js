@@ -1,10 +1,47 @@
+/*
+  Flujos:
+    Responder:
+      1. El estudiante escribe su respuesta en el wysiwyg.
+      2. Selecciona el botón de enviar respuesta.
+      3. Se ejecuta el método responder().
+        3.1 Se verifica si es la primera vez que va a responder a esa pregunta
+          3.1.1 De ser asi, envia la respuesta. enviarRespuesta()
+          3.1.2 Para eso, tiene que crear el objeto de respuesta que se va a enviar a la base de datos. crearRespuseta()
+          3.1.3 Ya creado el objeto respuesta lo envía a la base de datos.
+          3.1.4 Se marca a la pregunta como respondida y se bloquea el wysiwyg para que no pueda corregir la respuesta haste que termine de hacer la lección.
+*/
+
+
 var App = new Vue({
   el: '#app',
   mounted: function(){
     this.obtenerLogeado();
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
-    $('.modal').modal();
+    $('.modal').modal();{
+    $('.myEditor').materialnote({
+        height: "50vh",
+        onImageUpload: function(files, editor, $editable) {
+        var clientId = "300fdfe500b1718";
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+        xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+        app.loading(true);
+         xhr.onreadystatechange = function () {
+            if (xhr.status === 200 && xhr.readyState === 4) {
+              console.log('subido');
+              app.loading(false);
+              var url = JSON.parse(xhr.responseText)
+              console.log(url.data.link);
+              $('.myEditor').materialnote('editor.insertImage', url.data.link);
+            }
+         }
+         xhr.send(files[0]);
+      }
+    });
+    $(".note-editor").find("button").attr("type", "button");
+
+    }
   },
   methods: {
     obtenerLogeado: function() {
@@ -120,8 +157,32 @@ var App = new Vue({
          $('#modalCorregirRespuesta').modal('open');
       }
     },
+    enviarRespuesta: function(pregunta){
+      var self = this;
+      var respuesta = self.crearRespuesta(pregunta);
+      console.log('Va a enviar la respuesta: ')
+      console.log(respuesta);
+      var url = '/api/respuestas/';
+      this.$http.post(url, respuesta).then(response => {
+        //Success callback
+        console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
+        pregunta.respondida = true;
+        self.bloquearBtnRespuesta(event);
+        //self.bloquearTextAreaRespondida(pregunta);
+        self.bloquearEditor(pregunta);
+        if(self.verificarTodasRespondidas()){
+          $('#modalRevisarRespuestas').modal('open');
+        }
+      }, response => {
+        //Error callback
+        console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
+        console.log(response);
+      });
+    },
     crearRespuesta: function(pregunta){
       var self = this;
+      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      var respuestaEditor = $(idEditor).code(); //Obtengo la respuesta escrita
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -129,11 +190,25 @@ var App = new Vue({
         paralelo: self.estudiante.paralelo,
         grupo: self.estudiante.grupo,
         contestado: true,
-        respuesta: pregunta.respuesta,
+        respuesta: respuestaEditor,
         feedback: '',
         calificacion: 0
       }
       return respuesta;
+    },
+    bloquearBtnRespuesta: function(event){
+      var self = this;
+      var btnId = event.currentTarget.id;
+      btnId = '#' + btnId;
+      $(btnId).attr("disabled", true);
+    },
+    bloquearTextAreaRespondida: function(pregunta){
+      var self = this;
+      var textAreaId = "#textarea-respuesta-" + pregunta._id;
+      $(textAreaId).attr("disabled", true);
+    },
+    bloquearEditor: function(pregunta){
+      //TODO
     },
     responderTodas: function(){
       var self = this;
@@ -163,17 +238,7 @@ var App = new Vue({
       });
       return todasRespondidas;
     },
-    bloquearBtnRespuesta: function(event){
-      var self = this;
-      var btnId = event.currentTarget.id;
-      btnId = '#' + btnId;
-      $(btnId).attr("disabled", true);
-    },
-    bloquearTextAreaRespondida: function(pregunta){
-      var self = this;
-      var textAreaId = "#textarea-respuesta-" + pregunta._id;
-      $(textAreaId).attr("disabled", true);
-    },
+    
     revisarLeccion: function(){
       var self = this;
       self.corregirHabilitado = true;
@@ -188,31 +253,13 @@ var App = new Vue({
       var textAreaId = "#textarea-respuesta-" + pregunta._id;
       $(textAreaId).attr("disabled", false);
     },
+    desbloquearEditor: function(pregunta){
+      //TODO
+    }
     desbloquearBtnRespuesta: function(pregunta){
       var self = this;
       var btnId = "#btn-responder-" + pregunta._id;
       $(btnId).attr("disabled", false);
-    },
-    enviarRespuesta: function(pregunta){
-      var self = this;
-      var respuesta = self.crearRespuesta(pregunta);
-      console.log('Va a enviar la respuesta: ')
-      console.log(respuesta);
-      var url = '/api/respuestas/';
-      this.$http.post(url, respuesta).then(response => {
-        //Success callback
-        console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
-        pregunta.respondida = true;
-        self.bloquearBtnRespuesta(event);
-        self.bloquearTextAreaRespondida(pregunta);
-        if(self.verificarTodasRespondidas()){
-          $('#modalRevisarRespuestas').modal('open');
-        }
-      }, response => {
-        //Error callback
-        console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
-        console.log(response);
-      });
     },
     corregirRespuesta: function(pregunta){
       var self = this;

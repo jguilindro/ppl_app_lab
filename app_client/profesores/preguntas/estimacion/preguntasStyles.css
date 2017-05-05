@@ -39,6 +39,7 @@ body{
 	padding: 0px;
 	margin: 0px;
 	color: black;
+	max-height: 15vh;
 }
 .question:hover{
 	background-color: rgba(192,192,192,0.3);
