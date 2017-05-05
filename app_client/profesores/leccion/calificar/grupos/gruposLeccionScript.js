@@ -147,7 +147,7 @@ function estudianteSeleccionado(_element){
 function calificarRedireccion(){
 	if (app.estudianteEscogidoId){
 	var leccionId = window.location.href.toString().split('/')[7];
-	window.location.href = '/profesores/leccion/calificar/'+leccionId+'/'+app.estudianteEscogidoId;
+	window.location.href = '/profesores/leccion/calificar/'+leccionId+'/'+app.estudianteEscogidoId+'/'+app.grupoEscogido._id;
 	}
 }
 

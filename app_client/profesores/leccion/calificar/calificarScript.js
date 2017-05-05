@@ -3,8 +3,7 @@ var App = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
-    $('#modalEliminarPregunta').modal();
-    $('#modalNuevoCapitulo').modal();
+    $('.modal').modal();
 	this.getLeccion();
 	this.getEstudiante();
   },
@@ -23,7 +22,8 @@ var App = new Vue({
 	estudiante: {
 	nombres: '',
 	apellidos: '',
-	correo: ''
+	correo: '',
+	grupo: ''
 	},
 	feedback: [],
 	calificaciones: []
@@ -67,9 +67,12 @@ var App = new Vue({
 	var estudianteId = window.location.href.toString().split('/')[7];
 	var obtenerEstudianteURL = '/api/estudiantes/' + estudianteId;
 	this.$http.get(obtenerEstudianteURL).then(res => {
+		console.log("Estudiante get: ");
+		console.log(res.body.datos);
 		App.estudiante.nombres=res.body.datos.nombres;
 		App.estudiante.apellidos=res.body.datos.apellidos;
 		App.estudiante.correo=res.body.datos.correo;
+		App.estudiante.grupo=res.body.datos.grupo;
 		console.log(App.estudiante);
 	});
 	}
@@ -83,14 +86,34 @@ function regresar(){
 
 function enviarFeedback(){
 
+	var leccionId = window.location.href.toString().split('/')[6];
+	var grupoId = window.location.href.toString().split('/')[8];
+	
 	$("input").each(function(index, calificacion){
 		App.calificaciones.push($(calificacion).val());
+		console.log(App.calificaciones);
 	});
 	$("textarea").each(function(index, feedback){
-		console.log(feedback);
+		
 		App.feedback.push($(feedback).val());
+		console.log(App.feedback);
 	});
-	window.location.href = '/profesores/leccion/'
+
+	$.each(App.leccion.preguntas, function(index, pregunta){
+		var calificarURL = '/api/respuestas/calificar/leccion/'+ leccionId+ '/pregunta/'+pregunta.pregunta+ '/grupo/'+grupoId;
+	    var bodyEnviar= {
+		calificacion:''
+		};
+		bodyEnviar.calificacion= App.calificaciones[index];
+	    console.log(bodyEnviar);
+	    App.$http.put(calificarURL, bodyEnviar).then(res => {
+	    	console.log("Calificacion lista "+ index);
+
+		});
+
+
+	});
+	$('#myModal').modal('open');
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
