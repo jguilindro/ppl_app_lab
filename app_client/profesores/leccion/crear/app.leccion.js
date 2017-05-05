@@ -7,7 +7,7 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     this.getPreguntas();
     this.getParalelos();
-    //$('select').material_select();
+    $('select').material_select();
   },
   el: '#app',
   data: {
@@ -24,6 +24,8 @@ var App = new Vue({
     paralelos: [],
     preguntas: [],
     capitulos: [],
+    tutoriales: [],
+    pregunta_tutorial: [],
     preguntas_escogidas: {
       preguntas: [],
       tiempoTotal: 0
@@ -70,10 +72,27 @@ var App = new Vue({
               }
             });
             if (!encontroCapitulo) {
+              console.log(pregunta);
               self.crearCapitulo(pregunta)
             }
           }
-
+          /*
+           if (pregunta.tipoLeccion.toLowerCase()=='tutorial') {
+            $.each(self.capitulos, function(index, capitulo){
+              if (capitulo.nombre.toLowerCase()==pregunta.tutorial.toLowerCase()) {
+                capitulo.preguntas.push(pregunta);
+                encontroCapitulo = true;
+                return false;
+              }else{
+                encontroCapitulo=false;
+              }
+            });
+            if (!encontroCapitulo) {
+              console.log(pregunta);
+              self.crearCapitulo(pregunta)
+            }
+          } 
+          */
         })
       }, response => {
         //error callback
@@ -94,6 +113,22 @@ var App = new Vue({
         preguntas: []
       }
       capitulo.preguntas.push(pregunta);
+      self.capitulos.push(capitulo);
+    },
+    crearTutorial: function(tutorial){
+      var self = this;
+      var nombreCapitulo = tutorial.capitulo;
+      var idCapitulo = nombreCapitulo.toLowerCase();
+      idCapitulo = idCapitulo.split(":")[0];
+      idCapitulo - idCapitulo.replace(/\s+/g, '');
+      var hrefCapitulo = '#' + idCapitulo;
+      var capitulo = {
+        nombre: nombreCapitulo,
+        id:  idCapitulo,
+        href: hrefCapitulo,
+        preguntas: []
+      }
+      capitulo.preguntas.push(tutorial);
       self.capitulos.push(capitulo);
     },
     getParalelos: function(){
@@ -194,9 +229,11 @@ function ordenPreguntas(preguntas){
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
 document.addEventListener("DOMContentLoaded", function(event) {
   $.get({
-    url: "../../partials/navbar.html",
+    url: "/../navbar/profesores",
     success: function(data) {
       document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
     }
   })
 });
