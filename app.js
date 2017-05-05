@@ -124,7 +124,7 @@ app.use('/profesores/leccion/',authProfesor, procesarSession, middleProfesorCont
 
 app.use('/profesores/leccion/calificar/grupos/:id_leccion',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar/grupos')))
 
-app.use('/profesores/leccion/calificar/:id_leccion/:id_estudiante',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')))
+app.use('/profesores/leccion/calificar/:id_leccion/:id_estudiante/:id_grupo',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')))
 
 app.use('/profesores/lecciones',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
 

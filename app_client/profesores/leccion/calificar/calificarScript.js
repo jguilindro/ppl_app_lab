@@ -88,7 +88,8 @@ function regresar(){
 function enviarFeedback(){
 
 	var leccionId = window.location.href.toString().split('/')[6];
-	var self = this;
+	var grupoId = window.location.href.toString().split('/')[8];
+	
 	$("input").each(function(index, calificacion){
 		App.calificaciones.push($(calificacion).val());
 		console.log(App.calificaciones);
@@ -100,9 +101,15 @@ function enviarFeedback(){
 	});
 
 	$.each(App.leccion.preguntas, function(index, pregunta){
-		var calificarURL = '/api/respuestas/calificar/leccion/'+ leccionId+ '/pregunta/'+pregunta._id+ '/grupo/'+App.estudiante.grupo;
-	    App.$http.put(calificarURL, App.calificaciones[index]).then(res => {
+		var calificarURL = '/api/respuestas/calificar/leccion/'+ leccionId+ '/pregunta/'+pregunta.pregunta+ '/grupo/'+grupoId;
+	    var bodyEnviar= {
+		calificacion:''
+		};
+		bodyEnviar.calificacion= App.calificaciones[index];
+	    console.log(bodyEnviar);
+	    App.$http.put(calificarURL, bodyEnviar).then(res => {
 	    	console.log("Calificacion lista "+ index);
+
 		});
 
 
