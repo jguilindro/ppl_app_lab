@@ -21,6 +21,7 @@ const obtenerLeccion = (req, res) => {
 
 // TODO: anadir el creador con el login
 const crearLeccion = (req, res) => {
+  console.log('leccion cear');
   let leccion = new LeccionModel({
     creador: req.session._id,
     nombre: req.body.nombre,
@@ -32,7 +33,10 @@ const crearLeccion = (req, res) => {
     paralelo: req.body.paralelo
   })
   leccion.crearLeccion((err, doc) => {
-    if (err) return respuesta.serverError(res);
+    if (err) {
+      console.log(err);
+      return respuesta.serverError(res);
+    }
     return respuesta.creado(res, leccion);
   })
 }
