@@ -17,7 +17,7 @@ var app = new Vue({
             self.presentarLecciones();
           }
         });
-    }, 
+    },
     presentarLecciones: function(){
       var self = this;
       $.each(self.estudiante.lecciones, function(index, leccion){
@@ -36,4 +36,3 @@ var app = new Vue({
     }
   }
 });
-

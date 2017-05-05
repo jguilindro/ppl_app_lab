@@ -10,7 +10,7 @@ const local = function() {
       return require('../config/main').local_production
     } else if (process.env.NODE_ENV == 'production-test') {
       console.log('production-test local')
-      return require('../config/main').local_testing
+      return require('../config/main').local
     } else if (process.env.NODE_ENV == 'testing') {
       console.log('testing local')
       return require('../config/main').local_testing

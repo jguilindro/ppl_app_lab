@@ -100,7 +100,13 @@ const eliminarProfesorDeParalelo = (req, res) => {
 const obtenerParalelosProfesor = (req, res) => {
 	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
 		if (err) return respuesta.serverError(res);
-		return respuesta.ok(res, paralelos)
+    if (paralelos.length == 0) {
+      ParaleloModel.obtenerParaleloPeer(req.session._id, (err, paralelos) => {
+        return respuesta.ok(res, paralelos)
+      })
+    } else {
+      return respuesta.ok(res, paralelos)
+    }
 	})
 }
 

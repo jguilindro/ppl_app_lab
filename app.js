@@ -166,9 +166,6 @@ app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudiant
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
     ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-      console.log(estudiante.codigoIngresado);
-      console.log(paralelo.dandoLeccion);
-      console.log(estudiante.esperandoLeccion);
       if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
         next()
       } else {
