@@ -11,7 +11,7 @@ CASAuthentication = require('cas-authentication');
 
 var URL_CAS_LOCAL = 'http://localhost:3000'
 var URL_CAS_PRODUCTION_TEST = 'http://localhost:3000'
-var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com/'
+var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
 var SERVICE_URL = ''
 if (process.env.NODE_ENV == 'development') {
   SERVICE_URL = URL_CAS_LOCAL
