@@ -255,7 +255,7 @@ var App = new Vue({
     },
     desbloquearEditor: function(pregunta){
       //TODO
-    }
+    },
     desbloquearBtnRespuesta: function(pregunta){
       var self = this;
       var btnId = "#btn-responder-" + pregunta._id;

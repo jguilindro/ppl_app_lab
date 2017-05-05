@@ -45,8 +45,7 @@ var App = new Vue({
       self.leccion_nueva.paralelo = self.paraleloEscogido.id
       this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
         //success callback
-        alert("Su lección ha sido creada con éxito!");
-        window.location.href = '/profesores/leccion/';
+        $('#myModal').modal('open');
         console.log(response)
         }, response => {
         //error callback
