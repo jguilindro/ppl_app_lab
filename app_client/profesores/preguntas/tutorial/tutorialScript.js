@@ -17,7 +17,7 @@ var practica = new Vue({
 		$('.scrollspy').scrollSpy();
 		$(".dropdown-button").dropdown();
 		$('#modalEliminarPregunta').modal();
-		$('#modalNuevaPractica').modal();
+		$('#modalNuevoTutorial').modal();
 		this.obtenerLogeado();
 		this.obtenerTutoriales();
 		//this.getPreguntas();
