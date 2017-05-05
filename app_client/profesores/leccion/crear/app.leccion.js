@@ -8,6 +8,7 @@ var App = new Vue({
     this.getPreguntas();
     this.getParalelos();
     $('select').material_select();
+    $('.modal').modal();
   },
   el: '#app',
   data: {
