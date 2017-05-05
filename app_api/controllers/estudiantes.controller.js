@@ -48,7 +48,7 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
       GrupoModel.obtenerGrupoDeEstudiante(_id, (err, grupo) => {
         if (err ) return respuesta.serverError(res)
         if (!grupo) {
-          return respuesta.noOKMensaje(res, {mensaje: 'no esta anadido en ningun paralelo'})
+          return respuesta.noOKMensaje(res, {mensaje: 'no_esta_anadido_a_paralelo'})
         } else {
           LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
             if (err) return respuesta.serverError(res);
@@ -61,7 +61,6 @@ const verificarEstudiantePuedeDarLeccion = (req, res) => {
               EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
                 if (err) return respuesta.serverError(res)
                 req.app.set('habilitado_para_leccion', true)
-                console.log('anadido');
                 if (leccion.leccionYaComenzo) {
                   return respuesta.ok(res, {'mensaje': 'leccion_empezo'})
                 } else {
@@ -96,6 +95,22 @@ const calificarLeccion = (req, res) => {
 }
 
 
+const EditarANoesperandoLeccion = (req, res) => {
+  EstudianteModel.esperandoLeccion(req.session.id, (err, res) => {
+    if (err) return respuesta.mongoError(res, 'Editar a no esperando leccion');
+    return respuesta.okActualizado(res)
+  })
+}
+
+const ingresadocodigoLeccion = (req, res) => {
+  console.log('dsfds');
+  console.log(req.session._id);
+  EstudianteModel.codigoLeccion(req.session._id, (err, anadido) => {
+    if (err) return respuesta.mongoError(res, 'La leccion no existe');
+    return respuesta.okActualizado(res)
+  })
+}
+
 
 module.exports = {
 	obtenerTodosEstudiantes,
@@ -104,5 +119,7 @@ module.exports = {
   // leccion
   verificarEstudiantePuedeDarLeccion,
   verificarPuedeDarLeccion,
-  calificarLeccion
+  calificarLeccion,
+  EditarANoesperandoLeccion,
+  ingresadocodigoLeccion
 }

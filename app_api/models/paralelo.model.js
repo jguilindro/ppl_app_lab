@@ -20,6 +20,10 @@ const ParaleloSchema = new mongoose.Schema({
     type: Boolean,
 		'default': false
   },
+  leccionYaComenzo: {
+    type: Boolean,
+    'default': false
+  },
   leccion: {
     type: String,
     ref: 'Leccion'
@@ -149,8 +153,12 @@ ParaleloSchema.statics.dandoLeccion = function(id_paralelo, id_leccion, callback
 	this.update({_id: id_paralelo}, {$set: {'leccion': id_leccion, 'dandoLeccion': true}},callback)
 }
 
+ParaleloSchema.statics.empezoLeccion = function(id_paralelo, callback) {
+  this.update({_id: id_paralelo}, {$set: {'leccionYaComenzo': true}},callback)
+}
+
 ParaleloSchema.statics.leccionTerminada = function(id_paralelo, callback) {
-	this.update({_id: id_paralelo}, {$set: {'leccion': '', 'dandoLeccion': false}},callback)
+	this.update({_id: id_paralelo}, {$set: {'leccion': '', 'dandoLeccion': false, leccionYaComenzo: false}},callback)
 }
 
 module.exports = mongoose.model('Paralelo', ParaleloSchema);

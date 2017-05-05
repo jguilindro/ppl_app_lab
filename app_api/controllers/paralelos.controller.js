@@ -167,6 +167,12 @@ const dandoLeccion = (req, res) => {
 	})
 }
 
+const leccionYaComenzo = (req, res) => {
+  ParaleloModel.empezoLeccion(req.params.id_paralelo, (err, dato) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res)
+  })
+}
 
 
 
@@ -189,4 +195,5 @@ module.exports = {
   obtenerParaleloDeEstudiante,
 	// lecciones
 	dandoLeccion,
+  leccionYaComenzo,
 }

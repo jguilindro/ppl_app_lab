@@ -54,7 +54,8 @@ function realtime(io) {
         const COOKIE = yield mongoSession(cook)
         const profesor = yield obtenerProfesor(COOKIE)
         const estudiante = yield obtenerEstudiante(COOKIE)
-        if (profesor && profe) {
+        const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+        if (profesor && (profe || PARALELO.leccionYaComenzo)) {
           socket.inteval = interval // idea para ver si dos profesores pueden dar leccio al mismo tiempo
           const HORA_LOCAL = moment();
           const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());

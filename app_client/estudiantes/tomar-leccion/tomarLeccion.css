@@ -1,8 +1,15 @@
 .v-center{
-	margin-top: 10%;
+	margin-top: 0%;
 }
 .code{
 
+}
+
+html {
+  margin-top: 10%;
+}
+.enabled {
+  margin-top: 2%;
 }
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    grey;

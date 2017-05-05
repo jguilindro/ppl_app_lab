@@ -34,6 +34,14 @@ const EstudianteSchema = mongoose.Schema({
     type: Boolean,
     'default': false
   },
+  esperandoLeccion: {
+    type: Boolean,
+    'default': true
+  },
+  codigoIngresado: {
+    type: Boolean,
+    'default': false
+  },
   leccion: { // que leccion esta dando estudiante en realtime
     type: String,
     ref: 'Leccion'
@@ -138,7 +146,7 @@ EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante
 }
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}}, callback)
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false, esperandoLeccion: true, codigoIngresado: false}}, callback)
 }
 
 EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudiante, callback) {
@@ -148,6 +156,14 @@ EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudian
 
 EstudianteSchema.statics.calificarLeccion = function(id_estudiante, id_leccion, calificacion_nueva, callback){
   this.update({_id: id_estudiante, "lecciones.leccion": id_leccion}, {$set: {"lecciones.$.calificacion": calificacion_nueva}}, callback);
+}
+
+EstudianteSchema.statics.esperandoLeccion = function(id_estudiante, callback) {
+  this.update({_id: id_estudiante}, {$set: {esperandoLeccion: false}})
+}
+
+EstudianteSchema.statics.codigoLeccion = function(id_estudiante, callback) {
+  this.update({_id: id_estudiante}, {$set: {codigoIngresado: true}}, callback)
 }
 
 

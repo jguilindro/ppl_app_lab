@@ -17,7 +17,6 @@ var App = new Vue({
     },
     obtenerGrupoEstudiante(_estudiante) {
       let grupo_index = this.grupos.findIndex(grupo => {
-        console.log(grupo);
         let estudiante = grupo.estudiantes.find(estudiante => {
           return estudiante === _estudiante._id
         })
@@ -34,6 +33,11 @@ var App = new Vue({
         if (res.body.estado) {
           if (res.body.estado) {
             comenzar()
+            this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
+              if (res.body.estado) {
+
+              }
+            })
           }
           // tomando leccion en paralelo
           // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
