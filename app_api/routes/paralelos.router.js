@@ -15,6 +15,7 @@ router.delete('/:id_paralelo/grupos/:id_grupo', ParalelosController.eliminarGrup
 router.post('/:id_paralelo/profesores/:id_profesor', ParalelosController.anadirProfesorAParalelo);
 router.delete('/:id_paralelo/profesores', ParalelosController.eliminarProfesorDeParalelo);
 router.get('/profesores/mis_paralelos', ParalelosController.obtenerParalelosProfesor);
+router.post('/:id_paralelo/peers/:id_profesor', ParalelosController.anadirPeerAParalelo)
 
 // estudiantes
 router.post('/:id_paralelo/estudiantes/:id_estudiante', ParalelosController.anadirEstudianteAParalelo);

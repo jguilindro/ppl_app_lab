@@ -15,6 +15,7 @@ const crearProfesor = (req, res, next) => {
     correo: req.body.correo,
     nombres: req.body.nombres,
     apellidos: req.body.apellidos,
+    tipo: req.body.tipo
   })
   profesor.crearProfesor(err => {
     if (err) res.send('error crear profesr')

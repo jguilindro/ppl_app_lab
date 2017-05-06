@@ -62,9 +62,9 @@ function init() {
           var estudiantes_editados =  _.intersectionBy(estudiantes_eliminados, estudiantes_nuevo, 'matricula');
           var estudiantes_eliminadosDB = _.differenceBy(estudiantes_eliminados, estudiantes_editados, 'matricula');
           var estudiantes_nuevoWS = _.differenceBy(estudiantes_nuevo, estudiantes_editados, 'matricula');
-          logger.info('Estudiantes eliminados', estudiantes_eliminadosDB.length)
-          logger.info('Estudiantes anadidos', estudiantes_nuevoWS.length)
-          logger.info('Estudiantes editados', estudiantes_editados.length)
+          logger.info('Estudiantes eliminados', estudiantes_eliminadosDB.length, estudiantes_eliminadosDB)
+          logger.info('Estudiantes anadidos', estudiantes_nuevoWS.length, estudiantes_nuevoWS)
+          logger.info('Estudiantes editados', estudiantes_editados.length, estudiantes_editados)
           co(function* () {
             var paralelos = yield obtenerTodosParalelos()
             for (var i = 0; i < estudiantes_eliminadosDB.length; i++) {
@@ -113,7 +113,7 @@ function init() {
             } else {
               resolve(true)
             }
-          })
+          }).catch(fail => {console.log(fail);})
         }
       })
     })
@@ -121,6 +121,11 @@ function init() {
 }
 
 function estudiantesIguales(estudiante1, estudiante2) {
+  // if (estudiante1 == undefined || estudiante2 == undefined) {
+  //   // logger.log('est 1', estudiante1);
+  //   logger.log('est 2', estudiante2);
+  //   return false
+  // }
   var nombres = estudiante1.nombres === estudiante2.nombres
   var apellidos = estudiante1.apellidos === estudiante2.apellidos
   var matricula = estudiante1.matricula === estudiante2.matricula
@@ -218,6 +223,8 @@ function crearEstudianteYAnadirloAParalelo(id_paralelo, estudiante_nuevo) {
 }
 
 function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
+  console.log(diferencias);
+  // console.log(estudiantesDB);
   return new Promise((resolve, reject) => {
     var indexes = Object.keys(diferencias)
     var estudiantes_cambiados = []
@@ -248,11 +255,11 @@ function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
         var logrado = yield cambiarEstudianteDeParalelo(paralelo._id, paralelo_nuevo._id, estudiante._id)
         if (!logrado) {
           logger.error('no se pudo cambiar estado estudiante')
-          return resolve(false)
+          return reject(false)
         }
       }
       return resolve(true)
-    })
+    }).catch(fail => console.log(fail))
   })
 }
 
