@@ -239,7 +239,8 @@ var app = new Vue({
       buscarEstudiante: '',
       mostrarDatosEstudiante: {},
       buscarEstudianteEnGrupo: '',
-      buscarGrupo: ''
+      buscarGrupo: '',
+      index_seleccionado: 0
 	},
   watch: {
     grupos: function(val) {
@@ -357,6 +358,12 @@ function borrarAlumno(event) {
 
 function obtenerParaleloEscogido(element) {
   app.paralelo_seleccionado = element[element.selectedIndex].id
+  for (var i = 0; i < app.paralelos.length; i++) {
+    if ( app.paralelos[i]._id === app.paralelo_seleccionado) {
+      app.index_seleccionado = i
+      break;
+    }
+  }
   app.obtenerTodosParalelosProfesor()
 }
 

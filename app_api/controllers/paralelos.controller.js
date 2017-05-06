@@ -110,6 +110,14 @@ const obtenerParalelosProfesor = (req, res) => {
 	})
 }
 
+
+const anadirPeerAParalelo = (req, res) => {
+  const {id_paralelo, id_profesor} = req.params
+  ParaleloModel.anadirPeerAParalelo(id_paralelo, id_profesor, (err, profe) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.okAnadido(res);
+  })
+}
 /*
 * Estudiantes
  */
@@ -195,6 +203,7 @@ module.exports = {
   anadirProfesorAParalelo,
   eliminarProfesorDeParalelo,
   obtenerParalelosProfesor,
+  anadirPeerAParalelo,
   // estudiante
   anadirEstudianteAParalelo,
   eliminarEstudianteDeParalelo,
