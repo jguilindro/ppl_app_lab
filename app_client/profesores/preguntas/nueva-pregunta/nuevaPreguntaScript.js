@@ -60,15 +60,21 @@ var app = new Vue({
     },
     nuevoCapitulo: {
       nombre: '',
-      tipo: 'estimacion'
+      tipo: 'estimacion',
+      nombreMateria: '',
+      codigoMateria: ''
     },
     nuevoTutorial: {
       nombre: '',
-      tipo: 'tutorial'
+      tipo: 'tutorial',
+      nombreMateria:'',
+      codigoMateria:''
     },
     nuevoLaboratorio: {
       nombre: '',
-      tipo: 'laboratorio'
+      tipo: 'laboratorio',
+      nombreMateria: '',
+      codigoMateria: ''
     }
 	},
 	methods: {
@@ -171,6 +177,7 @@ var app = new Vue({
     crearCapitulo: function(){
       var self = this;
       var url = '/api/capitulos/';
+      console.log(self.nuevoCapitulo)
       self.$http.post(url, self.nuevoCapitulo)
         .then(response => {
           //Tengo que añadir el capítulo al array porque la página no se va a recargar
@@ -191,6 +198,8 @@ var app = new Vue({
     crearTutorial: function(){
       var self = this;
       var url = '/api/capitulos/';
+      console.log(self.nuevoTutorial)
+      
       self.$http.post(url, self.nuevoTutorial).then(response => {
         self.tutoriales.push(self.nuevoTutorial);
         $('#div-select-tutorial').empty();
@@ -218,6 +227,8 @@ var app = new Vue({
     crearLaboratorio: function(){
       var self = this;
       var url = '/api/capitulos/';
+      console.log(self.nuevoLaboratorio)
+      
       self.$http.post(url, self.nuevoLaboratorio).then(response => {
         self.laboratorios.push(self.nuevoLaboratorio);
         $('#div-select-laboratorio').empty();
@@ -253,4 +264,20 @@ $('#tipo-pregunta').change(function(){
 
 $('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
  	app.$data.pregunta.descripcion = contents;
+});
+
+
+$('#select-materia-estimacion').change(function(){
+  app.nuevoCapitulo.nombreMateria = $('#select-materia-estimacion option:selected').text();
+  app.nuevoCapitulo.codigoMateria = $('#select-materia-estimacion option:selected').val();
+});
+
+$('#select-materia-tutorial').change(function(){
+  app.nuevoTutorial.nombreMateria = $('#select-materia-tutorial option:selected').text();
+  app.nuevoTutorial.codigoMateria = $('#select-materia-tutorial option:selected').val();
+});
+
+$('#select-materia-laboratorio').change(function(){
+  app.nuevoLaboratorio.nombreMateria = $('#select-materia-laboratorio option:selected').text();
+  app.nuevoLaboratorio.codigoMateria = $('#select-materia-laboratorio option:selected').val();
 });

@@ -15,6 +15,15 @@
 			<div class="container" id="laboratorio">
 				<h2 class="center-align">Preguntas de laboratorio</h2>
 				<div class="row">
+					<div class="input-field col s4 offset-s4">
+						<select id="select-materia-laboratorio">
+							<option value="" disabled selected>Seleccione la materia</option>
+				      <option value="FISG1002">Física 2</option>
+				      <option value="FISG1003">Física 3</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col s12 m9 l10">
 						<div v-for="laboratorio in laboratorios" class="laboratorio scrollspy section" v-bind:id="laboratorio._id">
 							<h4 class="flow-text">Laboratorio: {{laboratorio.nombre}}</h4>
@@ -55,6 +64,13 @@
 			      	<div class="input-field col s12">
 			      		<input type="text" name="nombreLab" id="nombreLab" v-model="laboratorio.nombre">
 			      		<label for="nombreLab">Nombre del laboratorio</label>
+			      	</div>
+			      	<div class="input-field col s12">
+			      		<select id="select-materia">
+					    		<option value="" disabled selected>Seleccione la materia</option>
+						      <option value="FISG1002">Física 2</option>
+						      <option value="FISG1003">Física 3</option>
+					    	</select>
 			      	</div>
 			      </div>
 			    </div>

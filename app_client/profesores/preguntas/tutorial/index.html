@@ -15,6 +15,15 @@
 			<div class="container" id="tutorial">
 				<h2 class="center-align">Preguntas de tutorial</h2>
 				<div class="row">
+					<div class="input-field col s4 offset-s4">
+						<select id="select-materia-tutorial">
+							<option value="" disabled selected>Seleccione la materia</option>
+				      <option value="FISG1002">Física 2</option>
+				      <option value="FISG1003">Física 3</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col s12 m9 l10">
 						<div v-for="tutorial in tutoriales" class="tutorial scrollspy section" v-bind:id="tutorial.id">
 							<h4 class="flow-text">Tutorial: {{tutorial.nombre}}</h4>
@@ -58,6 +67,13 @@
 			      	<div class="input-field col s12">
 			      		<input type="text" name="nombreTutorial" id="nombreTutorial" v-model="tutorial.nombre">
 			      		<label for="nombreTutorial">Nombre del tutorial</label>
+			      	</div>
+			      	<div class="input-field col s12">
+			      		<select id="select-materia">
+					    		<option value="" disabled selected>Seleccione la materia</option>
+						      <option value="FISG1002">Física 2</option>
+						      <option value="FISG1003">Física 3</option>
+					    	</select>
 			      	</div>
 			      </div>
 			    </div>

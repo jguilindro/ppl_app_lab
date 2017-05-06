@@ -20,6 +20,12 @@ const CapituloSchema = mongoose.Schema({
   	type: String,
   	enum: ['estimacion', 'tutorial', 'laboratorio'],
     'default': 'estimacion'
+  },
+  codigoMateria:{
+    type: String
+  },
+  nombreMateria: {
+    type: String
   }
 },{timestamps: true, versionKey: false, collection: 'capitulos'});
 
@@ -36,6 +42,9 @@ CapituloSchema.statics.agregarPregunta = function(id_capitulo, pregunta, callbac
 }
 CapituloSchema.statics.obtenerCapituloPorNombre = function(nombre_capitulo, callback){
   this.findOne({nombre: nombre_capitulo}, callback);
+}
+CapituloSchema.statics.obtenerCapitulosPorMateria = function(codigo_materia, callback){
+  this.find({codigoMateria: codigo_materia}, callback);
 }
 
 module.exports = mongoose.model('Capitulo', CapituloSchema);

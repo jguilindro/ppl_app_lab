@@ -8,8 +8,12 @@ var laboratorio = new Vue({
 		profesor: {},
 		laboratorio: {
 			nombre: '',
-			tipo: 'laboratorio'
-		}
+			tipo: 'laboratorio',
+			nombreMateria: '',
+			codigoMateria: ''
+		},
+		laboratoriosFisica2: [],
+		laboratoriosFisica3: []
 	},
 	mounted: function(){
 		//Materialize
@@ -18,6 +22,7 @@ var laboratorio = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoLab').modal();
+		$('select').material_select();
 		//Flujo:  obtiene el usuario loggeado -> obtiene los laboratorios de la base de datos -> obtiene las preguntas de la base de datos -> clasifica las preguntas por laboratorios
 		this.obtenerLogeado();
 		this.obtenerLaboratorios();
@@ -38,8 +43,10 @@ var laboratorio = new Vue({
     	self.$http.get(url).then(response => {
     		self.laboratoriosObtenidos = response.body.datos;
     		$.each(self.laboratoriosObtenidos, function(index, laboratorio){
-    			if(laboratorio.tipo.toLowerCase()=='laboratorio'){
-    				self.laboratorios.push(laboratorio);
+    			if(laboratorio.tipo.toLowerCase()=='laboratorio'&&laboratorio.codigoMateria=='FISG1002'){
+    				self.laboratoriosFisica2.push(laboratorio);
+    			}else if(laboratorio.tipo.toLowerCase()=='laboratorio'&&laboratorio.codigoMateria=='FISG1003'){
+    				self.laboratoriosFisica3.push(laboratorio);
     			}
     		});
     		self.obtenerPreguntas();
@@ -68,7 +75,13 @@ var laboratorio = new Vue({
     dividirPreguntasEnLaboratorios: function(){
     	var self = this;
     	$.each(self.preguntasLaboratorio, function(index, pregunta){
-    		$.each(self.laboratorios, function(j, laboratorio){
+    		$.each(self.laboratoriosFisica2, function(j, laboratorio){
+    			if(pregunta.laboratorio.toLowerCase()==laboratorio.nombre.toLowerCase()){
+    				laboratorio.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    		$.each(self.laboratoriosFisica3, function(j, laboratorio){
     			if(pregunta.laboratorio.toLowerCase()==laboratorio.nombre.toLowerCase()){
     				laboratorio.preguntas.push(pregunta);
     				return false;
@@ -92,7 +105,6 @@ var laboratorio = new Vue({
     		console.log('Hubo un error al crear el laboratorio.')
     		console.log(response);
     	});
-
     },
 		nuevaPregunta: function(){
 			
@@ -164,4 +176,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
       $(".dropdown-button").dropdown();
     }
   })
+});
+
+$('#select-materia').change(function(){
+	laboratorio.laboratorio.nombreMateria = $('#select-materia option:selected').text();
+	laboratorio.laboratorio.codigoMateria = $('#select-materia option:selected').val();
+});
+
+$('#select-materia-laboratorio').change(function(){
+	//app.materiaEscogida.nombreMateria = $('#select-materia-laboratorio option:selected').text();
+	//app.materiaEscogida.codigoMateria = $('#select-materia-laboratorio option:selected').val();
+	if($('#select-materia-laboratorio option:selected').val()=='FISG1002'){
+		laboratorio.laboratorios = [];
+		laboratorio.laboratorios = laboratorio.laboratoriosFisica2;
+		console.log(laboratorio.laboratorios)
+	}else if($('#select-materia-laboratorio option:selected').val()=='FISG1003'){
+		laboratorio.laboratorios = [];
+		laboratorio.laboratorios = laboratorio.laboratoriosFisica3;
+		console.log(laboratorio.laboratorios)
+	}
 });

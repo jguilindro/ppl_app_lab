@@ -4,7 +4,9 @@ var response = require('../utils/responses');
 const crearCapitulo = (req, res) => {
 	let capitulo = new CapituloModel({
 		nombre: req.body.nombre,
-		tipo: req.body.tipo
+		tipo: req.body.tipo,
+		codigoMateria: req.body.codigoMateria,
+		nombreMateria: req.body.nombreMateria
 	});
 	capitulo.crearCapitulo((err, doc) => {
 		if(err) return response.serverError(res);
@@ -26,10 +28,17 @@ const agregarPregunta = (req, res) => {
 	})
 }
 
+const obtenerCapitulosPorMateria = (req, res) => {
+	CapituloModel.obtenerCapitulosPorMateria(req.params.codigo_materia, (err, capitulos) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, capitulos)
+	})
+}
 
 
 module.exports = {
 	crearCapitulo,
 	obtenerTodosCapitulos,
-	agregarPregunta
+	agregarPregunta,
+	obtenerCapitulosPorMateria,
 }

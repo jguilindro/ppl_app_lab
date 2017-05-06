@@ -8,8 +8,12 @@ var practica = new Vue({
 		profesor: {},
 		tutorial: {
 			nombre: '',
-			tipo: 'tutorial'
-		}
+			tipo: 'tutorial',
+			codigoMateria: '',
+			nombreMateria: ''
+		},
+		tutorialesFisica2: [],
+		tutorialesFisica3: []
 	},
 
 	mounted: function(){
@@ -18,6 +22,7 @@ var practica = new Vue({
 		$(".dropdown-button").dropdown();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoTutorial').modal();
+		$('select').material_select();
 		this.obtenerLogeado();
 		this.obtenerTutoriales();
 		//this.getPreguntas();
@@ -40,8 +45,10 @@ var practica = new Vue({
     		//SUCCESS CALLBACK
     		self.tutorialesObtenidos = response.body.datos;
     		$.each(self.tutorialesObtenidos, function(index, tutorial){
-    			if(tutorial.tipo.toLowerCase()=='tutorial'){
-    				self.tutoriales.push(tutorial);
+    			if(tutorial.tipo.toLowerCase()=='tutorial'&&tutorial.codigoMateria=='FISG1002'){
+    				self.tutorialesFisica2.push(tutorial);
+    			}else if(tutorial.tipo.toLowerCase()=='tutorial'&&tutorial.codigoMateria=='FISG1003'){
+    				self.tutorialesFisica3.push(tutorial);
     			}
     		});
     		self.obtenerPreguntas();
@@ -72,7 +79,13 @@ var practica = new Vue({
     dividirPreguntasEnTutoriales: function(){
     	var self = this;
     	$.each(self.preguntasTutorial, function(index, pregunta){
-    		$.each(self.tutoriales, function(j, tutorial){
+    		$.each(self.tutorialesFisica2, function(j, tutorial){
+    			if(pregunta.tutorial.toLowerCase()==tutorial.nombre.toLowerCase()){
+    				tutorial.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    		$.each(self.tutorialesFisica3, function(k, tutorial){
     			if(pregunta.tutorial.toLowerCase()==tutorial.nombre.toLowerCase()){
     				tutorial.preguntas.push(pregunta);
     				return false;
@@ -89,7 +102,7 @@ var practica = new Vue({
     },
     crearTutorial: function(){
     	var self = this;
-    	var url = '/api/capitulos/'
+    	var url = '/api/capitulos/';
     	self.$http.post(url, self.tutorial).then(response => {
     		self.tutoriales.push(self.tutorial);
     		self.tutorial.nombre = '';
@@ -165,4 +178,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
       $(".dropdown-button").dropdown();
     }
   })
+});
+
+
+$('#select-materia').change(function(){
+	practica.tutorial.nombreMateria = $('#select-materia option:selected').text();
+	practica.tutorial.codigoMateria = $('#select-materia option:selected').val();
+});
+
+
+$('#select-materia-tutorial').change(function(){
+	if($('#select-materia-tutorial option:selected').val()=='FISG1002'){
+		practica.tutoriales = [];
+		practica.tutoriales = practica.tutorialesFisica2;
+		console.log(practica.tutoriales)
+	}else if($('#select-materia-tutorial option:selected').val()=='FISG1003'){
+		practica.tutoriales = [];
+		practica.tutoriales = practica.tutorialesFisica3;
+		console.log(practica.tutoriales)
+	}
 });

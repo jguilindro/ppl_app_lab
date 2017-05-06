@@ -5,6 +5,7 @@ var app = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoCapitulo').modal();
+		 $('select').material_select();
 		//this.getPreguntas();
 		this.obtenerLogeado();
 		this.obtenerCapitulos();
@@ -20,8 +21,16 @@ var app = new Vue({
 		profesor: {},
 		capitulo: {
 			nombre: '',
-			tipo: 'estimacion'
-		}
+			tipo: 'estimacion',
+			codigoMateria: '',
+			nombreMateria: ''
+		},
+		materiaEscogida: {
+			nombreMateria: '',
+			codigoMateria: ''
+		},
+		capitulosFisica2: [],
+		capitulosFisica3: []
 	},
 	methods: {
 		obtenerLogeado: function() {
@@ -40,8 +49,11 @@ var app = new Vue({
     		//SUCCESS CALLBACK
     		self.capitulosObtenidos = response.body.datos;
     		$.each(self.capitulosObtenidos, function(index, capitulo){
-    			if(capitulo.tipo.toLowerCase()=='estimacion'){
-    				self.capitulos.push(capitulo);
+    			if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1002'){
+    				//self.capitulos.push(capitulo);
+    				self.capitulosFisica2.push(capitulo);
+    			}else if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1003'){
+    				self.capitulosFisica3.push(capitulo);
     			}
     		});
     		self.obtenerPreguntas();
@@ -72,7 +84,13 @@ var app = new Vue({
     dividirPreguntasEnCapitulos: function(){
     	var self = this;
     	$.each(self.preguntasEstimacion, function(index, pregunta){
-    		$.each(self.capitulos, function(j, capitulo){
+    		$.each(self.capitulosFisica2, function(j, capitulo){
+    			if(pregunta.capitulo.toLowerCase()==capitulo.nombre.toLowerCase()){
+    				capitulo.preguntas.push(pregunta);
+    				return false;
+    			}
+    		});
+    		$.each(self.capitulosFisica3, function(k, capitulo){
     			if(pregunta.capitulo.toLowerCase()==capitulo.nombre.toLowerCase()){
     				capitulo.preguntas.push(pregunta);
     				return false;
@@ -94,13 +112,11 @@ var app = new Vue({
     	}, response => {
     		console.log('Hubo un error al crear el capítulo.')
     		console.log(response);
-    	})
+    	});
     },
-
 		nuevaPregunta: function(){
 
 			window.location.href = '/profesores/preguntas/nueva-pregunta'
-
 		},
 		eliminarPregunta: function(id){
 			var self = this;
@@ -145,7 +161,6 @@ var app = new Vue({
 			$('#modalEliminarPreguntaFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarPregunta').modal('open');
 		},
-		
 		prueba: function(){
 			var self = this;
 			console.log(self.capitulos)
@@ -156,9 +171,6 @@ var app = new Vue({
 			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
-		
-    
-
 	}
 });
 
@@ -175,4 +187,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
       $(".dropdown-button").dropdown();
     }
   })
+});
+
+$('#select-materia').change(function(){
+	app.capitulo.nombreMateria = $('#select-materia option:selected').text();
+	app.capitulo.codigoMateria = $('#select-materia option:selected').val();
+});
+
+$('#select-materia-estimacion').change(function(){
+	app.materiaEscogida.nombreMateria = $('#select-materia-estimacion option:selected').text();
+	app.materiaEscogida.codigoMateria = $('#select-materia-estimacion option:selected').val();
+	if($('#select-materia-estimacion option:selected').text()=='Física 2'){
+		app.capitulos = [];
+		app.capitulos = app.capitulosFisica2;
+		console.log(app.capitulos)
+	}else if($('#select-materia-estimacion option:selected').text()=='Física 3'){
+		app.capitulos = [];
+		app.capitulos = app.capitulosFisica3;
+		console.log(app.capitulos)
+	}
 });
