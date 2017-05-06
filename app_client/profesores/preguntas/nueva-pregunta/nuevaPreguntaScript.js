@@ -196,7 +196,7 @@ var app = new Vue({
         $('#div-select-tutorial').empty();
         var label = $('<label>').addClass('active').text('Tutoriales');
         $('#div-select-tutorial').append(label);
-        self.crearSelectCapitulos('select-tutoriales', self.capituloEscogido, 'div-select-tutorial', self.tutoriales, 'tutoriales');
+        self.crearSelectCapitulos('select-tutorial', self.capituloEscogido, 'div-select-tutorial', self.tutoriales, 'tutorial');
         self.nuevoTutorial.nombre = '';
       }, response => {
         console.log('Error al crear el tutorial');
@@ -223,7 +223,7 @@ var app = new Vue({
         $('#div-select-laboratorio').empty();
         var label = $('<label>').addClass('active').text('Laboratorios');
         $('#div-select-laboratorio').append(label);
-        self.crearSelectCapitulos('select-laboratorios', self.capituloEscogido, 'div-select-laboratorio', self.laboratorios, 'laboratorios');
+        self.crearSelectCapitulos('select-laboratorios', self.capituloEscogido, 'div-select-laboratorio', self.laboratorios, 'laboratorio');
         self.nuevoLaboratorio.nombre = '';
       }, response => {
         console.log('Error al crear el laboratorio');
@@ -233,9 +233,12 @@ var app = new Vue({
     cancelar: function(){
       window.location.href = '/profesores/preguntas/estimacion'
     },
-		ok: function(){
+		regresar: function(){
 			window.location.href = '/profesores/preguntas/estimacion'
 		},
+    continuar: function(){
+      window.location.href = '/profesores/preguntas/nueva-pregunta'
+    }
 	},
 });
 

@@ -79,6 +79,11 @@ var app = new Vue({
     			}
     		});
     	});
+    	$.each(self.capitulos, function(index, capitulo){
+    		capitulo.preguntas.sort(function(a, b){
+    			 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    		});
+    	});
     },
     crearCapitulo: function(){
     	var self = this;

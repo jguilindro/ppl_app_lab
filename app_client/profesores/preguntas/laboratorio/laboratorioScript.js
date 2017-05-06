@@ -75,6 +75,11 @@ var laboratorio = new Vue({
     			}
     		});
     	});
+    	$.each(self.laboratorios, function(index, laboratorio){
+    		laboratorio.preguntas.sort(function(a, b){
+    			 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    		})
+    	})
     },
     //Funciones
     crearLaboratorio: function(){

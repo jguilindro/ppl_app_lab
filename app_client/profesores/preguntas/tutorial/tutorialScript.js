@@ -17,7 +17,7 @@ var practica = new Vue({
 		$('.scrollspy').scrollSpy();
 		$(".dropdown-button").dropdown();
 		$('#modalEliminarPregunta').modal();
-		$('#modalNuevaPractica').modal();
+		$('#modalNuevoTutorial').modal();
 		this.obtenerLogeado();
 		this.obtenerTutoriales();
 		//this.getPreguntas();
@@ -79,6 +79,13 @@ var practica = new Vue({
     			}
     		});
     	});
+    	//Ordenamiento de preguntas por fecha de creacion
+    	$.each(self.tutoriales, function(index, tutorial){
+    		tutorial.preguntas.sort(function(a,b) { 
+				    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() 
+				});
+    	})
+    	
     },
     crearTutorial: function(){
     	var self = this;
