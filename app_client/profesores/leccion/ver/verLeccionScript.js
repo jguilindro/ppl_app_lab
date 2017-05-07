@@ -14,7 +14,6 @@ var appVerLeccion = new Vue({
 					self.leccion = response.body.datos;
 					self.obtenerPreguntas();	
 				}
-				console.log(response)
 			}, response => {
 				console.log(response)
 			});
@@ -40,4 +39,15 @@ var appVerLeccion = new Vue({
 		leccion: {},
 		preguntas: []
 	}
+});
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  $.get({
+    url: "/../navbar/profesores",
+    success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    }
+  })
 });

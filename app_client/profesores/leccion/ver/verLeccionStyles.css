@@ -1,3 +1,21 @@
 .title{
     font-weight: bold;
 }
+
+.preguntas>li{
+	border-top: 1px solid;
+	padding: 2%;
+
+}
+
+.preguntas>li>a>p{
+	color: black;
+}
+
+#footnote{
+	font-size: 14px;
+}
+
+.pregunta-titulo{
+	font-weight: bold;
+}

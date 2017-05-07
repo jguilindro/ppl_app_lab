@@ -30,7 +30,7 @@
 			  			</thead>
 			  			<tbody>
 			  				<tr v-for="leccion in lecciones">
-			  					<td><a v-bind:href="'./modificar/' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
+			  					<td><a v-bind:href="'./' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
 			  					<td class="text-flow">{{leccion.nombreMateria}}</td>
 			  					<td class="text-flow">{{leccion.tipo}}</td>
 			  					<td class="text-flow">{{leccion.nombreParalelo}}</td>
