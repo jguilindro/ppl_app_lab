@@ -19,9 +19,9 @@
           <br>
           <div class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
-              <li class="tab col s4"><a class="active" href="#test1">Setup</a></li>
-              <li class="tab col s4"><a href="#test2">Select</a></li>
-              <li class="tab col s4"><a href="#test4">Overview</a></li>
+              <li class="tab col s4"><a class="active" href="#test1">Preparar</a></li>
+              <li class="tab col s4"><a href="#test2">Seleccionar</a></li>
+              <li class="tab col s4"><a href="#test4">Resumen</a></li>
             </ul>
           </div>
         </div>
@@ -80,12 +80,18 @@
                         <h5>{{capitulo.nombre}}</h5>
                         <ul class="preguntas">
                           <li v-for="pregunta in capitulo.preguntas" class="question">
-                          <p>
+                          <div>
                             <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
                             <label v-bind:for="pregunta._id">
                               {{pregunta.nombre}}
+                            </label> 
+                            <label class="icono pull right">
+                              <a class="btn-floating waves-effect" v-on:click="verModal(pregunta.descripcion)">
+                                <i class="tiny material-icons">visibility</i>
+                              </a>
+                              <span class="clearer"></span>
                             </label>
-                          </p>
+                          </div>
                           </li>
                         </ul>
                       </div>
@@ -147,6 +153,14 @@
     	      <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
     	    </div>
     	  </div>
+        <div id="modalDesc" class="modal">
+          <div class="modal-content">
+            <p class="center-align">...</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+          </div>
+        </div>
       </div>
     </div>
     <footer>

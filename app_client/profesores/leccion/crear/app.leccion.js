@@ -246,6 +246,13 @@ var App = new Vue({
           console.log("EEEEEERRRROOOOOOOOOOOOOR!")
         });
     },
+    verModal: function(descripcion){
+      /*
+        Colocar Modal
+      */
+      $("#modalDesc .modal-content p").text(descripcion);
+      $('#modalDesc').modal('open');
+    },
     crearSelectParalelos: function(){
       var self = this;
       var select = $('<select>').attr({"id":"select-paralelos"});
@@ -334,8 +341,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 $('#div-select').change(function(){ 
   App.leccion_nueva.paralelo = $('#select-paralelos option:selected').val();
   App.leccion_nueva.nombreParalelo = $('#select-paralelos option:selected').text();
-
-  console.log("asdsadasd");
 });
 
 $('#select-tipo-leccion').change(function(){
