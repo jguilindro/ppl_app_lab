@@ -50,12 +50,12 @@ var app = new Vue({
     		self.capitulosObtenidos = response.body.datos;
     		$.each(self.capitulosObtenidos, function(index, capitulo){
     			if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1002'){
-    				//self.capitulos.push(capitulo);
     				self.capitulosFisica2.push(capitulo);
     			}else if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1003'){
     				self.capitulosFisica3.push(capitulo);
     			}
     		});
+
     		self.obtenerPreguntas();
     	}, response => {
     		//ERROR CALLBACK
@@ -97,11 +97,17 @@ var app = new Vue({
     			}
     		});
     	});
-    	$.each(self.capitulos, function(index, capitulo){
+    	$.each(self.capitulosFisica3, function(index, capitulo){
     		capitulo.preguntas.sort(function(a, b){
     			 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     		});
     	});
+    	$.each(self.capitulosFisica2, function(index, capitulo){
+    		capitulo.preguntas.sort(function(a, b){
+    			 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    		});
+    	});
+
     },
     crearCapitulo: function(){
     	var self = this;
@@ -163,8 +169,9 @@ var app = new Vue({
 		},
 		prueba: function(){
 			var self = this;
-			console.log(self.capitulos)
-			console.log(self.preguntas)
+			console.log(self.capitulosObtenidos)
+			console.log(self.capitulosFisica2)
+			console.log(self.capitulosFisica3)
 		},
 		checkCreador: function(pregunta){
 			var self = this;

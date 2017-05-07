@@ -20,13 +20,8 @@ const local = function() {
     }
   }else if(os.hostname() === 'DESKTOP-H2S89J8'){
     if (process.env.NODE_ENV == 'development') {
-<<<<<<< HEAD
       console.log('development local')
       return require('../config/main').local //local
-=======
-      console.log('development mlab')
-      return require('../config/main').mlab //local
->>>>>>> master
     } else if (process.env.NODE_ENV == 'production') {
       console.log('production local')
       return require('../config/main').local_production
