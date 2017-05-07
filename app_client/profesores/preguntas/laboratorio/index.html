@@ -41,7 +41,7 @@
 					<div class="col hide-on-small-only m3 l2">
 						<ul class="section table-of-contents">
 			  			<li v-for="laboratorio in laboratorios">
-			  				<a v-bind:href="laboratorio.href">{{laboratorio.nombre}}</a>
+			  				<a v-bind:href="'#' + laboratorio._id">{{laboratorio.nombre}}</a>
 			  			</li>
 			  			<button class="btn waves-effect waves-light btn-small-new" id="btnLabNuevo">Nuevo laboratorio</button>
 			  		</ul>	
