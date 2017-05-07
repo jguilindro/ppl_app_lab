@@ -35,7 +35,7 @@
         </section>
         <section v-if="leccion.estado=='pendiente'">
         	<hr>
-        	<button class="btn waves-effect waves-light btn-small-new pull right" id="btnEditar">Editar</button>
+        	<button class="btn waves-effect waves-light btn-small-new pull right" id="btnEditar" @click="editar">Editar</button>
         	<button class="btn waves-effect waves-light btn-small-new" id="btnEliminar">Eliminar</button>
         </section>
         <section v-if="leccion.estado!='pendiente'">

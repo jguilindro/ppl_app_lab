@@ -33,6 +33,13 @@ var appVerLeccion = new Vue({
 		prueba: function(){
 			var self = this;
 			console.log(self.preguntas)
+		},
+		editar: function(){
+			var self = this;
+			var pathname = window.location.pathname;
+			var idLeccion = pathname.split('/')[3];
+			var url = '/profesores/leccion/modificar/' + idLeccion;
+			window.location.href = url;
 		}
 	},
 	data: {
