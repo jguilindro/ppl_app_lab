@@ -111,6 +111,22 @@ EstudianteSchema.statics.obtenerEstudiantePorCorreoNoPopulate = function(correo_
   this.findOne({correo: correo_estudiante},callback)
 }
 
+EstudianteSchema.statics.obtenerEstudiantePorMatriculaNoPopulate = function(matricula, callback) {
+  this.findOne({matricula: matricula},callback)
+}
+
+EstudianteSchema.statics.editarApellidosPorMatricula = function(matricula_estudiante, apellidos, callback) {
+  this.update({matricula: matricula_estudiante} ,{$set: {apellidos: apellidos}},callback)
+}
+
+EstudianteSchema.statics.editarNombresPorMatricula = function(matricula_estudiante, nombres, callback) {
+  this.update({matricula: matricula_estudiante} ,{$set: {nombres: nombres}},callback)
+}
+
+EstudianteSchema.statics.editarCorreoPorMatricula = function(matricula_estudiante, correo, callback) {
+  this.update({matricula: matricula_estudiante} ,{$set: {correo: correo}},callback)
+}
+
 EstudianteSchema.statics.eliminarEstudiante = function(id_estudiante, callback) {
   this.findOneAndRemove({_id: id_estudiante}, callback)
 }

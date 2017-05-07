@@ -38,6 +38,12 @@ module.exports = {
   update: function() {
     if (process.env.NODE_ENV == 'production') {
       // var estudiantes = require('./update/estudiantes.ws.update')
+      // co(function* () {
+      //   var estudiantes = require('./update/estudiantes.ws.update')
+      //   var e = yield estudiantes()
+      //   logger.info('actualizada db')
+      // })
+      // var estudiantes = require('./update/estudiantes.ws.update')
       // new CronJob('00 30 04 * * 1-7', function() {
       //   var estudiantes = require('./update/estudiantes.ws.update')
       //   co(function* () {

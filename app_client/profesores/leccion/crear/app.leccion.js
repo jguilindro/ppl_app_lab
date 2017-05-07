@@ -250,7 +250,8 @@ var App = new Vue({
       /*
         Colocar Modal
       */
-      $("#modalDesc .modal-content p").text(descripcion);
+      $("#modalDesc .modal-content").empty();
+      $("#modalDesc .modal-content").append(descripcion);
       $('#modalDesc').modal('open');
     },
     crearSelectParalelos: function(){

@@ -72,7 +72,7 @@ app.use('/scripts', express.static(__dirname + '/node_modules/'));
 //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 //   next();
 // });
-// 
+//
 // Control de rutas(para que estudiantes no puedan ingresar a profesor ruta)
 var procesarSession = require('./app_api/config/auth.cas.config').session
 var procesarSessionEstudiante = require('./app_api/config/auth.cas.config').sessionEstudiante
@@ -188,7 +188,11 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEs
 app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // otros
-app.use('/otros',  express.static(path.join(__dirname, 'app_client/otros')))
+app.use('/otros', function(req, res, next) {
+  req.session.destroy(function(err) {
+    console.log('session destroy');
+  })
+}, express.static(path.join(__dirname, 'app_client/otros')))
 
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))

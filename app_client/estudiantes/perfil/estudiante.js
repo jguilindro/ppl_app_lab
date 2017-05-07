@@ -26,6 +26,11 @@ var app = new Vue({
           self.lecciones.push(leccion);
         }
       })
+    },moment: function (date) {
+      return moment(date);
+    },
+    date: function (date) {
+      return moment(date).format('MMMM Do YYYY');
     },
     tomarLeccion : function(){
         window.location.href = '/estudiantes/tomar-leccion'

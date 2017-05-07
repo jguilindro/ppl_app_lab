@@ -18,6 +18,7 @@
 
 const EstudianteModel = require('../../models/estudiante.model');
 const ParaleloModel = require('../../models/paralelo.model');
+const GrupoModel = require('../../models/grupo.model')
 const utils  = require('../utils.ws');
 
 const diff    = require('deep-diff').diff,
@@ -49,7 +50,6 @@ function init() {
   return new Promise((resolve, reject) => {
     utils.estudiantesDB(estudiantesDB => {
       utils.estudiantesWS(estudiantesWS => {
-        console.log(estudiantesWS.length);
         estudiantesWS = _.sortBy(estudiantesWS, ['nombres']);
         estudiantesDB = _.sortBy(estudiantesDB, ['nombres']);
         var diferencias = jsondiffpatch.diff(estudiantesDB, estudiantesWS);
@@ -109,9 +109,7 @@ function init() {
             })
             diferencias = jsondiffpatch.diff(estudiantesDB_editados, estudiantesWS_editados);
             if (diferencias) {
-              console.log('diiif');
-              console.log(diferencias);
-              // var est = yield estudiantesCambiadosDeCurso(diferencias, estudiantes_editados)
+              var est = yield estudiantesCambiadosDeCurso(diferencias, estudiantes_editados)
               resolve(true)
             } else {
               resolve(true)
@@ -124,15 +122,8 @@ function init() {
 }
 
 function estudiantesIguales(estudiante1, estudiante2) {
-  // if (estudiante1 == undefined || estudiante2 == undefined) {
-  //   // logger.log('est 1', estudiante1);
-  //   logger.log('est 2', estudiante2);
-  //   return false
-  // }
-  var nombres = estudiante1.nombres === estudiante2.nombres
-  var apellidos = estudiante1.apellidos === estudiante2.apellidos
   var matricula = estudiante1.matricula === estudiante2.matricula
-  if (nombres && apellidos && matricula) {
+  if (matricula) {
     return true
   }
   return false
@@ -162,9 +153,9 @@ function eliminarEstudianteDB(correo_estudiante, id_paralelo) {
   })
 }
 
-function obtenerEstudiantePorCorreo(correo) {
+function obtenerEstudiantePorMatricula(matricula) {
   return new Promise((resolve, reject) => {
-    EstudianteModel.obtenerEstudiantePorCorreoNoPopulate(correo, (err, estudiante) => {
+    EstudianteModel.obtenerEstudiantePorMatriculaNoPopulate(matricula, (err, estudiante) => {
       if (err) {
         logger.error('estudiante error al encontrar', err)
         return resolve(null)
@@ -225,40 +216,79 @@ function crearEstudianteYAnadirloAParalelo(id_paralelo, estudiante_nuevo) {
   })
 }
 
-// FIX: si estudiante cambia de correo, nombres, apellidos
 function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
   console.log(diferencias);
-  // console.log(estudiantesDB);
   return new Promise((resolve, reject) => {
     var indexes = Object.keys(diferencias)
-    var estudiantes_cambiados = []
+    var estudiantes_cambiados_paralelo = []
+    var estudiantes_cambiados_correo = []
+    var estudiantes_cambiados_nombres = []
+    var estudiantes_cambiados_apellidos = []
     for (var i = 0; i < (indexes.length - 1); i++) {
       let estudiante_camb = estudiantesDB[indexes[i]]
-      estudiante_camb.paralelo_nuevo = diferencias[indexes[i]].paralelo[1]
-      // if (diferencias[indexes[i]].paralelo) {
-      //   estudiante_camb.paralelo_nuevo = diferencias[indexes[i]].paralelo[1]
-      // }
-      // if (diferencias[indexes[i]].codigomateria) {
-      //   estudiante_camb.codigomateria_nuevo = diferencias[indexes[i]].codigomateria[1]
-      // }
-      estudiantes_cambiados.push(estudiante_camb)
+      if (diferencias[indexes[i]].paralelo) {
+        estudiante_camb.paralelo_nuevo = diferencias[indexes[i]].paralelo[1]
+        estudiantes_cambiados_paralelo.push(estudiante_camb)
+      }
+      if (diferencias[indexes[i]].correo) {
+        estudiante_camb.correo_nuevo = diferencias[indexes[i]].correo[1]
+        estudiantes_cambiados_correo.push(estudiante_camb)
+      }
+      if (diferencias[indexes[i]].nombres) {
+        estudiante_camb.nombres_nuevo = diferencias[indexes[i]].nombres[1]
+        estudiantes_cambiados_nombres.push(estudiante_camb)
+      }
+      if (diferencias[indexes[i]].apellidos) {
+        estudiante_camb.apellidos_nuevo = diferencias[indexes[i]].apellidos[1]
+        estudiantes_cambiados_apellidos.push(estudiante_camb)
+      }
     }
+    logger.log('cambiado paralelo',estudiantes_cambiados_paralelo.length)
+    logger.log('cambiado apellidos', estudiantes_cambiados_apellidos.length)
+    logger.log('cambiando nombres', estudiantes_cambiados_nombres.length)
+    logger.log('cambiando correo', estudiantes_cambiados_correo.length)
     co(function* () {
       var paralelos = yield obtenerTodosParalelos()
-      for (var i = 0; i < estudiantes_cambiados.length; i++) {
-        var est = estudiantes_cambiados[i]
-        var estudiante = yield obtenerEstudiantePorCorreo(est.correo)
+      // paralelo
+      for (var i = 0; i < estudiantes_cambiados_paralelo.length; i++) {
+        var est = estudiantes_cambiados_paralelo[i]
+        var estudiante = yield obtenerEstudiantePorMatricula(est.matricula)
         var paralelo = encontrarParalelo(est.paralelo, est.codigomateria, est.anio, est.termino, paralelos)
-        // if (!est.paralelo_nuevo) {
-        //   est.paralelo_nuevo = est.paralelo
-        // }
-        // if (!est.codigomateria_nuevo) {
-        //   est.codigomateria_nuevo = est.codigomateria
-        // } est.codigomateria_nuevo
         var paralelo_nuevo = encontrarParalelo(est.paralelo_nuevo, est.codigomateria, est.anio, est.termino, paralelos)
         var logrado = yield cambiarEstudianteDeParalelo(paralelo._id, paralelo_nuevo._id, estudiante._id)
+        var eliminado_grupo = yield eliminarEstudianteDeGrupos(estudiante._id)
         if (!logrado) {
           logger.error('no se pudo cambiar estado estudiante')
+          return reject(false)
+        }
+      }
+      // correo
+      for (var i = 0; i < estudiantes_cambiados_correo.length; i++) {
+        var est = estudiantes_cambiados_correo[i]
+        // var estudiante = yield obtenerEstudiantePorMatricula(est.matricula)
+        var match_correo = yield editarCorreo(est.matricula, est.correo_nuevo)
+        if (!match_correo) {
+          logger.error('no se pudo cambiar correo estudiante')
+          return reject(false)
+        }
+      }
+      // nombres
+      for (var i = 0; i < estudiantes_cambiados_nombres.length; i++) {
+        var est = estudiantes_cambiados_nombres[i]
+        // var estudiante = yield obtenerEstudiantePorMatricula(est.matricula)
+        var match_nombres = yield editarNombres(est.matricula, est.nombres_nuevo)
+        if (!match_nombres) {
+          logger.error('no se pudo cambiar correo estudiante')
+          return reject(false)
+        }
+      }
+      // apellidos
+      for (var i = 0; i < estudiantes_cambiados_apellidos.length; i++) {
+        var est = estudiantes_cambiados_apellidos[i]
+        // var estudiante = yield obtenerEstudiantePorMatricula(est.matricula)
+        var match_apellidos = yield editarApellidos(est.matricula, est.apellidos_nuevo)
+        if (!match_apellidos) {
+          logger.error('no se pudo cambiar correo estudiante')
           return reject(false)
         }
       }
@@ -267,4 +297,61 @@ function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
   })
 }
 
-module.exports = init()
+function editarApellidos(matricula, apellidos) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.editarApellidosPorMatricula (matricula, apellidos, (err, res) => {
+      if (err) {
+        logger.error('error al cambiar apellidos estudiante', err)
+        return reject(err)
+      }
+      return resolve(true)
+    })
+  })
+}
+
+function editarNombres(matricula, nombres) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.editarNombresPorMatricula (matricula, nombres, (err, res) => {
+      if (err) {
+        logger.error('error al cambiar nombres estudiante', err)
+        return reject(err)
+      }
+      return resolve(true)
+    })
+  })
+}
+
+function editarCorreo(matricula, correo) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.editarCorreoPorMatricula (matricula, correo, (err, res) => {
+      if (err) {
+        logger.error('error al cambiar correo estudiante', err)
+        return reject(err)
+      }
+      return resolve(true)
+    })
+  })
+}
+
+function eliminarEstudianteDeGrupos(id_estudiante) {
+  return new Promise((resolve, reject) => {
+    GrupoModel.obtenerGrupoDeEstudiante(id_estudiante, (err, grupo) => {
+      if (err) {
+        logger.error('Error al eliminar estudiante de grupo')
+        return reject(err)
+      }
+      if (grupo) {
+        GrupoModel.eliminarEstudiante(grupo._id, id_estudiante, (err, grupo) => {
+          if (err) {
+            logger.error('Error al eliminar estudiante de grupo')
+            return reject(err)
+          }
+          return resolve(true)
+        })
+      }
+      return resolve(true)
+    })
+  })
+}
+
+module.exports = init

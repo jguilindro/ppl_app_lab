@@ -48,8 +48,17 @@ GrupoSchema.statics.eliminarEstudiante = function(id_grupo, id_estudiante, callb
   this.update({_id: id_grupo}, {$pull: {estudiantes: id_estudiante}}, callback);
 }
 
+GrupoSchema.statics.eliminarEstudianteDeGrupos = function(id_estudiante, callback) {
+  console.log(id_estudiante);
+  this.update({},{$pull: {estudiantes: id_estudiante}}, { multi: true }, callback)
+}
+
 GrupoSchema.statics.obtenerGrupoDeEstudiante = function(id_estudiante, callback) {
   this.findOne({estudiantes: id_estudiante}, callback)
+}
+
+GrupoSchema.statics.obtenerGruposDeEstudiante = function(id_estudiante, callback) {
+  this.find({estudiantes: id_estudiante}, callback)
 }
 /*
 	Lecciones
