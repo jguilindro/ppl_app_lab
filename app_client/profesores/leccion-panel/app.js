@@ -35,7 +35,8 @@ var App = new Vue({
             comenzar()
             this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
               if (res.body.estado) {
-
+                  document.getElementById('comenzar-leccion').disabled = true
+                  document.getElementById('terminar-leccion').disabled = false
               }
             })
           }
@@ -69,7 +70,7 @@ var App = new Vue({
 
 App.obtenerLeccion()
 App.obtenerParalelo()
-
+document.getElementById('terminar-leccion').disabled = true
 
 
 var leccion = io('/tomando_leccion');
@@ -105,6 +106,8 @@ leccion.on('estudiante desconectado', function(_estudiante) {
 })
 
 leccion.on('tiempo restante', function(tiempo) {
+  document.getElementById('comenzar-leccion').disabled = true
+  document.getElementById('terminar-leccion').disabled = false
   App.tiempo = tiempo
 })
 
@@ -120,6 +123,9 @@ function comenzar() {
 function terminarLeccion() {
   leccion.emit('parar leccion', 'la leccion ha sido detenida')
   document.getElementById('terminar-leccion').disabled = true
+  setTimeout(function(ee) {
+    window.location.href = '/profesores/leccion'
+  }, 2000)
 }
 
 function terminarLeccionDevelopment() {

@@ -16,8 +16,8 @@
   	<div class="container">
       <div class="botones">
         <!-- <button class="btn" type="button" id="terminar-leccion-delelopment" onclick="terminarLeccionDevelopment()">parar development</button> -->
-        <button class="btn boton"  type="button" v-on:click="tomarLeccion()">comenzar leccion</button>
-        <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">parar leccion</button>
+        <button class="btn boton"  id='comenzar-leccion'type="button" v-on:click="tomarLeccion()">comenzar lección</button>
+        <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
       </div>
 	    <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
 	    <!-- <p>{{grupos}}</p> -->
