@@ -15,13 +15,15 @@ p.collection-item{
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
+li.question{
+    margin-bottom: 5%; 
+}
 .strike {
     display: block;
     text-align: center;
     overflow: hidden;
     white-space: nowrap; 
 }
-
 .strike > span {
     position: relative;
     display: inline-block;

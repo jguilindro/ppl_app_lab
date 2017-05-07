@@ -1,6 +1,6 @@
 // const mongoose = require('mongoose');
 // const URL_LOCAL = require('../config/main').local
-// const URL_MLAB = require('../config/main').mlab
+// // const URL_MLAB = require('../config/main').mlab
 // mongoose.connect(URL_LOCAL)
 // const db = mongoose.connection;
 //
@@ -9,7 +9,7 @@
 // })
 //
 // db.on('connected', function() {
-//   console.log(`base de datos conectada`);
+//   console.log(`base de datos local para upload`);
 // })
 
 var co = require('co')
@@ -47,12 +47,12 @@ module.exports = {
       // }, null, true, 'America/Guayaquil');
     }
     if (process.env.NODE_ENV == 'development') {
-      // var estudiantes = require('./update/estudiantes.ws.update')
-      // co(function* () {
-      //   var estudiantes = require('./update/estudiantes.ws.update')
-      //   var e = yield estudiantes
-      //   logger.info('actualizada db')
-      // })
+      var estudiantes = require('./update/estudiantes.ws.update')
+      co(function* () {
+        var estudiantes = require('./update/estudiantes.ws.update')
+        var e = yield estudiantes
+        logger.info('actualizada db')
+      })
       // new CronJob('* * * * * *', function() {
       // //   var estudiantes = require('./update/estudiantes.ws.update')
       // //   co(function* () {

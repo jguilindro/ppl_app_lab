@@ -16,11 +16,11 @@
 				<h4 class="center-align title">Información general</h4>
 				<section id="leccion-section">
 					<p class="flow-text"><span class="title">Nombre:                </span> {{leccion.nombre}}</p>
-	        <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{leccion.tiempoEstimado}} minutos</p>
-	        <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion.tipo}}</p>
-	        <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion.fechaInicio}}</p>
-	        <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion.puntaje}}</p>
-	        <p class="flow-text"><span class="title">Paralelo:              </span> {{leccion.paralelo}}</p>
+			        <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{leccion.tiempoEstimado}} minutos</p>
+			        <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion.tipo}}</p>
+			        <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion.fechaInicio}}</p>
+			        <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion.puntaje}}</p>
+			        <p class="flow-text"><span class="title">Paralelo:              </span> {{leccion.nombreParalelo}}</p>
 				</section>
 				<h4 class="center-align title">Preguntas escogidas</h4>
         <section id="preguntas-section">
@@ -28,7 +28,7 @@
 	        	<li v-for="pregunta in preguntas">
 	        		<a v-bind:href="'/profesores/preguntas/' + pregunta.tipoLeccion + '/' + pregunta._id">
 	        			<p class="pregunta flow-text center-align pregunta-titulo">{{pregunta.nombre}}</p>
-				  			<p class="truncate descripcion flow-text" v-html="pregunta.descripcion"></p>
+				  			<p class="truncate descripcion" v-html="pregunta.descripcion"></p>
 				  		</a>
 	        	</li>
 	        </ul>
@@ -40,7 +40,7 @@
         </section>
         <section v-if="leccion.estado!='pendiente'">
         	<hr>
-        	<p class="center-align" id="footnote">No puede editar ni eliminar una lección que ya ha sido tomada.</p>
+        	<p class="left-align" id="footnote">**No puede editar ni eliminar una lección que ya ha sido tomada.</p>
         </section>
 			</div>
 		</main>

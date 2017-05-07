@@ -49,6 +49,7 @@ function init() {
   return new Promise((resolve, reject) => {
     utils.estudiantesDB(estudiantesDB => {
       utils.estudiantesWS(estudiantesWS => {
+        console.log(estudiantesWS.length);
         estudiantesWS = _.sortBy(estudiantesWS, ['nombres']);
         estudiantesDB = _.sortBy(estudiantesDB, ['nombres']);
         var diferencias = jsondiffpatch.diff(estudiantesDB, estudiantesWS);
@@ -108,7 +109,9 @@ function init() {
             })
             diferencias = jsondiffpatch.diff(estudiantesDB_editados, estudiantesWS_editados);
             if (diferencias) {
-              var est = yield estudiantesCambiadosDeCurso(diferencias, estudiantes_editados)
+              console.log('diiif');
+              console.log(diferencias);
+              // var est = yield estudiantesCambiadosDeCurso(diferencias, estudiantes_editados)
               resolve(true)
             } else {
               resolve(true)
@@ -222,6 +225,7 @@ function crearEstudianteYAnadirloAParalelo(id_paralelo, estudiante_nuevo) {
   })
 }
 
+// FIX: si estudiante cambia de correo, nombres, apellidos
 function estudiantesCambiadosDeCurso(diferencias, estudiantesDB) {
   console.log(diferencias);
   // console.log(estudiantesDB);

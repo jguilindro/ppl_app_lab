@@ -49,7 +49,6 @@
             <!-- <input type="text"  v-model="buscarEstudianteEnGrupo" placeholder="BUSCAR ESTUDIANTE"> -->
           </div>
           <div class="col s4">
-            <label for="">PARALELO</label>
             <select id="selector" onchange="obtenerParaleloEscogido(this)">
               <option v-for="(paralelo, index) in paralelos" v-bind:id="paralelo._id" v-bind:value="index" v-if="index_seleccionado == index">Paralelo {{paralelo.nombre}} - {{paralelo.codigo}} </option>
        				<option v-for="(paralelo, index) in paralelos" v-bind:id="paralelo._id" v-bind:value="index" v-if="index_seleccionado != index">Paralelo {{paralelo.nombre}} - {{paralelo.codigo}} </option>

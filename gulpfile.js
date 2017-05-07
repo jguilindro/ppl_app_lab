@@ -21,6 +21,9 @@ gulp.task('production',['produc','nodemon','uri'], function () {
 gulp.task('realtime',['set-dev-node-env','nodemon','uri'], function () {
 });
 
+gulp.task('api',['emergencia','nodemon','uri'], function () {
+});
+
 gulp.task('uri', function(){
   var options = {
     uri: 'http://localhost:3000',
@@ -44,6 +47,10 @@ gulp.task('test', function() {
 
 gulp.task('produc', function() {
     return process.env.NODE_ENV = 'production';
+});
+
+gulp.task('emergencia', function() {
+    return process.env.NODE_ENV = 'api';
 });
 
 gulp.task('browser-sync', [], function() {
