@@ -39,7 +39,7 @@
 			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a></td>
 			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new center-align" @click="calificarLeccion(leccion._id)">Calificar</a></td>
 			  					<td v-else-if="leccion.estado=='tomando'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a></td>
-			  					<td><a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a></td>
+			  					<td v-if="leccion.estado=='pendiente'"><a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a></td>
 			  				</tr>
 			  			</tbody>
 			  		</table>

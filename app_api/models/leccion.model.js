@@ -97,7 +97,24 @@ LeccionSchema.statics.obtenerLeccion = function(id_leccion, callback) {
 }
 
 LeccionSchema.statics.actualizarLeccion = function(id_leccion, actualizar, callback) {
-  this.update({_id: id_leccion}, {$set: {nombre: actualizar.nombre, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.tiempoEstimado, tipo: actualizar.tipo, fechaInicio: actualizar.fechaInicio}}, callback);
+  this.update(
+    {_id: id_leccion}, 
+    {$set: 
+      {
+        nombre: actualizar.nombre,
+        tiempoEstimado: actualizar.tiempoEstimado,
+        puntaje: actualizar.puntaje,
+        tipo: actualizar.tipo,
+        fechaInicio: actualizar.fechaInicio,
+        paralelo: actualizar.paralelo,
+        nombreParalelo: actualizar.nombreParalelo,
+        codigoMateria: actualizar.codigoMateria,
+        nombreMateria: actualizar.nombreMateria,
+        preguntas: actualizar.preguntas
+      }
+    }, 
+    callback
+  );
 }
 
 LeccionSchema.statics.eliminarLeccion = function(id_leccion, callback) {

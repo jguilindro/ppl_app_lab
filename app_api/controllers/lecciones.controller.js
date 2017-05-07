@@ -50,9 +50,15 @@ const actualizarLeccion = (req, res) => {
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
     tipo: req.body.tipo,
-    fechaInicio: req.body.fechaInicio
+    fechaInicio: req.body.fechaInicio,
+    paralelo: req.body.paralelo,
+    nombreParalelo: req.body.nombreParalelo,
+    codigoMateria: req.body.codigoMateria,
+    nombreMateria: req.body.nombreMateria,
+    preguntas: req.body.preguntas
   }
   const { id_leccion } = req.params
+  console.log(actualizar)
   LeccionModel.actualizarLeccion(id_leccion, actualizar, (err, doc) => {
     if (err) return respuesta.serverError(res);
     return respuesta.okActualizado(res);
