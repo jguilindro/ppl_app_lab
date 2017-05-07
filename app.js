@@ -1,29 +1,29 @@
-const express = require('express');
-path          = require('path');
-favicon       = require('serve-favicon');
-morgan        = require('morgan');
-cookieParser  = require('cookie-parser');
-cors          = require('cors');
-bodyParser    = require('body-parser'),
-session       = require('express-session'),
-MongoStore    = require('connect-mongo')(session),
+const express     = require('express');
+path              = require('path');
+favicon           = require('serve-favicon');
+morgan            = require('morgan');
+cookieParser      = require('cookie-parser');
+cors              = require('cors');
+bodyParser        = require('body-parser'),
+session           = require('express-session'),
+MongoStore        = require('connect-mongo')(session),
 CASAuthentication = require('cas-authentication');
 
-var URL_CAS_LOCAL = 'http://localhost:3000'
-var URL_CAS_PRODUCTION_TEST = 'http://localhost:3000'
+// CAS URLS
+var URL_CAS_LOCALHOST = 'http://localhost:3000'
 var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
 var SERVICE_URL = ''
-if (process.env.NODE_ENV == 'development') {
-  SERVICE_URL = URL_CAS_LOCAL
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'testing' || process.env.NODE_ENV == 'api') {
+  SERVICE_URL = URL_CAS_LOCALHOST
 } else if (process.env.NODE_ENV == 'production') {
   SERVICE_URL = URL_CAS_PRODUCTION
 } else if (process.env.NODE_ENV == 'testing') {
   SERVICE_URL = URL_CAS_PRODUCTION
-} else if (process.env.NODE_ENV == 'production-test') {
-  SERVICE_URL = URL_CAS_PRODUCTION_TEST
 }
+
 // base de datos mongoose
 require('./app_api/models/db')
+// sync db y ws
 require('./app_api/ws').update()
 //require('./app_api/utils/telegram_bot')
 
@@ -34,17 +34,24 @@ app.use(function(req, res, next){
   res.io = io;
   next();
 });
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'api') {
+  app.use(morgan('dev'));
+} else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing') {
+  app.use(morgan('tiny'))
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-	secret: 'MY-SESSION-DEMO',
+	secret: 'MY-SESSION-DEMO',  // <= en un env
 	resave: false,
 	saveUninitialized: false,
   store: new MongoStore({ url: require('./app_api/utils/change_database').local() })
 }));
+
 var cas = new CASAuthentication({
   cas_url      : 'https://auth.espol.edu.ec',
   service_url  : SERVICE_URL,
@@ -54,28 +61,33 @@ var cas = new CASAuthentication({
   session_name : 'cas_user',
   session_info : 'cas_userinfo',
 });
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
-// Auth middleware
-app.get( '/app', cas.bounce, function ( req, res ) {
-    console.log(req.session);
-    res.send( `<html><body>Hello!</body></html>` );
-});
-// cas.block cas.bounce cas.logout
 
+// El problema de las imagenes es por el cors, esta puede ser la solucion
+// app.all('/*', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
+// 
+// Control de rutas(para que estudiantes no puedan ingresar a profesor ruta)
 var procesarSession = require('./app_api/config/auth.cas.config').session
 var procesarSessionEstudiante = require('./app_api/config/auth.cas.config').sessionEstudiante
 var middleEstudianteControl = require('./app_api/config/auth.cas.config').middlewareControlEstudiante
 var middleProfesorControl = require('./app_api/config/auth.cas.config').middlewareControlProfesor
-if (process.env.NODE_ENV === 'development') {
+
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
   app.use('/', express.static(path.join(__dirname, 'app_client/login')));
   app.use('/api/session', require('./app_api/routes/login.router'));
   var { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
   var procesarSession = function(req, res, next) {
     next()
   }
-} else if  (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing') {
+} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' ) {
+  // FIX: mirar para que sirve esto ??
   app.get( '/', cas.bounce, function(req, res) {
     res.redirect('/profesores')
   });
@@ -83,8 +95,8 @@ if (process.env.NODE_ENV === 'development') {
   var authApiProfesor = cas.bounce;
   var authEstudiante = cas.bounce;
   var authApiEstudiante = cas.bounce;
-  // var { authApiEstudiante } = require('./app_api/config/auth.config')
   app.get('/api/session/usuario_conectado', require('./app_api/controllers/login.controller').obtenerUsuarioLoggeado);
+  // FIX: para que sirve esto?
   app.get( '/api/session/logout', cas.logout, function(req, res) {
     req.session.destroy(function( err ) {
   		if ( err ) {
@@ -94,10 +106,8 @@ if (process.env.NODE_ENV === 'development') {
   	})
   });
 }
+
 require('./app_api/realtime/realtime')(io)
-app.get( '/api/user', authProfesor, function ( req, res ) {
-    res.json( { cas_user: req.session} );
-});
 
 //vistas
 app.use('/profesores', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores')));
@@ -135,10 +145,10 @@ app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfe
 app.use('/profesores/leccion/calificar', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')));
 
 app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
+
 /*
  Estudiantes
  */
-
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 
 app.use('/estudiantes/', authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
@@ -150,8 +160,6 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEs
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
     ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-      console.log(estudiante.codigoIngresado);
-      console.log(paralelo.leccionYaComenzo);
       if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
         res.redirect('/estudiantes/leccion')
       } else {
@@ -159,7 +167,7 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEs
       }
     })
   })
-} ,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+} , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 
 app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
@@ -174,6 +182,7 @@ app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudiant
     })
   })
 },express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
+
 app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEstudianteControl, estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 
 app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
@@ -184,7 +193,7 @@ app.use('/otros',  express.static(path.join(__dirname, 'app_client/otros')))
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))
 
-// app_api OJO aqui
+// app_api OJO aqui esta expuesta
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
 app.use('/api/grupos', require('./app_api/routes/grupos.router'));
@@ -206,15 +215,9 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   var mensaje = err.message;
   var error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
-
-
-//Espero que sirva
-
-
 
 module.exports = {app: app, server: server};
