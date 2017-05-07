@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profesor</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="./verLeccionStyles.css">
+	</head>
+	<body>
+		<header id="#navbar"></header>
+		<main>
+			<div class="container" id="appVerLeccion">
+				<h4 class="center-align">Lección</h4>
+				<p class="flow-text"><span class="title">Nombre:                </span> {{leccion.nombre}}</p>
+        <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{leccion.tiempoEstimado}} minutos</p>
+        <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion.tipo}}</p>
+        <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion.fechaInicio}}</p>
+        <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion.puntaje}}</p>
+        <p class="flow-text"><span class="title">Paralelo:              </span> {{leccion.paralelo}}</p>
+        <section id="preguntas">
+        	<button @click="prueba">prueba</button>
+        </section>
+			</div>
+		</main>
+		<footer>
+			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
+			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/bower_components/moment/moment.js"></script>
+			<script src="./verLeccionScript.js"></script>
+			<script src="/js/navbar.js"></script>
+		</footer>
+	</body>
+</html>

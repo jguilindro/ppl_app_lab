@@ -134,7 +134,7 @@ app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfe
 
 app.use('/profesores/leccion/calificar', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')));
 
-
+app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
 /*
  Estudiantes
  */
