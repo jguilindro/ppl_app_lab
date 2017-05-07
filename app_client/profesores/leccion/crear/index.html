@@ -32,9 +32,17 @@
              <h1 class="center-align flow-text">Crear un nueva leccion</h1>
               <form>
                 <div class="row">
-                   <div class="input-field col s6">
+                  <div class="input-field col s12">
                     <label for="nombre">nombre</label>
                     <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
+                  </div>
+                  <div class="input-field col s6" id="materias">
+                    <select id="subject">
+                      <option value="#" selected disabled>escoger paralelo...</option>
+                      <option value="FISG1002">Física 2</option>
+                      <option value="FISG1003">Física 3</option>
+                    </select>                  
+                    <label>Materia</label>  
                   </div>
                   <div class="input-field col s6" id="div-select">                  
                     <label class="active">Paralelo:</label>
@@ -103,6 +111,7 @@
             </div>
             <div class="container" id="overview">
             <p class="flow-text"><span class="title">Nombre:                </span> {{leccion_nueva.nombre}}</p>
+            <p class="flow-text"><span class="title">Materia:               </span> {{leccion_nueva.nombreMateria}}</p>
             <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{preguntas_escogidas.tiempoTotal}} minutos</p>
             <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion_nueva.tipo}}</p>
             <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion_nueva.fechaInicio}}</p>

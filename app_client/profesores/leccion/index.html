@@ -20,6 +20,7 @@
 			  			<thead>
 			  				<tr>
 			  					<th>Nombre</th>
+			  					<th>Materia</th>
 				  				<th>Tipo</th>
 				  				<th>Paralelo</th>
 				  				<th>Fecha</th>
@@ -30,10 +31,11 @@
 			  			<tbody>
 			  				<tr v-for="leccion in lecciones">
 			  					<td><a v-bind:href="'./modificar/' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
-			  					<td>{{leccion.tipo}}</td>
-			  					<td>{{leccion.paralelo}}</td>
-			  					<td>{{date(leccion.fechaInicio)}}</td>
-			  					<td>{{leccion.estado}}</td>
+			  					<td class="text-flow">{{leccion.nombreMateria}}</td>
+			  					<td class="text-flow">{{leccion.tipo}}</td>
+			  					<td class="text-flow">{{leccion.nombreParalelo}}</td>
+			  					<td class="text-flow">{{date(leccion.fechaInicio)}}</td>
+			  					<td class="text-flow">{{leccion.estado}}</td>
 			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a></td>
 			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new center-align" @click="calificarLeccion(leccion._id)">Calificar</a></td>
 			  					<td v-else-if="leccion.estado=='tomando'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a></td>
