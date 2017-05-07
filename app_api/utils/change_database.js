@@ -21,7 +21,7 @@ const local = function() {
   } else {
     if (process.env.NODE_ENV == 'development') {
       console.log('development mlab')
-      return require('../config/main').local //local
+      return require('../config/main').mlab //local
     } else if (process.env.NODE_ENV == 'production') {
       console.log('production mlab')
       return require('../config/main').mlab_production

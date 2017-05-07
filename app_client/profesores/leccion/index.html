@@ -31,7 +31,7 @@
 			  				<tr v-for="leccion in lecciones">
 			  					<td><a v-bind:href="'./modificar/' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
 			  					<td>{{leccion.tipo}}</td>
-			  					<td>{{leccion.paralelo}}</td>
+			  					<td>{{leccion.nombreParalelo}}</td>
 			  					<td>{{date(leccion.fechaInicio)}}</td>
 			  					<td>{{leccion.estado}}</td>
 			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a></td>

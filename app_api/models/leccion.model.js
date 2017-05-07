@@ -64,6 +64,9 @@ const LeccionSchema = mongoose.Schema({
   paralelo: {
     type: String,
     ref: 'Paralelo'
+  },
+  nombreParalelo:{
+    type: String
   }
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
 

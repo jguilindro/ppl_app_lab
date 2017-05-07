@@ -30,7 +30,8 @@ const crearLeccion = (req, res) => {
     tipo: req.body.tipo,
     fechaInicio: req.body.fechaInicio,
     preguntas: req.body.preguntas,
-    paralelo: req.body.paralelo
+    paralelo: req.body.paralelo,
+    nombreParalelo: req.body.nombreParalelo
   })
   leccion.crearLeccion((err, doc) => {
     if (err) {

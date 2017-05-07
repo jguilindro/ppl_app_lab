@@ -31,9 +31,13 @@ var App = new Vue({
       preguntas: [
       ],
       puntaje: 0,
-      paralelo: ''
+      paralelo: '',
+      nombreParalelo: '',
+      nombreMateria: '',
+      codigoMateria: ''
     },
     paralelos: [],
+    paralelo_filtrado: [],
     preguntas: [],
     pregunta_tutorial: [],
     preguntas_escogidas: {
@@ -230,7 +234,7 @@ var App = new Vue({
         if(response.body.estado) {
           self.paralelos = response.body.datos
           console.log(self.paralelos);
-          self.crearSelectParalelos();
+          //self.crearSelectParalelos();
         }
         /*
           for (var x = 0; x < response.body.datos.length; x++){
@@ -246,14 +250,12 @@ var App = new Vue({
       var self = this;
       var select = $('<select>').attr({"id":"select-paralelos"});
       select.change(function(){
-        console.log('holaaa');
         self.paraleloEscogido.id = $('#select-paralelos option:selected').val();
         self.paraleloEscogido.nombre = $('#select-paralelos option:selected').text();
-        console.log(self.paraleloEscogido)
       })
       var optDisabled = $('<option>').val("").text("");
       select.append(optDisabled);
-      $.each(self.paralelos, function(index, paralelo){
+      $.each(self.paralelo_filtrado, function(index, paralelo){
         var option = $('<option>').val(paralelo._id).text(paralelo.nombre);
         select.append(option);
       });
@@ -329,19 +331,44 @@ document.addEventListener("DOMContentLoaded", function(event) {
   })
 });
 
-$('#select-paralelos').change(function(){ 
-  console.log('holaaa')
-  console.log($('#select-paralelos option:selected').val())
-  console.log($('#select-paralelos option:selected').text())
-  //pregunta.$data.preguntaEditar.tipoPregunta = $('#select-editar-tipo-pregunta option:selected').val();
-  //console.log(pregunta.$data.preguntaEditar.tipoPregunta)
-  //console.log($('#select-editar-tipo-pregunta option:selected').text())
-  //console.log(pregunta.$data.preguntaEditar)
+$('#div-select').change(function(){ 
+  App.leccion_nueva.paralelo = $('#select-paralelos option:selected').val();
+  App.leccion_nueva.nombreParalelo = $('#select-paralelos option:selected').text();
+
+  console.log("asdsadasd");
 });
 
 $('#select-tipo-leccion').change(function(){
+  filtrarCapitulos();
+});
+
+$("#subject").change(function(){
+  var materia = $(this).val();
+  App.leccion_nueva.codigoMateria = materia
+  //Filtrando para física 2
+  if(materia == "FISG1002"){
+   App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo2);
+   App.leccion_nueva.nombreMateria = "Física 2"
+  }
+  //Filtrando para física 3
+  if(materia == "FISG1003"){
+   App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3); 
+   App.leccion_nueva.nombreMateria = "Física 3"
+  }
+  //Eliminando y agregando label donde serán colocados los paralelos.
+  $("#div-select").empty();
+  var label = $("<label>").addClass("active").text("Paralelo:");
+  $("#div-select").append(label);
+  App.crearSelectParalelos();
+
+  filtrarCapitulos();
+});
+
+function filtrarCapitulos(){
   App.$data.tipoEscogido = $('#select-tipo-leccion option:selected').val();
   App.$data.leccion_nueva.tipo = App.$data.tipoEscogido;
+  //Sección de filtrar las preguntas por capítulos.
+  var materia = $("#subject").val()
   if($('#select-tipo-leccion option:selected').val()=='estimacion|laboratorio'){
     App.$data.capitulosAMostrar = [];
     App.$data.capitulosAMostrar = App.$data.capitulos.concat(App.$data.laboratorios);
@@ -349,4 +376,24 @@ $('#select-tipo-leccion').change(function(){
     App.$data.capitulosAMostrar = [];
     App.$data.capitulosAMostrar = App.$data.tutoriales;
   }
-});
+
+  if(materia == "FISG1002"){
+    App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo2);
+  }
+  if(materia == "FISG1003"){
+    App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo3);
+  }
+}
+function filtrarParalelo2(paralelos){
+  return paralelos.codigo == "FISG1002"
+}
+function filtrarParalelo3(paralelos){
+  return paralelos.codigo == "FISG1003"
+}
+
+function filtrarCapitulo2(capitulo){
+  return capitulo.codigoMateria == "FISG1002";
+}
+function filtrarCapitulo3(capitulo){
+  return capitulo.codigoMateria == "FISG1003";
+}
