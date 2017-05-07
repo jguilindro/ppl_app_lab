@@ -3,6 +3,7 @@ body{
 }
 .container{
 	margin-top: 5%;
+	width: 90%;
 }
 main .container{
 	background-color: rgba(255,255,255,0.7);

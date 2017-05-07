@@ -67,6 +67,12 @@ const LeccionSchema = mongoose.Schema({
   },
   nombreParalelo:{
     type: String
+  },
+  codigoMateria:{
+    type: String
+  },
+  nombreMateria:{
+    type: String
   }
 },{timestamps: true, versionKey: false, collection: 'lecciones'})
 

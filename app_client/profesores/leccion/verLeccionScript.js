@@ -138,7 +138,7 @@ var app = new Vue({
       return moment(date);
     },
     date: function (date) {
-      return moment(date).format('MMMM Do YYYY, h:mm a');
+      return moment(date).format('MMMM Do YYYY');
     }
 		
 	}

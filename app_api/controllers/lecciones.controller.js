@@ -31,7 +31,9 @@ const crearLeccion = (req, res) => {
     fechaInicio: req.body.fechaInicio,
     preguntas: req.body.preguntas,
     paralelo: req.body.paralelo,
-    nombreParalelo: req.body.nombreParalelo
+    nombreParalelo: req.body.nombreParalelo,
+    nombreMateria: req.body.nombreMateria,
+    codigoMateria: req.body.codigoMateria
   })
   leccion.crearLeccion((err, doc) => {
     if (err) {
