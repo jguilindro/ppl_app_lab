@@ -1,21 +1,24 @@
 body{
-	background: linear-gradient(to bottom, rgba(51, 102, 153,0.1), rgba(51, 102, 153,0.6))  no-repeat center center fixed; /*Standard*/
+	background-color:   #d3dbdb;
 }
 
 div.botones {
-  margin-top: 2%;
-  text-align: center;
+	padding-top: 2%;
+	text-align: center;
 }
-
 btn {
  background-color: #000 !important;
 }
 
+.container{
+	background-color: white;
+	padding: 2%;
+	height: 100%;
+
+}
 div.grupin{
 	/*max-height: 400px;*/
 	margin-bottom: 25px;
-	border: 1px;
-	border-color: rgba(0,0,0,0.5);
 }
 div.estudiantes{
 	background-color: rgba(255,255,255,0.3);
@@ -29,4 +32,21 @@ h3.code{
 p.group-name{
 	font-size: 2em;
 	font-weight: bold;
+}
+.clearer{
+	clear:both;
+}
+
+.group-name{
+	font-weight: bold;
+	background-color: rgba(192,192,192,0.5);
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	margin-bottom: 0px;
+}
+.student{
+	border: 1px solid rgba(192,192,192,0.5);
+	border-top: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
