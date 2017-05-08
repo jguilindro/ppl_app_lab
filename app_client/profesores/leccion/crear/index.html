@@ -42,7 +42,7 @@
                       <option value="FISG1002">Física 2</option>
                       <option value="FISG1003">Física 3</option>
                     </select>                  
-                    <label>Materia</label>  
+                    <label>Materia</label>
                   </div>
                   <div class="input-field col s6" id="div-select">                  
                     <label class="active">Paralelo:</label>
@@ -102,6 +102,9 @@
                         <li v-for="capitulo in capitulosAMostrar">
                           <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
                         </li>
+                        <li><a> <hr>
+                                <br>Tiempo estimado<br>
+                                {{preguntas_escogidas.tiempoTotal}} Minutos</a></li>
                       </ul>
                     </div>
                   </div>
