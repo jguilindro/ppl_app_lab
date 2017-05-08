@@ -11,14 +11,19 @@
     <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
   </head>
   <body id="grad">
+    <header>
+      <div class="border"></div>
+      <hr class="yellow_line">
+      <div class="border"></div>
+    </header>
     <main>
       <div id="app" class="container">
         <section id="nombre-leccion">
-          <h2 class="center-align">{{leccion.nombre}}</h2>
+          <h2 class="center-align"><b>{{leccion.nombre}}</b></h2>
         </section>
         <section id="nombre">
           <!--Nombre del estudiante-->
-          <h3 class="center-align">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h3>
+          <h4 class="center-align">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h4>
         </section>
         <div class="timer pull right">
           <p>Tiempo restante: {{tiempo}}</p>
@@ -44,16 +49,16 @@
             </div>
             <div class="col s12" v-bind:id="pregunta._id" v-for="(pregunta, index) in preguntas" style="display: none">
               <div class="row row-pregunta">
-                <section id="area-pregunta" class="col s6">
-                  <p class="center-align nombre-pregunta">{{pregunta.nombre}}</p>
-                  <label>Descripción: </label>
+                <section id="area-pregunta" class="col s12">
+                  <label>Pregunta: </label>
                   <p v-html="pregunta.descripcion"></p>
                   <!--
                   <label>Respuesta:</label>
                   <p>{{pregunta.respuesta}}</p>
                   -->
                 </section>
-                <section id="area-respuesta" class="col s6">
+                <hr><hr>
+                <section id="area-respuesta" class="col s12">
                   <div class="row">
                     <form class="col s12">
                       <div class="row" id="row-area-respuesta">
