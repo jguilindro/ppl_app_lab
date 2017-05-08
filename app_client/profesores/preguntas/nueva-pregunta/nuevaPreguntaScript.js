@@ -2,6 +2,7 @@ var app = new Vue({
   mounted() {
     this.obtenerLogeado();
     this.obtenerCapitulos();
+    
     //MaterialNote
     $('.myEditor').materialnote({
         height: "50vh",
