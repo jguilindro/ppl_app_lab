@@ -76,17 +76,16 @@ var app = new Vue({
 
       Promise.all(promesas).then(result => {
         result.forEach(grupo => {
-          self.$http.get('/api/lecciones/grupoLeccion/'+leccionId).then(res =>{
-
-            console.log("grupoLecciones");
-            console.log(res.body.datos);
-            /*$.each(res.body.datos, function(index, grupoLeccion){
-              self.gruposLeccion.push(grupoLeccion);
-              
-            });*/
+          self.$http.get('/api/calificaciones/'+leccionId+'/'+grupo._id).then(res =>{
+            //revisa que la lección no este calificada para añadirla a la lista
+            var checkCalificada  = res.body.datos[0].calificada;
+            var estudiantesLength= grupo.estudiantes.length;
+            if(checkCalificada == false && estudiantesLength !=0){
+              this.grupos.push(grupo);
+            }
         
           });
-          this.grupos.push(grupo)
+          
         })
         this.obtenerTodosEstudiantes()
       }, fail => {
