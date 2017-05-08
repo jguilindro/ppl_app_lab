@@ -91,6 +91,10 @@ var app = new Vue({
     			self.lecciones.push(leccion);
     		}
     	})
+    	self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+    },
+    sortPorUpdate: function(a, b){
+    	return (a.updatedAt < b.updatedAt ) ? 1: -1;
     },
     tomarLeccion: function(paralelo, id){
     	var self = this;
