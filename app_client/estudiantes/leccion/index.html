@@ -44,7 +44,7 @@
                 <h5 class="center-align">Instrucciones de la lección</h5>
                 <p>Tienen hasta el tiempo indicado para completar la lección</p>
                 <p>Una vez acabado el tiempo, las preguntas que han respondido se enviarán automáticamente, las que no respondieron se enviarán sin respuesta, y por lo tanto, sin calificación</p>
-                <p>No se olviden de enviar cada respuesta luego de completarla. Si responen una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
+                <p>No se olviden de enviar cada respuesta luego de completarla. Si responden una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
               </div>
             </div>
             <div class="col s12" v-bind:id="pregunta._id" v-for="(pregunta, index) in preguntas" style="display: none">
@@ -52,10 +52,6 @@
                 <section id="area-pregunta" class="col s12">
                   <label>Pregunta: </label>
                   <p v-html="pregunta.descripcion"></p>
-                  <!--
-                  <label>Respuesta:</label>
-                  <p>{{pregunta.respuesta}}</p>
-                  -->
                 </section>
                 <hr><hr>
                 <section id="area-respuesta" class="col s12">
@@ -66,20 +62,13 @@
                           <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
                           <label for="textarea-respuesta">Escriba aquí su respuesta</label>
                         </div>
-                      </div>
-                      <div class="row" id="botones">
-                        <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
-                      </div>
-                    </form>
-                  </div>
-                </section>
-            <!--
-                <section id="area-respuesta" class="col s6">
-                  <div class="row">
-                    <form class="col s12">
-                      <div class="row" id="row-area-respuesta">
-                        <div class="col s12 input-field">
-                          <div v-bind:id="'editor-' + pregunta._id" class="myEditor">      
+                        <div class="input-field file-field col s12">
+                          <div class="btn">
+                            <span>File</span>
+                            <input type="file" v-bind:id="'file-' + pregunta._id" v-on:change="subirImagen(pregunta)">
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input type="text" class="file-path validate" v-bind:id="'file-wrapper-' + pregunta._id">
                           </div>
                         </div>
                       </div>
@@ -89,7 +78,6 @@
                     </form>
                   </div>
                 </section>
-            -->
               </div>
             </div>
             <div id="terminar" class="col s12">
@@ -121,6 +109,15 @@
           <div class="modal-footer">
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="revisarLeccion">Revisar</a>
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="responderTodas">Terminar</a>
+          </div>
+        </div>
+        <!-- Modal Imagen Structure -->
+        <div id="modalImagenSubida" class="modal">
+          <div class="modal-content">
+            <p class="center-align">Su imagen fue subida correctamente con el link indicado.</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
           </div>
         </div>
       </div>

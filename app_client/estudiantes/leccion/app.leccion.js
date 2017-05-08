@@ -142,6 +142,26 @@ var App = new Vue({
       return pregunta;
     },
     //Eventos
+    subirImagen: function(pregunta){
+      var self = this;
+      var fileId = '#file-' + pregunta._id;
+      var file = $(fileId);
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST','https://api.imgur.com/3/upload', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function (){
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          //console.log('subido');
+          var url = JSON.parse(xhr.responseText)
+          //console.log(url)
+          //console.log(url.data.link);
+          pregunta.respuesta = url.data.link;
+          $('#modalImagenSubida').modal('open');
+        }
+      }
+      xhr.send(file[0].files[0]);
+    },
     responder: function(pregunta, event){
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
