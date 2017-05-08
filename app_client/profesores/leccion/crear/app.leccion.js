@@ -110,6 +110,22 @@ var App = new Vue({
         self.dividirPreguntasEnCapitulos();
         self.dividirPreguntasEnLaboratorios();
         self.dividirPreguntasEnTutoriales();
+        $.each(self.capitulos, function(index, capitulo){
+          capitulo.preguntas.sort(function(a, b){
+             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          });
+        });
+        $.each(self.tutoriales, function(index, capitulo){
+          capitulo.preguntas.sort(function(a, b){
+             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          });
+        });
+        $.each(self.laboratorios, function(index, capitulo){
+          capitulo.preguntas.sort(function(a, b){
+             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          });
+        });
+
       }, response => {
         //ERROR CALLBACK
         console.log('Hubo un error al obtener las preguntas de la base de datos');
