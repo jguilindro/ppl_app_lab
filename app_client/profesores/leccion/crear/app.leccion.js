@@ -78,7 +78,6 @@ var App = new Vue({
       });
     },
     prueba: function(){
-      console.log($('#select-paralelos option:selected').val())
     },
     crearLeccion() {
       var crearLeccionURL = '/api/lecciones/'
@@ -277,25 +276,22 @@ var App = new Vue({
         //successfull callback
         if(response.body.estado) {
           self.paralelos = response.body.datos
-          console.log(self.paralelos);
           //self.crearSelectParalelos();
         }
-        /*
-          for (var x = 0; x < response.body.datos.length; x++){
-            self.paralelos.push(response.body.datos[x].nombre);
-          }
-        */
         }, response => {
           //error callback
           console.log("EEEEEERRRROOOOOOOOOOOOOR!")
         });
     },
-    verModal: function(descripcion){
+    verModal: function(descripcion, tiempo){
       /*
         Colocar Modal
       */
       $("#modalDesc .modal-content").empty();
       $("#modalDesc .modal-content").append(descripcion);
+      $("#modalDesc .modal-content").append($("<hr>"));
+      var tiempoDesc = $("<label>").addClass("modal-tiempo pull right").text("Tiempo estimado: " + tiempo + " minutos");
+      $("#modalDesc .modal-content").append(tiempoDesc);
       $('#modalDesc').modal('open');
     },
     crearSelectParalelos: function(){
@@ -357,7 +353,6 @@ function sumatoria(objeto_preguntas, str_elemento){
   if(str_elemento == "calificacion"){
     for (var x = 0; x < objeto_preguntas.length; x++){
       acumulador = acumulador + parseInt(objeto_preguntas[x].puntaje);
-      console.log(acumulador)
     }
   }
   return acumulador;
@@ -433,6 +428,14 @@ function filtrarCapitulos(){
   if(materia == "FISG1003"){
     App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo3);
   }
+
+  //uncheck all checked checkbox, la función sirve... pero hay otros errores por arreglar.
+  //unCheckPreguntas();
+}
+
+function unCheckPreguntas(){
+  App.preguntas_escogidas.preguntas = [];
+  $('input:checkbox').prop('checked',false);
 }
 function filtrarParalelo2(paralelos){
   return paralelos.codigo == "FISG1002"

@@ -71,6 +71,11 @@ var pregunta = new Vue({
 			$('select').material_select();
 			//$('#select-editar-tipo-pregunta').val(self.preguntaEditar.tipoPregunta)
 		},
+		mostrarModal: function(imageUrl){
+			$("#myModal .modal-content").empty();
+			$("<img>",{'src': imageUrl }).appendTo("#myModal .modal-content")
+			$('#myModal').modal('open');
+		},
 		actualizarPregunta: function(){
 			var self = this;
 			if(self.editable){
@@ -143,7 +148,18 @@ $('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
  	pregunta.$data.preguntaEditar.descripcion = contents;
   
 })
-/*
 
+document.addEventListener("DOMContentLoaded", function(event) {
+  $.get({
+    url: "../../navbar/profesores",
+    success: function(data) {
+      document.getElementById('#navbar').innerHTML = data;
+      $(".button-collapse").sideNav();
+      $(".dropdown-button").dropdown();
+    }
+  })
+});
 
-*/
+$('body').on('click','img',function(){
+	pregunta.mostrarModal($(this).attr('src'));
+})

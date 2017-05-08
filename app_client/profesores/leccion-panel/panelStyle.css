@@ -50,3 +50,10 @@ p.group-name{
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
+
+div.divisor{
+	padding-bottom: 4%;
+	width: inherit;
+	height: inherit;
+	clear: both;
+}

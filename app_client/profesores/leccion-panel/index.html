@@ -31,13 +31,14 @@
 	      <p>{{estudiante.nombres}}</p>
 	    </div> -->
 	    <div class="estudiantes row">
-	    	<div v-for="grupo in paralelo.grupos">
-		      <div class="col s4 grupin">
-		        <p class="group-name center-align">{{grupo.nombre}}</p>
-		        <div v-for="estudiante in grupo.estudiantes_conectados">
-		          <p class="student center-align">{{estudiante.nombres}} {{estudiante.apellidos}}</p>
-		        </div>
-		      </div>
+	    	<div v-for="(grupo, index) in paralelo.grupos">
+		      <div v-if="index%3 == 0" class = "divisor"></div>
+            <div class="col s4 grupin">
+              <p class="group-name center-align">{{grupo.nombre}}</p>
+              <div v-for="estudiante in grupo.estudiantes_conectados">
+                <p class="student center-align">{{estudiante.nombres}} {{estudiante.apellidos}}</p>
+              </div>
+            </div>  
 		    </div>
 	    </div>
 
