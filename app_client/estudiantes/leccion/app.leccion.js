@@ -63,6 +63,11 @@ var App = new Vue({
           }
         });
     },
+    mostrarModal: function(imageUrl){
+      $("#modal_Img .modal-content").empty();
+      $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
+      $('#modal_Img').modal('open');
+    },
     anadirParticipanteARegistro: function(){
       var self = this;
       var url = '/api/grupos/estudiante/' + self.estudiante._id;
@@ -369,6 +374,9 @@ socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
 })
 
+$('body').on('click','img',function(){
+  App.mostrarModal($(this).attr('src'));
+})
 // socket.on('pregunta actual', function(pregunta) {
 //   console.log(pregunta);
 // })
