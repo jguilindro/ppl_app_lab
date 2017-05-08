@@ -86,7 +86,7 @@
                               {{pregunta.nombre}}
                             </label> 
                             <label class="icono pull right">
-                              <a class="btn-floating waves-effect" v-on:click="verModal(pregunta.descripcion)">
+                              <a class="btn-floating waves-effect" v-on:click="verModal(pregunta.descripcion, pregunta.tiempoEstimado)">
                                 <i class="tiny material-icons">visibility</i>
                               </a>
                               <span class="clearer"></span>
@@ -133,9 +133,13 @@
   	              <div>
   	                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
   	                <li v-for="pregunta in preguntas_escogidas.preguntas" class="collection-item">
-  	                  <input type="checkbox" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
+  	                  <input type="checkbox" name = "" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
   	                    <label v-bind:for="pregunta._id" class="maxWidth">
-                          <p class="collection-item truncate"><span class="badge flow-text">{{pregunta.tiempoEstimado}} minutos</span>{{pregunta.nombre}}</p>
+                          <span class="title">{{pregunta.capitulo}}</span>
+                            <p class="collection-item truncate">
+                              <span class="badge flow-text">{{pregunta.tiempoEstimado}} minutos</span>
+                              {{pregunta.nombre}}
+                            </p>
   	                    </label>
   	                </li>
   	              </div>

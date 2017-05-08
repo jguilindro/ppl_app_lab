@@ -48,6 +48,7 @@ li.question{
     left: 100%;
     margin-left: 15px;
 }
+
 #pages{
     height: 100%;
 }
@@ -59,4 +60,11 @@ li.question{
 }
 #pages h1{
     font-weight: bold;
+}
+
+label.maxWidth{
+    width: 100%;
+}
+.collection .collection-item{
+    border-bottom: 1px solid #e0e0e0;
 }
