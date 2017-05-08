@@ -45,9 +45,9 @@
       		    <label for="nombre">Nombre de la Pregunta</label>
               <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
       		    <label for="descripcion">Descripcion</label>
-      		    <p v-if="pregunta.tipoPregunta == 'justificacion'" name="descripcion">{{pregunta.descripcion}}</p>
+      		    <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
       		    <label for="respuesta">Respuesta del Estudiante</label>
-      		    <p v-for="respuesta in respuestas" v-if="pregunta._id == respuesta.pregunta" name="respuesta">{{respuesta.respuesta}}</p>
+      		    <p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
             </div>
           	<div class="col s6">
           		<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">
