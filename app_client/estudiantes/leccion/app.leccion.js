@@ -63,6 +63,29 @@ var App = new Vue({
           }
         });
     },
+    anadirParticipanteARegistro: function(){
+      var self = this;
+      var url = '/api/grupos/estudiante/' + self.estudiante._id;
+      var grupo = ''
+      //Primero obtengo el grupo al que el estudiante pertenece. El id
+      self.$http.get(url).then(response => {
+        //console.log(response.body)
+        grupo = response.body.datos._id;
+        var urlRegistro = '/api/calificaciones/' + self.leccion._id + '/' + grupo;
+        console.log('La url es: ' + urlRegistro);
+       //var estudiante = self.estudiante._id;
+        var estudiante = {
+          estudiante: self.estudiante._id
+        }
+        console.log('Lo que se le va a agregar es: ' + estudiante)
+        self.$http.put(urlRegistro, estudiante).then(response => {
+          console.log(response);
+        });
+      });
+      //console.log(grupo)
+      
+
+    },
     obtenerGrupoDeEstudiante: function(){
       var self = this;
       var url = '/api/grupos/estudiante/'
@@ -94,6 +117,7 @@ var App = new Vue({
       this.$http.get(url).then(response => {
         //succcess callback
         self.leccion = response.body.datos;
+        self.anadirParticipanteARegistro();
         self.obtenerPreguntas(leccionId);
       }, response => {
         //error callback
@@ -156,7 +180,7 @@ var App = new Vue({
           var url = JSON.parse(xhr.responseText)
           //console.log(url)
           //console.log(url.data.link);
-          pregunta.respuesta = url.data.link;
+          pregunta.respuesta += 'La imagen subida se encuentra en este link: ' + url.data.link
           $('#modalImagenSubida').modal('open');
         }
       }

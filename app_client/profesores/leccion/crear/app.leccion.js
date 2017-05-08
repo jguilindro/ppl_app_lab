@@ -51,6 +51,32 @@ var App = new Vue({
     tipoEscogido: ''
   },
   methods: {
+    crearRegistroCalificacion: function(leccionId){
+      var self = this;
+      var grupos = [];
+      //Busco los grupos del paralelo seleccionado para la leccion
+      $.each(self.paralelo_filtrado, function(index, paralelo){
+        if(paralelo._id == self.paraleloEscogido.id){
+          grupos = paralelo.grupos;
+          return false;
+        }
+      });
+      var url = '/api/calificaciones/'
+      $.each(grupos, function(index, grupo){
+        var registro = {
+          leccion: leccionId,
+          calificacion: 0,
+          calificada: false,
+          leccionTomada: false,
+          grupo: grupo._id
+        }
+        //registro.grupo = grupo._id;
+        self.$http.post(url, registro).then(response => {
+        }, response => {
+
+        });
+      });
+    },
     prueba: function(){
       console.log($('#select-paralelos option:selected').val())
     },
@@ -63,6 +89,8 @@ var App = new Vue({
         //success callback
         $('#myModal').modal('open');
         console.log(response)
+        self.crearRegistroCalificacion(response.body.datos._id)
+        //console.log(response)
         }, response => {
         //error callback
         console.log(response)
