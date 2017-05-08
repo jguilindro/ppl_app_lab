@@ -113,6 +113,10 @@ leccion.on('tiempo restante', function(tiempo) {
 
 leccion.on('terminado leccion', function(match) {
   App.tiempo = 'leccion detenida'
+  document.getElementById('terminar-leccion').disabled = true
+  setTimeout(function(ee) {
+    window.location.href = '/profesores/leccion'
+  }, 4000)
 	console.log('se ha terminado la leccion')
 })
 
@@ -125,7 +129,7 @@ function terminarLeccion() {
   document.getElementById('terminar-leccion').disabled = true
   setTimeout(function(ee) {
     window.location.href = '/profesores/leccion'
-  }, 2000)
+  }, 4000)
 }
 
 function terminarLeccionDevelopment() {

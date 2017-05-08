@@ -188,11 +188,7 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEs
 app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // otros
-app.use('/otros', function(req, res, next) {
-  req.session.destroy(function(err) {
-    console.log('session destroy');
-  })
-}, express.static(path.join(__dirname, 'app_client/otros')))
+app.use('/otros', express.static(path.join(__dirname, 'app_client/otros')))
 
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))

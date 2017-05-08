@@ -65,7 +65,7 @@ function realtime(io) {
           console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
           const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
           console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-          interval = setInterval(function() {
+          socket.inteval = setInterval(function() {
             let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
             var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
             // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
@@ -73,7 +73,7 @@ function realtime(io) {
             // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
             if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
               if (parseInt(duration) == 0) {
-                clearInterval(interval);
+                clearInterval(socket.inteval);
                 leccionTerminada(PARALELO, PARALELO.leccion)
                 leccion.in(PARALELO._id).emit('terminado leccion', true)
               }
@@ -119,7 +119,7 @@ function realtime(io) {
     })
 
     socket.on('disconnect', function() {
-      clearInterval(interval)
+      clearInterval(socket.inteval)
       socket.broadcast.emit('estudiante desconectado', socket.estudiante)
     })
     socket.on('parar leccion', function(data) {
@@ -127,7 +127,7 @@ function realtime(io) {
         const COOKIE = yield mongoSession(cook)
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        clearInterval(interval)
+        clearInterval(socket.inteval)
         leccionTerminada(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
       })
@@ -137,7 +137,7 @@ function realtime(io) {
         const COOKIE = yield mongoSession(cook)
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        clearInterval(interval)
+        clearInterval(socket.inteval)
         leccionTerminadaDevelop(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
       })
