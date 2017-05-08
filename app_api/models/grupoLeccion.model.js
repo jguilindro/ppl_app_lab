@@ -79,7 +79,7 @@ GrupoLeccionSchema.statics.calificarLeccionPorGrupo = function(id_leccion, id_gr
 }
 
 GrupoLeccionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, callback){
-  tihs.find({leccion: id_leccion}, callback);
+  this.find({leccion: id_leccion}, callback);
 }
 
 

@@ -11,9 +11,16 @@
 .take{
 	background-color: #42a5f5;
 }
-#grad{
-	background: red; /* For browsers that do not support gradients */
-	background: linear-gradient(to bottom, #42a5f5,  #42a5f5)  no-repeat center center fixed; /*Standard*/
+.border{
+	background-color: #001a43;
+	height: 5vh;
+}
+
+.yellow_line{
+	margin: 0px;
+	border: 0px;
+	background-color: #F5b400;
+	height: 0.1vh;
 }
 tr{
 	background-color: rgba(255,255,255,0.3);

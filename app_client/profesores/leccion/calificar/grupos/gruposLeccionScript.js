@@ -18,6 +18,7 @@ var app = new Vue({
       },
       paralelos: [
       ],
+      gruposLeccion: [],
       paralelo_seleccionado: '',
       contador_global: 0,
       buscarEstudiante: '',
@@ -54,10 +55,12 @@ var app = new Vue({
 
 		obtenerTodosGrupos: function () {
       // limpiar todo
+      var self = this;
       this.grupos = []
       this.estudiantes = []
       this.estudiantesSinGrupo = []
       var promesas = []
+      var leccionId = window.location.href.toString().split('/')[7];
       this.paralelos.forEach(paralelo => {
         if (this.paralelo_seleccionado === paralelo._id) {
           paralelo.grupos.forEach(grupo => {
@@ -70,8 +73,19 @@ var app = new Vue({
           })
         }
       })
+
       Promise.all(promesas).then(result => {
         result.forEach(grupo => {
+          self.$http.get('/api/lecciones/grupoLeccion/'+leccionId).then(res =>{
+
+            console.log("grupoLecciones");
+            console.log(res.body.datos);
+            /*$.each(res.body.datos, function(index, grupoLeccion){
+              self.gruposLeccion.push(grupoLeccion);
+              
+            });*/
+        
+          });
           this.grupos.push(grupo)
         })
         this.obtenerTodosEstudiantes()

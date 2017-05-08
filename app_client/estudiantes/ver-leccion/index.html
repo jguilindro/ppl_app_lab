@@ -10,6 +10,11 @@
 	<link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body id="grad">
+	<header>
+		<div class="border"></div>
+		<hr class="yellow_line">
+		<div class="border"></div>
+	</header>
 	<div id="app">
 		<a href="/estudiantes">[regresar]</a>
 		<section class="center-align v-center">
@@ -18,30 +23,21 @@
 		<section class="leccion center-align ">
 			<div class="row" id="row-tabs">
 				<div class="col s12">
-					<ul class="tabs-fixed-width tabs">
-						<li class="tab"><a href="#index" class="active">Instrucciones</a></li>
-						<div v-for="pregunta in leccion.preguntas">
-							<li class="tab"><a v-bind:href="'#' + pregunta.pregunta" >{{pregunta.ordenPregunta}}</a></li>
+					<ul class="tabs tabs-fixed-width z-depth-1">
+						<li class="tab" v-for="pregunta in leccion.preguntas"><a v-bind:href="'#' + pregunta.pregunta" >{{pregunta.ordenPregunta}}</a></li>
 						</div>
 					</ul>
 				</div>
-				<div id="index" class="col s12">
-					<h1>Instrucciones</h1>
-				</div>
 				<div v-for="grupo in grupos">
 					<div v-bind:id=grupo[0].pregunta class="col s12" style='display: none'>
-						<!-- La pregunta-->
-						<div class="col s6">
-							<p class="capitulo right-align">{{grupo[0].contestado.capitulo}}</p>
-							<h3>{{grupo[0].contestado.nombre}}</h3>
-							<p>{{grupo[0].contestado.descripcion}}</p>
-						</div>
 						<!--Ahora se debe colocar todas las respuestas-->
 						<div class="col s6">
 							<div v-for="respuesta in grupo">
-								<p>{{respuesta.estudiante}}</p>
-								<p>{{respuesta.respuesta}}</p>
+								<p><b>Nombre:</b> {{respuesta.estudiante}}</p>
+								<p><b>Respuesta:</b><br>{{respuesta.respuesta}}</p>
+								<p><b>Feedback:</b> <br> {{respuesta.feedback}}</p>
 								<hr>
+								<p><b>Calificación obtenida:</b> {{respuesta.calificacion}}</p>
 							</div>
 						</div>
 					</div>

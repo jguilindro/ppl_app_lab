@@ -1,5 +1,7 @@
 .container{
 	margin-top: 5%;
+	width: 90%;
+	margin: auto;
 }
 .nombre-pregunta{
 	font-weight: bold;
@@ -18,4 +20,21 @@
 	margin-left: 0;
 	margin-right: 0;
 	padding: 0 3%;
+}
+#area-pregunta{
+	padding-bottom: 5%;
+	padding-top: 5%;
+	background-color: rgba(192,192,192,0.5);
+}
+
+.border{
+	background-color: #001a43;
+	height: 5vh;
+}
+
+hr.yellow_line{
+	margin: 0px;
+	border: 0px;
+	background-color: #F5b400;
+	height: 0.2vh;
 }

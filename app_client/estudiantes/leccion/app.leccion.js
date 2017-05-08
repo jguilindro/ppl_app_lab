@@ -63,6 +63,29 @@ var App = new Vue({
           }
         });
     },
+    anadirParticipanteARegistro: function(){
+      var self = this;
+      var url = '/api/grupos/estudiante/' + self.estudiante._id;
+      var grupo = ''
+      //Primero obtengo el grupo al que el estudiante pertenece. El id
+      self.$http.get(url).then(response => {
+        //console.log(response.body)
+        grupo = response.body.datos._id;
+        var urlRegistro = '/api/calificaciones/' + self.leccion._id + '/' + grupo;
+        console.log('La url es: ' + urlRegistro);
+       //var estudiante = self.estudiante._id;
+        var estudiante = {
+          estudiante: self.estudiante._id
+        }
+        console.log('Lo que se le va a agregar es: ' + estudiante)
+        self.$http.put(urlRegistro, estudiante).then(response => {
+          console.log(response);
+        });
+      });
+      //console.log(grupo)
+      
+
+    },
     obtenerGrupoDeEstudiante: function(){
       var self = this;
       var url = '/api/grupos/estudiante/'
@@ -94,6 +117,7 @@ var App = new Vue({
       this.$http.get(url).then(response => {
         //succcess callback
         self.leccion = response.body.datos;
+        self.anadirParticipanteARegistro();
         self.obtenerPreguntas(leccionId);
       }, response => {
         //error callback
@@ -142,6 +166,26 @@ var App = new Vue({
       return pregunta;
     },
     //Eventos
+    subirImagen: function(pregunta){
+      var self = this;
+      var fileId = '#file-' + pregunta._id;
+      var file = $(fileId);
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST','https://api.imgur.com/3/upload', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function (){
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          //console.log('subido');
+          var url = JSON.parse(xhr.responseText)
+          //console.log(url)
+          //console.log(url.data.link);
+          pregunta.respuesta += 'La imagen subida se encuentra en este link: ' + url.data.link
+          $('#modalImagenSubida').modal('open');
+        }
+      }
+      xhr.send(file[0].files[0]);
+    },
     responder: function(pregunta, event){
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder

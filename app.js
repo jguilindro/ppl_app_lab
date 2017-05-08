@@ -202,6 +202,7 @@ app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
 app.use('/api/respuestas', require('./app_api/routes/respuestas.router'));
 app.use('/api/capitulos', require('./app_api/routes/capitulo.router'));
+app.use('/api/calificaciones', require('./app_api/routes/calificacion.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

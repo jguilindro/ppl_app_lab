@@ -9,7 +9,6 @@ var app = new Vue({
 		//this.getPreguntas();
 		this.obtenerLogeado();
 		this.obtenerCapitulos();
-
 	},
 
 	el: '#preguntas',

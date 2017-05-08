@@ -13,3 +13,15 @@
 .capitulo{
 	color: grey;
 }
+.border{
+	background-color: #001a43;
+	height: 5vh;
+}
+
+.yellow_line{
+	margin: 0px;
+	border: 0px;
+	background-color: #F5b400;
+	height: 0.1vh;
+}
+
