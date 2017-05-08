@@ -169,7 +169,6 @@ var app = new Vue({
 				 
 				promises.push(this.$http.get("/api/lecciones").then(response => {
 		        self.todasLecciones= response.body.datos;
-		        console.log(self.todasLecciones);
 		        $.each(self.todasLecciones, function(index, value){
 		      	self.leccionesId.push(value._id);
 		      	self.nombreLecciones.push(value.nombre);
@@ -196,9 +195,8 @@ var app = new Vue({
 				$.each(self.gruposParaleloId[indice], function(i,grupo){
 					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
 						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
-							console.log(data.body.datos[0]);
 				 	calificaciones.leccion= self.nombreLecciones[index];
-				 	calificaciones.grupo= grupo;//self.obtenerNombreGrupo(grupo);
+				 	calificaciones.grupo= grupo;
 				 	calificaciones.calificacion= data.body.datos[0].calificacion;
 				 	calificaciones.paralelo= self.nombreParalelo[indice];
 				 	calificaciones.materia= self.nombreMateria[indice];
@@ -220,14 +218,11 @@ var app = new Vue({
 					async: false,
 					url: "/api/grupos/"+datos.grupo,
 					success: function( data ) {
-					console.log(data.datos.nombre);
 					nombre=data.datos.nombre;
 				}
 				});
 				reporteData[indice].grupo= nombre;
 			});
-			console.log("Reporte de datos: ");
-			console.log(reporteData);
 			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
 			});
 
