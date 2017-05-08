@@ -88,7 +88,11 @@ function enviarFeedback(){
 
 	var leccionId = window.location.href.toString().split('/')[6];
 	var grupoId = window.location.href.toString().split('/')[8];
-	
+	var calificacionGrupal= 0;
+	var bodyEnviar= {
+		calificacion:''
+		};
+
 	$("input").each(function(index, calificacion){
 		App.calificaciones.push($(calificacion).val());
 		console.log(App.calificaciones);
@@ -101,19 +105,23 @@ function enviarFeedback(){
 
 	$.each(App.leccion.preguntas, function(index, pregunta){
 		var calificarURL = '/api/respuestas/calificar/leccion/'+ leccionId+ '/pregunta/'+pregunta.pregunta+ '/grupo/'+grupoId;
-	    var bodyEnviar= {
-		calificacion:''
-		};
 		bodyEnviar.calificacion= App.calificaciones[index];
-	    console.log(bodyEnviar);
+		calificacionGrupal= calificacionGrupal + parseInt(bodyEnviar.calificacion);
+	    console.log("calificacion individual");
+	    console.log(bodyEnviar.calificacion);
 	    App.$http.put(calificarURL, bodyEnviar).then(res => {
 	    	console.log("Calificacion lista "+ index);
-
 		});
-
-
 	});
-	$('#myModal').modal('open');
+
+	bodyEnviar.calificacion= calificacionGrupal;
+	
+	App.$http.put('/api/calificaciones/calificar/'+leccionId+'/'+grupoId, bodyEnviar).then (res=> {
+		$('#myModal').modal('open');
+	});
+
+
+	
 }
 // document.getElementById('datePicker').valueAsDate = new Date();
 // document.getElementById('datePicker').setAttribute('min', "2017-04-09")
