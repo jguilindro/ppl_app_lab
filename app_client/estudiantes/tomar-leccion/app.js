@@ -45,8 +45,8 @@ app = new Vue({
                       var a = document.getElementById('app')
                       a.setAttribute('class', 'disabled')
                     }
-                  })
-                } else if (!res.body.estado) {
+                  })                  
+                }else if (!res.body.estado) {
                   Materialize.toast('Codigo mal ingresado', 4000)
                 } else if (codigo_leccion_verificado.mensaje == 'no_esta_anadido_a_paralelo') {
                   Materialize.toast('No esta en ningun paralelo', 4000)
