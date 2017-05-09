@@ -121,7 +121,6 @@ function realtime(io) {
           console.log(estudiante);
           const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
           if (profesor && (profe || PARALELO.leccionYaComenzo)) {
-            socket.inteval = interval
             const HORA_LOCAL = moment();
             const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
             const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
@@ -174,6 +173,12 @@ function realtime(io) {
     }
     socket.on('usuario', function(usuario) {
       socket.user = usuario
+      co(function* () {
+        const profesor = yield obtenerProfesor(usuario)
+        if (profesor) {
+          socket.inteval = interval
+        }
+      })
       comenzar(false)
     })
     socket.on('comenzar leccion', function(data) {
