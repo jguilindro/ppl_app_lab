@@ -97,5 +97,13 @@ socket.on('empezar leccion', function(data) {
     window.location.href = `/estudiantes/leccion`
   }
 })
+$.get({
+  url: '/api/session/usuario_conectado',
+  success: function(data) {
+    console.log(data);
+    socket.emit('usuario', data.datos)
+  }
+})
+// socket.emit('usuario', App.obtenerLogeado())
 
 app.estado()

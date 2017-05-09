@@ -12,14 +12,26 @@
 //     }
 // }
 function salir() {
-  window.location.href = '/api/session/logout'
-//   var cookies = document.cookie.split(";");
-// for (var i = 0; i < cookies.length; i++)
-//   eraseCookie(cookies[i].split("=")[0]);
+  window.location.href = '/'
 };
 
 (function() {
-  var cookies = document.cookie.split(";");
-for (var i = 0; i < cookies.length; i++)
-  eraseCookie(cookies[i].split("=")[0]);
+  setTimeout(function(da) {
+    console.log('delete');
+    var delete_cookie = function(name) {
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    };
+
+    delete_cookie('connect.sid');
+    delete_cookie('io');
+  }, 2000)
 })
+setTimeout(function(da) {
+  console.log('delete');
+  var delete_cookie = function(name) {
+      document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  };
+
+  delete_cookie('connect.sid');
+  delete_cookie('io');
+}, 2000)

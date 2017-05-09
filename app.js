@@ -7,7 +7,9 @@ cors              = require('cors');
 bodyParser        = require('body-parser'),
 session           = require('express-session'),
 MongoStore        = require('connect-mongo')(session),
-CASAuthentication = require('cas-authentication');
+CASAuthentication = require('cas-authentication'),
+MongoClient  = require('mongodb').MongoClient,
+URL         = require('./app_api/utils/change_database').local();
 
 // CAS URLS
 var URL_CAS_LOCALHOST = 'http://localhost:3000'
@@ -48,8 +50,12 @@ app.use(cookieParser());
 app.use(session({
 	secret: 'MY-SESSION-DEMO',  // <= en un env
 	resave: false,
+  expire: 1 * 24 * 60 * 60 ,
 	saveUninitialized: false,
-  store: new MongoStore({ url: require('./app_api/utils/change_database').local() })
+  store: new MongoStore({
+      url: require('./app_api/utils/change_database').local(),
+      ttl: 4 * 60 * 60 // = 14 days. Default
+    })
 }));
 
 var cas = new CASAuthentication({
@@ -188,7 +194,23 @@ app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEs
 app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // otros
-app.use('/otros', express.static(path.join(__dirname, 'app_client/otros')))
+app.use('/otros', function(req, res, next) {
+  if (req.sessionID) {
+      if (res) {
+        MongoClient.connect(URL, function(err, db) {
+          var collection = db.collection('sessions');
+          collection.remove({_id: req.sessionID}, function(err, docs) {
+            return next()
+            db.close();
+          })
+        });
+      } else {
+        return next()
+      }
+  } else {
+    next()
+  }
+}, express.static(path.join(__dirname, 'app_client/otros')), cas.logout)
 
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))

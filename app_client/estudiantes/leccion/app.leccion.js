@@ -23,6 +23,7 @@ var App = new Vue({
   el: '#app',
   mounted: function(){
     this.obtenerLogeado();
+    console.log(this.estudiante);
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
     $('.modal').modal();{
@@ -60,6 +61,7 @@ var App = new Vue({
             self.estudiante = res.body.datos;
             self.obtenerGrupoDeEstudiante();
             self.obtenerParaleloDeEstudiante();
+
           }
         });
     },
@@ -88,7 +90,7 @@ var App = new Vue({
         });
       });
       //console.log(grupo)
-      
+
 
     },
     obtenerGrupoDeEstudiante: function(){
@@ -289,7 +291,7 @@ var App = new Vue({
       });
       return todasRespondidas;
     },
-    
+
     revisarLeccion: function(){
       var self = this;
       self.corregirHabilitado = true;
@@ -357,6 +359,13 @@ var App = new Vue({
 var socket = io('/tomando_leccion')
 socket.emit('hola', 'sdsads')
 
+console.log(getCookie('connect.sid'));
+function getCookie(name) {
+  console.log('sd');
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
 // socket.on('mi grupo', function(data) {
 //   console.log(data);
 // })
@@ -373,6 +382,9 @@ socket.on('terminado leccion', function(match) {
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
 })
+socket.on('desconectarlo', function(dato) {
+  Materialize.toast('hubo un error llamar', 15000)
+})
 
 $('body').on('click','img',function(){
   App.mostrarModal($(this).attr('src'));
@@ -380,3 +392,10 @@ $('body').on('click','img',function(){
 // socket.on('pregunta actual', function(pregunta) {
 //   console.log(pregunta);
 // })
+$.get({
+  url: '/api/session/usuario_conectado',
+  success: function(data) {
+    console.log(data);
+    socket.emit('usuario', data.datos)
+  }
+})

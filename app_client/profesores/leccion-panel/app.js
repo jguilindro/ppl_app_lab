@@ -120,6 +120,14 @@ leccion.on('terminado leccion', function(match) {
 	console.log('se ha terminado la leccion')
 })
 
+$.get({
+  url: '/api/session/usuario_conectado',
+  success: function(data) {
+    console.log(data);
+    leccion.emit('usuario', data.datos)
+  }
+})
+
 function comenzar() {
   leccion.emit('comenzar leccion', true)
 }

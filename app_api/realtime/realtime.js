@@ -49,68 +49,140 @@ function realtime(io) {
       })
     }
     var interval
+    // function comenzar(profe) {
+    //   co(function *() {
+    //     if (cook) {
+    //       const COOKIE = yield mongoSession(cook)
+    //       const profesor = yield obtenerProfesor(COOKIE)
+    //       const estudiante = yield obtenerEstudiante(COOKIE)
+    //       const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+    //       if (profesor && (profe || PARALELO.leccionYaComenzo)) {
+    //         socket.inteval = interval // idea para ver si dos profesores pueden dar leccio al mismo tiempo
+    //         const HORA_LOCAL = moment();
+    //         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
+    //         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+    //         const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
+    //         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
+    //         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
+    //         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
+    //         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
+    //         socket.inteval = setInterval(function() {
+    //           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+    //           var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+    //           // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
+    //           // console.log(`tiempo restante ${duration}`);
+    //           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
+    //           if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
+    //             if (parseInt(duration) == 0) {
+    //               clearInterval(socket.inteval);
+    //               leccionTerminada(PARALELO, PARALELO.leccion)
+    //               leccion.in(PARALELO._id).emit('terminado leccion', true)
+    //             }
+    //           }
+    //           leccion.in(PARALELO._id).emit('tiempo restante', duration)
+    //         }, 1000)
+    //       }
+    //       if (estudiante) {
+    //         const GRUPO = yield obtenerGrupo(estudiante)
+    //         const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
+    //         const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
+    //         anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
+    //         // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
+    //         // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
+    //         socket.join(GRUPO._id) // unir estudiante al canal grupo
+    //         socket.join(PARALELO._id) // unir al estudiante al canal paralelo
+    //         socket.estudiante = estudiante
+    //         socket.broadcast.emit('estudiante conectado', estudiante) // enviar el estudiante conectador a PROFESOR
+    //         /*
+    //           socket.emit('grupo contensto todo') // este enviara que contesto y esperara hasta que todos los estuidantes contestem
+    //           socket.on('estudiante contesto pregunta') // este recibira de algun estudiante, seria on creo no emit y lo enviara a profesor
+    //           socket.on('grupo contesto pregunta') // cuando el grupo termine
+    //           socket.on('grupo bandera amarilla') // emite a profesor
+    //           socket.on('grupo bandera roja') // emit a profesor
+    //         */
+    //         // socket.emit('pregunta actual', PREGUNTA_ID)
+    //         socket.emit('leccion id', LECCION_ID)
+    //       }
+    //     } else {
+    //       socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
+    //     }
+    //   }).catch(fail => console.log(fail))
+    // }
+    // comenzar(false)
     function comenzar(profe) {
       co(function *() {
-        const COOKIE = yield mongoSession(cook)
-        const profesor = yield obtenerProfesor(COOKIE)
-        const estudiante = yield obtenerEstudiante(COOKIE)
-        const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        if (profesor && (profe || PARALELO.leccionYaComenzo)) {
-          socket.inteval = interval // idea para ver si dos profesores pueden dar leccio al mismo tiempo
-          const HORA_LOCAL = moment();
-          const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
+        if (!cook) {
+           socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
+        }
+          // const COOKIE = yield mongoSession(cook)
+          const COOKIE = socket.user
+          const profesor = yield obtenerProfesor(COOKIE)
+          const estudiante = yield obtenerEstudiante(COOKIE)
+          console.log(estudiante);
           const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-          const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
-          const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
-          console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
-          const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
-          console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-          socket.inteval = setInterval(function() {
-            let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-            var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-            // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
-            // console.log(`tiempo restante ${duration}`);
-            // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
-            if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
-              if (parseInt(duration) == 0) {
-                clearInterval(socket.inteval);
-                leccionTerminada(PARALELO, PARALELO.leccion)
-                leccion.in(PARALELO._id).emit('terminado leccion', true)
+          if (profesor && (profe || PARALELO.leccionYaComenzo)) {
+            socket.inteval = interval
+            const HORA_LOCAL = moment();
+            const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
+            const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+            const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
+            const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
+            console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
+            const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
+            console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
+            socket.inteval = setInterval(function() {
+              let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+              var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+              // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
+              // console.log(`tiempo restante ${duration}`);
+              // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
+              if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
+                if (parseInt(duration) == 0) {
+                  clearInterval(socket.inteval);
+                  leccionTerminada(PARALELO, PARALELO.leccion)
+                  leccion.in(PARALELO._id).emit('terminado leccion', true)
+                }
               }
-            }
-            leccion.in(PARALELO._id).emit('tiempo restante', duration)
-          }, 1000)
-        }
-        if (estudiante) {
-          const GRUPO = yield obtenerGrupo(estudiante)
-          const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
-          const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
-          anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
-          // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
-          // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
-          socket.join(GRUPO._id) // unir estudiante al canal grupo
-          socket.join(PARALELO._id) // unir al estudiante al canal paralelo
-          socket.estudiante = estudiante
-          socket.broadcast.emit('estudiante conectado', estudiante) // enviar el estudiante conectador a PROFESOR
-          /*
-            socket.emit('grupo contensto todo') // este enviara que contesto y esperara hasta que todos los estuidantes contestem
-            socket.on('estudiante contesto pregunta') // este recibira de algun estudiante, seria on creo no emit y lo enviara a profesor
-            socket.on('grupo contesto pregunta') // cuando el grupo termine
-            socket.on('grupo bandera amarilla') // emite a profesor
-            socket.on('grupo bandera roja') // emit a profesor
-          */
-          // socket.emit('pregunta actual', PREGUNTA_ID)
-          socket.emit('leccion id', LECCION_ID)
-        }
+              leccion.in(PARALELO._id).emit('tiempo restante', duration)
+            }, 1000)
+          }
+          if (estudiante) {
+            const GRUPO = yield obtenerGrupo(estudiante)
+            const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
+            const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
+            anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
+            // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
+            // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
+            socket.join(GRUPO._id) // unir estudiante al canal grupo
+            socket.join(PARALELO._id) // unir al estudiante al canal paralelo
+            socket.estudiante = estudiante
+            socket.broadcast.emit('estudiante conectado', estudiante) // enviar el estudiante conectador a PROFESOR
+            /*
+              socket.emit('grupo contensto todo') // este enviara que contesto y esperara hasta que todos los estuidantes contestem
+              socket.on('estudiante contesto pregunta') // este recibira de algun estudiante, seria on creo no emit y lo enviara a profesor
+              socket.on('grupo contesto pregunta') // cuando el grupo termine
+              socket.on('grupo bandera amarilla') // emite a profesor
+              socket.on('grupo bandera roja') // emit a profesor
+            */
+            // socket.emit('pregunta actual', PREGUNTA_ID)
+            socket.emit('leccion id', LECCION_ID)
+          }
+        // } else {
+        //   socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
+        // }
       }).catch(fail => console.log(fail))
     }
-    comenzar(false)
+    socket.on('usuario', function(usuario) {
+      socket.user = usuario
+      comenzar(false)
+    })
     socket.on('comenzar leccion', function(data) {
       console.log('comenzar');
       if (data) {
         comenzar(data)
         co(function *() {
-          const COOKIE = yield mongoSession(cook)
+          // const COOKIE = yield mongoSession(cook)
+          const COOKIE = socket.user
           const profesor = yield obtenerProfesor(COOKIE)
           const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
           leccion.in(PARALELO._id).emit('empezar leccion', true)
@@ -124,22 +196,30 @@ function realtime(io) {
     })
     socket.on('parar leccion', function(data) {
       co(function *() {
-        const COOKIE = yield mongoSession(cook)
+        // const COOKIE = yield mongoSession(cook)
+        const COOKIE = socket.user
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
         clearInterval(socket.inteval)
         leccionTerminada(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
+        io.sockets.sockets.forEach(function(s) {
+            s.disconnect(true);
+        });
       })
     })
     socket.on('parar leccion development', function(data) {
       co(function *() {
-        const COOKIE = yield mongoSession(cook)
+        const COOKIE = socket.user
+        // const COOKIE = yield mongoSession(cook)
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
         clearInterval(socket.inteval)
         leccionTerminadaDevelop(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
+        io.sockets.sockets.forEach(function(s) {
+            s.disconnect(true);
+        });
       })
     })
   })
@@ -163,7 +243,11 @@ function mongoSession(cook) {
 }
 
 function obtenerCook(cookie_socket) {
+  // console.log(cookieParser.JSONCookie(cookie_socket, 'MY-SESSION-DEMO'));
   var cookies = cookie.parse(cookie_socket);
+  if (!cookies) {
+    return false
+  }
   var cook = cookies['connect.sid'].split('.').filter((ele,index) => index == 0)[0].split(':')[1]
   return cook
 }

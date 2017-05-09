@@ -7,8 +7,8 @@ function session (req, res, next) {
     return
   }
   co(function* () {
-    let profesor = yield obtenerProfesorPorCorreo(req.session.cas_user)
-    let estudiante = yield obtenerEstudiantePorCorreo(req.session.cas_user)
+    let profesor = yield obtenerProfesorPorCorreo(req.session.cas_user.toLowerCase())
+    let estudiante = yield obtenerEstudiantePorCorreo(req.session.cas_user.toLowerCase())
     if (profesor) {
       req.session.privilegios = 'profesor';
       req.session.correo = profesor.correo;
