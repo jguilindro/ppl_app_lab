@@ -156,13 +156,7 @@ var app = new Vue({
 
     generarReporte: function(){
 	var reporteData= [];
-	var calificaciones= {
-		leccion: '',
-		grupo: '',
-		calificacion: '',
-		paralelo: '',
-		materia: ''
-	};
+	
 	var self = this;
 	var promises= [];
 	var promesas= [];
@@ -195,12 +189,21 @@ var app = new Vue({
 				$.each(self.gruposParaleloId[indice], function(i,grupo){
 					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
 						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
+							var calificaciones= {
+								leccion: '',
+								grupo: '',
+								calificacion: '',
+								paralelo: '',
+								materia: ''
+							};
 				 	calificaciones.leccion= self.nombreLecciones[index];
 				 	calificaciones.grupo= grupo;
 				 	calificaciones.calificacion= data.body.datos[0].calificacion;
 				 	calificaciones.paralelo= self.nombreParalelo[indice];
 				 	calificaciones.materia= self.nombreMateria[indice];
+				 	console.log(calificaciones);
 				 	reporteData.push(calificaciones);
+
 					}
 				}));
 				});
