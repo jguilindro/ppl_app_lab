@@ -1,5 +1,5 @@
-var util = require('../app_api/ws/utils.ws.js')
-var jsonfile = require('jsonfile')
+var util = require('../app_api/ws/utils.ws.js');
+var jsonfile = require('jsonfile');
 
 var path = require('path')
 util.estudiantesWS(estudiantes => {
