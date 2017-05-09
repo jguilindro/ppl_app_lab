@@ -200,14 +200,17 @@ app.use('/otros', function(req, res, next) {
         MongoClient.connect(URL, function(err, db) {
           var collection = db.collection('sessions');
           collection.remove({_id: req.sessionID}, function(err, docs) {
-            return next()
+            req.session = null
             db.close();
+            return next()
           })
         });
       } else {
+        req.session = null
         return next()
       }
   } else {
+    req.session = null
     next()
   }
 }, express.static(path.join(__dirname, 'app_client/otros')), cas.logout)
