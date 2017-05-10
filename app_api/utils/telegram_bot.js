@@ -14,7 +14,7 @@ var TelegramBot = require('node-telegram-bot-api');
 
 const url = process.env.APP_URL || 'https://ppl-realtime.herokuapp.com:443';
 
-if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV == 'production') {
   const bot = new TelegramBot(token, options);
   bot.setWebHook(`${url}/bot${token}`);
 }
