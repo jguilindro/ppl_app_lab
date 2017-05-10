@@ -32,7 +32,7 @@ require('./app_api/ws').update()
 if (os.hostname() === 'joelerll-laptop') {
   require('./app_api/utils/telegram_bot')
 } else if (process.env.NODE_ENV == 'production') {
-
+  require('./app_api/utils/telegram_bot')
 } else if (process.env.APP && process.env.APP == 'realtime') {
   require('./app_api/utils/telegram_bot')
 }
