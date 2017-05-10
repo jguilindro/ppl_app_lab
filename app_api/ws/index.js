@@ -59,12 +59,12 @@ module.exports = {
       // }, null, true, 'America/Guayaquil');
     }
     if (process.env.NODE_ENV == 'development') {
-      var estudiantes = require('./update/estudiantes.ws.update')
-      co(function* () {
-        var estudiantes = require('./update/estudiantes.ws.update')
-        var e = yield estudiantes
-        logger.info('actualizada db')
-      })
+      // var estudiantes = require('./update/estudiantes.ws.update')
+      // co(function* () {
+      //   var estudiantes = require('./update/estudiantes.ws.update')
+      //   var e = yield estudiantes
+      //   logger.info('actualizada db')
+      // })
       // new CronJob('* * * * * *', function() {
       //   var estudiantes = require('./update/estudiantes.ws.update')
       //   co(function* () {
