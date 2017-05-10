@@ -6,7 +6,7 @@ const options = {
 };
 var TelegramBot = require('node-telegram-bot-api');
 
-const url = process.env.APP_URL || 'https://ppl-espol.herokuapp.com:443';
+const url = process.env.APP_URL || 'https://ppl-realtime.herokuapp.com:443';
 
 if(process.env.NODE_ENV === 'production') {
   //bot = new Bot(token);

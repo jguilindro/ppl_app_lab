@@ -27,7 +27,7 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 require('./app_api/models/db')
 // sync db y ws
 require('./app_api/ws').update()
-//require('./app_api/utils/telegram_bot')
+require('./app_api/utils/telegram_bot')
 
 var app = express();
 var server = require('http').Server(app);
@@ -54,7 +54,7 @@ app.use(session({
 	saveUninitialized: false,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 4 * 60 * 60 // = 14 days. Default
+      ttl: 6 * 60 * 60 // = 14 days. Default
     })
 }));
 
