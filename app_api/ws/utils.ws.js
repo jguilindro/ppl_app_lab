@@ -211,16 +211,18 @@ const estudiantesDB = function(callback) {
       for (var j = 0; j < paralelos[i].estudiantes.length; j++) {
         let estudiante_encontrado = paralelos[i].estudiantes[j]
         let estudiante = yield obtenerEstudiante(estudiante_encontrado)
-        estudiantes.push({
-          nombres: estudiante.nombres,
-          apellidos: estudiante.apellidos,
-          matricula: estudiante.matricula,
-          correo: estudiante.correo,
-          paralelo: paralelo_temp.nombre,
-          codigomateria: paralelo_temp.codigo,
-          anio: paralelo_temp.anio,
-          termino: paralelo_temp.termino
-        })
+        if (estudiante) {
+          estudiantes.push({
+            nombres: estudiante.nombres,
+            apellidos: estudiante.apellidos,
+            matricula: estudiante.matricula,
+            correo: estudiante.correo,
+            paralelo: paralelo_temp.nombre,
+            codigomateria: paralelo_temp.codigo,
+            anio: paralelo_temp.anio,
+            termino: paralelo_temp.termino
+          })
+        }
       }
     }
     callback(estudiantes)
