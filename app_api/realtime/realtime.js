@@ -223,9 +223,9 @@ function realtime(io) {
         clearInterval(socket.inteval)
         leccionTerminadaDevelop(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
-        io.sockets.sockets.forEach(function(s) {
-            s.disconnect(true);
-        });
+        // io.sockets.sockets.forEach(function(s) {
+        //     s.disconnect(true);
+        // });
       })
     })
   })

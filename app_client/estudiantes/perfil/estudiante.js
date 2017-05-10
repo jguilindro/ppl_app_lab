@@ -1,3 +1,9 @@
+if (window.Promise) {
+  console.log('soporta promise');
+} else {
+  console.log('no soporta promise');
+}
+
 var app = new Vue({
   el: '#app',
   mounted: function(){
@@ -10,13 +16,22 @@ var app = new Vue({
   methods: {
     obtenerLogeado: function() {
       var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-            self.estudiante = res.body.datos;
+      $.get({
+        url: '/api/session/usuario_conectado',
+        success: function(res) {
+          console.log(res.estado);
+          if (res.estado) {
+            self.estudiante = res.datos;
             self.presentarLecciones();
           }
-        });
+        }
+      })
+      // this.$http.get('/api/session/usuario_conectado').then(res => {
+      //     if (res.body.estado) {
+      //       self.estudiante = res.body.datos;
+      //       self.presentarLecciones();
+      //     }
+      //   });
     },
     presentarLecciones: function(){
       var self = this;
