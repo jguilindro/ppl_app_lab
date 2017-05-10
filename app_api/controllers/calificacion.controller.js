@@ -37,10 +37,18 @@ const calificar = (req, res) => {
 	});
 }
 
+const obtenerRegistroPorLeccion = (req, res) => {
+	CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, doc) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, doc);
+	})
+}
+
 
 module.exports = {
 	crearRegistro,
 	obtenerRegistro,
+	obtenerRegistroPorLeccion
 	anadirParticipante,
 	calificar,
 }
