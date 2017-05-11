@@ -30,6 +30,9 @@
     "sticky-kit": "^1.1.2",
     "moment": "^2.18.1",
     "es6-promise": "^4.0.5",
-    "offline": "^0.7.18"
+    "offline": "^0.7.18",
+    "JIC": "^2.0.2",
+    "trumbowyg": "^2.5.1",
+    "froala-wysiwyg-editor": "^2.6.0"
   }
 }

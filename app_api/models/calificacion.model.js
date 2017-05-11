@@ -47,4 +47,8 @@ CalificacionSchema.statics.calificar = function(id_leccion, id_grupo, calificaci
 	this.update({leccion: id_leccion, grupo: id_grupo}, {calificacion: calificacion_nueva, calificada: true}, callback);
 }
 
+CalificacionSchema.statics.obtenerRegistroPorleccion = function(id_leccion, callback){
+	this.find({leccion: id_leccion}, callback)
+}
+
 module.exports = mongoose.model('Calificacion', CalificacionSchema);
