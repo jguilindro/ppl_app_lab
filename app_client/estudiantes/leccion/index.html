@@ -64,17 +64,6 @@
                       <div class="row" id="row-area-respuesta">
                         <div class="col s12 input-field">
                           <div v-bind:id="'editor-' + pregunta._id" class="editor"></div>
-                          <!--<textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
-                          <label for="textarea-respuesta">Escriba aquí su respuesta</label>-->
-                        </div>
-                        <div class="input-field file-field col s12">
-                          <div class="btn">
-                            <span>File</span>
-                            <input type="file" v-bind:id="'file-' + pregunta._id" v-on:change="subirImagen(pregunta)">
-                          </div>
-                          <div class="file-path-wrapper">
-                            <input type="text" class="file-path validate" v-bind:id="'file-wrapper-' + pregunta._id">
-                          </div>
                         </div>
                       </div>
                       <div class="row" id="botones">

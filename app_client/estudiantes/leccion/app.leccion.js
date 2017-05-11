@@ -7,6 +7,8 @@ var App = new Vue({
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
     $('.modal').modal();
+    $('.tooltipped').tooltip({delay: 50});
+    $('.modal').modal();
   },
   methods: {
     //Funciones iniciales
@@ -191,6 +193,7 @@ var App = new Vue({
       var url = '/api/respuestas/';/*
       this.$http.post(url, respuesta).then(response => {
         //Success callback
+        Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
         console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
         pregunta.respondida = true;
         self.bloquearBtnRespuesta(event);
