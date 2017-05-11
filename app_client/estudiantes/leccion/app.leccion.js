@@ -215,7 +215,7 @@ var App = new Vue({
         data: JSON.stringify(respuesta),
         success: function(response) {
           //Success callback
-          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
+          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') 
           console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
           pregunta.respondida = true;
           self.bloquearBtnRespuesta(event);
@@ -227,6 +227,7 @@ var App = new Vue({
         },
         error: function(response) {
           //Error callback
+          Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded')
           console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
           console.log(response);
         }
