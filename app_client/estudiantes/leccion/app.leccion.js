@@ -44,100 +44,118 @@ var App = new Vue({
     },
     anadirParticipanteARegistro: function(){
       var self = this;
-      var url = '/api/grupos/estudiante/' + self.estudiante._id;
+      var url = '/api/grupos/estudiante/' + App.estudiante._id;
       var grupo = ''
       //Primero obtengo el grupo al que el estudiante pertenece. El id
-      self.$http.get(url).then(response => {
-        //console.log(response.body)
-        grupo = response.body.datos._id;
-        var urlRegistro = '/api/calificaciones/' + self.leccion._id + '/' + grupo;
-        console.log('La url es: ' + urlRegistro);
-       //var estudiante = self.estudiante._id;
-        var estudiante = {
-          estudiante: self.estudiante._id
+      // self.$http.get(url).then(response => {
+      $.get({
+        url: url,
+        success: function(response) {
+          //console.log(response.body)
+          grupo = response.datos._id;
+          var urlRegistro = '/api/calificaciones/' + App.leccion._id + '/' + grupo;
+          console.log('La url es: ' + urlRegistro);
+          var estudiante = {
+            estudiante: App.estudiante._id
+          }
+          console.log('Lo que se le va a agregar es: ' + estudiante)
+          $.ajax({
+            url: urlRegistro,
+            type: 'PUT',
+            data: JSON.stringify(estudiante),
+            success: function(response) {
+              console.log(response);
+            }
+          })
         }
-        console.log('Lo que se le va a agregar es: ' + estudiante)
-        self.$http.put(urlRegistro, estudiante).then(response => {
-          console.log(response);
-        });
       });
-      //console.log(grupo)
-
-
     },
-    
+
     obtenerParaleloDeEstudiante: function(){
       var self = this;
       var url = '/api/paralelos/estudiante/'
       url = url + self.estudiante._id;
-      this.$http.get(url).then(response => {
-        //SUCCESS CALLBACK
-        self.estudiante.paralelo = response.body.datos._id;
-      }, response => {
-        //ERROR CALLBACK
-        console.log('Error')
-        console.log(response);
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+          App.estudiante.paralelo = response.datos._id;
+        },
+        error: function(response) {
+          console.log('Error')
+          console.log(response);
+        }
       })
     },
     obtenerLeccion: function(leccionId){
       var self = this;
       var url = '/api/lecciones/' + leccionId;
-      this.$http.get(url).then(response => {
-        //succcess callback
-        self.leccion = response.body.datos;
-        self.anadirParticipanteARegistro();
-        $.when($.ajax(self.obtenerPreguntas(leccionId))).then(function () {
-          /*$.each(this.preguntas, function(index, pregunta){
-            var idEditor = '#editor-' + pregunta._id
-            $(idEditor).froalaEditor();
-          });*/
-          self.crearEditor();
-        });
-      }, response => {
-        //error callback
-
-      });
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+          //succcess callback
+          App.leccion = response.datos;
+          App.anadirParticipanteARegistro();
+          $.when($.ajax(App.obtenerPreguntas(leccionId))).then(function () {
+            /*$.each(this.preguntas, function(index, pregunta){
+              var idEditor = '#editor-' + pregunta._id
+              $(idEditor).froalaEditor();
+            });*/
+            App.crearEditor();
+          });
+        },
+        error: function(response) {
+          console.log('ERROR');
+        }
+      })
     },
     obtenerPreguntas: function(leccionId){
       var self = this;
       var idPregunta = '';
       var apiPreguntasUrl = '/api/preguntas/'
-      $.each(self.leccion.preguntas, function(index, pregunta){
+      $.each(App.leccion.preguntas, function(index, pregunta){
         idPregunta = pregunta.pregunta;
         apiPreguntasUrl = apiPreguntasUrl + idPregunta;
-        self.$http.get(apiPreguntasUrl).then(response => {
-          //SUCCESS CALLBACK
-          var pregunta = self.crearPregunta(response);
-          self.preguntas.push(pregunta);
-        }, response => {
-          //ERROR CALLBACK
-          consle.log('ERROR');
-          console.log(response);
-        });
+        $.ajax({
+          url: apiPreguntasUrl,
+          methods: 'GET',
+          success: function(response) {
+            var pregunta = App.crearPregunta(response);
+            App.preguntas.push(pregunta);
+          },
+          error: function(response) {
+            consle.log('ERROR');
+            console.log(response);
+          }
+        })
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
 
     },
     crearPregunta: function(res){
       var self = this;
-      var pregunta = res.body.datos;
+      var pregunta = res.datos;
       pregunta.respuesta = ''
       //Busca si la pregunta ya fue respondida, busca en la base de datos si existe una respuesta del estudiante a la pregunta escogida
-      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
-      self.$http.get(url).then(response => {
-        //SUCCESS CALLBACK
-        if (response.body.datos!=null) {          //Si la respuesta existe
-          pregunta.respuesta = response.body.datos.respuesta;
-          pregunta.respondida = true;
-        }else{                                    //Si la respuesta no existe
+      var url = '/api/respuestas/buscar/leccion/' + App.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + App.estudiante._id;
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+          if (response.datos!=null) {          //Si la respuesta existe
+            pregunta.respuesta = response.datos.respuesta;
+            pregunta.respondida = true;
+          }else{                                    //Si la respuesta no existe
+            pregunta.respuesta = '';
+            pregunta.respondida = false;
+          }
+        },
+        error: function() {
           pregunta.respuesta = '';
           pregunta.respondida = false;
         }
-      }, response => {
-        //ERROR CALLBACK
-        pregunta.respuesta = '';
-        pregunta.respondida = false;
-      });
+      })
       return pregunta;
     },
     //Eventos
@@ -293,24 +311,30 @@ var App = new Vue({
     corregirRespuesta: function(pregunta){
       var self = this;
       var url = "/api/respuestas/buscar/leccion/" + self.leccion._id + "/pregunta/" + pregunta._id + "/estudiante/" + self.estudiante._id
-      self.$http.get(url).then(response => {
-        var idRespuesta = response.body.datos._id;
-        self.enviarCorreccion(idRespuesta, pregunta);
-      }, response => {
-
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+          var idRespuesta = response.datos._id;
+          self.enviarCorreccion(idRespuesta, pregunta);
+        }
       })
     },
     enviarCorreccion: function(idRespuesta, pregunta){
       var self = this;
       var urlPut = "/api/respuestas/" + idRespuesta;
-      self.$http.put(urlPut, {respuesta: pregunta.respuesta}).then(response => {
-        //SUCCESS CALLBACK
-        console.log('yaaaa')
-      }, response => {
-        //ERROR CALLBACK
-        console.log(response);
-        alert('Hubo un error al enviar la corrección. De alguna forma esto es culpa de Xavier')
-      });
+      $.ajax({
+        url: urlPut,
+        method: 'PUT',
+        data: JSON.stringify({respuesta: pregunta.respuesta}),
+        success: function(response) {
+          console.log('yaaaa')
+        },
+        error: function(response) {
+          console.log(response);
+          alert('Hubo un error al enviar la corrección. De alguna forma esto es culpa de Xavier')
+        }
+      })
     },
     crearEditor: function(){
       $.each(this.preguntas, function(index, pregunta){
@@ -321,7 +345,7 @@ var App = new Vue({
           crossDomain: true,
           imageUploadURL: 'https://api.imgur.com/3/upload/',
           imageUploadMethod: 'POST',
-          
+
         })
         .on('froalaEditor.image.beforeUpload', function (e, editor, img) {
             var clientId = "300fdfe500b1718";
@@ -340,7 +364,7 @@ var App = new Vue({
             }
             xhr.send(img);
           })
-       
+
 
       })
     }
@@ -406,4 +430,19 @@ $.get({
     console.log(data);
     socket.emit('usuario', data.datos)
   }
+})
+
+Offline.options = {
+  checkOnLoad: true,
+  requests: true,
+}
+
+
+Offline.on('down', function(data) {
+  // mostrar mensaje que esta desconectado
+  //  Materialize.toast('No esta conectado a internet', 6000)
+})
+
+Offline.on('up', function(data) {
+  console.log('conectado');
 })

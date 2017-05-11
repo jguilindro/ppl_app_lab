@@ -19,7 +19,6 @@ LeccionModel      = require('../models/leccion.model');
 function realtime(io) {
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
-    // var cook = obtenerCook(socket.request.headers.cookie)
     var cook = true
     const obtenerProfesor = function(_usuario_cookie) {
       return new Promise((resolve,reject) => {

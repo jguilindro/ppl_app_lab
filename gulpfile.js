@@ -56,6 +56,7 @@ gulp.task('emergencia', function() {
 gulp.task('browser-sync', [], function() {
 	browserSync.init(null, {
 		proxy: "http://localhost:3000",
+    ws: true,
     socket: {
       namespace: '/browser'
     },
