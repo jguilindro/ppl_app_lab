@@ -209,22 +209,28 @@ var App = new Vue({
       console.log('Va a enviar la respuesta: ')
       console.log(respuesta);
       var url = '/api/respuestas/';
-      this.$http.post(url, respuesta).then(response => {
-        //Success callback
-        Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
-        console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
-        pregunta.respondida = true;
-        self.bloquearBtnRespuesta(event);
-        self.bloquearTextAreaRespondida(pregunta);
-        //self.bloquearEditor(pregunta);
-        if(self.verificarTodasRespondidas()){
-          $('#modalRevisarRespuestas').modal('open');
+      $.ajax({
+        url: url,
+        method: 'POST',
+        data: JSON.stringify(respuesta),
+        success: function(response) {
+          //Success callback
+          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
+          console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
+          pregunta.respondida = true;
+          self.bloquearBtnRespuesta(event);
+          self.bloquearTextAreaRespondida(pregunta);
+          //self.bloquearEditor(pregunta);
+          if(self.verificarTodasRespondidas()){
+            $('#modalRevisarRespuestas').modal('open');
+          }
+        },
+        error: function(response) {
+          //Error callback
+          console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
+          console.log(response);
         }
-      }, response => {
-        //Error callback
-        console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
-        console.log(response);
-      });
+      })
     },
     crearRespuesta: function(pregunta){
       var self = this;
