@@ -190,7 +190,7 @@ var App = new Vue({
       var respuesta = self.crearRespuesta(pregunta);
       console.log('Va a enviar la respuesta: ')
       console.log(respuesta);
-      var url = '/api/respuestas/';/*
+      var url = '/api/respuestas/';
       this.$http.post(url, respuesta).then(response => {
         //Success callback
         Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
@@ -206,7 +206,7 @@ var App = new Vue({
         //Error callback
         console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
         console.log(response);
-      });*/
+      });
     },
     crearRespuesta: function(pregunta){
       var self = this;
