@@ -7,10 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css">
-    <!-- Include Editor style. -->
-    <link rel="stylesheet" type="text/css" href="/bower_components/froala-wysiwyg-editor/css/froala_editor.pkgd.css">
-    <link rel="stylesheet" type="text/css" href="/bower_components/froala-wysiwyg-editor/css/froala_style.min.css">
-    <!---->
+    <link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
     <link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
     <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
   </head>
@@ -59,18 +56,13 @@
                 </section>
                 <hr><hr>
                 <section id="area-respuesta" class="col s12">
-                  <div class="row">
-                    <form class="col s12">
-                      <div class="row" id="row-area-respuesta">
-                        <div class="col s12 input-field">
-                          <div v-bind:id="'editor-' + pregunta._id" class="editor"></div>
-                        </div>
-                      </div>
-                      <div class="row" id="botones">
-                        <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
-                      </div>
-                    </form>
-
+                  <div class="row" id="row-area-respuesta">
+                    <div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
+                      
+                    </div>
+                  </div>
+                  <div class="row" id="botones">
+                    <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
                   </div>
                 </section>
               </div>
@@ -111,15 +103,6 @@
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" @click="responderTodas">Terminar</a>
           </div>
         </div>
-        <!-- Modal Imagen Structure -->
-        <div id="modalImagenSubida" class="modal">
-          <div class="modal-content">
-            <p class="center-align">Su imagen fue subida correctamente con el link indicado.</p>
-          </div>
-          <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-          </div>
-        </div>
       </div>
     </main>
     <footer>
@@ -128,8 +111,8 @@
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-      <script src="/bower_components/froala-wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>            
-      <script src="/bower_components/froala-wysiwyg-editor/js/plugins/image.min.js"></script>            
+      <script src="/materialnote/js/ckMaterializeOverrides.js"></script>
+      <script src="/materialnote/js/materialNote.js"></script>
       <script src="./app.leccion.js"></script>
     </footer>
   </body>
