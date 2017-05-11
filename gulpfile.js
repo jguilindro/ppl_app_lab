@@ -18,7 +18,7 @@ gulp.task('testing',['test','nodemon','uri'], function () {
 gulp.task('production',['produc','nodemon','uri'], function () {
 });
 
-gulp.task('realtime',['set-dev-node-env','nodemon','uri'], function () {
+gulp.task('realtime',['set-dev-node-env','nodemon'], function () {
 });
 
 gulp.task('api',['emergencia','nodemon','uri'], function () {

@@ -30,10 +30,10 @@ require('./app_api/models/db')
 require('./app_api/ws').update()
 
 if (os.hostname() === 'joelerll-laptop') {
-  require('./app_api/utils/telegram_bot')
+  // require('./app_api/utils/telegram_bot')
 } else if (process.env.NODE_ENV == 'production') {
   // require('./app_api/utils/telegram_bot')
-} else if (process.env.APP && process.env.APP == 'realtime') {
+} else if (process.env.APP && process.env.APP == 'realtime' || process.env.NODE_ENV == 'api') {
   require('./app_api/utils/telegram_bot')
 }
 
@@ -62,7 +62,7 @@ app.use(session({
 	saveUninitialized: false,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 6 * 60 * 60 // = 14 days. Default
+      ttl: 12 * 60 * 60 // = 14 days. Default
     })
 }));
 
