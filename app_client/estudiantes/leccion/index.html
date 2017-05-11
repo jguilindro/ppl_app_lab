@@ -62,12 +62,12 @@
                   <p v-html="pregunta.descripcion"></p>
                 </section>
                 <hr><hr>
-                <section id="area-respuesta" class="col s12">
-                  <div class="row">
-                    <form class="col s12">
-                      <div class="row" id="row-area-respuesta">
-                        <div class="col s12 input-field">
-                          <div v-bind:id="'editor-' + pregunta._id" class="editor"></div>
+                <section id="area-respuesta" class="col s12 no-side-padding">
+                  <div class="row no-side-padding">
+                    <form class="col s12 no-side-padding">
+                      <div class="row no-side-padding" id="row-area-respuesta">
+                        <div class="col s12 input-field no-side-padding">
+                          <div v-bind:id="'editor-' + pregunta._id" class="editor no-side-padding"></div>
                         </div>
                       </div>
                       <div class="row" id="botones">
