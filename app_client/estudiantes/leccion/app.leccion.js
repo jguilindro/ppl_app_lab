@@ -1,69 +1,39 @@
-/*
-  Flujos:
-    Inicial:
-      1. obtenerLogeado()
-      2. obtenerGrupoDeEstudiante() | obtenerParaleloDeEstudiante()
-      3. obtenerLeccion()
-      4. obtenerPreguntas() | crearPregunta(pregunta)
-
-
-    Responder:
-      1. El estudiante escribe su respuesta en el wysiwyg.
-      2. Selecciona el botón de enviar respuesta.
-      3. Se ejecuta el método responder().
-        3.1 Se verifica si es la primera vez que va a responder a esa pregunta
-          3.1.1 De ser asi, envia la respuesta. enviarRespuesta()
-          3.1.2 Para eso, tiene que crear el objeto de respuesta que se va a enviar a la base de datos. crearRespuseta()
-          3.1.3 Ya creado el objeto respuesta lo envía a la base de datos.
-          3.1.4 Se marca a la pregunta como respondida y se bloquea el wysiwyg para que no pueda corregir la respuesta haste que termine de hacer la lección.
-*/
-
-
 var App = new Vue({
   el: '#app',
-  mounted: function(){
+  created: function(){
     this.obtenerLogeado();
-    console.log(this.estudiante);
+  },
+  mounted: function(){
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
-    $('.modal').modal();{
-    /*$('.myEditor').materialnote({
-        height: "50vh",
-        onImageUpload: function(files, editor, $editable) {
-        var clientId = "300fdfe500b1718";
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-        xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-        app.loading(true);
-         xhr.onreadystatechange = function () {
-            if (xhr.status === 200 && xhr.readyState === 4) {
-              console.log('subido');
-              app.loading(false);
-              var url = JSON.parse(xhr.responseText)
-              console.log(url.data.link);
-              $('.myEditor').materialnote('editor.insertImage', url.data.link);
-            }
-         }
-         xhr.send(files[0]);
-      }
-    });
-    $(".note-editor").find("button").attr("type", "button");
-    */
-    }
+    $('.modal').modal();
   },
   methods: {
     //Funciones iniciales
     obtenerLogeado: function() {
       var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-            self.estudiante = res.body.datos;
+      $.get({
+        url: '/api/session/usuario_conectado',
+        success: function(res){
+          console.log(res)
+          if (res.estado) {
+            self.estudiante = res.datos;
             self.obtenerGrupoDeEstudiante();
             self.obtenerParaleloDeEstudiante();
-
           }
-        });
+        }
+      })
+    },
+    obtenerGrupoDeEstudiante: function(){
+      var self = this;
+      var urlApi = '/api/grupos/estudiante/'
+      urlApi = urlApi + self.estudiante._id;
+      $.get({
+        url: urlApi,
+        success: function(response){
+          self.estudiante.grupo = response.datos._id;
+        }
+      });
     },
     mostrarModal: function(imageUrl){
       $("#modal_Img .modal-content").empty();
@@ -93,18 +63,7 @@ var App = new Vue({
 
 
     },
-    obtenerGrupoDeEstudiante: function(){
-      var self = this;
-      var url = '/api/grupos/estudiante/'
-      url = url + self.estudiante._id;
-      this.$http.get(url).then(response => {
-        //Success callback
-        self.estudiante.grupo = response.body.datos._id;
-      }, response => {
-        //Error callback
-        console.log(response);
-      });
-    },
+    
     obtenerParaleloDeEstudiante: function(){
       var self = this;
       var url = '/api/paralelos/estudiante/'
@@ -125,7 +84,13 @@ var App = new Vue({
         //succcess callback
         self.leccion = response.body.datos;
         self.anadirParticipanteARegistro();
-        self.obtenerPreguntas(leccionId);
+        $.when($.ajax(self.obtenerPreguntas(leccionId))).then(function () {
+          /*$.each(this.preguntas, function(index, pregunta){
+            var idEditor = '#editor-' + pregunta._id
+            $(idEditor).froalaEditor();
+          });*/
+          self.crearEditor();
+        });
       }, response => {
         //error callback
 
@@ -149,6 +114,7 @@ var App = new Vue({
         });
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
+
     },
     crearPregunta: function(res){
       var self = this;
@@ -177,6 +143,15 @@ var App = new Vue({
       var self = this;
       var fileId = '#file-' + pregunta._id;
       var file = $(fileId);
+      /*
+      //Compresion a lo Silicon Valley
+      var source_img = file[0].files[0];
+      var target_img = file[0].files[0];
+
+      var quality =  80;
+      output_format = 'jpg';
+      target_img.src = jic.compress(source_img,quality,output_format).src
+      */
       var clientId = "300fdfe500b1718";
       var xhr = new XMLHttpRequest();
       xhr.open('POST','https://api.imgur.com/3/upload', true);
@@ -191,14 +166,12 @@ var App = new Vue({
           $('#modalImagenSubida').modal('open');
         }
       }
-      xhr.send(file[0].files[0]);
+      xhr.send(target_img);
     },
     responder: function(pregunta, event){
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
       if(!pregunta.respondida&&!self.corregirHabilitado){
-        console.log('Va a responder por primera vez a la pregunta: ')
-        console.log(pregunta)
         self.enviarRespuesta(pregunta);
       }
       //Después de haber respondido todas las preguntas, si quiere corregir alguna
@@ -215,7 +188,7 @@ var App = new Vue({
       var respuesta = self.crearRespuesta(pregunta);
       console.log('Va a enviar la respuesta: ')
       console.log(respuesta);
-      var url = '/api/respuestas/';
+      var url = '/api/respuestas/';/*
       this.$http.post(url, respuesta).then(response => {
         //Success callback
         console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
@@ -230,12 +203,12 @@ var App = new Vue({
         //Error callback
         console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
         console.log(response);
-      });
+      });*/
     },
     crearRespuesta: function(pregunta){
       var self = this;
-      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      //var respuestaEditor = $(idEditor).code(); //Obtengo la respuesta escrita
+      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      var respuestaEditor = $(idEditor).froalaEditor('html.get') //Obtengo la respuesta escrita
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -243,7 +216,7 @@ var App = new Vue({
         paralelo: self.estudiante.paralelo,
         grupo: self.estudiante.grupo,
         contestado: true,
-        respuesta: pregunta.respuesta,
+        respuesta: respuestaEditor,
         feedback: '',
         calificacion: 0
       }
@@ -335,6 +308,38 @@ var App = new Vue({
         console.log(response);
         alert('Hubo un error al enviar la corrección. De alguna forma esto es culpa de Xavier')
       });
+    },
+    crearEditor: function(){
+      $.each(this.preguntas, function(index, pregunta){
+        var idEditor = '#editor-' + pregunta._id
+        $(idEditor).
+        froalaEditor({
+          requestWithCORS: true,
+          crossDomain: true,
+          imageUploadURL: 'https://api.imgur.com/3/upload/',
+          imageUploadMethod: 'POST',
+          
+        })
+        .on('froalaEditor.image.beforeUpload', function (e, editor, img) {
+            var clientId = "300fdfe500b1718";
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST','https://api.imgur.com/3/upload', true);
+            xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+            xhr.onreadystatechange = function (){
+              if (xhr.status === 200 && xhr.readyState === 4) {
+                //console.log('subido');
+                var url = JSON.parse(xhr.responseText)
+                //console.log(url)
+                //console.log(url.data.link);
+                //pregunta.respuesta += 'La imagen subida se encuentra en este link: ' + url.data.link
+                //$('#modalImagenSubida').modal('open');
+              }
+            }
+            xhr.send(img);
+          })
+       
+
+      })
     }
   },
   data: {

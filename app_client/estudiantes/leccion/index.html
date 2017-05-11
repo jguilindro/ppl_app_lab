@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
+    <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Include Editor style. -->
+    <link rel="stylesheet" type="text/css" href="/bower_components/froala-wysiwyg-editor/css/froala_editor.pkgd.css">
+    <link rel="stylesheet" type="text/css" href="/bower_components/froala-wysiwyg-editor/css/froala_style.min.css">
+    <!---->
     <link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
     <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
   </head>
@@ -59,8 +63,9 @@
                     <form class="col s12">
                       <div class="row" id="row-area-respuesta">
                         <div class="col s12 input-field">
-                          <textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
-                          <label for="textarea-respuesta">Escriba aquí su respuesta</label>
+                          <div v-bind:id="'editor-' + pregunta._id" class="editor"></div>
+                          <!--<textarea v-bind:id="'textarea-respuesta-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta"></textarea>
+                          <label for="textarea-respuesta">Escriba aquí su respuesta</label>-->
                         </div>
                         <div class="input-field file-field col s12">
                           <div class="btn">
@@ -76,6 +81,7 @@
                         <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
                       </div>
                     </form>
+
                   </div>
                 </section>
               </div>
@@ -128,13 +134,13 @@
       </div>
     </main>
     <footer>
-      <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-      <script src="/bower_components/materialize/bin/materialize.js"></script>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-      <script src="/materialnote/js/ckMaterializeOverrides.js"></script>
-      <script src="/materialnote/js/materialNote.js"></script>
+      <script src="/bower_components/froala-wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>            
+      <script src="/bower_components/froala-wysiwyg-editor/js/plugins/image.min.js"></script>            
       <script src="./app.leccion.js"></script>
     </footer>
   </body>

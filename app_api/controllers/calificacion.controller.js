@@ -48,7 +48,7 @@ const obtenerRegistroPorLeccion = (req, res) => {
 module.exports = {
 	crearRegistro,
 	obtenerRegistro,
-	obtenerRegistroPorLeccion
+	obtenerRegistroPorLeccion,
 	anadirParticipante,
 	calificar,
 }
