@@ -10,6 +10,10 @@
     <link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">
     <link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
     <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
+    <link rel="stylesheet" href="/bower_components/offline/themes/offline-language-spanish-indicator.css">
+    <!-- <link rel="stylesheet" href="/css/offline-theme-dark-indicator.css"> -->
+    <!-- <link rel="stylesheet" href="/css/offline-theme-dark.css"> -->
+      <link rel="stylesheet" href="/css/offline-theme-slide.css">
   </head>
   <body id="grad">
     <header>
@@ -24,10 +28,10 @@
         </section>
         <section id="nombre">
           <!--Nombre del estudiante-->
-          <h4 class="center-align">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h4>
+          <h4 class="center-align flow-text">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h4>
         </section>
-        <div class="timer pull right">
-          <p>Tiempo restante: {{tiempo}}</p>
+        <div class="timer center-align flow-text">
+          <p>Tiempo: <b>{{tiempo}}</b></p>
         </div>
         <section id="leccion">
           <div class="row" id="row-tabs">
@@ -106,6 +110,8 @@
       </div>
     </main>
     <footer>
+      <script src="/bower_components/offline/offline.min.js"></script>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>

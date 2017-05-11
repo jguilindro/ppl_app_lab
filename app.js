@@ -9,7 +9,8 @@ session           = require('express-session'),
 MongoStore        = require('connect-mongo')(session),
 CASAuthentication = require('cas-authentication'),
 MongoClient  = require('mongodb').MongoClient,
-URL         = require('./app_api/utils/change_database').local();
+URL         = require('./app_api/utils/change_database').local(),
+os = require('os');
 
 // CAS URLS
 var URL_CAS_LOCALHOST = 'http://localhost:3000'
@@ -27,7 +28,14 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 require('./app_api/models/db')
 // sync db y ws
 require('./app_api/ws').update()
-//require('./app_api/utils/telegram_bot')
+
+if (os.hostname() === 'joelerll-laptop') {
+  // require('./app_api/utils/telegram_bot')
+} else if (process.env.NODE_ENV == 'production') {
+  // require('./app_api/utils/telegram_bot')
+} else if (process.env.APP && process.env.APP == 'realtime' || process.env.NODE_ENV == 'api') {
+  require('./app_api/utils/telegram_bot')
+}
 
 var app = express();
 var server = require('http').Server(app);
@@ -54,7 +62,7 @@ app.use(session({
 	saveUninitialized: false,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 4 * 60 * 60 // = 14 days. Default
+      ttl: 12 * 60 * 60 // = 14 days. Default
     })
 }));
 

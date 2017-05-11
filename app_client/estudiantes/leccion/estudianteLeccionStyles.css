@@ -40,14 +40,16 @@ hr.yellow_line{
 }
 
 /*RESPONSIVE ZONE*/
-
 @media (max-width: 600px) {
   .container{
 	width: 100%;
 	margin: auto;
 	}
 }
-
+.row .col .no-side-padding {
+		padding-left: 0px;
+		padding-right: 0px;
+	}
 
 .modal-overlay{
 	display: none !important;

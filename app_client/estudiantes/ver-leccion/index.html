@@ -34,8 +34,8 @@
 						<div class="col s6">
 							<div v-for="respuesta in grupo">
 								<p><b>Nombre:</b> {{respuesta.estudiante}}</p>
-								<p><b>Respuesta:</b><br>{{respuesta.respuesta}}</p>
-								<p><b>Feedback:</b> <br> {{respuesta.feedback}}</p>
+								<p><b>Respuesta:</b></p><p v-html="respuesta.respuesta"></p>
+								<p><b>Feedback:</b></p><p v-html="respuesta.feedback"></p>
 								<hr>
 								<p><b>Calificación obtenida:</b> {{respuesta.calificacion}}</p>
 							</div>
