@@ -38,3 +38,12 @@ hr.yellow_line{
 	background-color: #F5b400;
 	height: 0.2vh;
 }
+
+/*RESPONSIVE ZONE*/
+
+@media (max-width: 600px) {
+  .container{
+	width: 100%;
+	margin: auto;
+	}
+}
