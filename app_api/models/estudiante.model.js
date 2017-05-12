@@ -171,7 +171,7 @@ EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudian
 
 
 EstudianteSchema.statics.calificarLeccion = function(id_estudiante, id_leccion, calificacion_nueva, callback){
-  this.update({_id: id_estudiante, "lecciones.leccion": id_leccion}, {$set: {"lecciones.$.calificacion": calificacion_nueva}}, callback);
+  this.update({_id: id_estudiante, "lecciones.leccion": id_leccion}, {$set: {"lecciones.$.calificacion": calificacion_nueva, "lecciones.$.calificado": true}}, callback);
 }
 
 EstudianteSchema.statics.esperandoLeccion = function(id_estudiante, callback) {

@@ -68,7 +68,9 @@ var App = new Vue({
           calificacion: 0,
           calificada: false,
           leccionTomada: false,
-          grupo: grupo._id
+          grupo: grupo._id,
+          paralelo: self.paraleloEscogido.id,
+          nombreParalelo: self.paraleloEscogido.nombre
         }
         //registro.grupo = grupo._id;
         self.$http.post(url, registro).then(response => {
