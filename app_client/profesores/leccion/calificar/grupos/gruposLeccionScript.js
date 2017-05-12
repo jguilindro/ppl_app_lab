@@ -87,9 +87,9 @@ var app = new Vue({
       console.log(self.registrosAMostrar)
 
       //Muestro solo los grupos que no han sido calificados
-      /*self.registrosAMostrar = $.grep(self.registrosAMostrar, function(registro){
+      self.registrosAMostrar = $.grep(self.registrosAMostrar, function(registro){
         return registro.calificada==false&&registro.participantes.length!=0;
-      })*/
+      })
     },
     buscarNombreEstudiantes: function(){
       //Busco el nombre de los estudiantes del grupo seleccionado para calificar para mostrarlos en la pestaña 'Seleccionar estudiantes'
