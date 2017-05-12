@@ -75,14 +75,12 @@ document.getElementById('terminar-leccion').disabled = true
 
 var leccion = io('/tomando_leccion');
 
-leccion.on('connection', function() {
-  console.log('intentado connection');
-})
 leccion.on('ingresado profesor', function(data) {
 
 })
 
 leccion.on('estudiante conectado', function(_estudiante) {
+  console.log('est conectado');
   var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
   if (!existe) {
     App.estudiantes_conectados.push(_estudiante)
@@ -120,13 +118,31 @@ leccion.on('terminado leccion', function(match) {
 	console.log('se ha terminado la leccion')
 })
 
-$.get({
-  url: '/api/session/usuario_conectado',
-  success: function(data) {
-    console.log(data);
-    leccion.emit('usuario', data.datos)
+leccion.on('leccion datos', function(leccion) {
+  console.log('leccion datos');
+  App.estudiantes_conectados = []
+  for (var i = 0; i < App.grupos.length; i++) {
+    App.grupos[i].estudiantes_conectados = []
   }
+  App.estudiantes_conectados = leccion.estudiantesDandoLeccion
+  console.log();
+  for (var i = 0; i < App.estudiantes_conectados.length; i++) {
+    var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == App.estudiantes_conectados[i]._id)
+    let grupo_index = App.obtenerGrupoEstudiante(App.estudiantes_conectados[i])
+    App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
+  }
+  // console.log(leccion.estuidantesDesconectados);
+  // App.estudiantes_conectados = _.intersection(App.estudiantes_conectados, leccion.estuidantesDesconectados)
+  // console.log(App.estudiantes_conectados);
 })
+
+
+// $.get({
+//   url: '/api/session/usuario_conectado',
+//   success: function(data) {
+//     leccion.emit('usuario', data.datos)
+//   }
+// })
 
 function comenzar() {
   leccion.emit('comenzar leccion', true)
@@ -145,28 +161,33 @@ function terminarLeccionDevelopment() {
   document.getElementById('terminar-leccion-delelopment').disabled = true
 }
 
-// grupos del curso
-// var no_codigo_ingresado = io('/no_codigo')
-// no_codigo_ingresado.on('estudiante tratando ingresar', function(data) {
-//   //console.log(data)
-// })
+Offline.on('down', function(data) {
+  console.log('desconectado');
+})
 
-// var socket = io('/tomando_leccion')
-// socket.on('estudiante conectado', function(_estudiante) {
-//   var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
-//   if (!existe) App.estudiantes_conectados.push(_estudiante)
-// })
-//
-// socket.on('estudiante desconectado', function(_estudiante) {
-//   App.estudiantes_conectados = App.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
-// })
-//
-// socket.on('disconnect', function() {
-//   App.estudiantes_conectados = []
-// })
-//
-// socket.on('reconexion profesor', function(_estudiantes) {
-//   App.estudiantes_conectados = _estudiantes
-// })
+Offline.on('up', function(data) {
+  console.log('conectado');
+  // emitir a calcular el tiempo y enviarselo a todos estudiantes
+})
 
-// validar si la leccion no esta habilitada para ser tomadaa o ya ha sido tomada
+leccion.on('connect', function() {
+  $.get({
+    url: '/api/session/usuario_conectado',
+    success: function(data) {
+      leccion.emit('usuario', data.datos)
+    }
+  })
+  console.log('conectado ooo');
+})
+
+leccion.on('connecting', function() {
+  console.log('tratando de reconecta');
+})
+
+leccion.on('connect_failed', function() {
+  console.log('tratando de recontar');
+})
+
+leccion.on('disconnect', function() {
+  console.log('desconectado');
+})

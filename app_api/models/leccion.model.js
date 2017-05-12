@@ -98,8 +98,8 @@ LeccionSchema.statics.obtenerLeccion = function(id_leccion, callback) {
 
 LeccionSchema.statics.actualizarLeccion = function(id_leccion, actualizar, callback) {
   this.update(
-    {_id: id_leccion}, 
-    {$set: 
+    {_id: id_leccion},
+    {$set:
       {
         nombre: actualizar.nombre,
         tiempoEstimado: actualizar.tiempoEstimado,
@@ -112,7 +112,7 @@ LeccionSchema.statics.actualizarLeccion = function(id_leccion, actualizar, callb
         nombreMateria: actualizar.nombreMateria,
         preguntas: actualizar.preguntas
       }
-    }, 
+    },
     callback
   );
 }
@@ -144,6 +144,10 @@ LeccionSchema.statics.leccionTerminadaDevelop = function(id_leccion, callback) {
 
 LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callback) {
   this.findOne({codigo: codigo_leccion}, callback)
+}
+
+LeccionSchema.statics.aumentarTiempo = function(id_leccion, tiempo, callback) {
+  this.findOneAndUpdate({leccion: id_leccion}, {$inc: {tiempoEstimado: tiempo}})
 }
 
 module.exports = mongoose.model('Leccion', LeccionSchema);

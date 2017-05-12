@@ -74,6 +74,7 @@ var cas = new CASAuthentication({
   is_dev_mode  : false,
   session_name : 'cas_user',
   session_info : 'cas_userinfo',
+  destroy_session: true
 });
 
 app.use(cors());
@@ -81,12 +82,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 // El problema de las imagenes es por el cors, esta puede ser la solucion
-// app.all('/*', function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   next();
-// });
-//
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
+
 // Control de rutas(para que estudiantes no puedan ingresar a profesor ruta)
 var procesarSession = require('./app_api/config/auth.cas.config').session
 var procesarSessionEstudiante = require('./app_api/config/auth.cas.config').sessionEstudiante
@@ -101,24 +103,15 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
     next()
   }
 } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' ) {
-  // FIX: mirar para que sirve esto ??
-  app.get( '/', cas.bounce, function(req, res) {
-    res.redirect('/profesores')
+  app.get( '/', cas.bounce, function(req, res, next) {
+    res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
   var authProfesor = cas.bounce;
-  var authApiProfesor = cas.bounce;
+  var authApiProfesor = cas.block;
   var authEstudiante = cas.bounce;
-  var authApiEstudiante = cas.bounce;
-  app.get('/api/session/usuario_conectado', require('./app_api/controllers/login.controller').obtenerUsuarioLoggeado);
-  // FIX: para que sirve esto?
-  app.get( '/api/session/logout', cas.logout, function(req, res) {
-    req.session.destroy(function( err ) {
-  		if ( err ) {
-  			console.log(err);
-  		}
-      res.redirect('/');
-  	})
-  });
+  var authApiEstudiante = cas.block;
+  app.get('/api/session/usuario_conectado', require('./app_api/controllers/login.controller').obtenerUsuarioLoggeado)
+  app.get( '/api/session/logout', cas.logout)
 }
 
 require('./app_api/realtime/realtime')(io)
@@ -165,11 +158,11 @@ app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesor
  */
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 
-app.use('/estudiantes/', authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.use('/estudiantes/', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 
 app.use('/estudiantes/ver-leccion/:id', authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
 
-app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/estudiantes/tomar-leccion',  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
@@ -197,9 +190,9 @@ app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudiant
   })
 },express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
-app.use('/estudiantes/tomar-leccion', authEstudiante , procesarSession, middleEstudianteControl, estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
-
-app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
+// app.use('/estudiantes/tomar-leccion' , procesarSession, middleEstudianteControl, estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+//
+// app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // otros
 app.use('/otros', function(req, res, next) {

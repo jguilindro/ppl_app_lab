@@ -8,6 +8,15 @@ var App = new Vue({
     $('ul.tabs').tabs();
     $('.modal').modal();
     $('.tooltipped').tooltip({delay: 50});
+    $('.modal').modal();
+    $.get({
+      url: '/api/session/usuario_conectado',
+      success: function(data) {
+        data.datos.leccion = App.leccion._id
+        console.log(App.leccion);
+        socket.emit('usuario', data.datos)
+      }
+    })
   },
   methods: {
     //Funciones iniciales
@@ -185,7 +194,7 @@ var App = new Vue({
         data: JSON.stringify(respuesta),
         success: function(response) {
           //Success callback
-          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') 
+          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded')
           console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
           pregunta.respondida = true;
           self.bloquearBtnRespuesta(event);
@@ -208,7 +217,7 @@ var App = new Vue({
       var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
       var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
 
-     
+
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -373,19 +382,11 @@ var App = new Vue({
   }
 });
 
-var socket = io('/tomando_leccion')
-socket.emit('hola', 'sdsads')
-
-console.log(getCookie('connect.sid'));
-function getCookie(name) {
-  console.log('sd');
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
-}
-// socket.on('mi grupo', function(data) {
-//   console.log(data);
-// })
+var socket = io('/tomando_leccion', {
+  'reconnection delay': 100, // defaults to 500
+  'reconnection limit': 100, // defaults to Infinity
+  'max reconnection attempts': Infinity // defaults to 10
+})
 
 socket.on('tiempo restante', function(tiempo) {
   App.tiempo = tiempo
@@ -409,13 +410,7 @@ $('body').on('click','img',function(){
 // socket.on('pregunta actual', function(pregunta) {
 //   console.log(pregunta);
 // })
-$.get({
-  url: '/api/session/usuario_conectado',
-  success: function(data) {
-    console.log(data);
-    socket.emit('usuario', data.datos)
-  }
-})
+
 
 Offline.options = {
   checkOnLoad: true,
@@ -429,5 +424,32 @@ Offline.on('down', function(data) {
 })
 
 Offline.on('up', function(data) {
+  // pedir el tiempo
+})
+
+socket.on('connect', function() {
   console.log('conectado');
+  // pedir tiempo
+})
+
+socket.on('tu tiempo', function(tiempo) {
+  console.log(tiempo);
+})
+
+socket.on('connect', function() {
+  $.get({
+    url: '/api/session/usuario_conectado',
+    success: function(data) {
+      socket.emit('reconectar estudiante', data.datos)
+    }
+  })
+  console.log('tratando de reconecta');
+})
+
+socket.on('connect_failed', function() {
+  console.log('fallo al tratando de recontar');
+})
+
+socket.on('disconnect', function() {
+  console.log('desconectado');
 })
