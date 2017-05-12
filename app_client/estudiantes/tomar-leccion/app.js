@@ -124,7 +124,9 @@ Offline.on('down', function(data) {
 
 Offline.on('up', function(data) {
   console.log('conectado');
+  // pedir con socket el tiempo
 })
+
 
 
 /*

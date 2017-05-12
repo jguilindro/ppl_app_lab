@@ -8,6 +8,10 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="./panelStyle.css">
   <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+  <link rel="stylesheet" href="/bower_components/offline/themes/offline-language-spanish-indicator.css">
+  <link rel="stylesheet" href="/css/offline-theme-dark-indicator.css">
+  <!-- <link rel="stylesheet" href="/css/offline-theme-slide.css"> -->
+  <!-- <link rel="stylesheet" href="/css/offline-theme-dark.css"> -->
   <title>Profesor</title>
 </head>
 <body>
@@ -15,7 +19,7 @@
   <div id="app">
   	<div class="container">
       <div class="botones">
-        <button class="btn" type="button" id="terminar-leccion-delelopment" onclick="terminarLeccionDevelopment()">parar development</button>
+        <!-- <button class="btn" type="button" id="terminar-leccion-delelopment" onclick="terminarLeccionDevelopment()">parar development</button> -->
         <button class="btn boton"  id='comenzar-leccion'type="button" v-on:click="tomarLeccion()">comenzar lección</button>
         <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
       </div>
@@ -44,6 +48,8 @@
 
   	</div>
   </div>
+  <script src="/bower_components/offline/offline.min.js"></script>
+  <script src="/bower_components/lodash/dist/lodash.min.js" charset="utf-8"></script>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/bower_components/vue/dist/vue.min.js"></script>
   <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>

@@ -81,7 +81,7 @@
                 <div class="grupos-drop" v-bind:id="grupo._id" ondrop="drop(event, this)" ondragover="allowDrop(event)">
                   <div class="grupo-completo z-depth-4">
                     <div class="nombre-grupo">
-                      <span class="nombre-grupo">{{grupo.nombre}}</span>
+                      <span class="nombre-grupo">{{grupo.nombre}}</span> <span class="cantidad-estudiantes"> <i class=" fa fa-group "></i> {{grupo.estudiantes.length}}</span>
                     </div>
       							<div class="nombres-estudiantes-grupo" v-bind:id="estudiante._id" ondragstart="drag(event)" draggable="true" v-for="(estudiante, index) in grupo.estudiantes"  v-bind:value="grupo._id">
                       <!-- onmouseout="borrarBotonEliminar(this)" onclick="escogerEstudiante(this)"-->

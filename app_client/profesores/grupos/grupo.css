@@ -260,3 +260,10 @@ div.modal-estudiante{
 div.buscadores {
   margin: 0%;
 }
+
+
+span.cantidad-estudiantes {
+  float:right;
+  padding-right: 9%;
+  font-size: 1.3em;
+}

@@ -14,12 +14,12 @@ ProfesorModel     = require('../models/profesor.model'),
 ParaleloModel     = require('../models/paralelo.model'),
 GrupoModel        = require('../models/grupo.model'),
 GrupoLeccionModel = require('../models/grupoLeccion.model'),
+LeccionRealtimeModel = require('../models/leccionRealtime'),
 LeccionModel      = require('../models/leccion.model');
 
 function realtime(io) {
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
-    var cook = true
     const obtenerProfesor = function(_usuario_cookie) {
       return new Promise((resolve,reject) => {
         ProfesorModel.obtenerProfesorPorCorreo(_usuario_cookie.correo, (err, profesor) => {
@@ -38,7 +38,6 @@ function realtime(io) {
         })
       })
     }
-
     const obtenerEstudiante = function(_usuario_cookie) {
       return new Promise((resolve, reject) => {
         EstudianteModel.obtenerEstudiantePorCorreo(_usuario_cookie.correo, (err, estudiante) => {
@@ -49,76 +48,11 @@ function realtime(io) {
       })
     }
     var interval
-    // function comenzar(profe) {
-    //   co(function *() {
-    //     if (cook) {
-    //       const COOKIE = yield mongoSession(cook)
-    //       const profesor = yield obtenerProfesor(COOKIE)
-    //       const estudiante = yield obtenerEstudiante(COOKIE)
-    //       const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-    //       if (profesor && (profe || PARALELO.leccionYaComenzo)) {
-    //         socket.inteval = interval // idea para ver si dos profesores pueden dar leccio al mismo tiempo
-    //         const HORA_LOCAL = moment();
-    //         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
-    //         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-    //         const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
-    //         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
-    //         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
-    //         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
-    //         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-    //         socket.inteval = setInterval(function() {
-    //           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-    //           var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-    //           // console.log(`tiempo restado ${tiempo_rest.format('YY/MM/DD hh:mm:ss')}`);
-    //           // console.log(`tiempo restante ${duration}`);
-    //           // si duracion == 0, limpiar lecciones(dandoLeccion) y estudiantes(dandoLeccion)
-    //           if (!isNaN(duration)) { // FIXME si se recarga la pagina antes que llege a cero continua
-    //             if (parseInt(duration) == 0) {
-    //               clearInterval(socket.inteval);
-    //               leccionTerminada(PARALELO, PARALELO.leccion)
-    //               leccion.in(PARALELO._id).emit('terminado leccion', true)
-    //             }
-    //           }
-    //           leccion.in(PARALELO._id).emit('tiempo restante', duration)
-    //         }, 1000)
-    //       }
-    //       if (estudiante) {
-    //         const GRUPO = yield obtenerGrupo(estudiante)
-    //         const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
-    //         const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
-    //         anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
-    //         // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
-    //         // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
-    //         socket.join(GRUPO._id) // unir estudiante al canal grupo
-    //         socket.join(PARALELO._id) // unir al estudiante al canal paralelo
-    //         socket.estudiante = estudiante
-    //         socket.broadcast.emit('estudiante conectado', estudiante) // enviar el estudiante conectador a PROFESOR
-    //         /*
-    //           socket.emit('grupo contensto todo') // este enviara que contesto y esperara hasta que todos los estuidantes contestem
-    //           socket.on('estudiante contesto pregunta') // este recibira de algun estudiante, seria on creo no emit y lo enviara a profesor
-    //           socket.on('grupo contesto pregunta') // cuando el grupo termine
-    //           socket.on('grupo bandera amarilla') // emite a profesor
-    //           socket.on('grupo bandera roja') // emit a profesor
-    //         */
-    //         // socket.emit('pregunta actual', PREGUNTA_ID)
-    //         socket.emit('leccion id', LECCION_ID)
-    //       }
-    //     } else {
-    //       socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
-    //     }
-    //   }).catch(fail => console.log(fail))
-    // }
-    // comenzar(false)
     function comenzar(profe) {
       co(function *() {
-        if (!cook) {
-           socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
-        }
-          // const COOKIE = yield mongoSession(cook)
           const COOKIE = socket.user
           const profesor = yield obtenerProfesor(COOKIE)
           const estudiante = yield obtenerEstudiante(COOKIE)
-          console.log(estudiante);
           const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
           if (profesor && (profe || PARALELO.leccionYaComenzo)) {
             const HORA_LOCAL = moment();
@@ -126,6 +60,20 @@ function realtime(io) {
             const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
             const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
             const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
+            // verificar si ya fue creada
+            const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
+            if (!leccion_creada) {
+              let leccionRealtime = new LeccionRealtimeModel({
+                leccion: LECCION_TOMANDO._id,
+                profesor: profesor._id
+              })
+              const leccion_creada = yield crearLeccionRealtime(leccionRealtime)
+            } else {
+              let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
+              setTimeout(function(ee) {
+                 socket.emit('leccion datos', leccionR)
+              }, 1000)
+            }
             console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
             const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
             console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
@@ -146,6 +94,7 @@ function realtime(io) {
             }, 1000)
           }
           if (estudiante) {
+            console.log(estudiante);
             const GRUPO = yield obtenerGrupo(estudiante)
             const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
             const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
@@ -155,6 +104,7 @@ function realtime(io) {
             socket.join(GRUPO._id) // unir estudiante al canal grupo
             socket.join(PARALELO._id) // unir al estudiante al canal paralelo
             socket.estudiante = estudiante
+            let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
             socket.broadcast.emit('estudiante conectado', estudiante) // enviar el estudiante conectador a PROFESOR
             /*
               socket.emit('grupo contensto todo') // este enviara que contesto y esperara hasta que todos los estuidantes contestem
@@ -166,42 +116,91 @@ function realtime(io) {
             // socket.emit('pregunta actual', PREGUNTA_ID)
             socket.emit('leccion id', LECCION_ID)
           }
-        // } else {
-        //   socket.emit('desconectarlo', {estado: false, mensaje: "no hay cookie"})
-        // }
       }).catch(fail => console.log(fail))
     }
     socket.on('usuario', function(usuario) {
+      // guardar el usuario conectado
       socket.user = usuario
+      // anadirle la leccion el id
+      console.log(usuario);
       co(function* () {
         const profesor = yield obtenerProfesor(usuario)
         if (profesor) {
           socket.inteval = interval
+          // comenzar(true)
+          // var paralelo = yield obtenerParaleloProfesorPromise(socket.user)
+          // var leccion = yield leccionRealtime(paralelo.leccion)
+          // if (leccion) {
+          //   socket.broadcast.emit('leccion datos', leccionRealtime)
+          // }
+        } else {
+          var paralelo = yield obtenerParaleloDeEstudiante(usuario)
+          var estudiante_anadido = yield estudianteConectado(paralelo.leccion, usuario._id)
+          var estudiante_rec = yield estudianteReconectado(paralelo.leccion, usuario._id)
+          comenzar(false)
         }
       })
       comenzar(false)
     })
-    socket.on('comenzar leccion', function(data) {
-      console.log('comenzar');
-      if (data) {
-        comenzar(data)
-        co(function *() {
-          // const COOKIE = yield mongoSession(cook)
-          const COOKIE = socket.user
-          const profesor = yield obtenerProfesor(COOKIE)
-          const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-          leccion.in(PARALELO._id).emit('empezar leccion', true)
-        })
-      }
+
+    socket.on('reconectar estudiante', function(estudiante) {
+      co(function*() {
+        if (estudiante) {
+          const GRUPO = yield obtenerGrupo(estudiante)
+          const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
+          const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
+          socket.join(GRUPO._id) // unir estudiante al canal grupo
+          socket.join(PARALELO._id) // unir al estudiante al canal paralelo
+          socket.estudiante = estudiante
+          socket.broadcast.emit('estudiante conectado', estudiante)
+          socket.emit('leccion id', LECCION_ID)
+        }
+      })
+    })
+
+    socket.on('comenzar leccion', function() {
+      comenzar(true)
+      co(function *() {
+        const COOKIE = socket.user
+        const profesor = yield obtenerProfesor(COOKIE)
+        const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+        leccion.in(PARALELO._id).emit('empezar leccion', true)
+      }).catch(fail => console.log(fail))
+    })
+
+    socket.on('aumentar tiempo', function(minutos) {
+      // en el modelo LECCION hay un campo tiempo estimado, sumarle lo que me manden y reenviar la parte de comenzar(true)
     })
 
     socket.on('disconnect', function() {
       clearInterval(socket.inteval)
-      socket.broadcast.emit('estudiante desconectado', socket.estudiante)
+      co(function* () {
+        // var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
+        // var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
+        // socket.broadcast.emit('estudiante desconectado', socket.estudiante)
+        var profesor
+        if (socket.user) {
+         profesor = yield obtenerProfesor(socket.user)
+        } else {
+          profesor = true
+        }
+        if (profesor) {
+          // emitir a todos los estudiantes el tiempo
+        } else {
+          var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
+          var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
+          // socket.broadcast.emit('estudiantes desconectados', socket.estudiante)
+          let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
+          setTimeout(function(ee) {
+            socket.broadcast.emit('estudiante desconectado', socket.estudiante)
+          }, 1000)
+          // enviarle al profesor el curso nuevamente o el estudiante puede ser?
+        }
+      }).catch(fail => console.log(fail))
+      // cuando el profesor se desconecte, reenviarle los estudiante que estan conectados
     })
     socket.on('parar leccion', function(data) {
       co(function *() {
-        // const COOKIE = yield mongoSession(cook)
         const COOKIE = socket.user
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
@@ -211,12 +210,11 @@ function realtime(io) {
         io.sockets.sockets.forEach(function(s) {
             s.disconnect(true);
         });
-      })
+      }).catch(fail => console.log(fail))
     })
     socket.on('parar leccion development', function(data) {
       co(function *() {
         const COOKIE = socket.user
-        // const COOKIE = yield mongoSession(cook)
         const profesor = yield obtenerProfesor(COOKIE)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
         clearInterval(socket.inteval)
@@ -225,7 +223,7 @@ function realtime(io) {
         // io.sockets.sockets.forEach(function(s) {
         //     s.disconnect(true);
         // });
-      })
+      }).catch(fail => console.log(fail))
     })
   })
 }
@@ -257,13 +255,68 @@ function obtenerCook(cookie_socket) {
   return cook
 }
 
-// ORGANIZACION FUNCIONES
-// se hara por medio de lecciones segun en que estado este la leccion
-/*
-* LECCION ANTES TOMANDO
- */
+/*aumentarTiempo = function(id_leccion, tiempo, callback)
+estudianteConectado = function(id_leccion, id_estudiante, callback)
+estudianteDesconectado = function(id_leccion, id_estudiante, callback)
+estudianteReconectado = function(id_leccion, id_estudiante, callback)
+*/
 
-// obtener paralelo, leccion => globales ` grupo,pregunta` => dependiente de estudiante
+/*anadir un estudiante a conectado */
+function estudianteConectado(id_leccion, id_estudiante) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.estudianteConectado(id_leccion, id_estudiante, (err, doc) => {
+      if (err) return reject(new Error('Error al anadir estudiante a conectado'))
+      return resolve(true)
+    })
+  })
+}
+
+function estudianteDesconectado(id_leccion, id_estudiante) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.estudianteDesconectado(id_leccion, id_estudiante, (err, doc) => {
+      if (err) return reject(new Error('Error al anadir estudiante a desconectado'))
+      return resolve(true)
+    })
+  })
+}
+
+function estudianteReconectado(id_leccion, id_estudiante) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.estudianteReconectado(id_leccion, id_estudiante, (err, doc) => {
+      if (err) return reject(new Error('Error al anadir estudiante a reconectado'))
+      return resolve(true)
+    })
+  })
+}
+
+function obtenerLeccionRealtime(id_leccion) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.buscarLeccionPopulate(id_leccion, (err, leccion) => {
+      if (err) return reject(new Error('Error al anadir encontrar leccion'))
+      return resolve(leccion)
+    })
+  })
+}
+
+function leccionYaCreada(id_leccion) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.buscarLeccion(id_leccion, (err, leccion) => {
+      if (err) return reject(new Error('Error al anadir estudiante a conectado'))
+      if (!leccion) return resolve(false)
+      return resolve(true)
+    })
+  })
+}
+
+function crearLeccionRealtime(leccion) {
+  return new Promise((resolve, reject) => {
+    leccion.crearLeccion((err, doc) => {
+      if (err) return reject(new Error('Error al crear leccion realtime'))
+      return resolve(true)
+    })
+  })
+}
+
 function obtenerParaleloProfesor(_id, callback) {
    ParaleloModel.obtenerParalelosProfesor(_id, (err, paralelos) => {
      let para = paralelos.find(paralelo => paralelo.dandoLeccion)
@@ -292,20 +345,10 @@ function obtenerLeccion(_id_leccion) {
   })
 }
 
-/**
- * En `paralelo` buscar los grupos y luego ir a GrupoLeccion y settear la `leccion` id y el grupo id, fecha empezado
- * @param  {Object} paralelo
- * @param  {Object} leccion
- */
 function anadirLeccionAGrupos(paralelo, leccion) {
 
 }
 
-/**
- * Con `estudiante` busco en Estudiante.leccion y obtengo la leccion que esta dando
- * @param  {Object} estudiante
- * @return {Promise}            id leccion
- */
 function queLeccionEstaDandoEstudiante(estudiante) {
   return new Promise((resolve, reject) => {
     EstudianteModel.obtenerLeccionEstudianteRealtime(estudiante._id, (err, est) => {
@@ -315,23 +358,6 @@ function queLeccionEstaDandoEstudiante(estudiante) {
   })
 }
 
-// /**
-//  * Con `estudiante` busco en Estudiante y le anado la `leccion` y le anado tambien Estudiante.lecciones.fechaEmpezado
-//  * @param  {Object} estudiante
-//  * @param  {Object} leccion
-//  */
-// function estudianteComenzadoLeccion(estudiante, leccion) {
-//
-// }
-
-
-/**
- * Con `grupo` busco el grupo y la `leccion` que el `estudiante` este dando y anadirlo a GrupoLeccion.participantes, pero antes verifico si el participante existe
- * @param  {Object} grupo
- * @param  {String} id_leccion
- * @param  {Object} estudiante
- * @see    si un estudiante se reconecta, si el estudiante existe no agregalo, si se desconecta eliminarlo
- */
 function anadirParticipanteLeccionGrupo(grupo, id_leccion, estudiante) {
   GrupoLeccionModel.participanteExiste(grupo._id, id_leccion, estudiante._id, (err, est) => {
     if (err) logger.error('anadir participante a grupo', err)
@@ -343,10 +369,6 @@ function anadirParticipanteLeccionGrupo(grupo, id_leccion, estudiante) {
   })
 }
 
-// TODO: para que me servira?
-function guardarSocketIdEstudiante(grupo) {
-
-}
 
 /*
 * LECCION DURANTE TOMADO
@@ -370,22 +392,10 @@ function obtenerGrupo(_estudiante) {
  })
 }
 
-/**
- * Con `grupo` obtengo el GrupoLeccion.preguntaActual y con `leccion` busco en Leccion para encontrar a que pregunta pertence Grupo.preguntaActual
- * @param {Object} grupo
- * @param {Object} leccion
- * @returns {Promise}     id de la
- */
 function obtenerSiguientePregunta(grupo, leccion) {
 
 }
 
-/**
- * OJOOOOOOOO
- * @param  {String} id_leccion
- * @param  {Number} numero_pregunta
- * @return {Promise}                id Pregunta
- */
 function obtenerPreguntaConNumerOrden(id_leccion, numero_pregunta) {
   return new Promise((resolve, reject) => {
     LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
@@ -398,31 +408,14 @@ function obtenerPreguntaConNumerOrden(id_leccion, numero_pregunta) {
   })
 }
 
-/**
- * Con `grupo` busco de Grupo y dentro a `leccion` y dentro a `estudiante` y cambiar el valor GrupoLeccion.participantes.estudiante.preguntaActual a true.
- * @param {Object} grupo
- * @param {Object} leccion
- * @param {Object} estudiante
- * @see   como saber que ha terminado la pregunta {@link obtenerNumeroUltimaPregunta} y verificar con {@link obtenerPreguntaActual} si son las mismas
- */
 function preguntaTerminadaEstudiante(grupo, leccion, estudiante) {
 
 }
 
-/**
- * Actualizar la Grupo.preguntaActual por + 1
- * @return {[type]} [description]
- */
 function preguntaTerminada() {
 
 }
 
-/**
- * Obtener de un `grupo` el valor GrupoLeccion.preguntaActual
- * @param  {Object} grupo
- * @param  {String} id_leccion
- * @return {Promise}           number pregunta
- */
 function obtenerPreguntaActual(grupo, id_leccion) {
   return new Promise((resolve, reject) => {
     GrupoLeccionModel.obtenerGrupoLeccion(grupo._id, id_leccion, (err, leccion) => {
@@ -441,11 +434,6 @@ function obtenerPreguntaActual(grupo, id_leccion) {
   })
 }
 
-/**
- * Obtener el numero de la ultima pregunta de una determinada `leccion`
- * @param  {String} id_leccion
- * @return {Promise} numero de la ultima pregunta
- */
 function obtenerNumeroUltimaPregunta(id_leccion) {
   return new Promise((resolve, reject) => {
     LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
@@ -455,34 +443,14 @@ function obtenerNumeroUltimaPregunta(id_leccion) {
   })
 }
 
-/**
- * Busca a `grupo` en el modelo Grupo y actualiza a false el valor participantes.contestadoPreguntaActual a false de todos
- * @param  {Object} grupo
- */
 function preguntaComenzando(grupo) {
 
 }
 
-/**
- * Verificar si todos los del `grupo` contestaron todas la preguntas en la que estan actualmente en una `leccion` en GrupoLeccion verficar todos los participantes y
- * @param {Object} grupo
- * @param {Object} leccion
- * @returns {Promise} true si todos los del grupo contestaron la pregunta que les tocaba
- */
 function todosEstudiantesGrupoContestaron() {
   // esto se hara buscando en cada Grupo.participantes y si todos los campos contestadoPreguntaActual estan en true
 }
 
-/**
- * Guardar la respuesta que da el estudiante
- * @param  {Object} paralelo
- * @param  {Object} leccion
- * @param  {Object} pregunta
- * @param  {Object} grupo
- * @param  {Object} estudiante
- * @param  {String} respuestaEstudiante lo que el estudiante contesto
- * @return {Promise}            si la accion a sido completada
- */
 function guardarRespuestaIndividual(paralelo, leccion, pregunta, grupo, estudiante, respuestaEstudiante) {
 
 }
@@ -491,12 +459,6 @@ function guardarRespuestaIndividual(paralelo, leccion, pregunta, grupo, estudian
 /*
 * LECCION FINALIZADO
  */
-
-/**
-  * Anade a cada estudiante la leccion, cambia valor boolean
-  * @param {Object} paralelo
-  * @param {String} id_leccion
-*/
 function leccionTerminada(paralelo, id_leccion) {
  // TODO: limpiar el GRUPO.participantes por vacio
  // TODO: cambiar GRUPO.preguntaActual por 0

@@ -9,19 +9,19 @@ var nodemon = require('gulp-nodemon');
 gulp.task('default',['set-dev-node-env','nodemon', 'browser-sync'], function () {
 });
 
-gulp.task('production-test',['production-t','nodemon','uri'], function () {
+gulp.task('production-test',['production-t','nodemon'], function () {
 });
 
-gulp.task('testing',['test','nodemon','uri'], function () {
+gulp.task('testing',['test','nodemon'], function () {
 });
 
-gulp.task('production',['produc','nodemon','uri'], function () {
+gulp.task('production',['produc','nodemon'], function () {
 });
 
 gulp.task('realtime',['set-dev-node-env','nodemon'], function () {
 });
 
-gulp.task('api',['emergencia','nodemon','uri'], function () {
+gulp.task('api',['emergencia','nodemon'], function () {
 });
 
 gulp.task('uri', function(){
@@ -62,6 +62,7 @@ gulp.task('browser-sync', [], function() {
     },
         files: ["app_client/**"],
         browser: "default",
+        open: false,
         port: 5000,
         ghostMode: {
           links: false
