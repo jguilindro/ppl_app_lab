@@ -167,35 +167,6 @@ var App = new Vue({
       return pregunta;
     },
     //Eventos
-    subirImagen: function(pregunta){
-      var self = this;
-      var fileId = '#file-' + pregunta._id;
-      var file = $(fileId);
-      /*
-      //Compresion a lo Silicon Valley
-      var source_img = file[0].files[0];
-      var target_img = file[0].files[0];
-
-      var quality =  80;
-      output_format = 'jpg';
-      target_img.src = jic.compress(source_img,quality,output_format).src
-      */
-      var clientId = "300fdfe500b1718";
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST','https://api.imgur.com/3/upload', true);
-      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      xhr.onreadystatechange = function (){
-        if (xhr.status === 200 && xhr.readyState === 4) {
-          //console.log('subido');
-          var url = JSON.parse(xhr.responseText)
-          //console.log(url)
-          //console.log(url.data.link);
-          pregunta.respuesta += 'La imagen subida se encuentra en este link: ' + url.data.link
-          $('#modalImagenSubida').modal('open');
-        }
-      }
-      xhr.send(target_img);
-    },
     responder: function(pregunta, event){
       var self = this;
       //Durante la leccion, mientras está respondiendo una pregunta y aún quedan más por responder
@@ -223,7 +194,7 @@ var App = new Vue({
         data: JSON.stringify(respuesta),
         success: function(response) {
           //Success callback
-          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded') // 4000 is the duration of the toast
+          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded')
           console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
           pregunta.respondida = true;
           self.bloquearBtnRespuesta(event);
@@ -235,6 +206,7 @@ var App = new Vue({
         },
         error: function(response) {
           //Error callback
+          Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded')
           console.log('Error al tratar de enviar la respuesta... De alguna forma esto es culpa de Xavier Idrovo');
           console.log(response);
         }
@@ -243,7 +215,9 @@ var App = new Vue({
     crearRespuesta: function(pregunta){
       var self = this;
       var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      var respuestaEditor = $(idEditor).froalaEditor('html.get') //Obtengo la respuesta escrita
+      var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+
+
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -352,35 +326,41 @@ var App = new Vue({
     },
     crearEditor: function(){
       $.each(this.preguntas, function(index, pregunta){
-        var idEditor = '#editor-' + pregunta._id
-        $(idEditor).
-        froalaEditor({
-          requestWithCORS: true,
-          crossDomain: true,
-          imageUploadURL: 'https://api.imgur.com/3/upload/',
-          imageUploadMethod: 'POST',
-
-        })
-        .on('froalaEditor.image.beforeUpload', function (e, editor, img) {
+        var idEditor = '#editor-' + pregunta._id;
+        $(idEditor).materialnote({
+          height: "50vh",
+          onImageUpload: function(files, editor, $editable) {
             var clientId = "300fdfe500b1718";
             var xhr = new XMLHttpRequest();
-            xhr.open('POST','https://api.imgur.com/3/upload', true);
+            xhr.open('POST', 'https://api.imgur.com/3/upload', true);
             xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-            xhr.onreadystatechange = function (){
+            App.loading(true);
+            xhr.onreadystatechange = function () {
               if (xhr.status === 200 && xhr.readyState === 4) {
-                //console.log('subido');
+                console.log('subido');
+                App.loading(false);
                 var url = JSON.parse(xhr.responseText)
-                //console.log(url)
-                //console.log(url.data.link);
-                //pregunta.respuesta += 'La imagen subida se encuentra en este link: ' + url.data.link
-                //$('#modalImagenSubida').modal('open');
+                console.log(url.data.link);
+                $(idEditor).materialnote('editor.insertImage', url.data.link);
               }
             }
-            xhr.send(img);
-          })
-
-
-      })
+            xhr.send(files[0]);
+          }
+        });
+        $(".note-editor").find("button").attr("type", "button");
+      });
+    },
+    loading: function(estado){
+      //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
+      //Requiere el estado, si está cargando algo o no.
+      if (estado){
+        $(".note-editable").append('<div id="onLoad" class="preloader-wrapper big active"></div>');
+        $("#onLoad").append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
+        $("#load-2").append('<div id="load-3" class="circle-clipper left"></div>');
+        $("#load-3").append('<div id="load-4" class="circle"></div>');
+      }else{
+        $("#onLoad").remove();
+      }
     }
   },
   data: {

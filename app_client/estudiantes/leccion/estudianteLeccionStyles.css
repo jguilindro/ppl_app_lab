@@ -45,8 +45,12 @@ hr.yellow_line{
 	width: 100%;
 	margin: auto;
 	}
-	.row .col .no-side-padding {
+}
+.row .col .no-side-padding {
 		padding-left: 0px;
 		padding-right: 0px;
 	}
+
+.modal-overlay{
+	display: none !important;
 }
