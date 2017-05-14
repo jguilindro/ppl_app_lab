@@ -19,7 +19,6 @@ function login(req, res) {
     ProfesorModel.obtenerProfesorPorCorreo(req.body.correo, ( err, profesor ) => {
       if ( err ) return reject('error');
       if ( !profesor ) return resolve(false);
-      console.log(profesor)
       req.session.privilegios = 'profesor';
       req.session.correo = req.body.correo;
       req.session._id = profesor._id
@@ -52,7 +51,6 @@ function logout( req, res ) {
 
 function obtenerUsuarioLoggeado(req, res) {
   if ( req.session.privilegios == 'profesor' ) {
-    console.log(req.session.correo);
     ProfesorModel.obtenerProfesorPorCorreo(req.session.correo, (err, profesor) => {
       if ( err ) return res.json({errorMensaje: 'error'});
       if ( !profesor ) return res.json({errorMensaje: 'profesor no encontrado'});

@@ -13,67 +13,41 @@ app = new Vue({
     },
     verificarEstudiantPuedeDarLeccion() {
       if (!app.codigo_leccion) {
-        Materialize.toast('Ingrese el codigo', 4000)
+        Materialize.toast('Ingrese el código', 4000)
       } else {
-        $.get({
-          url: '/api/session/usuario_conectado',
+        $.ajax({
+          method: 'GET',
+          url: `/api/estudiantes/tomar_leccion/${app.codigo_leccion}`,
           success: function(res) {
-            var usuario_conectado = res.datos
-            $.get({
-              url: `/api/paralelos/estudiante/${app.estudiante._id}`,
-              success: function(par) {
-                var paralelo = par.datos
-                if (!paralelo.dandoLeccion) {
-                  Materialize.toast('No hay lecciones por dar', 4000)
-                } else {
-                  $.get({
-                    url: `/api/estudiantes/leccion/verificar/${app.codigo_leccion}`,
-                    success: function(res) {
-                      var codigo_leccion_verificado = res.datos
-                      if (res.estado) {
-                        $.post({
-                          url: '/api/estudiantes/codigo_ingresado',
-                          success: function(res) {
-                            var ingresado = res
-                            if (paralelo.leccionYaComenzo && ingresado.estado) {
-                              window.location.href = `/estudiantes/leccion`
-                            }
-                            else if (ingresado.estado) {
-                              var load = document.getElementById('loading')
-                              load.setAttribute('class', 'enable')
-                              var a = document.getElementById('app')
-                              a.setAttribute('class', 'disabled')
-                            }
-                          }
-                        })
-                      }else if (!res.estado) {
-                        Materialize.toast('Codigo mal ingresado', 4000)
-                      } else if (codigo_leccion_verificado.mensaje == 'no_esta_anadido_a_paralelo') {
-                        Materialize.toast('No esta en ningun paralelo', 4000)
-                      } else if (codigo_leccion_verificado.mensaje == 'leccion_empezo') {
-                        $.post({
-                          url: '/api/estudiantes/codigo_ingresado',
-                          success: function(res) {
-                            var ingresado = res.datos
-                            if (ingresado.estado) {
-                              var load = document.getElementById('loading')
-                              load.setAttribute('class', 'enable')
-                              var a = document.getElementById('app')
-                              a.setAttribute('class', 'disabled')
-                            }
-                          }
-                        })
-                      }
-                    }
-                  })
-                }
+            var res = res.datos
+            if (!res.tieneGrupo) {
+              Materialize.toast('No esta asignado a ningun grupo', 4000)
+              return
+            }
+            if (!res.paraleloDandoLeccion) {
+              Materialize.toast('El paralelo no esta dando lección', 4000)
+              return
+            }
+            if (!res.leccionYaComenzo && res.codigoLeccion) {
+              var load = document.getElementById('loading')
+              load.setAttribute('class', 'enable')
+              var a = document.getElementById('app')
+              a.setAttribute('class', 'disabled')
+              return
+            } else {
+              if (!res.codigoLeccion) {
+                Materialize.toast('El código de la lección no es valido', 4000)
+                return
               }
-            })
+            }
+            if (res.leccionYaComenzo) {
+              window.location.href = `/estudiantes/leccion`
+            }
           }
         })
       }
     },
-    estado() {
+    estado() { // usado cuando recarga la pagina
       $.get({
         url: '/api/session/usuario_conectado',
         success: function(user) {
@@ -114,7 +88,6 @@ $.get({
     socket.emit('usuario', data.datos)
   }
 })
-// socket.emit('usuario', App.obtenerLogeado())
 
 app.estado()
 
@@ -124,7 +97,6 @@ Offline.on('down', function(data) {
 
 Offline.on('up', function(data) {
   console.log('conectado');
-  // pedir con socket el tiempo
 })
 
 

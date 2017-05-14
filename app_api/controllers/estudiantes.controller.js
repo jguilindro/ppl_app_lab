@@ -35,49 +35,75 @@ const obtenerEstudiante = (req, res) => {
   })
 }
 
-// mensajes error dos: si no es del curso, o si ingreso mal la contrasena leccion
-// restrigir acceso al lecciones si no ha ingresado el codigo
-// TODO: IMPORTANTE CALLBACK HELL
-const verificarEstudiantePuedeDarLeccion = (req, res) => {
-  const { _id } = req.session
-  const { codigo_leccion } = req.params
-  ParaleloModel.obtenerParaleloDeEstudiante(_id, (err, paralelo) => {
-    if (err) {
-      return respuesta.serverError(res)
-    }else if (paralelo.dandoLeccion) {
-      GrupoModel.obtenerGrupoDeEstudiante(_id, (err, grupo) => {
-        if (err ) return respuesta.serverError(res)
-        if (!grupo) {
-          return respuesta.noOKMensaje(res, {mensaje: 'no_esta_anadido_a_paralelo'})
-        } else {
-          LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
-            if (err) return respuesta.serverError(res);
-            if (!leccion) return respuesta.noOK(res);
-            if (leccion.paralelo === paralelo._id) {
-              EstudianteModel.anadirEstudianteDandoLeccion(_id, leccion._id,  (err, estudiante) => {
-                if (err) return respuesta.serverError(res);
-                if (!estudiante) return respuesta.noOK(res);
-                EstudianteModel.anadirLeccionActualDando(_id, leccion._id, (err, est) => {
-                  if (err) return respuesta.serverError(res)
-                  req.app.set('habilitado_para_leccion', true)
-                  if (leccion.leccionYaComenzo) {
-                    return respuesta.ok(res, {'mensaje': 'leccion_empezo'})
-                  } else {
-                    return respuesta.okAnadido(res);
-                  }
-                // TODO: setearle al estudiante la leccion y que la esta dando
-                })
-              })
-            } else {
-              return respuesta.noOK(res, {'mensaje': 'codigo_mal_ingresado'})
-            }
-          })
-        }
+const tomarLeccion = (req, res) => {
+  function obtenerParaleloDeEstudiante(_id) {
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParaleloDeEstudiante(_id, (err ,paralelo) => {
+        if (err) reject(new Error('erro al obtener estudiante'))
+        resolve(paralelo)
       })
+    })
+  }
+  function obtenerGrupoDeEstudiante(_id) {
+    return new Promise((resolve, reject) => {
+      GrupoModel.obtenerGrupoDeEstudiante(_id, (err, grupo) => {
+        if (err) reject(new Error('erro al obtener grupo estudiante'))
+        resolve(grupo)
+      })
+    })
+  }
+
+  function obtenerLeccionPorCodigo(codigo_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccionPorCodigo(codigo_leccion, (err, leccion) => {
+        if (err) reject(new Error('erro al obtener leccion estudiante'))
+        resolve(leccion)
+      })
+    })
+  }
+
+  function ingresadocodigoLeccion(_id) {
+    return new Promise((resolve, reject) => {
+      EstudianteModel.codigoLeccion(_id, (err, anadido) => {
+        if (err) return reject(new Error('Erro al ingresar codigo'))
+        return resolve(true)
+      })
+    })
+  }
+
+  var { _id } = req.session
+  var { codigo_leccion } = req.params
+  co(function* () {
+    var paralelo = yield obtenerParaleloDeEstudiante(_id)
+    var grupo = yield obtenerGrupoDeEstudiante(_id)
+    if (!grupo) {
+      // No tiene paralelo
+      respuesta.ok(res, {tieneGrupo: false, paraleloDandoLeccion: false, codigoLeccion: false, leccionYaComenzo: false})
+      return
     } else {
-      return respuesta.noOK(res); // DOCUMENTACION
+      if (paralelo.dandoLeccion) {
+        var leccion = yield obtenerLeccionPorCodigo(codigo_leccion)
+        if (!leccion) {
+          // Tiene grupo, el paralelo esta dando leccion, codigo leccion mal ingresado
+          respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: true, codigoLeccion: false, leccionYaComenzo: false})
+          return
+        } else {
+          if (paralelo.leccionYaComenzo) {
+            // Tiene grupo, el paralelo esta dando leccion, ingreso bien el codigo leccion, leccion ya comenzo
+            var codigo_valido = ingresadocodigoLeccion(_id)
+            respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: true, codigoLeccion: true, leccionYaComenzo: true})
+          } else {
+            // Tiene grupo, el paralelo esta dando leccion, ingreso bien el codigo leccion, leccion no ha empezado
+            var codigo_valido = ingresadocodigoLeccion(_id)
+            respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: true, codigoLeccion: true, leccionYaComenzo: false})
+          }
+        }
+      } else {
+        // Tiene grupo pero no tiene lecciones por dar
+        respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: false, codigoLeccion: false, leccionYaComenzo: false})
+      }
     }
-  })
+  }).catch(fail => console.log(fail))
 }
 
 
@@ -96,32 +122,12 @@ const calificarLeccion = (req, res) => {
   })
 }
 
-
-const EditarANoesperandoLeccion = (req, res) => {
-  EstudianteModel.esperandoLeccion(req.session.id, (err, res) => {
-    if (err) return respuesta.mongoError(res, 'Editar a no esperando leccion');
-    return respuesta.okActualizado(res)
-  })
-}
-
-const ingresadocodigoLeccion = (req, res) => {
-  console.log('dsfds');
-  console.log(req.session._id);
-  EstudianteModel.codigoLeccion(req.session._id, (err, anadido) => {
-    if (err) return respuesta.mongoError(res, 'La leccion no existe');
-    return respuesta.okActualizado(res)
-  })
-}
-
-
 module.exports = {
 	obtenerTodosEstudiantes,
 	crearEstudiante,
 	obtenerEstudiante,
   // leccion
-  verificarEstudiantePuedeDarLeccion,
   verificarPuedeDarLeccion,
   calificarLeccion,
-  EditarANoesperandoLeccion,
-  ingresadocodigoLeccion
+  tomarLeccion
 }

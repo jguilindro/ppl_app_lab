@@ -5,8 +5,6 @@ const EstudiantesController = require('../controllers/estudiantes.controller');
 router.get('/', EstudiantesController.obtenerTodosEstudiantes);
 router.get('/:id_estudiante', EstudiantesController.obtenerEstudiante);
 router.post('/', EstudiantesController.crearEstudiante);
-router.get('/leccion/verificar/:codigo_leccion', EstudiantesController.verificarEstudiantePuedeDarLeccion); // <= documentacion
 router.put('/calificar/leccion/:id_leccion/estudiante/:id_estudiante', EstudiantesController.calificarLeccion)
-router.get('/esperando_leccion', EstudiantesController.EditarANoesperandoLeccion)
-router.post('/codigo_ingresado', EstudiantesController.ingresadocodigoLeccion)
+router.get('/tomar_leccion/:codigo_leccion', EstudiantesController.tomarLeccion)
 module.exports = router;
