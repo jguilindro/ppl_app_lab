@@ -8,10 +8,6 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();
     $('.modal').modal();
-    $('.tooltipped').tooltip('remove');
-    $('.tooltip').tooltipster({
-        contentCloning: true
-    });
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
@@ -83,9 +79,26 @@ var App = new Vue({
         });
       });
     },
-    mouseOver: function(){
-          console.log("asdasd");   
-        },
+    showTooltip: function(preguntaID, descripcion, tiempo){
+        var tooltipID = "#tooltip-" + preguntaID;
+        var max_width = ( 50 * $( window ).width() )/100;
+        var max_height = ( 50 * $( window ).width() )/100;
+        descripcion.concat("<br><hr>");
+        descripcion.concat(tiempo);
+        console.log();
+        $(tooltipID).tooltipster({
+          theme: 'tooltipster-light',
+          position: 'bottom',
+          maxWidth: max_width,
+          height: max_height,
+          contentCloning: true,
+          arrow: false,
+          delay: 100,
+          multiple: true,
+          contentAsHTML: true})
+          .tooltipster('content', descripcion)
+          .tooltipster('open');
+      },
     crearLeccion() {
       var crearLeccionURL = '/api/lecciones/'
       var self = this;
@@ -98,7 +111,7 @@ var App = new Vue({
         self.crearRegistroCalificacion(response.body.datos._id)
         /**
         *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
-        *Al apretar cualquier parte del body, reenviará al menú de lecciones
+        *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
         **/
         $("body").click(function(){
           window.location.replace("/profesores/leccion");
@@ -114,9 +127,6 @@ var App = new Vue({
         alert("ALGO SALIÓ MAL!" + response);
         console.log(response)
       });
-    },
-    closeModal(){
-      console.log("asdasds 22");
     },
     obtenerCapitulos: function(){
       var self = this;
