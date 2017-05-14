@@ -8,7 +8,6 @@ var App = new Vue({
     $('ul.tabs').tabs();
     $('.modal').modal();
     $('.tooltipped').tooltip({delay: 50});
-    $('.modal').modal();
     $.get({
       url: '/api/session/usuario_conectado',
       success: function(data) {
@@ -329,6 +328,12 @@ var App = new Vue({
         var idEditor = '#editor-' + pregunta._id;
         $(idEditor).materialnote({
           height: "50vh",
+          toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol']],
+            ['Insert', ['picture']]
+          ],
           onImageUpload: function(files, editor, $editable) {
             var clientId = "300fdfe500b1718";
             var xhr = new XMLHttpRequest();
