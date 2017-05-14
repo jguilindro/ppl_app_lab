@@ -68,7 +68,9 @@ var App = new Vue({
           calificacion: 0,
           calificada: false,
           leccionTomada: false,
-          grupo: grupo._id
+          grupo: grupo._id,
+          paralelo: self.paraleloEscogido.id,
+          nombreParalelo: self.paraleloEscogido.nombre
         }
         //registro.grupo = grupo._id;
         self.$http.post(url, registro).then(response => {
@@ -77,8 +79,26 @@ var App = new Vue({
         });
       });
     },
-    prueba: function(){
-    },
+    showTooltip: function(preguntaID, descripcion, tiempo){
+        var tooltipID = "#tooltip-" + preguntaID;
+        var max_width = ( 50 * $( window ).width() )/100;
+        var max_height = ( 50 * $( window ).width() )/100;
+        descripcion.concat("<br><hr>");
+        descripcion.concat(tiempo);
+        console.log();
+        $(tooltipID).tooltipster({
+          theme: 'tooltipster-light',
+          position: 'bottom',
+          maxWidth: max_width,
+          height: max_height,
+          contentCloning: true,
+          arrow: false,
+          delay: 100,
+          multiple: true,
+          contentAsHTML: true})
+          .tooltipster('content', descripcion)
+          .tooltipster('open');
+      },
     crearLeccion() {
       var crearLeccionURL = '/api/lecciones/'
       var self = this;
@@ -89,9 +109,22 @@ var App = new Vue({
         $('#myModal').modal('open');
         console.log(response)
         self.crearRegistroCalificacion(response.body.datos._id)
-        //console.log(response)
+        /**
+        *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
+        *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
+        **/
+        $("body").click(function(){
+          window.location.replace("/profesores/leccion");
+        });
+        $(document).keyup(function(e) {
+             if (e.keyCode == 27) { // escape key maps to keycode `27`
+                window.location.replace("/profesores/leccion");
+            }
+        });
+        //-------Fin de cerrar Modal-------------
         }, response => {
         //error callback
+        alert("ALGO SALIÓ MAL!" + response);
         console.log(response)
       });
     },
@@ -190,53 +223,7 @@ var App = new Vue({
           }
         });
       });
-    },/*
-    getPreguntas: function(){
-      var self = this;
-      var encontroCapitulo = false;
-      this.$http.get('/api/preguntas').then(response => {
-        //success callback
-        self.preguntas = response.body.datos
-        $.each(self.preguntas, function(index, pregunta){
-          pregunta['show'] = true;
-          if (pregunta.tipoLeccion.toLowerCase()=='estimacion') {
-            $.each(self.capitulos, function(index, capitulo){
-              if (capitulo.nombre.toLowerCase()==pregunta.capitulo.toLowerCase()) {
-                capitulo.preguntas.push(pregunta);
-                encontroCapitulo = true;
-                return false;
-              }else{
-                encontroCapitulo=false;
-              }
-            });
-            if (!encontroCapitulo) {
-              console.log(pregunta);
-              self.crearCapitulo(pregunta)
-            }
-          }
-          /*
-           if (pregunta.tipoLeccion.toLowerCase()=='tutorial') {
-            $.each(self.capitulos, function(index, capitulo){
-              if (capitulo.nombre.toLowerCase()==pregunta.tutorial.toLowerCase()) {
-                capitulo.preguntas.push(pregunta);
-                encontroCapitulo = true;
-                return false;
-              }else{
-                encontroCapitulo=false;
-              }
-            });
-            if (!encontroCapitulo) {
-              console.log(pregunta);
-              self.crearCapitulo(pregunta)
-            }
-          } 
-          
-        })
-      }, response => {
-        //error callback
-        console.log(response)
-      })
-    },*/
+    },
     crearCapitulo: function(pregunta){
       var self = this;
       var nombreCapitulo = pregunta.capitulo;
@@ -450,3 +437,8 @@ function filtrarCapitulo2(capitulo){
 function filtrarCapitulo3(capitulo){
   return capitulo.codigoMateria == "FISG1003";
 }
+//Modal closing event
+$('#myModal').on('hidden', function () {
+    // do something…
+    console.log("asdasd");
+})

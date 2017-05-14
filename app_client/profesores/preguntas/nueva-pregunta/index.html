@@ -85,11 +85,11 @@
 						<!--Tiempo y puntaje-->
 						<div class="row" id="tiempo-puntaje">
 							<div class="input-field col s6">
-								<input type="number" id="tiempo" v-model="pregunta.tiempoEstimado">
+								<input type="number" min="0" id="tiempo" v-model="pregunta.tiempoEstimado">
 								<label for="tiempo" class="lblEditar">Tiempo estimado</label>
 							</div>
 							<div class="input-field col s6">
-								<input type="number" id="puntaje" v-model="pregunta.puntaje">
+								<input type="number" min="0" id="puntaje" v-model="pregunta.puntaje">
 								<label for="puntaje" class="lblEditar">Puntaje</label>
 							</div>
 						</div>

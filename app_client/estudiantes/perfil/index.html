@@ -41,7 +41,7 @@
 								<tr v-for="leccion in lecciones">
 									<td>{{leccion.leccion.nombre}}</td>
 									<td>{{leccion.leccion.estado}}</td>
-									<td>{{leccion.leccion.calificacion}}</td>
+									<td>{{leccion.calificacion}}</td>
 									<td>{{date(leccion.fechaEmpezado)}}</td>
 									<td v-if="leccion.leccion.estado=='terminado'">
 											<button class="btn waves-effect waves-light" v-bind:id=leccion.leccion._id v-on:click="verLeccion($event)">Ver</button>
