@@ -54,3 +54,30 @@ hr.yellow_line{
 .modal-overlay{
 	display: none !important;
 }
+
+div.color {
+    background-color: green;
+    display: block;
+    height: 30px;
+    margin-left: 20%;
+    /*float: right;*/
+    width: 30px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.green { background-color: green }
+.red { background-color: red; }
+.yellow { background-color: yellow }
+
+div.estado {
+  position:fixed;
+  top:15%;
+  margin-left: 10%;
+}
+
+.borrar {
+  visibility: hidden;
+  display: none;
+}

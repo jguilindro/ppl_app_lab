@@ -35,8 +35,9 @@ var App = new Vue({
             comenzar()
             this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
               if (res.body.estado) {
-                  document.getElementById('comenzar-leccion').disabled = true
-                  document.getElementById('terminar-leccion').disabled = false
+                document.getElementById('leccion-no-dar').disabled = true
+                document.getElementById('comenzar-leccion').disabled = true
+                document.getElementById('terminar-leccion').disabled = false
               }
             })
           }
@@ -104,6 +105,7 @@ leccion.on('estudiante desconectado', function(_estudiante) {
 })
 
 leccion.on('tiempo restante', function(tiempo) {
+  // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
   document.getElementById('terminar-leccion').disabled = false
   App.tiempo = tiempo
@@ -111,6 +113,7 @@ leccion.on('tiempo restante', function(tiempo) {
 
 leccion.on('terminado leccion', function(match) {
   App.tiempo = 'leccion detenida'
+  document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('terminar-leccion').disabled = true
   setTimeout(function(ee) {
     window.location.href = '/profesores/leccion'

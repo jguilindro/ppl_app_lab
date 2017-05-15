@@ -36,7 +36,6 @@ const crearPregunta = (req, res) => {
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   })
-  console.log(pregunta)
   pregunta.crearPregunta((err, pregunta) => {
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res);
@@ -55,7 +54,6 @@ const actualizarPregunta = (req, res) => {
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion
   }
-  console.log(actualizar)
   PreguntaModel.actualizarPregunta(req.params.id_pregunta, actualizar, (err, doc) => {
     if (!doc.nModified) return respuesta.mongoError(res, 'El paralelo no existe');
     if (err) return respuesta.serverError(res);

@@ -32,6 +32,19 @@ html {
 	margin-top: 2%;
 	text-align: center;
 }
+
+@media (max-width: 800px) {
+  #codigo{
+  	width: 40%;
+  	font-size: 1.1em;
+  	margin-top: 2%;
+  	text-align: center;
+  }
+  h1 {
+    font-size: 2em;
+  }
+}
+
 h1, h2{
 	color:rgba(0,0,0,0.6);
 }
@@ -119,3 +132,28 @@ h1, h2{
     box-shadow: 0em -2.6em 0em 0em rgba(255, 255, 255, 0.2), 1.8em -1.8em 0 0em rgba(255, 255, 255, 0.2), 2.5em 0em 0 0em rgba(255, 255, 255, 0.2), 1.75em 1.75em 0 0em rgba(255, 255, 255, 0.2), 0em 2.5em 0 0em rgba(255, 255, 255, 0.2), -1.8em 1.8em 0 0em rgba(255, 255, 255, 0.5), -2.6em 0em 0 0em rgba(255, 255, 255, 0.7), -1.8em -1.8em 0 0em #ffffff;
   }
 }
+
+div.estado {
+  position:fixed;
+  top:15%;
+  margin-left: 10%;
+}
+
+.borrar {
+  display: none;
+}
+
+span {
+    background-color: green;
+    display: block;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    float: left;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.green { background-color: green }
+.red { background-color: red; }
+.yellow { background-color: yellow }

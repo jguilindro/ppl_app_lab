@@ -21,7 +21,6 @@ const obtenerLeccion = (req, res) => {
 
 // TODO: anadir el creador con el login
 const crearLeccion = (req, res) => {
-  console.log('leccion cear');
   let leccion = new LeccionModel({
     creador: req.session._id,
     nombre: req.body.nombre,
@@ -58,7 +57,6 @@ const actualizarLeccion = (req, res) => {
     preguntas: req.body.preguntas
   }
   const { id_leccion } = req.params
-  console.log(actualizar)
   LeccionModel.actualizarLeccion(id_leccion, actualizar, (err, doc) => {
     if (err) return respuesta.serverError(res);
     return respuesta.okActualizado(res);

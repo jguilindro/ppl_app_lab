@@ -94,11 +94,10 @@ function realtime(io) {
             }, 1000)
           }
           if (estudiante) {
-            console.log(estudiante);
             const GRUPO = yield obtenerGrupo(estudiante)
             const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
             const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
-            anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
+            //anadirParticipanteLeccionGrupo(GRUPO, LECCION_ID, estudiante) // anadir un estudiante a grupo de conectados
             // const NUMBER_PREGUNTA = yield obtenerPreguntaActual(GRUPO, LECCION_ID)
             // const PREGUNTA_ID = yield obtenerPreguntaConNumerOrden(LECCION_ID, NUMBER_PREGUNTA)// obtener que pregunta deberia tener este estudiante
             socket.join(GRUPO._id) // unir estudiante al canal grupo
@@ -122,7 +121,6 @@ function realtime(io) {
       // guardar el usuario conectado
       socket.user = usuario
       // anadirle la leccion el id
-      console.log(usuario);
       co(function* () {
         const profesor = yield obtenerProfesor(usuario)
         if (profesor) {

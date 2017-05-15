@@ -57,3 +57,25 @@ div.divisor{
 	height: inherit;
 	clear: both;
 }
+
+/*span {
+    background-color: green;
+    display: block;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    float: left;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.green { background-color: green }
+.red { background-color: red; }
+.yellow { background-color: yellow }*/
+
+
+div.estado {
+  position:fixed;
+  top:15%;
+  margin-left: 10%;
+}

@@ -16,13 +16,12 @@ const crearRegistro = (req, res) => {
 			paralelo: req.body.paralelo,
 			nombreParalelo: req.body.nombreParalelo
 		});
-		console.log(calificacion);
 		calificacion.crearRegistro((err, doc) => {
 			if(err) return response.serverError(res);
 			return response.creado(res);
 		})
 	})
-	
+
 }
 
 const obtenerRegistro = (req, res) => {
@@ -46,7 +45,7 @@ const calificar = (req, res) => {
 	CalificacionModel.calificar(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, (err, doc) => {
 		if(err){
 			return response.serverError(res);
-		} 
+		}
 		else{
 			CalificacionModel.obtenerRegistro(req.params.id_leccion, req.params.id_grupo, (err, registro) => {
 				if(err) {
@@ -62,7 +61,7 @@ const calificar = (req, res) => {
 					})
 					if(!flag){
 						return response.okActualizado(res);
-					}	
+					}
 				}
 			});
 		}

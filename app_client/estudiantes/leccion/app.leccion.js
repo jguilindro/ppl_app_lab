@@ -442,6 +442,11 @@ socket.on('tu tiempo', function(tiempo) {
 })
 
 socket.on('connect', function() {
+  // document.getElementById('desconectado').classList.add("borrar");
+  // document.getElementById('conectado').classList.remove("borrar");
+  document.getElementById('conectado').classList.remove("red");
+  document.getElementById('conectado').classList.add("green");
+
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {
@@ -456,5 +461,9 @@ socket.on('connect_failed', function() {
 })
 
 socket.on('disconnect', function() {
+  // document.getElementById('desconectado').classList.remove("borrar")
+  // document.getElementById("conectado").classList.add("borrar");
+  document.getElementById('conectado').classList.remove("green");
+  document.getElementById('conectado').classList.add("red");
   console.log('desconectado');
 })

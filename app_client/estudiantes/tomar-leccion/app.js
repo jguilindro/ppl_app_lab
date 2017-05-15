@@ -1,16 +1,7 @@
-app = new Vue({
+var socket = io('/tomando_leccion');
+var app = new Vue({
   el: '#app',
   methods: {
-    obtenerLogeado() {
-      $.get({
-        url: '/api/session/usuario_conectado',
-        success: function(res) {
-          if (res.estado) {
-            app.estudiante = res.datos
-          }
-        }
-      })
-    },
     verificarEstudiantPuedeDarLeccion() {
       if (!app.codigo_leccion) {
         Materialize.toast('Ingrese el código', 4000)
@@ -52,6 +43,8 @@ app = new Vue({
         url: '/api/session/usuario_conectado',
         success: function(user) {
           var usuario = user.datos
+          app.estudiante = user.datos
+          socket.emit('usuario', user.datos)
           $.get({
             url: `/api/paralelos/estudiante/${usuario._id}`,
             success: function(par) {
@@ -73,23 +66,14 @@ app = new Vue({
     codigo_leccion: ''
   }
 })
-app.obtenerLogeado()
-var socket = io('/tomando_leccion');
+
 app.estado()
+
 socket.on('empezar leccion', function(data) {
-  console.log('leccion empezada');
   if (data) {
     window.location.href = `/estudiantes/leccion`
   }
 })
-$.get({
-  url: '/api/session/usuario_conectado',
-  success: function(data) {
-    socket.emit('usuario', data.datos)
-  }
-})
-
-app.estado()
 
 Offline.on('down', function(data) {
   console.log('desconectado');
@@ -99,7 +83,19 @@ Offline.on('up', function(data) {
   console.log('conectado');
 })
 
+socket.on('connect', function() {
+  // $("#desconectado").disable();
+  document.getElementById("desconectado").classList.add("borrar");
+  document.getElementById('conectado').classList.remove("borrar");
+  console.log('conectado');
+  // pedir tiempo
+})
 
+socket.on('disconnect', function() {
+  document.getElementById('desconectado').classList.remove("borrar")
+  document.getElementById("conectado").classList.add("borrar");
+  console.log('desconectado');
+})
 
 /*
 confirmed-up: A connection test has succeeded, fired even if the connection was already up

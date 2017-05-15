@@ -31,7 +31,7 @@
           <h4 class="center-align flow-text">{{estudiante.nombres + ' ' + estudiante.apellidos}}</h4>
         </section>
         <div class="timer center-align flow-text">
-          <p>Tiempo: <b>{{tiempo}}</b></p>
+          <p><div class="color" id="conectado"></div>Tiempo: <b>{{tiempo}}</b></p>
         </div>
         <section id="leccion">
           <div class="row" id="row-tabs">
@@ -62,7 +62,7 @@
                 <section id="area-respuesta" class="col s12">
                   <div class="row" id="row-area-respuesta">
                     <div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
-                      
+
                     </div>
                   </div>
                   <div class="row" id="botones">
