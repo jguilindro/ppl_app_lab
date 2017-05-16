@@ -15,6 +15,20 @@
     <!-- <link rel="stylesheet" href="/css/offline-theme-dark.css"> -->
 	</head>
 	<body id="grad">
+    <div class="estado">
+      <div id="conectado" class="">
+          <div class="color green"></div>
+          <div class="mensaje">
+          </div>
+      </div>
+      <div id="desconectado" class="">
+          <div class="color red"> </div>
+          <div class="mensaje">
+            NO ESTA CONECTADO
+          </div>
+      </div>
+      <!-- <span class="yellow"> </span> -->
+    </div>
     <div id="loading" class="disabled">
       <div id="loader" class="loader">
       </div>
@@ -44,15 +58,6 @@
 				</section>
 			</div>
 		</div>
-    <div class="estado">
-      <div id="conectado" class="">
-          <p> <span class="green"></span>   CONECTADO</p>
-      </div>
-      <div id="desconectado" class="">
-          <p> <span class="red"> </span> DESCONECTADO</p>
-      </div>
-      <!-- <span class="yellow"> </span> -->
-    </div>
 		<footer>
       <script src="/bower_components/offline/offline.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>

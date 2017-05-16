@@ -11,8 +11,7 @@ var App = new Vue({
     $.get({
       url: '/api/session/usuario_conectado',
       success: function(data) {
-        data.datos.leccion = App.leccion._id
-        console.log(App.leccion);
+        App.leccion._id = data.datos.leccion
         socket.emit('usuario', data.datos)
       }
     })
@@ -24,11 +23,10 @@ var App = new Vue({
       $.get({
         url: '/api/session/usuario_conectado',
         success: function(res){
-          console.log(res)
           if (res.estado) {
-            self.estudiante = res.datos;
-            self.obtenerGrupoDeEstudiante();
-            self.obtenerParaleloDeEstudiante();
+            App.estudiante = res.datos;
+            App.obtenerGrupoDeEstudiante();
+            App.obtenerParaleloDeEstudiante();
           }
         }
       })
@@ -40,7 +38,7 @@ var App = new Vue({
       $.get({
         url: urlApi,
         success: function(response){
-          self.estudiante.grupo = response.datos._id;
+          App.estudiante.grupo = response.datos._id;
         }
       });
     },
@@ -61,17 +59,12 @@ var App = new Vue({
           //console.log(response.body)
           grupo = response.datos._id;
           var urlRegistro = '/api/calificaciones/' + App.leccion._id + '/' + grupo;
-          console.log('La url es: ' + urlRegistro);
-          var estudiante = {
-            estudiante: App.estudiante._id
-          }
-          console.log('Lo que se le va a agregar es: ' + estudiante)
+          var estudiante = {estudiante: App.estudiante._id}
           $.ajax({
             url: urlRegistro,
             type: 'PUT',
-            data: JSON.stringify(estudiante),
+            data: estudiante,
             success: function(response) {
-              console.log(response);
             }
           })
         }
@@ -89,8 +82,6 @@ var App = new Vue({
           App.estudiante.paralelo = response.datos._id;
         },
         error: function(response) {
-          console.log('Error')
-          console.log(response);
         }
       })
     },
@@ -184,17 +175,14 @@ var App = new Vue({
     enviarRespuesta: function(pregunta){
       var self = this;
       var respuesta = self.crearRespuesta(pregunta);
-      console.log('Va a enviar la respuesta: ')
-      console.log(respuesta);
       var url = '/api/respuestas/';
       $.ajax({
         url: url,
         method: 'POST',
-        data: JSON.stringify(respuesta),
+        data: respuesta,
         success: function(response) {
           //Success callback
           Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded')
-          console.log('Respuesta enviada... Se procede a bloquear el textarea y a verificar si ha respondido a todas las preguntas')
           pregunta.respondida = true;
           self.bloquearBtnRespuesta(event);
           self.bloquearTextAreaRespondida(pregunta);
@@ -255,20 +243,13 @@ var App = new Vue({
     },
     verificarTodasRespondidas: function(){
       var self = this;
-      console.log(self.preguntas)
       var self = this;
       var todasRespondidas = true;
       $.each(self.preguntas, function(index, pregunta){
-        console.log('----------------------------')
-        console.log('Verificando la pregunta: ');
-        console.log(pregunta);
-        console.log('Ha sido respondida: ' + pregunta.respondida);
         if(!pregunta.respondida){
-          console.log('La pregunta no ha sido respondida');
           todasRespondidas = false;
           return false;
         }
-        console.log('----------------------------')
       });
       return todasRespondidas;
     },
@@ -310,12 +291,12 @@ var App = new Vue({
     enviarCorreccion: function(idRespuesta, pregunta){
       var self = this;
       var urlPut = "/api/respuestas/" + idRespuesta;
+      var resp = {respuesta: pregunta.respuesta}
       $.ajax({
         url: urlPut,
         method: 'PUT',
-        data: JSON.stringify({respuesta: pregunta.respuesta}),
+        data: resp,
         success: function(response) {
-          console.log('yaaaa')
         },
         error: function(response) {
           console.log(response);
@@ -342,10 +323,8 @@ var App = new Vue({
             App.loading(true);
             xhr.onreadystatechange = function () {
               if (xhr.status === 200 && xhr.readyState === 4) {
-                console.log('subido');
                 App.loading(false);
                 var url = JSON.parse(xhr.responseText)
-                console.log(url.data.link);
                 $(idEditor).materialnote('editor.insertImage', url.data.link);
               }
             }
@@ -400,7 +379,6 @@ socket.on('tiempo restante', function(tiempo) {
 socket.on('terminado leccion', function(match) {
   App.responderTodas();
   //window.location.href = `/estudiantes`
-	console.log('se ha terminado la leccion')
 })
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
@@ -438,7 +416,6 @@ socket.on('connect', function() {
 })
 
 socket.on('tu tiempo', function(tiempo) {
-  console.log(tiempo);
 })
 
 socket.on('connect', function() {
@@ -453,7 +430,6 @@ socket.on('connect', function() {
       socket.emit('reconectar estudiante', data.datos)
     }
   })
-  console.log('tratando de reconecta');
 })
 
 socket.on('connect_failed', function() {
