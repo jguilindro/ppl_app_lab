@@ -1,28 +1,36 @@
 {
 	"cdn": {
-		"bootstrap": {
-			"css": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css",
-			"js": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-		},
 		"vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js",
-		"vuex": "https://cdnjs.cloudflare.com/ajax/libs/vuex/2.2.1/vuex.min.js",
-		"vuetify": "https://unpkg.com/vuetify/dist/vuetify.min.js",
 		"jquery": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
 		"materialize": {
 			"css": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css",
 			"js": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"
 		},
 		"lodash": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js",
-		"font-awesome": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+		"font-awesome": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
+    "offline": {
+      "js": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/offline.min.js",
+      "css_language": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-language-spanish-indicator.css",
+      "css_theme": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-theme-slide.css"
+    },
+    "socketio": "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js",
+    "momentjs": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"
 	},
 	"locales": {
-		"bootstrap": "",
-		"vue": "",
-		"vuex": "",
-		"vuetify": "",
-		"jquery": "",
-		"materialize": "",
+		"vue": "/bower_components/vue/dist/vue.min.js",
+		"jquery": "/bower_components/jquery/dist/jquery.min.js",
+		"materialize": {
+			"js": "/bower_components/materialize/bin/materialize.js",
+			"css": "/bower_components/materialize/bin/materialize.css"
+		},
 		"lodash": "",
-		"font-awesome": ""
+		"font-awesome": "/bower_components/font-awesome/css/font-awesome.min.css",
+		"offline": {
+			"js": "/bower_components/offline/offline.min.js",
+			"css_language": "/bower_components/offline/themes/offline-language-spanish-indicator.css",
+			"css_theme": "/css/offline-theme-slide.css"
+		},
+		"socketio": "/bower_components/socket.io-client/dist/socket.io.min.js",
+		"momentjs": "/bower_components/moment/moment.js"
 	}
 }
