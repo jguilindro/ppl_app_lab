@@ -81,7 +81,6 @@ leccion.on('ingresado profesor', function(data) {
 })
 
 leccion.on('estudiante conectado', function(_estudiante) {
-  console.log('est conectado');
   var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
   if (!existe) {
     App.estudiantes_conectados.push(_estudiante)
@@ -118,34 +117,24 @@ leccion.on('terminado leccion', function(match) {
   setTimeout(function(ee) {
     window.location.href = '/profesores/leccion'
   }, 4000)
-	console.log('se ha terminado la leccion')
 })
 
 leccion.on('leccion datos', function(leccion) {
-  console.log('leccion datos');
   App.estudiantes_conectados = []
+  var equals = function(x,y){
+    return x.matricula === y.matricula;
+  };
   for (var i = 0; i < App.grupos.length; i++) {
     App.grupos[i].estudiantes_conectados = []
   }
-  App.estudiantes_conectados = leccion.estudiantesDandoLeccion
-  console.log();
+  App.estudiantes_conectados = _.differenceWith(leccion.estudiantesDandoLeccion, leccion.estudiantesDesconectados, equals)
+  console.log(App.estudiantes_conectados);
   for (var i = 0; i < App.estudiantes_conectados.length; i++) {
     var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == App.estudiantes_conectados[i]._id)
     let grupo_index = App.obtenerGrupoEstudiante(App.estudiantes_conectados[i])
     App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
   }
-  // console.log(leccion.estuidantesDesconectados);
-  // App.estudiantes_conectados = _.intersection(App.estudiantes_conectados, leccion.estuidantesDesconectados)
-  // console.log(App.estudiantes_conectados);
 })
-
-
-// $.get({
-//   url: '/api/session/usuario_conectado',
-//   success: function(data) {
-//     leccion.emit('usuario', data.datos)
-//   }
-// })
 
 function comenzar() {
   leccion.emit('comenzar leccion', true)
@@ -180,7 +169,6 @@ leccion.on('connect', function() {
       leccion.emit('usuario', data.datos)
     }
   })
-  console.log('conectado ooo');
 })
 
 leccion.on('connecting', function() {
