@@ -61,9 +61,13 @@
                 <hr><hr>
                 <section id="area-respuesta" class="col s12">
                   <div class="row" id="row-area-respuesta">
-                    <div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
+                    <textarea v-bind:id="'textarea-' + pregunta._id" class="materialize-textarea">
+                      
+                    </textarea>
+                    <label>Respuesta</label>
+                    <!--<div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
 
-                    </div>
+                    </div>-->
                   </div>
                   <div class="row" id="botones">
                     <a class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</a>
