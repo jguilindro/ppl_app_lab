@@ -82,18 +82,16 @@ var App = new Vue({
           url: url,
           method: 'GET',
           success: function(response) {
-            
             self.leccion = response.datos;
             self.anadirParticipanteARegistro();
             self.obtenerPreguntas();
-            //Comentado hasta que @Xavier corrija el error del loading
-            //$.when($.ajax(App.obtenerPreguntas(leccionId))).then(function () {
+            $.when($.ajax(App.obtenerPreguntas(leccionId))).then(function () {
               /*$.each(this.preguntas, function(index, pregunta){
                 var idEditor = '#editor-' + pregunta._id
                 $(idEditor).froalaEditor();
               });*/
-              //App.crearEditor();
-            //});
+              App.crearEditor();
+            });
           },
           error: function(response) {
             console.log('ERROR');
