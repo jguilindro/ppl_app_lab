@@ -16,17 +16,10 @@ const ProfesorSchema = mongoose.Schema({
   apellidos: {
     type: String
   },
-  foto: {
-    type: String
-  },
   tipo: {
     type: String,
     enum: ['titular', 'peer']
-  },
-  preguntasCreadas: [{
-    type: String,
-    ref: 'Pregunta'
-  }]
+  }
 },{timestamps: true, versionKey: false, collection: 'profesores'});
 
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {

@@ -14,7 +14,7 @@ const LeccionSchema = mongoose.Schema({
   },
   estado: {
     type: String,
-    enum: ['pendiente', 'tomando', 'terminado'],
+    enum: ['pendiente', 'tomando', 'terminado', 'calificado'],
     'default': 'pendiente',
     unique: false
   },
@@ -148,6 +148,11 @@ LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callbac
 
 LeccionSchema.statics.aumentarTiempo = function(id_leccion, tiempo, callback) {
   this.findOneAndUpdate({leccion: id_leccion}, {$inc: {tiempoEstimado: tiempo}})
+}
+
+LeccionSchema.statics.calificar = function(id_leccion, callback){
+  //Esta función solo le cambia el estado al registro de la lección a 'calificado'
+  this.update({_id: id_leccion}, {estado: 'calificado'}, callback);
 }
 
 module.exports = mongoose.model('Leccion', LeccionSchema);

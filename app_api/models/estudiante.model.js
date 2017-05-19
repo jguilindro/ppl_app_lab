@@ -23,13 +23,6 @@ const EstudianteSchema = mongoose.Schema({
 	matricula: {
 		type: String
 	},
-	foto: {
-		type: String
-	},
-	grupo: {
-		type: String,
-    ref: 'Grupo'
-	},
   dandoLeccion: {
     type: Boolean,
     'default': false
@@ -63,10 +56,6 @@ const EstudianteSchema = mongoose.Schema({
     },
     fechaTerminado: {
       type: Date
-    },
-    grupo: {
-      type: String,
-      ref: 'Grupo'
     }
 	}]
 },{timestamps: true, versionKey: false, collection: 'estudiantes'})
