@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Calificar Leccion</title>
+    <title>Calificar Lección</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -26,7 +26,7 @@
     		      <h4>Pregunta #{{index+1}}</h4>
     		      <label for="nombre">Nombre de la Pregunta</label>
               <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
-    		      <label for="descripcion">Descripcion</label>
+    		      <label for="descripcion">Descripción</label>
     		      <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
     		      <label for="respuesta">Respuesta del Estudiante</label>
     		      <p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>

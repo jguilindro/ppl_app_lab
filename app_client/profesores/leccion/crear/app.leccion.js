@@ -4,6 +4,7 @@ var App = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
+
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();

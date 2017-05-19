@@ -35,12 +35,12 @@
               <form>
                 <div class="row">
                   <div class="input-field col s12">
-                    <label for="nombre">nombre</label>
-                    <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre leccion">
+                    <label for="nombre">Nombre</label>
+                    <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre de leccion">
                   </div>
                   <div class="input-field col s6" id="materias">
                     <select id="subject">
-                      <option value="#" selected disabled>escoger paralelo...</option>
+                      <option value="#" selected disabled>Escoger Paralelo...</option>
                       <option value="FISG1002">Física 2</option>
                       <option value="FISG1003">Física 3</option>
                     </select>                  
@@ -52,7 +52,7 @@
                 </div>
               <div class="row">
                 <div class="input-field col s6">
-                  <label for="fechaInicio" class="active">fecha inicio</label>
+                  <label for="fechaInicio" class="active">Fecha Inicio</label>
                   <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
                 </div>
                 <div class="input-field col s6">
