@@ -55,9 +55,13 @@ var App = new Vue({
     ],
     leccion: {},
     paralelo: [],
-    tiempo: ''
+    tiempo: '',
+    dataEstudiantes: ''
   },
   mounted() {
+    $('.modal').modal({
+        dismissible: false
+    });
     $.get({
       url: "/navbar/profesores",
       success: function(data) {
@@ -118,15 +122,14 @@ leccion.on('tiempo restante', function(tiempo) {
 
 leccion.on('terminado leccion', function(match) {
   App.tiempo = 'leccion detenida'
-  document.getElementById('leccion-no-dar').disabled = true
+  // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('terminar-leccion').disabled = true
-  setTimeout(function(ee) {
-    window.location.href = '/profesores/leccion'
-  }, 4000)
+  document.getElementById('comenzar-leccion').disabled = true
+  $('#modal1').modal('open');
 })
 
 leccion.on('leccion datos', function(leccion) {
-  console.log('ddd');
+  App.dataEstudiantes = leccion.estudiantesDandoLeccion
   App.estudiantes_conectados = []
   var equals = function(x,y){
     return x.matricula === y.matricula;
@@ -150,9 +153,8 @@ function comenzar() {
 function terminarLeccion() {
   leccion.emit('parar leccion', 'la leccion ha sido detenida')
   document.getElementById('terminar-leccion').disabled = true
-  setTimeout(function(ee) {
-    window.location.href = '/profesores/leccion'
-  }, 4000)
+  document.getElementById('comenzar-leccion').disabled = true
+  $('#modal1').modal('open');
 }
 
 function terminarLeccionDevelopment() {

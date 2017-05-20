@@ -18,8 +18,18 @@
   <header id="#navbar"></header>
   <div id="app">
   	<div class="container">
+      <!-- Modal Structure -->
+       <div id="modal1" class="modal">
+         <div class="modal-content" style="text-align: center;">
+           <h3>Número de Estudiantes que dieron la lección</h3>
+           <h2>{{dataEstudiantes.length}}</h2>
+         </div>
+         <div class="modal-footer">
+           <a href="/profesores" class="modal-action modal-close waves-effect waves-green btn-flat">SALIR</a>
+         </div>
+       </div>
       <div class="botones">
-        <button class="btn" type="button" id="leccion-no-dar" onclick="terminarLeccionDevelopment()">Cancelar lección</button>
+        <!-- <button class="btn" type="button" id="leccion-no-dar" onclick="terminarLeccionDevelopment()">Cancelar lección</button> -->
         <button class="btn boton"  id='comenzar-leccion'type="button" v-on:click="tomarLeccion()">comenzar lección</button>
         <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
       </div>

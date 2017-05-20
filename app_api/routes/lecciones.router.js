@@ -9,8 +9,5 @@ router.delete('/:id_leccion', LeccionController.eliminarLeccion);
 router.post('/tomar/:id_leccion', LeccionController.tomarLeccion); // <= DOCUMENTACION
 router.post('/comenzar_leccion/:id_leccion', LeccionController.comenzarLeccion) // <= DOCUMENTACION
 router.post('/:id_paralelo/estudiantes', LeccionController.habilitarEstudiantesCursoParaLeccion) // DOCUMENTACION
-router.get('/:id_leccion/grupo/:id_grupo', LeccionController.obtenerEstudiantesDeLeccion);
-router.get('/grupoLeccion/:id_leccion', LeccionController.obtenerRegistroPorLeccion);
-router.put('/calificar/:id_leccion/:id_grupo', LeccionController.calificarLeccionPorGrupo);
 
 module.exports = router;

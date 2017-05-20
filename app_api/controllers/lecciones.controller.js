@@ -1,7 +1,6 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
 const EstudianteModel = require('../models/estudiante.model');
-const GrupoLeccionModel = require('../models/grupoLeccion.model');
 var respuesta = require('../utils/responses');
 
 const obtenerTodasLecciones = (req, res) => {
@@ -119,27 +118,6 @@ const habilitarEstudiantesCursoParaLeccion = (req, res) => {
   })
 }
 
-const obtenerEstudiantesDeLeccion = (req, res) => {
-  GrupoLeccionModel.obtenerGrupoLeccion(req.params.id_grupo, req.params.id_leccion, (err, doc) => {
-     if (err) return respuesta.serverError(res);
-     return respuesta.ok(res, doc);
-  })
-}
-
-const obtenerRegistroPorLeccion = (req, res) => {
-  GrupoLeccionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, doc) => {
-    if(err) return respuesta.serverError(res);
-    return respuesta.ok(res, doc);
-  })
-}
-
-const calificarLeccionPorGrupo = (req, res) => {
-  GrupoLeccionModel.calificarLeccionPorGrupo(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, (err, doc) => {
-    if(err) return respuesta.serverError(res);
-    return respuesta.okActualizado(res);
-  })
-}
-
 
 module.exports = {
   crearLeccion,
@@ -151,7 +129,4 @@ module.exports = {
   tomarLeccion,
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
-  obtenerEstudiantesDeLeccion,
-  obtenerRegistroPorLeccion,
-  calificarLeccionPorGrupo,
 }

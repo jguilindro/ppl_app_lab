@@ -25,6 +25,5 @@ router.get('/estudiante/:id_estudiante', ParalelosController.obtenerParaleloDeEs
 
 // Lecciones
 router.post('/:id_paralelo/leccion/:id_leccion', ParalelosController.dandoLeccion) // <= DOCUMENTACION
-// router.delete('/:id_paralelo/leccion', ParelelosController.terminadoLeccion) // <= DOCUMENTACION
 router.post('/:id_paralelo/leccion_ya_comenzo', ParalelosController.leccionYaComenzo)
 module.exports = router
