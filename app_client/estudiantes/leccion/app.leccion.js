@@ -224,14 +224,17 @@ var App = new Vue({
         method: 'POST',
         data: respuesta,
         success: function(response) {
-          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded');
-          pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
-          self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
-          self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
-          //self.bloquearEditor(pregunta);
-          if(self.verificarTodasRespondidas()){
-            //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
-            $('#modalRevisarRespuestas').modal('open');
+          if (response.estado) {
+            // var $toastContent = $('<h3>¡Su respuesta ha sido enviada!</h3>');
+            Materialize.toast('¡Su respuesta ha sido enviada!', 4000, 'rounded');
+            pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
+            self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
+            self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
+            //self.bloquearEditor(pregunta);
+            if(self.verificarTodasRespondidas()){
+              //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
+              $('#modalRevisarRespuestas').modal('open');
+            }
           }
         },
         error: function(response) {
