@@ -21,25 +21,27 @@
       </div>
       <div class="form-group col s12">
         <div v-for="(pregunta, index) in preguntas">
+          <h4 class="center-align">Pregunta #{{index+1}}</h4>
       		<div class="row">
-    		    <div class="col s7">
-    		      <h4>Pregunta #{{index+1}}</h4>
+    		    <div class="col s12 col-pregunta">
     		      <label for="nombre">Nombre de la Pregunta</label>
               <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
     		      <label for="descripcion">Descripción</label>
     		      <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
-    		      <label for="respuesta">Respuesta del Estudiante</label>
-    		      <p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
             </div>
-            <div class="col s5">
-        		  <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">
-        		  <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" v-bind:id="'feedback-' + pregunta._id"></textarea>
+          </div>
+          <div class="row">
+            <div class="col s7 col-respuesta">
+              <label for="respuesta">Respuesta del Estudiante</label>
+              <p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p> 
+            </div>
+            <div class="col s5 col-calificacion">
+              <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">
+              <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" v-bind:id="'feedback-' + pregunta._id"></textarea>
               <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" v-bind:id="'btn-' + pregunta._id">Calificar</button>
             </div>
           </div>
-        </div><!--
-        <button type="button" v-on:click="enviarFeedback()" class="btn ">Enviar Calificaciones</button>
-        <button type="button" v-on:click="regresar()" class="btn " style="float: right;">Regresar</button> 		  -->
+        </div>
       </div>
       <div class="row">
         <div class="col s12">

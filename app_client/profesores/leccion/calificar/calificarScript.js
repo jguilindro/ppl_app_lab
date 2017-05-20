@@ -9,6 +9,7 @@ var App = new Vue({
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
     $('.modal').modal();
+    $('.tooltipped').tooltip({delay: 50});
     //Navbar
     $.get({
       url: "/navbar/profesores",
@@ -142,6 +143,7 @@ var App = new Vue({
 						self.bloquearTextArea(pregunta._id);
 						self.bloquearBtnResponder(pregunta._id);
 						self.bloquearInput(pregunta._id);
+						Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
 					}else{
 						$('modalErrorCalificar').modal('open');
 					}

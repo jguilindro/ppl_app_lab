@@ -1,11 +1,15 @@
 var app = new Vue({
+	created: function(){
+		self.anioActual = new Date().getFullYear();
+		this.obtenerLogeado();
+	},
 	mounted: function(){
 		$('.button-collapse').sideNav();
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
 		//$('#modalNuevoCapitulo').modal();
-		this.obtenerLogeado();
+		
 		this.misParalelos();
 		this.getLecciones();
 
@@ -23,10 +27,70 @@ var app = new Vue({
 	 	nombreParalelo: [],
 		 nombreMateria: [],
 		nombreLecciones: [],
-		profesorConectado: ''
-
+		profesorConectado: '',
+		anioActual: ''
 	},
 	methods: {
+		obtenerLogeado: function() {
+			/*
+				Modificada: 19-05-2017 @edisonmora95
+			*/
+      var self = this;
+      $.get({
+      	url: '/api/session/usuario_conectado',
+      	success: function(res){
+      		self.profesor = res.datos;
+      		console.log(self.profesor);
+      	}
+      });
+    },
+    misParalelos: function() {
+    	var self = this;
+    	$.get({
+    		url: '/api/paralelos/profesores/mis_paralelos',
+    		success: function(res){
+    			self.paralelos = res.datos;
+    			console.log(self.paralelos);
+    		}
+    	});
+    	
+    },
+    getLecciones: function(){
+    	/*
+				Modificada: 19-05-2017 @edisonmora95
+    	*/
+			var self = this;
+			this.$http.get('/api/lecciones').then(response => {
+				//success callback				
+				var leccionesObtenidas = response.body.datos;
+				if(self.profesor.tipo === 'titular'){
+					self.filtrarLecciones(leccionesObtenidas);
+				}else if(self.profesor.tipo === 'peer'){
+					self.filtrarLeccionesPeer(leccionesObtenidas);
+				}
+				
+			}, response => {
+				//error callback
+				console.log(response)
+			})
+
+		},
+		filtrarLeccionesPeer: function(arrayLecciones){
+			/*
+				Creada: 19-05-2017 @edisonmora95
+				Descripción:
+					Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de su paralelo.
+			*/
+			var self = this;
+			$.each(arrayLecciones, function(index, leccion){
+				$.each(self.paralelos, function(j, paralelo){
+					if(leccion.paralelo === paralelo._id){
+						self.lecciones.push(leccion);
+					}
+				})
+			});
+			self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+		},
 		nuevaPregunta: function(){
 			window.location.href = '/profesores/leccion/crear'
 
@@ -72,27 +136,8 @@ var app = new Vue({
 			$('#modalEliminarLeccionFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarLeccion').modal('open');
 		},
-		getLecciones: function(){
-			var self = this;
-			this.$http.get('/api/lecciones').then(response => {
-				//success callback				
-				var leccionesObtenidas = response.body.datos;
-				self.filtrarLecciones(leccionesObtenidas)
-			}, response => {
-				//error callback
-				console.log(response)
-			})
-
-		},
-		obtenerLogeado: function() {
-      var self = this;
-      this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-            self.profesor = res.body.datos;
-          }
-        });
-    },
+		
+		
     filtrarLecciones: function(arrayLecciones){
     	var self = this;
     	$.each(arrayLecciones, function(index, leccion){
@@ -139,15 +184,7 @@ var app = new Vue({
     tomandoLeccion(paralelo, id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
     },
-    misParalelos() {
-      this.$http.get(`/api/paralelos/profesores/mis_paralelos`).then(response => {
-        if (response.body.estado) {
-          this.paralelos = response.body.datos
-        }
-      }, response => {
-        console.error('error')
-      });
-    },moment: function (date) {
+    moment: function (date) {
       return moment(date);
     },
     date: function (date) {
