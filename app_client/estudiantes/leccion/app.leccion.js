@@ -395,12 +395,13 @@ var App = new Vue({
       //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
       //Requiere el estado, si está cargando algo o no.
       if (estado){
-        $(".note-editable").append('<div id="onLoad" class="preloader-wrapper big active"></div>');
-        $("#onLoad").append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
-        $("#load-2").append('<div id="load-3" class="circle-clipper left"></div>');
-        $("#load-3").append('<div id="load-4" class="circle"></div>');
+        $(".note-editable").append('<div class="preloader-wrapper big active onLoad"></div>');
+        $(".onLoad").append('<div class="spinner-layer spinner-blue-only load-2"></div>');
+        $(".load-2").append('<div class="circle-clipper left load-3"></div>');
+        $(".load-3").append('<div id="load-4" class="circle"></div>');
       }else{
-        $( "div" ).remove( "#onLoad" );
+        $("#onLoad").remove();
+        $("div").remove(".onLoad");
       }
     },
     mostrarModal: function(imageUrl){
