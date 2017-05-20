@@ -400,7 +400,7 @@ var App = new Vue({
         $("#load-2").append('<div id="load-3" class="circle-clipper left"></div>');
         $("#load-3").append('<div id="load-4" class="circle"></div>');
       }else{
-        $("#onLoad").remove();
+        $( "div" ).remove( "#onLoad" );
       }
     },
     mostrarModal: function(imageUrl){
