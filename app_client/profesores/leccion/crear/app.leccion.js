@@ -4,10 +4,12 @@ var App = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
+
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();
     $('.modal').modal();
+    //$('.collapsible').collapsible();
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
@@ -442,3 +444,5 @@ $('#myModal').on('hidden', function () {
     // do something…
     console.log("asdasd");
 })
+
+

@@ -62,6 +62,10 @@ function realtime(io) {
     socket.on('usuario', function(usuario) {
       // guardar el usuario conectado
       socket.user = usuario
+      // var numberOfSockets = Object.keys(io.engine.clients)
+      // console.log(numberOfSockets);
+      // var socket = leccion.connected[numberOfSockets[4]]
+      // // console.log(socket);
       co(function* () {
         const profesor = yield obtenerProfesor(usuario, socket)
         if (profesor) {
@@ -111,7 +115,6 @@ function realtime(io) {
           const GRUPO = yield obtenerGrupo(estudiante)
           const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
           const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
-          console.log(socket.interval);
           socket.join(GRUPO._id) // unir estudiante al canal grupo
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.estudiante = estudiante
@@ -151,7 +154,7 @@ function realtime(io) {
         const COOKIE = socket.user
         const profesor = yield obtenerProfesor(COOKIE, socket)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        console.log(socket.interval);
+        //console.log(socket.interval);
         clearInterval(socket.interval)
         leccionTerminada(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
