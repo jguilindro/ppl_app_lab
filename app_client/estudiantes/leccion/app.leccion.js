@@ -80,6 +80,11 @@ var App = new Vue({
         method: 'GET',
         success: function(response) {
           App.estudiante.paralelo = response.datos._id;
+          // console.log(App.estudiante.paralelo);
+          console.log(response.datos.dandoLeccion);
+          if (!response.datos.dandoLeccion) {
+            window.location.href = '/estudiantes'
+          }
         },
         error: function(response) {
         }
@@ -93,7 +98,7 @@ var App = new Vue({
         method: 'GET',
         success: function(response) {
           //succcess callback
-          App.leccion = response.datos;
+          self.leccion = response.datos;
           App.anadirParticipanteARegistro();
           $.when($.ajax(App.obtenerPreguntas(leccionId))).then(function () {
             /*$.each(this.preguntas, function(index, pregunta){
@@ -378,7 +383,6 @@ socket.on('tiempo restante', function(tiempo) {
 
 socket.on('terminado leccion', function(match) {
   App.responderTodas();
-  //window.location.href = `/estudiantes`
 })
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
@@ -421,6 +425,7 @@ socket.on('tu tiempo', function(tiempo) {
 socket.on('connect', function() {
   // document.getElementById('desconectado').classList.add("borrar");
   // document.getElementById('conectado').classList.remove("borrar");
+  App.obtenerParaleloDeEstudiante()
   document.getElementById('conectado').classList.remove("red");
   document.getElementById('conectado').classList.add("green");
 

@@ -76,32 +76,38 @@ document.getElementById('terminar-leccion').disabled = true
 
 var leccion = io('/tomando_leccion');
 
-leccion.on('ingresado profesor', function(data) {
+// leccion.on('ingresado profesor', function(data) {
+//
+// })
 
-})
+// leccion.on('estudiante conectado', function(_estudiante) {
+//   console.log('conectado');
+//   console.log(_estudiante);
+//   var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
+//   console.log(App.estudiantes_conectados);
+//   console.log(existe);
+//   if (!existe) {
+//     App.estudiantes_conectados.push(_estudiante)
+//     let grupo_index = App.obtenerGrupoEstudiante(_estudiante)
+//     if(grupo_index == -1) {
+//       // TODO: mensaje que un estudiante no tiene grupo
+//       console.log(`${_estudiante} no existe estudiante en grupo`);
+//     } else {
+//       App.grupos[grupo_index].estudiantes_conectados.push(_estudiante)
+//     }
+//   }
+//   console.log(App.estudiantes_conectados);
+// })
 
-leccion.on('estudiante conectado', function(_estudiante) {
-  var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
-  if (!existe) {
-    App.estudiantes_conectados.push(_estudiante)
-    let grupo_index = App.obtenerGrupoEstudiante(_estudiante)
-    if(grupo_index == -1) {
-      // TODO: mensaje que un estudiante no tiene grupo
-      console.log(`${_estudiante} no existe estudiante en grupo`);
-    } else {
-      App.grupos[grupo_index].estudiantes_conectados.push(_estudiante)
-    }
-  }
-})
-
-leccion.on('estudiante desconectado', function(_estudiante) {
-  App.grupos = App.grupos.map(grupo => {
-    let grupop = grupo.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
-    grupo.estudiantes_conectados = grupop
-    return grupo
-  })
-  App.estudiantes_conectados = App.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
-})
+// leccion.on('estudiante desconectado', function(_estudiante) {
+//   console.log('desconectado');
+//   App.grupos = App.grupos.map(grupo => {
+//     let grupop = grupo.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
+//     grupo.estudiantes_conectados = grupop
+//     return grupo
+//   })
+//   App.estudiantes_conectados = App.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
+// })
 
 leccion.on('tiempo restante', function(tiempo) {
   // document.getElementById('leccion-no-dar').disabled = true
@@ -120,6 +126,7 @@ leccion.on('terminado leccion', function(match) {
 })
 
 leccion.on('leccion datos', function(leccion) {
+  console.log('ddd');
   App.estudiantes_conectados = []
   var equals = function(x,y){
     return x.matricula === y.matricula;
@@ -180,5 +187,5 @@ leccion.on('connect_failed', function() {
 })
 
 leccion.on('disconnect', function() {
-  console.log('desconectado');
+  //console.log('desconectado');
 })
