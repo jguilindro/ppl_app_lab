@@ -9,6 +9,7 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();
     $('.modal').modal();
+    //$('.collapsible').collapsible();
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
@@ -443,3 +444,5 @@ $('#myModal').on('hidden', function () {
     // do something…
     console.log("asdasd");
 })
+
+
