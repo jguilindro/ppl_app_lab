@@ -365,7 +365,7 @@ var App = new Vue({
       $.each(this.preguntas, function(index, pregunta){
         var idEditor = '#editor-' + pregunta._id;
         $(idEditor).materialnote({
-          height: "50vh",
+          height: "25vh",
           toolbar: [
             // [groupName, [list of button]]
             ['style', ['bold', 'italic', 'underline']],

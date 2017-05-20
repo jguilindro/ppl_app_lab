@@ -81,6 +81,9 @@ div.estado {
   visibility: hidden;
   display: none;
 }
-.onLoad, #load-2,#load-3,#load-4{
+.onLoad, .load-2,.load-3,#load-4{
 	 pointer-events: none;
+}
+#row-area-respuesta label{
+	margin-bottom: 5%;
 }
