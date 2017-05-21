@@ -11,8 +11,9 @@ var App = new Vue({
     $.get({
       url: '/api/session/usuario_conectado',
       success: function(data) {
-        App.leccion._id = data.datos.leccion
-        socket.emit('usuario', data.datos)
+        App.idLeccion = data.datos.leccion;
+        App.obtenerLeccion(App.idLeccion);
+        socket.emit('usuario', data.datos);
       }
     })
   },
@@ -21,8 +22,6 @@ var App = new Vue({
     obtenerLogeado: function() {
       /*
         Función inicial, para obtener los datos del estudiante conectado a la aplicación.
-        Luego de obtener estos datos, el flujo continúa con:
-          obtenerGrupoDeEstudiante() y obtenerParaleloDeEstudiante
       */
       var self = this;
       $.get({
@@ -30,7 +29,7 @@ var App = new Vue({
         success: function(res){
           if (res.estado) {
             self.estudiante = res.datos;
-            self.obtenerGrupoDeEstudiante();
+            //self.obtenerGrupoDeEstudiante();
             self.obtenerParaleloDeEstudiante();
           }
         }
@@ -41,8 +40,7 @@ var App = new Vue({
         Función para obtener el grupo al cual el estudiante conectado pertenece. Guardo la info en estudiante.grupo
       */
       var self = this;
-      var urlApi = '/api/grupos/estudiante/';
-      urlApi = urlApi + self.estudiante._id;    //'/api/grupos/:id_estudiante'
+      var urlApi = '/api/grupos/estudiante/' + self.estudiante._id;
       $.get({
         url: urlApi,
         success: function(response){
@@ -52,78 +50,62 @@ var App = new Vue({
     },
     obtenerParaleloDeEstudiante: function(){
       var self = this;
-      var url = '/api/paralelos/estudiante/'
-      url = url + self.estudiante._id;
+      var url = '/api/paralelos/estudiante/' + this.estudiante._id;
       $.ajax({
         url: url,
         method: 'GET',
         success: function(response) {
-          App.estudiante.paralelo = response.datos._id;
-          // console.log(App.estudiante.paralelo);
+          self.estudiante.paralelo = response.datos._id;
           if (!response.datos.dandoLeccion) {
             window.location.href = '/estudiantes'
           }
         },
         error: function(response) {
+
         }
       })
     },
     obtenerLeccion: function(leccionId){
       /*
-        Parámetros:
+        @Parámetros:
           * leccionId  => id de la lección que se está tomando.
-        Esta función obtiene toda la información sobre la lección que se está tomando.
-        Una vez obtenida la información de la lección se procede a añadir al estudiante al registro y a obtener la información de las preguntas
+        @Descripción: Esta función obtiene toda la información sobre la lección que se está tomando.
+        @Autor: @edisonmora95
       */
       var self = this;
-      if(!self.flag){
-        self.flag = true;
-        var url = '/api/lecciones/' + leccionId;
-        $.ajax({
-          url: url,
-          method: 'GET',
-          success: function(response) {
-            self.leccion = response.datos;
-            self.anadirParticipanteARegistro();
-            self.obtenerPreguntas();
-            $.when($.ajax(App.obtenerPreguntas(leccionId))).then(function () {
-              /*$.each(this.preguntas, function(index, pregunta){
-                var idEditor = '#editor-' + pregunta._id
-                $(idEditor).froalaEditor();
-              });*/
-              App.crearEditor();
-            });
-          },
-          error: function(response) {
-            console.log('ERROR');
-          }
-        });
-      }
+      var url = '/api/lecciones/' + leccionId;
+      $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+          self.leccion = response.datos;
+          self.anadirParticipanteARegistro();
+          self.obtenerPreguntas(leccionId);
+        },
+        error: function(response) {
+          console.log('ERROR');
+        }
+      });
 
     },
     anadirParticipanteARegistro: function(){
       /*
-        Esta función añade el registro de que el estudiante tomó la lección al registro de Calificaciones.
+        @Descripción: Esta función añade el registro de que el estudiante tomó la lección al registro de Calificaciones.
+        @Autor: @edisonmora95
+        @ÚltimaModificación: 21-05-2017 @edisonmora95
       */
       var self = this;
-      var url = '/api/grupos/estudiante/' + App.estudiante._id;   //REVISAR LUEGO SI ESTO ES NECESARIO
-      var grupo = ''
-      //Primero obtengo el grupo al que el estudiante pertenece. El id
-      $.get({
-        url: url,
-        success: function(response) {
-          grupo = response.datos._id;
-          var urlRegistro = '/api/calificaciones/' + App.leccion._id + '/' + grupo; //'/api/calificaciones/:id_leccion/:id_grupo'
-          var estudiante = {estudiante: App.estudiante._id};  //Id del estudiante que se enviará. Consultar api
-          $.ajax({
-            url: urlRegistro,
-            type: 'PUT',
-            data: estudiante,
-            success: function(response) {
-              console.log('Estudiante añadido al registro correctamente');
-            }
-          })
-        }
+      $.when($.ajax(self.obtenerGrupoDeEstudiante())).then(function(){
+        var urlRegistro = '/api/calificaciones/' + self.leccion._id + '/' + self.estudiante.grupo;
+        var estudiante = {estudiante: self.estudiante._id};  //Id del estudiante que se enviará. Consultar api
+        $.ajax({
+          url: urlRegistro,
+          type: 'PUT',
+          data: estudiante,
+          success: function(response) {
+            console.log('Estudiante añadido al registro correctamente');
+          }
+        });
       });
     },
     obtenerPreguntas: function(leccionId){
@@ -133,9 +115,9 @@ var App = new Vue({
       var self = this;
       console.log('Las preguntas de la leccion son ')
       console.log(self.leccion.preguntas)
-
       var idPregunta = '';
       var apiPreguntasUrl = '/api/preguntas/';
+      //Recorro el array de ids de preguntas de leccion.preguntas
       $.each(self.leccion.preguntas, function(index, pregunta){
         idPregunta = pregunta.pregunta;
         apiPreguntasUrl = apiPreguntasUrl + idPregunta; //Armo la url de la api
@@ -145,9 +127,7 @@ var App = new Vue({
           success: function(response) {
             //Una vez obtenida la información, se crea el objeto pregunta que se mostrará al estudiante.
             var pregunta = self.crearPregunta(response);
-            if(self.preguntas.indexOf(pregunta) == -1){
-              self.preguntas.push(pregunta);
-            }
+            self.preguntas.push(pregunta);
           },
           error: function(response) {
             consle.log('ERROR');
@@ -164,16 +144,18 @@ var App = new Vue({
       */
       var self = this;
       var pregunta = res.datos;   //Objeto pregunta obtenido como respuesta de la llamada a la base de datos.
+      self.crearEditor(pregunta);
       pregunta.respuesta = ''
       //Busca si la pregunta ya fue respondida, busca en la base de datos si existe una respuesta del estudiante a la pregunta escogida
-      //'/api/respuestas/buscar/leccion/:id_leccion/pregunta/:id_pregunta/estudiante/:id_estudiante'
-      var url = '/api/respuestas/buscar/leccion/' + App.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + App.estudiante._id;
+      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
       $.ajax({
         url: url,
         method: 'GET',
         success: function(response) {
-          if (response.datos!=null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
+          if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
             pregunta.respuesta = response.datos.respuesta;
+            var idEditor = '#editor-' + pregunta._id; 
+            $(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
             pregunta.respuesta = '';
@@ -186,6 +168,50 @@ var App = new Vue({
         }
       })
       return pregunta;
+    },
+    crearEditor: function(pregunta){
+      /*
+        @Descripción: Esta función inicializa el editor de texto.
+      */
+      var idEditor = '#editor-' + pregunta._id;
+      $(idEditor).materialnote({
+        height: "25vh",
+        toolbar: [
+          // [groupName, [list of button]]
+          ['style', ['bold', 'italic', 'underline']],
+          ['para', ['ul', 'ol']],
+          ['Insert', ['picture']]
+        ],
+        onImageUpload: function(files, editor, $editable) {
+          var clientId = "300fdfe500b1718";
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+          xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+          App.loading(true);
+          xhr.onreadystatechange = function () {
+            if (xhr.status === 200 && xhr.readyState === 4) {
+              App.loading(false);
+              var url = JSON.parse(xhr.responseText)
+              $(idEditor).materialnote('editor.insertImage', url.data.link);
+            }
+          }
+          xhr.send(files[0]);
+        }
+      });
+      $(".note-editor").find("button").attr("type", "button");
+    },
+    loading: function(estado){
+      //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
+      //Requiere el estado, si está cargando algo o no.
+      if (estado){
+        $(".note-editable").append('<div class="preloader-wrapper big active onLoad"></div>');
+        $(".onLoad").append('<div class="spinner-layer spinner-blue-only load-2"></div>');
+        $(".load-2").append('<div class="circle-clipper left load-3"></div>');
+        $(".load-3").append('<div id="load-4" class="circle"></div>');
+      }else{
+        $("#onLoad").remove();
+        $("div").remove(".onLoad");
+      }
     },
     //Eventos
     responder: function(pregunta, event){
@@ -244,13 +270,15 @@ var App = new Vue({
     },
     crearRespuesta: function(pregunta){
       /*
-        Esta función crea el objeto Respuesta que se enviará a la base de datos.
+        @Descripción: Esta función crea el objeto Respuesta que se enviará a la base de datos.
+        @Autor: @edisonmora95
+        @FechaModificación: 21-05-2017 @edisonmora95
       */
       var self = this;
-      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
-      var idTextarea = '#textarea-' + pregunta._id;
-      var respuestaTextarea = $(idTextarea).val();
+      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+      //var idTextarea = '#textarea-' + pregunta._id;
+      //var respuestaTextarea = $(idTextarea).val();
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -258,7 +286,7 @@ var App = new Vue({
         paralelo: self.estudiante.paralelo,
         grupo: self.estudiante.grupo,
         contestado: true,
-        respuesta: respuestaTextarea,
+        respuesta: respuestaEditor,
         feedback: '',
         calificacion: 0
       }
@@ -319,9 +347,12 @@ var App = new Vue({
     },
     corregirRespuesta: function(pregunta){
       /*
-        Esta función se ejecutará cuando el estudiante quiera responder una pregunta que ya fue respondida y tenga habilitada la opción para responder preguntas.
+        @Descripcion: Esta función se ejecutará cuando el estudiante quiera responder una pregunta que ya fue respondida y tenga habilitada la opción para responder preguntas.
+        @Autor: @edisonmora95
+        @ÚltimaMidificación: 21-05-2017 @edisonmora95
       */
       var self = this;
+      //Primero busco en la base de datos si la pregunta que quiere corregir ya fue respondida
       var url = "/api/respuestas/buscar/leccion/" + self.leccion._id + "/pregunta/" + pregunta._id + "/estudiante/" + self.estudiante._id
       $.ajax({
         url: url,
@@ -338,7 +369,9 @@ var App = new Vue({
         Esta función hace la llamada a la api para corregir la respuesta.
       */
       var urlPut = "/api/respuestas/" + idRespuesta;
-      var resp = {respuesta: pregunta.respuesta}
+      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+      var resp = {respuesta: respuestaEditor}
       $.ajax({
         url: urlPut,
         method: 'PUT',
@@ -364,49 +397,6 @@ var App = new Vue({
         }
       });
       window.location.href = "/estudiantes";
-    },
-    crearEditor: function(){
-      $.each(this.preguntas, function(index, pregunta){
-        var idEditor = '#editor-' + pregunta._id;
-        $(idEditor).materialnote({
-          height: "25vh",
-          toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline']],
-            ['para', ['ul', 'ol']],
-            ['Insert', ['picture']]
-          ],
-          onImageUpload: function(files, editor, $editable) {
-            var clientId = "300fdfe500b1718";
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-            xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-            App.loading(true);
-            xhr.onreadystatechange = function () {
-              if (xhr.status === 200 && xhr.readyState === 4) {
-                App.loading(false);
-                var url = JSON.parse(xhr.responseText)
-                $(idEditor).materialnote('editor.insertImage', url.data.link);
-              }
-            }
-            xhr.send(files[0]);
-          }
-        });
-        $(".note-editor").find("button").attr("type", "button");
-      });
-    },
-    loading: function(estado){
-      //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
-      //Requiere el estado, si está cargando algo o no.
-      if (estado){
-        $(".note-editable").append('<div class="preloader-wrapper big active onLoad"></div>');
-        $(".onLoad").append('<div class="spinner-layer spinner-blue-only load-2"></div>');
-        $(".load-2").append('<div class="circle-clipper left load-3"></div>');
-        $(".load-3").append('<div id="load-4" class="circle"></div>');
-      }else{
-        $("#onLoad").remove();
-        $("div").remove(".onLoad");
-      }
     },
     mostrarModal: function(imageUrl){
       $("#modal_Img .modal-content").empty();
@@ -448,7 +438,8 @@ socket.on('terminado leccion', function(match) {
   App.responderTodas();
 })
 socket.on('leccion id', function(id_leccion) {
-  App.obtenerLeccion(id_leccion)
+  //App.obtenerLeccion(id_leccion)
+  //App.leccionId = id_leccion;
 })
 socket.on('desconectarlo', function(dato) {
   Materialize.toast('hubo un error llamar', 15000)
