@@ -2,13 +2,13 @@ var socket = io('/tomando_leccion');
 var app = new Vue({
   el: '#app',
   methods: {
-    verificarEstudiantPuedeDarLeccion() {
+    verificarEstudiantPuedeDarLeccion: function() {
       if (!app.codigo_leccion) {
         Materialize.toast('Ingrese el código', 4000)
       } else {
         $.ajax({
           method: 'GET',
-          url: `/api/estudiantes/tomar_leccion/${app.codigo_leccion}`,
+          url: '/api/estudiantes/tomar_leccion/'+ app.codigo_leccion,
           success: function(res) {
             var res = res.datos
             if (!res.tieneGrupo) {
@@ -32,13 +32,13 @@ var app = new Vue({
               }
             }
             if (res.leccionYaComenzo) {
-              window.location.href = `/estudiantes/leccion`
+              window.location.href = '/estudiantes/leccion'
             }
           }
         })
       }
     },
-    estado() { // usado cuando recarga la pagina
+    estado: function() { // usado cuando recarga la pagina
       $.get({
         url: '/api/session/usuario_conectado',
         success: function(user) {
@@ -46,7 +46,7 @@ var app = new Vue({
           app.estudiante = user.datos
           socket.emit('usuario', user.datos)
           $.get({
-            url: `/api/paralelos/estudiante/${usuario._id}`,
+            url: '/api/paralelos/estudiante/'+ usuario._id,
             success: function(par) {
               var paralelo = par.datos
               if (usuario.codigoIngresado && !paralelo.leccionYaComenzo) {
@@ -71,7 +71,7 @@ app.estado()
 
 socket.on('empezar leccion', function(data) {
   if (data) {
-    window.location.href = `/estudiantes/leccion`
+    window.location.href = '/estudiantes/leccion'
   }
 })
 

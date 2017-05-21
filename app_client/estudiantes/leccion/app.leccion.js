@@ -51,21 +51,22 @@ var App = new Vue({
       });
     },
     obtenerParaleloDeEstudiante: function(){
-      /*
-        Función para obtener el paralelo al cual el estudiante conectado pertenece. Guardo la info en estudiante.paralelo
-      */
       var self = this;
-      var url = '/api/paralelos/estudiante/';
-      url = url + self.estudiante._id;  //'/api/paralelos/estudiante/:id_estudiante'
+      var url = '/api/paralelos/estudiante/'
+      url = url + self.estudiante._id;
       $.ajax({
         url: url,
         method: 'GET',
         success: function(response) {
-          self.estudiante.paralelo = response.datos._id;
+          App.estudiante.paralelo = response.datos._id;
+          // console.log(App.estudiante.paralelo);
+          if (!response.datos.dandoLeccion) {
+            window.location.href = '/estudiantes'
+          }
         },
         error: function(response) {
         }
-      });
+      })
     },
     obtenerLeccion: function(leccionId){
       /*
@@ -98,7 +99,7 @@ var App = new Vue({
           }
         });
       }
-      
+
     },
     anadirParticipanteARegistro: function(){
       /*
@@ -132,7 +133,7 @@ var App = new Vue({
       var self = this;
       console.log('Las preguntas de la leccion son ')
       console.log(self.leccion.preguntas)
-      
+
       var idPregunta = '';
       var apiPreguntasUrl = '/api/preguntas/';
       $.each(self.leccion.preguntas, function(index, pregunta){
@@ -145,7 +146,7 @@ var App = new Vue({
             //Una vez obtenida la información, se crea el objeto pregunta que se mostrará al estudiante.
             var pregunta = self.crearPregunta(response);
             if(self.preguntas.indexOf(pregunta) == -1){
-              self.preguntas.push(pregunta);  
+              self.preguntas.push(pregunta);
             }
           },
           error: function(response) {
@@ -221,14 +222,17 @@ var App = new Vue({
         method: 'POST',
         data: respuesta,
         success: function(response) {
-          Materialize.toast('¡Su respuesta ha sido enviada!', 1000, 'rounded');
-          pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
-          self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
-          self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
-          //self.bloquearEditor(pregunta);
-          if(self.verificarTodasRespondidas()){
-            //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
-            $('#modalRevisarRespuestas').modal('open');
+          if (response.estado) {
+            // var $toastContent = $('<h3>¡Su respuesta ha sido enviada!</h3>');
+            Materialize.toast('¡Su respuesta ha sido enviada!', 4000, 'rounded');
+            pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
+            self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
+            self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
+            //self.bloquearEditor(pregunta);
+            if(self.verificarTodasRespondidas()){
+              //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
+              $('#modalRevisarRespuestas').modal('open');
+            }
           }
         },
         error: function(response) {
@@ -442,7 +446,6 @@ socket.on('tiempo restante', function(tiempo) {
 
 socket.on('terminado leccion', function(match) {
   App.responderTodas();
-  //window.location.href = `/estudiantes`
 })
 socket.on('leccion id', function(id_leccion) {
   App.obtenerLeccion(id_leccion)
@@ -485,6 +488,7 @@ socket.on('tu tiempo', function(tiempo) {
 socket.on('connect', function() {
   // document.getElementById('desconectado').classList.add("borrar");
   // document.getElementById('conectado').classList.remove("borrar");
+  App.obtenerParaleloDeEstudiante()
   document.getElementById('conectado').classList.remove("red");
   document.getElementById('conectado').classList.add("green");
 
@@ -507,3 +511,8 @@ socket.on('disconnect', function() {
   document.getElementById('conectado').classList.add("red");
   console.log('desconectado');
 })
+
+supportsWebSockets = 'WebSocket' in window || 'MozWebSocket' in window;
+if (!supportsWebSockets) {
+  Materialize.toast('No Soportado', 6000)
+}

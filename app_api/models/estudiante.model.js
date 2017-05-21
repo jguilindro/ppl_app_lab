@@ -133,6 +133,10 @@ EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,i
   this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
 }
 
+EstudianteSchema.statics.leccionYaAnadida = function(id_estudiante,id_leccion,callback) {
+  this.findOne({_id: id_estudiante, 'lecciones.leccion': id_leccion},callback)
+}
+
 EstudianteSchema.statics.anadirLeccionActualDando = function(id_estudiante, id_leccion, callback) {
   this.update({_id: id_estudiante}, {$set: {leccion: id_leccion}}, callback)
 }

@@ -1,5 +1,4 @@
 const ParaleloModel = require('../models/paralelo.model');
-const GrupoLeccionModel = require('../models/grupoLeccion.model')
 var respuesta = require('../utils/responses');
 const utils = require('../utils')
 
@@ -151,32 +150,13 @@ const obtenerParaleloDeEstudiante = (req, res) => {
 Lecciones
  */
 
-// TODO: crear en todos los grupos la leccion y con datos iniciales
+// TODO: setea al curso que esta dando leccion
 const dandoLeccion = (req, res) => {
 	const { id_paralelo, id_leccion } = req.params
   var promises = []
 	ParaleloModel.dandoLeccion(id_paralelo, id_leccion, (err, docs) => {
     if (err) return respuesta.serverError(res);
-    ParaleloModel.obtenerParalelo(id_paralelo, (err, paralelo) => {
-      if (err) return respuesta.serverError(res);
-  		paralelo.grupos.forEach(grupo => {
-        promises.push(new Promise((resolve, reject) => {
-          let grupoLeccion = new GrupoLeccionModel({
-            grupo: grupo._id,
-            leccion: id_leccion,
-            paralelo: id_paralelo,
-            fechaEmpezado: utils.timezone()
-          })
-          grupoLeccion.crearGrupoLeccion((err, doc) => {
-            if (err) return reject(err);
-            resolve(true)
-          })
-        }))
-      })
-      Promise.all(promises).then(values => console.log(`los GRUPOLECCION fueron creados`))
-        .catch(fail => console.log(fail))
-  		return respuesta.okActualizado(res);
-    })
+    return respuesta.okActualizado(res);
 	})
 }
 
@@ -208,6 +188,6 @@ module.exports = {
   eliminarEstudianteDeParalelo,
   obtenerParaleloDeEstudiante,
 	// lecciones
-	dandoLeccion,
   leccionYaComenzo,
+  dandoLeccion
 }
