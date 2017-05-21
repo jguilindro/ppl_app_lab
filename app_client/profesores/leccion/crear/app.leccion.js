@@ -9,11 +9,21 @@ var App = new Vue({
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();
     $('.modal').modal();
-    //$('.collapsible').collapsible();
+    $('.collapsible').collapsible({
+      onOpen: function(el) { 
+        var self = this;
+        self.CollapsibleOpen = true
+        alert("asd");
+      }
+    });
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
     this.obtenerCapitulos();
+  },
+  updated: function(){
+    var self = this;
+      self.DOMupdated = true;
   },
   el: '#app',
   data: {
@@ -50,7 +60,9 @@ var App = new Vue({
       nombre: '',
       id: ''
     },
-    tipoEscogido: ''
+    tipoEscogido: '',
+    DOMupdated: false,
+    CollapsibleOpen: false
   },
   methods: {
     crearRegistroCalificacion: function(leccionId){
@@ -193,6 +205,20 @@ var App = new Vue({
         console.log('Hubo un error al obtener las preguntas de la base de datos');
       });
     },
+    collapsibleClicked: function(event){
+      var self = this;
+      if(self.DOMupdated && !self.CollapsibleOpen){
+        $('.collapsible').collapsible({
+          onOpen: function(el) { 
+            self.CollapsibleOpen = true;
+          },
+          onClose: function(el){
+            self.CollapsibleOpen = false;
+          }
+        });
+        self.DOMupdated = false;
+      }
+    },
     dividirPreguntasEnCapitulos: function(){
       var self = this;
       $.each(self.preguntasEstimacion, function(index, pregunta){
@@ -301,6 +327,7 @@ var App = new Vue({
     }
   }
 })
+
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
   if (!existe) {
@@ -439,10 +466,5 @@ function filtrarCapitulo2(capitulo){
 function filtrarCapitulo3(capitulo){
   return capitulo.codigoMateria == "FISG1003";
 }
-//Modal closing event
-$('#myModal').on('hidden', function () {
-    // do something…
-    console.log("asdasd");
-})
 
 
