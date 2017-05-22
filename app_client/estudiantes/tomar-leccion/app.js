@@ -55,6 +55,9 @@ var app = new Vue({
                 var a = document.getElementById('app')
                 a.setAttribute('class', 'disabled')
               }
+              if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {
+                window.location.href = '/estudiantes/leccion'
+              }
             }
           })
         }
@@ -80,6 +83,7 @@ Offline.on('down', function(data) {
 })
 
 Offline.on('up', function(data) {
+  app.estado()
   console.log('conectado');
 })
 

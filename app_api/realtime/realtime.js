@@ -109,6 +109,8 @@ function realtime(io) {
           const GRUPO = yield obtenerGrupo(estudiante)
           const PARALELO = yield obtenerParaleloDeEstudiante(estudiante)
           const LECCION_ID = yield queLeccionEstaDandoEstudiante(estudiante)
+          const estudiante_anadido = yield estudianteConectado(PARALELO.leccion, estudiante._id)
+          const estudiante_rec = yield estudianteReconectado(PARALELO.leccion, estudiante._id)
           socket.join(GRUPO._id) // unir estudiante al canal grupo
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.estudiante = estudiante
@@ -119,6 +121,9 @@ function realtime(io) {
         }
       })
     })
+
+    // socket.on('tengo internet', function(estudiante) {
+    // })
 
     socket.on('aumentar tiempo', function(minutos) {
     })

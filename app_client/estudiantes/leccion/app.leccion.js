@@ -85,7 +85,7 @@ var App = new Vue({
           self.anadirParticipanteARegistro();
           //self.obtenerPreguntas(leccionId);
           $.when($.ajax(self.obtenerPreguntas(leccionId))).then(function(){
-            
+
             $.when($.ajax(self.crearEditor())).then(function(){
               $.each(self.preguntas, function(index, pregunta){
                 self.verirficarRespuestaEnBase(pregunta);
@@ -162,7 +162,7 @@ var App = new Vue({
         success: function(response) {
           if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
             pregunta.respuesta = response.datos.respuesta;
-            var idEditor = '#editor-' + pregunta._id; 
+            var idEditor = '#editor-' + pregunta._id;
             $(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
@@ -193,7 +193,7 @@ var App = new Vue({
         success: function(response) {
           if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
             pregunta.respuesta = response.datos.respuesta;
-            var idEditor = '#editor-' + pregunta._id; 
+            var idEditor = '#editor-' + pregunta._id;
             $(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
@@ -240,9 +240,9 @@ var App = new Vue({
             xhr.send(files[0]);
           }
         });
-        $(".note-editor").find("button").attr("type", "button");  
+        $(".note-editor").find("button").attr("type", "button");
       });
-      
+
     },
     loading: function(estado){
       //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
@@ -469,9 +469,14 @@ var App = new Vue({
 });
 
 var socket = io('/tomando_leccion', {
-  'reconnection delay': 100, // defaults to 500
-  'reconnection limit': 100, // defaults to Infinity
-  'max reconnection attempts': Infinity // defaults to 10
+  // 'reconnection delay': 100, // defaults to 500
+  // 'reconnection limit': 100, // defaults to Infinity
+  // 'max reconnection attempts': Infinity // defaults to 10
+  reconnect: true,
+  'connect timeout': 1000,
+  'reconnection delay': 2000,
+  'max reconnection attempts': 10000,
+  'force new connection':true
 })
 
 socket.on('tiempo restante', function(tiempo) {
@@ -512,6 +517,7 @@ Offline.on('down', function(data) {
 
 Offline.on('up', function(data) {
   // pedir el tiempo
+  // socket.emit('tengo internet', App.estudiante);
 })
 
 socket.on('connect', function() {
@@ -521,8 +527,11 @@ socket.on('connect', function() {
 
 socket.on('tu tiempo', function(tiempo) {
 })
-
+var interval;
 socket.on('connect', function() {
+  // interval = setInterval(function () {
+  //   socket.emit('conectados', App.estudiante)
+  // }, 5000);
   // document.getElementById('desconectado').classList.add("borrar");
   // document.getElementById('conectado').classList.remove("borrar");
   App.obtenerParaleloDeEstudiante()
@@ -542,6 +551,7 @@ socket.on('connect_failed', function() {
 })
 
 socket.on('disconnect', function() {
+  clearInterval(interval)
   // document.getElementById('desconectado').classList.remove("borrar")
   // document.getElementById("conectado").classList.add("borrar");
   document.getElementById('conectado').classList.remove("green");
