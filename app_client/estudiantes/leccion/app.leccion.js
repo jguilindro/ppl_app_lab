@@ -489,9 +489,11 @@ socket.on('desconectarlo', function(dato) {
   Materialize.toast('hubo un error llamar', 15000)
 })
 
+/*
 $('body').on('click','img',function(){
   App.mostrarModal($(this).attr('src'));
 })
+*/
 // socket.on('pregunta actual', function(pregunta) {
 //   console.log(pregunta);
 // })
