@@ -203,7 +203,7 @@ var App = new Vue({
             pregunta.respuesta = response.datos.respuesta;
             //var idEditor = '#editor-' + pregunta._id;
             //$(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
-            
+
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
             pregunta.respuesta = '';
@@ -306,7 +306,7 @@ var App = new Vue({
             Materialize.toast('¡Su respuesta ha sido enviada!', 4000, 'rounded');
             pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
             self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
-            //self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
+            self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
             //self.bloquearEditor(pregunta);
             if(self.verificarTodasRespondidas()){
               //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
