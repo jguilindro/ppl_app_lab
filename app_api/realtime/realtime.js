@@ -37,19 +37,21 @@ function realtime(io) {
         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-
-        socket.interval = setInterval(function() {
-          let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-          var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-          if (!isNaN(duration)) { // FIXME: si se recarga la pagina antes que llege a cero continua
-            if (parseInt(duration) == 0) {
-              clearInterval(socket.interval);
-              leccionTerminada(PARALELO, PARALELO.leccion)
-              leccion.in(PARALELO._id).emit('terminado leccion', true)
+        console.log(PARALELO.leccionYaComenzo);
+        if (!PARALELO.leccionYaComenzo) {
+          socket.interval = setInterval(function() {
+            let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+            var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+            if (!isNaN(duration)) { // FIXME: si se recarga la pagina antes que llege a cero continua
+              if (parseInt(duration) == 0) {
+                clearInterval(socket.interval);
+                leccionTerminada(PARALELO, PARALELO.leccion)
+                leccion.in(PARALELO._id).emit('terminado leccion', true)
+              }
             }
-          }
-          leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
-        }, 1000)
+            leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
+          }, 1000)
+        }
         leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
       }).catch(fail => console.log(fail))
     }
