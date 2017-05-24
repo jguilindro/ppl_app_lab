@@ -21,7 +21,7 @@ router.post('/:id_paralelo/peers/:id_profesor',authApi.profesor, ParalelosContro
 // estudiantes
 router.post('/:id_paralelo/estudiantes/:id_estudiante',authApi.profesor, ParalelosController.anadirEstudianteAParalelo);
 router.delete('/:id_paralelo/estudiantes/:id_estudiante', authApi.profesor,  ParalelosController.eliminarEstudianteDeParalelo);
-router.get('/estudiante/:id_estudiante',authApi.profesor, ParalelosController.obtenerParaleloDeEstudiante);
+router.get('/estudiante/:id_estudiante',authApi.estudiante, ParalelosController.obtenerParaleloDeEstudiante);
 
 
 // Lecciones

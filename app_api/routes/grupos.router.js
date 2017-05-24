@@ -12,6 +12,6 @@ router.post('/:id_grupo/estudiantes/:id_estudiante',authApi.profesor, GruposCont
 router.delete('/:id_grupo/estudiantes/:id_estudiante', authApi.profesor,GruposController.eliminarEstudiante);
 
 
-router.get('/estudiante/:id_estudiante', authApi.profesor, GruposController.obtenerGrupoDeEstudiante);
+router.get('/estudiante/:id_estudiante', authApi.estudiante, GruposController.obtenerGrupoDeEstudiante);
 
 module.exports = router
