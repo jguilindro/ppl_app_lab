@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-	secret: 'MY-SESSION-DEMO',  // <= en un env
+	secret: require('./app_api/config/main').secret,  // <= en un env
 	resave: false,
   expire: 1 * 24 * 60 * 60 ,
 	saveUninitialized: false,
