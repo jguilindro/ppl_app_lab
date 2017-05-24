@@ -113,8 +113,7 @@ function realtime(io) {
           const estudiante_rec = yield estudianteReconectado(PARALELO.leccion, estudiante._id)
           socket.join(GRUPO._id) // unir estudiante al canal grupo
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
-          socket.estudiante = estudiante
-          // socket.broadcast.emit('estudiante conectado', estudiante)
+          socket.user = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
           socket.broadcast.emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
@@ -122,17 +121,15 @@ function realtime(io) {
       })
     })
 
-    // socket.on('tengo internet', function(estudiante) {
-    // })
-
     socket.on('aumentar tiempo', function(minutos) {
     })
 
     socket.on('disconnect', function() {
       co(function* () {
         if (socket.user) {
+          var estudiante = yield obtenerEstudiante(socket.user)
           var profesor = yield obtenerProfesor(socket.user)
-          if (!profesor) {
+          if (estudiante) {
             var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
             var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)

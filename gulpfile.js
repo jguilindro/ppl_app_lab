@@ -5,7 +5,7 @@ var gulp = require('gulp');
 var open = require('gulp-open');
 var browserSync = require('browser-sync').create();
 var nodemon = require('gulp-nodemon');
-
+require('dotenv').config()
 gulp.task('default',['set-dev-node-env','nodemon', 'browser-sync'], function () {
 });
 

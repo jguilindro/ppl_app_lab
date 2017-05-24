@@ -481,9 +481,6 @@ var App = new Vue({
 });
 
 var socket = io('/tomando_leccion', {
-  // 'reconnection delay': 100, // defaults to 500
-  // 'reconnection limit': 100, // defaults to Infinity
-  // 'max reconnection attempts': Infinity // defaults to 10
   reconnect: true,
   'connect timeout': 1000,
   'reconnection delay': 2000,
