@@ -1,13 +1,14 @@
+var authApi = require('../config/auth.api')
 var router = require('express').Router()
 var PreguntasController = require('../controllers/preguntas.controller');
 //CRUD
-router.get('/', PreguntasController.obtenerTodasPreguntas);
-router.get('/:id_pregunta', PreguntasController.obtenerPregunta);
-router.post('/', PreguntasController.crearPregunta);
-router.put('/:id_pregunta', PreguntasController.actualizarPregunta);
-router.delete('/:id_pregunta', PreguntasController.eliminarPregunta);
+router.get('/', authApi.profesor, PreguntasController.obtenerTodasPreguntas);
+router.get('/:id_pregunta', authApi.profesor, PreguntasController.obtenerPregunta);
+router.post('/',  authApi.profesor, PreguntasController.crearPregunta);
+router.put('/:id_pregunta', authApi.profesor,PreguntasController.actualizarPregunta);
+router.delete('/:id_pregunta',authApi.profesor, PreguntasController.eliminarPregunta);
 //METODOS APARTE
-router.get('/profesor/:id_profesor', PreguntasController.obtenerPreguntasPorCreador);
+router.get('/profesor/:id_profesor',authApi.profesor, PreguntasController.obtenerPreguntasPorCreador);
 
 
 

@@ -220,6 +220,7 @@ app.use('/otros', function(req, res, next) {
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))
 
+var authApi = require('./app_api/config/auth.api')
 // app_api OJO aqui esta expuesta
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
@@ -227,9 +228,9 @@ app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
 app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
-app.use('/api/respuestas', require('./app_api/routes/respuestas.router'));
-app.use('/api/capitulos', require('./app_api/routes/capitulo.router'));
-app.use('/api/calificaciones', require('./app_api/routes/calificacion.router'));
+app.use('/api/respuestas', authApi.estudiante, require('./app_api/routes/respuestas.router'));
+app.use('/api/capitulos', authApi.profesor, require('./app_api/routes/capitulo.router'));
+app.use('/api/calificaciones', authApi.estudiante, require('./app_api/routes/calificacion.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
