@@ -29,22 +29,25 @@ var App = new Vue({
     tomarLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
       var id_paralelo = window.location.href.toString().split('/')[7]
-      this.$http.post(`/api/lecciones/comenzar_leccion/${id_leccion}`).then(res => {
-        if (res.body.estado) {
+      if (this.paralelo.leccionYaComenzo === false) {
+        this.$http.post(`/api/lecciones/comenzar_leccion/${id_leccion}`).then(res => {
           if (res.body.estado) {
-            comenzar()
-            this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
-              if (res.body.estado) {
-                document.getElementById('leccion-no-dar').disabled = true
-                document.getElementById('comenzar-leccion').disabled = true
-                document.getElementById('terminar-leccion').disabled = false
-              }
-            })
+            if (res.body.estado) {
+              this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
+                if (res.body.estado) {
+                  comenzar()
+                  document.getElementById('leccion-no-dar').disabled = true
+                  document.getElementById('comenzar-leccion').disabled = true
+                  document.getElementById('terminar-leccion').disabled = false
+                  document.getElementById('anadir-tiempo').disabled = false
+                }
+              })
+            }
+            // tomando leccion en paralelo
+            // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
           }
-          // tomando leccion en paralelo
-          // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
-        }
-      })
+        })
+      }
     }
   },
   data: {
@@ -56,7 +59,8 @@ var App = new Vue({
     leccion: {},
     paralelo: [],
     tiempo: '',
-    dataEstudiantes: ''
+    dataEstudiantes: '',
+    mas_tiempo: 0
   },
   mounted() {
     $('.modal').modal({
@@ -117,6 +121,10 @@ leccion.on('tiempo restante', function(tiempo) {
   // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
   document.getElementById('terminar-leccion').disabled = false
+  setTimeout(function() {
+    document.getElementById('anadir-tiempo').disabled = false
+  }, 10000)
+  // document.getElementById('tiempo').disabled = false
   App.tiempo = tiempo
 })
 
@@ -147,9 +155,10 @@ leccion.on('leccion datos', function(leccion) {
 })
 
 function comenzar() {
+  // document.getElementById('anadir-tiempo').disabled = false
   leccion.emit('comenzar leccion', true)
 }
-
+document.getElementById('anadir-tiempo').disabled = true
 function terminarLeccion() {
   leccion.emit('parar leccion', 'la leccion ha sido detenida')
   document.getElementById('terminar-leccion').disabled = true
@@ -191,3 +200,39 @@ leccion.on('connect_failed', function() {
 leccion.on('disconnect', function() {
   //console.log('desconectado');
 })
+
+$('#comenzar-leccion').one('click', function() {
+    $('#comenzar-leccion').attr('disabled','disabled');
+    App.tomarLeccion()
+});
+
+// $('#anadir-tiempo').one('click', function() {
+//     // $('#anadir-tiempo').attr('disabled','disabled');
+//
+// });
+//
+function mas() {
+  $.ajax({
+    url: '/api/lecciones/' + App.leccion._id + '/mas_tiempo',
+    method: 'POST',
+    data: {tiempo: App.mas_tiempo},
+    success: function(res) {
+      if (res.estado){
+        Materialize.toast('Han sido añadido ' + App.mas_tiempo + ' minutos', 5000);
+        leccion.emit('aumentar tiempo', true)
+        App.mas_tiempo = 0
+      }
+    }
+  })
+  // App.tomarLeccion()
+}
+
+
+// var someElement = document.getElementById('comenzar-leccion');
+// someElement.addEventListener('click', function(event){
+//     App.tomarLeccion()
+// ), false);
+
+$('#input-tiempo').keypress(function(event){
+    event.preventDefault();
+});

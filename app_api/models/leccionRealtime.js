@@ -25,6 +25,10 @@ const LeccionRealtimeSchema = mongoose.Schema({
   }],
   fechaInicio: {
     type: Date
+  },
+  corriendoTiempo: {
+    type: Boolean,
+    'default': false
   }
 },{timestamps: true, versionKey: false, collection: 'leccionesRealtime'})
 
@@ -53,6 +57,10 @@ LeccionRealtimeSchema.statics.estudianteDesconectado = function(id_leccion, id_e
 /*cuando un estudiante vuelva ha estar conecatdo nuevamente*/
 LeccionRealtimeSchema.statics.estudianteReconectado = function(id_leccion, id_estudiante, callback) {
   this.update({leccion: id_leccion}, {$pull: {estudiantesDesconectados: id_estudiante}}, callback)
+}
+
+LeccionRealtimeSchema.statics.corriendoTiempo = function(id_leccion, valor, callback) {
+  this.update({leccion: id_leccion}, {corriendoTiempo: valor}, callback)
 }
 
 // LeccionRealtimeSchema.statics.anadirProfesor = function(id_leccion, id_profesor, callback) {

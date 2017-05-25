@@ -1,9 +1,9 @@
 module.exports = {
-  local: 'mongodb://localhost/ppl',
-  mlab: 'mongodb://ppl:ppl@ds049476.mlab.com:49476/ppl',
-  local_production: 'mongodb://localhost/ppl-production',
-  mlab_production: 'mongodb://ppl:ppl@ds127801.mlab.com:27801/ppl-production',
-  local_testing: 'mongodb://localhost/ppl-testing',
-  mlab_testing: 'mongodb://ppl:ppl@ds127731.mlab.com:27731/ppl-testing',
-  secret: 'joesdefg'
+  local: process.env.LOCAL,
+  mlab: process.env.MLAB,
+  local_production: process.env.LOCAL_PRODUCTION,
+  mlab_production: process.env.MLAB_PRODUCTION,
+  local_testing: process.env.LOCAL_TESTING,
+  mlab_testing: process.env.MLAB_TESTING,
+  secret: process.env.SECRET
 }

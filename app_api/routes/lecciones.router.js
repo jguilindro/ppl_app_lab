@@ -10,5 +10,6 @@ router.delete('/:id_leccion', authApi.profesor, LeccionController.eliminarLeccio
 router.post('/tomar/:id_leccion', authApi.profesor, LeccionController.tomarLeccion); // <= DOCUMENTACION
 router.post('/comenzar_leccion/:id_leccion', authApi.profesor, LeccionController.comenzarLeccion) // <= DOCUMENTACION
 router.post('/:id_paralelo/estudiantes', authApi.profesor, LeccionController.habilitarEstudiantesCursoParaLeccion) // DOCUMENTACION
+router.post('/:id_leccion/mas_tiempo',authApi.profesor, LeccionController.anadirTiempo);
 
 module.exports = router;

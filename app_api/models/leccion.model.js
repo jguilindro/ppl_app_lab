@@ -19,7 +19,7 @@ const LeccionSchema = mongoose.Schema({
     unique: false
   },
   tiempoEstimado: {
-    type: String,
+    type: Number,
     unique: false
   },
   puntaje: {
@@ -147,7 +147,7 @@ LeccionSchema.statics.obtenerLeccionPorCodigo = function(codigo_leccion, callbac
 }
 
 LeccionSchema.statics.aumentarTiempo = function(id_leccion, tiempo, callback) {
-  this.findOneAndUpdate({leccion: id_leccion}, {$inc: {tiempoEstimado: tiempo}})
+  this.findOneAndUpdate({_id: id_leccion}, {$inc: {tiempoEstimado: tiempo}}, callback)
 }
 
 LeccionSchema.statics.calificar = function(id_leccion, callback){

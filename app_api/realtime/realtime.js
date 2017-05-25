@@ -16,11 +16,14 @@ GrupoModel           = require('../models/grupo.model'),
 LeccionRealtimeModel = require('../models/leccionRealtime'),
 LeccionModel         = require('../models/leccion.model');
 
+var intervals = []
+
 function realtime(io) {
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
     // inicializador de profesor timer, crear en la base de datos los profesor
-    function profesorRealtime() {
+    var inter;
+    function profesorRealtime(boton) {
       co(function *() {
         const HORA_LOCAL = moment();
         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
@@ -28,6 +31,7 @@ function realtime(io) {
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
         const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
+        const leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
         socket.join(PARALELO._id) // crear el room para emitir el tiempo de paralelo
         for (var i = 0; i < PARALELO.grupos.length; i++) {
           socket.join(PARALELO.grupos[i]._id) // crear los room para cada grupo
@@ -37,28 +41,38 @@ function realtime(io) {
         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-        console.log(socket.interval);
         // socket.interval = undefined
+        clearInterval(socket.interval)
         // if (!socket.interval) {
-        socket.interval = setInterval(function() {
-          let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-          var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-          if (!isNaN(duration)) { // FIXME: si se recarga la pagina antes que llege a cero continua
-            if (parseInt(duration) == 0) {
-              clearInterval(socket.interval);
-              leccionTerminada(PARALELO, PARALELO.leccion)
-              leccion.in(PARALELO._id).emit('terminado leccion', true)
-            }
+          if (boton) {
+            var c = yield corriendoTiempo(socket.leccion._id, true);
           }
-          leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
-        }, 1000)
+          socket.interval = setInterval(function() {
+            let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+            var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+            if (!isNaN(duration)) { // FIXME: si se recarga la pagina antes que llege a cero continua
+              if (parseInt(duration) == 0) {
+                clearInterval(socket.interval);
+                leccionTerminada(PARALELO, PARALELO.leccion)
+                leccion.in(PARALELO._id).emit('terminado leccion', true)
+              }
+            }
+            leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
+          }, 1000)
+        // }
         // }
         leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
       }).catch(fail => console.log(fail))
     }
 
     socket.on('comenzar leccion', function() {
-      profesorRealtime()
+      co(function*() {
+        const leccionR = yield obtenerLeccionRealtime(socket.leccion._id)
+        if (!leccionR.corriendoTiempo) {
+          profesorRealtime(true)
+        }
+      })
+      console.log('comenzar leccion');
     })
 
     // usado para conocer quien se conecta
@@ -72,6 +86,7 @@ function realtime(io) {
           const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
           const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
           const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
+          socket.leccion = LECCION_TOMANDO
           // registar la leccion cuando el profesor ingresa
           if (!leccion_creada) {
             let leccionRealtime = new LeccionRealtimeModel({
@@ -81,11 +96,12 @@ function realtime(io) {
             const leccion_creada = yield crearLeccionRealtime(leccionRealtime)
           } else {
             let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-            setTimeout(function(ee) {
-               socket.emit('leccion datos', leccionR)
-            }, 1000)
+            socket.emit('leccion datos', leccionR)
           }
-          if (leccion_creada && PARALELO.dandoLeccion) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
+          clearInterval(socket.interval)
+          if (leccion_creada && PARALELO.dandoLeccion && PARALELO.leccionYaComenzo) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
+            // var c = yield corriendoTiempo(socket.leccion._id, false)
+            clearInterval(socket.interval)
             profesorRealtime()
           }
         } else {
@@ -125,6 +141,8 @@ function realtime(io) {
     })
 
     socket.on('aumentar tiempo', function(minutos) {
+      clearInterval(socket.interval)
+      profesorRealtime()
     })
 
     socket.on('disconnect', function() {
@@ -137,6 +155,10 @@ function realtime(io) {
             var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
             socket.broadcast.emit('leccion datos', leccionR)
+          } else {
+            // var c = yield corriendoTiempo(socket.leccion._id, false)
+            // console.log(`c ${c}`);
+            clearInterval(socket.interval)
           }
         }
       }).catch(fail => console.log(fail))
@@ -186,6 +208,15 @@ function obtenerProfesor(_usuario_cookie) { // FIXME: eliminar la parte de creac
       if (err) return reject(err)
       if (!profesor) return resolve(false)
       return resolve(profesor)
+    })
+  })
+}
+
+function corriendoTiempo(id_leccion, valor) {
+  return new Promise((resolve, reject) => {
+    LeccionRealtimeModel.corriendoTiempo(id_leccion, valor, (err, res) => {
+      if (err) return reject(err)
+      resolve(true)
     })
   })
 }
