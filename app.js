@@ -159,11 +159,19 @@ app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesor
  */
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 
-app.use('/estudiantes/', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+function redirecion(req, res , next) {
+  if (!req.session || !req.session._id) {
+    res.redirect('/')
+  } else {
+    next()
+  }
+}
 
-app.use('/estudiantes/ver-leccion/:id', authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
+app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 
-app.use('/estudiantes/tomar-leccion',  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
+
+app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
@@ -177,7 +185,7 @@ app.use('/estudiantes/tomar-leccion',  authEstudiante, procesarSession, middleEs
   })
 } , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 
-app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
