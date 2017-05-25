@@ -69,4 +69,7 @@ CalificacionSchema.statics.obtenerTodos = function(callback){
 	this.find({}, callback);
 }
 
+CalificacionSchema.statics.obtenerRegistroPorParalelo = function(id_grupo, id_paralelo, callback){
+	this.find({grupo: id_grupo, paralelo: id_paralelo}, callback);
+}
 module.exports = mongoose.model('Calificacion', CalificacionSchema);

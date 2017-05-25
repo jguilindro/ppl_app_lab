@@ -115,6 +115,12 @@ const anadirNombreGrupo = (req, res) => {
 	})
 }
 
+const obtenerRegistroPorParalelo = (req, res) => {
+	CalificacionModel.obtenerRegistroPorParalelo(req.params.id_grupo, req.params.id_paralelo,(err, registros) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, registros);
+	});
+}
 
 module.exports = {
 	crearRegistro,
@@ -122,5 +128,6 @@ module.exports = {
 	obtenerRegistroPorLeccion,
 	anadirParticipante,
 	calificar,
-	anadirNombreGrupo
+	anadirNombreGrupo,
+	obtenerRegistroPorParalelo
 }

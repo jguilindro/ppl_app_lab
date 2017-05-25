@@ -12,4 +12,6 @@ router.get('/:id_leccion', CalificacionController.obtenerRegistroPorLeccion);
 
 router.put('/:id_grupo', CalificacionController.anadirNombreGrupo);
 
+router.get('/:id_grupo/:id_paralelo', CalificacionController.obtenerRegistroPorParalelo);
+
 module.exports = router;

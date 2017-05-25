@@ -272,7 +272,19 @@ var app = new Vue({
 		
 }*/
 
+test : function(){
+	var self = this;
+	var paralelos;
+	
+	this.$http.get( "/api/paralelos/profesores/mis_paralelos").then(function(response){
+		console.log("paraaa:"+ response.body.datos);
+		paralelos = response.body.datos.grupos;
+		console.log(paralelos);
+	});
+}
+
 generarReporte: function(){
+	//var Grupo = require('../../../app_api/models/grupo.model');
 	var reporteData= [];
 	var self = this;
 	var promises= [];
@@ -280,11 +292,15 @@ generarReporte: function(){
 
 				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
 		        self.profesorConectado= response.body.datos._id;
+					//console.log("Profesor conectado:");
+					//console.log(self.profesorConectado);
 				 }));
 
 
 				promises.push(this.$http.get("/api/lecciones").then(response => {
 		        self.todasLecciones= response.body.datos;
+					//console.log("todas las lecciones:");
+					//console.log(self.todasLecciones);
 		        $.each(self.todasLecciones, function(index, value){
 		        	if(value.creador == self.profesorConectado){
 		      	self.leccionesId.push(value._id);
@@ -293,7 +309,6 @@ generarReporte: function(){
 		      });
 		       
 
- 	
  			}));
 
 
@@ -312,6 +327,12 @@ generarReporte: function(){
 			if(self.gruposParaleloId[indice].length!=0){
 				$.each(self.gruposParaleloId[indice], function(i,grupo){
 					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
+						self.$http.get('/api/grupos/'+grupo).then(function (response) {
+								console.log("Hmmm::"+response.body.datos);
+							}
+						);
+						//console.log(data.body.datos[0]);
+						//console.log(data.body.datos[0].participantes);
 						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
 							var calificaciones= {
 								leccion: '',
@@ -325,7 +346,7 @@ generarReporte: function(){
 				 	calificaciones.calificacion= data.body.datos[0].calificacion;
 				 	calificaciones.paralelo= self.nombreParalelo[indice];
 				 	calificaciones.materia= self.nombreMateria[indice];
-				 	console.log(calificaciones);
+				 	//console.log(calificaciones);
 				 	reporteData.push(calificaciones);
 
 					}
