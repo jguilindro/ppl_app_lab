@@ -25,13 +25,30 @@
            <h2>{{dataEstudiantes.length}}</h2>
          </div>
          <div class="modal-footer">
-           <a href="/profesores" class="modal-action modal-close waves-effect waves-green btn-flat">SALIR</a>
+           <a href="/profesores/leccion" class="modal-action modal-close waves-effect waves-green btn-flat">SALIR</a>
          </div>
        </div>
       <div class="botones">
         <!-- <button class="btn" type="button" id="leccion-no-dar" onclick="terminarLeccionDevelopment()">Cancelar lección</button> -->
-        <button class="btn boton"  id='comenzar-leccion'type="button" v-on:click="tomarLeccion()">comenzar lección</button>
-        <button class="btn boton" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+
+        <br>
+        <div class="row">
+          <div class="col s4">
+            <button class="btn boton"  id='comenzar-leccion'type="button">comenzar lección</button>
+          </div>
+          <div class="col s4">
+            <button class="btn boton red" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+          </div>
+          <div class="col s1">
+            <!-- <input type="number" v-model="mas_tiempo" min="0" name="" value=""> -->
+          </div>
+          <div class="col s1">
+            <input type="number" v-model="mas_tiempo" id="input-tiempo"min="0" name="" value="">
+          </div>
+          <div class="col s2">
+            <button class="btn boton blue" id="anadir-tiempo" onclick="mas()">añadir</button>
+          </div>
+        </div>
       </div>
 	    <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
 	    <!-- <p>{{grupos}}</p> -->

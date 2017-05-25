@@ -118,6 +118,12 @@ const habilitarEstudiantesCursoParaLeccion = (req, res) => {
   })
 }
 
+const anadirTiempo = (req, res) => {
+  LeccionModel.aumentarTiempo(req.params.id_leccion, req.body.tiempo, (err, aa) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.okActualizado(res);
+  })
+}
 
 module.exports = {
   crearLeccion,
@@ -127,6 +133,7 @@ module.exports = {
   eliminarLeccion,
   // realtime
   tomarLeccion,
+  anadirTiempo,
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
 }

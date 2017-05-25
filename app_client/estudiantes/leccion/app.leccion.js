@@ -73,6 +73,7 @@ var App = new Vue({
           * leccionId  => id de la lección que se está tomando.
         @Descripción: Esta función obtiene toda la información sobre la lección que se está tomando.
         @Autor: @edisonmora95
+        @ÚltimaModificación: 24-05-2017 @edisonmora95
       */
       //console.log('Entrando a la funcion obtenerLeccion')
       var self = this;
@@ -83,15 +84,15 @@ var App = new Vue({
         success: function(response) {
           self.leccion = response.datos;
           self.anadirParticipanteARegistro();
-          //self.obtenerPreguntas(leccionId);
-          $.when($.ajax(self.obtenerPreguntas(leccionId))).then(function(){
-            
+          self.obtenerPreguntas(leccionId);
+          /*$.when($.ajax(self.obtenerPreguntas(leccionId))).then(function(){
+
             $.when($.ajax(self.crearEditor())).then(function(){
               $.each(self.preguntas, function(index, pregunta){
                 self.verirficarRespuestaEnBase(pregunta);
               });
             });
-          });
+          });*/
         },
         error: function(response) {
           console.log('ERROR');
@@ -121,12 +122,13 @@ var App = new Vue({
     },
     obtenerPreguntas: function(leccionId){
       /*
-        Esta función obtiene la información completa de cada pregunta de la lección
+        @Descripción: Esta función obtiene la información completa de cada pregunta de la lección
+        @ÚltimaModificacion: 24-05-2017
       */
       //console.log('Entrando a la funcion obtenerPreguntas')
       var self = this;
-      console.log('Las preguntas de la leccion son ')
-      console.log(self.leccion.preguntas)
+      //console.log('Las preguntas de la leccion son ')
+      //console.log(self.leccion.preguntas)
       var idPregunta = '';
       var apiPreguntasUrl = '/api/preguntas/';
       //Recorro el array de ids de preguntas de leccion.preguntas
@@ -140,8 +142,9 @@ var App = new Vue({
             //Una vez obtenida la información, se crea el objeto pregunta que se mostrará al estudiante.
             //var pregunta = self.crearPregunta(response);
             var pregunta = response.datos;
-            pregunta.respuesta = '';
-            pregunta.respondida = false;
+            self.verirficarRespuestaEnBase(pregunta);
+            //pregunta.respuesta = '';
+            //pregunta.respondida = false;
             self.preguntas.push(pregunta);
           },
           error: function(response) {
@@ -154,6 +157,9 @@ var App = new Vue({
       console.log(self.preguntas)
     },
     verirficarRespuestaEnBase: function(pregunta){
+      /*
+        @ÚltimaModficación: 24-05-2017
+      */
       var self = this;
       var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
       $.ajax({
@@ -162,8 +168,10 @@ var App = new Vue({
         success: function(response) {
           if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
             pregunta.respuesta = response.datos.respuesta;
-            var idEditor = '#editor-' + pregunta._id; 
-            $(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
+            //var idEditor = '#editor-' + pregunta._id;
+            //$(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
+            var idTextarea = '#textarea-' + pregunta._id;
+            var respuestaTextarea = $(idTextarea).val(response.datos.respuesta);
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
             pregunta.respuesta = '';
@@ -193,8 +201,9 @@ var App = new Vue({
         success: function(response) {
           if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
             pregunta.respuesta = response.datos.respuesta;
-            var idEditor = '#editor-' + pregunta._id; 
-            $(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
+            //var idEditor = '#editor-' + pregunta._id;
+            //$(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
+
             pregunta.respondida = true;
           }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
             pregunta.respuesta = '';
@@ -240,9 +249,9 @@ var App = new Vue({
             xhr.send(files[0]);
           }
         });
-        $(".note-editor").find("button").attr("type", "button");  
+        $(".note-editor").find("button").attr("type", "button");
       });
-      
+
     },
     loading: function(estado){
       //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
@@ -297,7 +306,7 @@ var App = new Vue({
             Materialize.toast('¡Su respuesta ha sido enviada!', 4000, 'rounded');
             pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
             self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
-            //self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
+            self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
             //self.bloquearEditor(pregunta);
             if(self.verificarTodasRespondidas()){
               //Si ya ha enviado todas las respuestas, entonces se mostrará el modal preguntando si quiere corregir alguna pregunta o terminar la lección.
@@ -316,13 +325,13 @@ var App = new Vue({
       /*
         @Descripción: Esta función crea el objeto Respuesta que se enviará a la base de datos.
         @Autor: @edisonmora95
-        @FechaModificación: 21-05-2017 @edisonmora95
+        @FechaModificación: 24-05-2017 @edisonmora95
       */
       var self = this;
-      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
-      //var idTextarea = '#textarea-' + pregunta._id;
-      //var respuestaTextarea = $(idTextarea).val();
+      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+      var idTextarea = '#textarea-' + pregunta._id;
+      var respuestaTextarea = $(idTextarea).val();
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -330,7 +339,7 @@ var App = new Vue({
         paralelo: self.estudiante.paralelo,
         grupo: self.estudiante.grupo,
         contestado: true,
-        respuesta: respuestaEditor,
+        respuesta: respuestaTextarea,
         feedback: '',
         calificacion: 0
       }
@@ -413,9 +422,12 @@ var App = new Vue({
         Esta función hace la llamada a la api para corregir la respuesta.
       */
       var urlPut = "/api/respuestas/" + idRespuesta;
-      var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
-      var resp = {respuesta: respuestaEditor}
+      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+      var idTextarea = '#textarea-' + pregunta._id;
+      var respuestaTextarea = $(idTextarea).val();
+      var resp = {respuesta: respuestaTextarea}
+      //var resp = {respuesta: respuestaEditor}
       $.ajax({
         url: urlPut,
         method: 'PUT',
@@ -469,9 +481,11 @@ var App = new Vue({
 });
 
 var socket = io('/tomando_leccion', {
-  'reconnection delay': 100, // defaults to 500
-  'reconnection limit': 100, // defaults to Infinity
-  'max reconnection attempts': Infinity // defaults to 10
+  reconnect: true,
+  'connect timeout': 1000,
+  'reconnection delay': 2000,
+  'max reconnection attempts': 10000,
+  'force new connection':true
 })
 
 socket.on('tiempo restante', function(tiempo) {
@@ -489,9 +503,11 @@ socket.on('desconectarlo', function(dato) {
   Materialize.toast('hubo un error llamar', 15000)
 })
 
+/*
 $('body').on('click','img',function(){
   App.mostrarModal($(this).attr('src'));
 })
+*/
 // socket.on('pregunta actual', function(pregunta) {
 //   console.log(pregunta);
 // })
@@ -510,6 +526,7 @@ Offline.on('down', function(data) {
 
 Offline.on('up', function(data) {
   // pedir el tiempo
+  // socket.emit('tengo internet', App.estudiante);
 })
 
 socket.on('connect', function() {
@@ -519,8 +536,11 @@ socket.on('connect', function() {
 
 socket.on('tu tiempo', function(tiempo) {
 })
-
+var interval;
 socket.on('connect', function() {
+  // interval = setInterval(function () {
+  //   socket.emit('conectados', App.estudiante)
+  // }, 5000);
   // document.getElementById('desconectado').classList.add("borrar");
   // document.getElementById('conectado').classList.remove("borrar");
   App.obtenerParaleloDeEstudiante()
@@ -540,6 +560,7 @@ socket.on('connect_failed', function() {
 })
 
 socket.on('disconnect', function() {
+  clearInterval(interval)
   // document.getElementById('desconectado').classList.remove("borrar")
   // document.getElementById("conectado").classList.add("borrar");
   document.getElementById('conectado').classList.remove("green");

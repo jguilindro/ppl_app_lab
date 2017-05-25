@@ -39,7 +39,8 @@ if (os.hostname() === 'joelerll-laptop') {
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, {'pingInterval': 1000, 'pingTimeout': 5000});
+io.set('heartbeat interval', 1)
 app.use(function(req, res, next){
   res.io = io;
   next();
@@ -56,7 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-	secret: 'MY-SESSION-DEMO',  // <= en un env
+	secret: require('./app_api/config/main').secret,  // <= en un env
 	resave: false,
   expire: 1 * 24 * 60 * 60 ,
 	saveUninitialized: false,
@@ -158,11 +159,19 @@ app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesor
  */
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
 
-app.use('/estudiantes/', express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+function redirecion(req, res , next) {
+  if (!req.session || !req.session._id) {
+    res.redirect('/')
+  } else {
+    next()
+  }
+}
 
-app.use('/estudiantes/ver-leccion/:id', authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
+app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 
-app.use('/estudiantes/tomar-leccion',  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
+
+app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
@@ -176,7 +185,7 @@ app.use('/estudiantes/tomar-leccion',  authEstudiante, procesarSession, middleEs
   })
 } , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 
-app.use('/estudiantes/leccion', authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
@@ -219,6 +228,7 @@ app.use('/otros', function(req, res, next) {
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))
 
+var authApi = require('./app_api/config/auth.api')
 // app_api OJO aqui esta expuesta
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
@@ -226,9 +236,9 @@ app.use('/api/grupos', require('./app_api/routes/grupos.router'));
 app.use('/api/paralelos', require('./app_api/routes/paralelos.router'));
 app.use('/api/lecciones', require('./app_api/routes/lecciones.router'));
 app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
-app.use('/api/respuestas', require('./app_api/routes/respuestas.router'));
-app.use('/api/capitulos', require('./app_api/routes/capitulo.router'));
-app.use('/api/calificaciones', require('./app_api/routes/calificacion.router'));
+app.use('/api/respuestas', authApi.estudiante, require('./app_api/routes/respuestas.router'));
+app.use('/api/capitulos', authApi.profesor, require('./app_api/routes/capitulo.router'));
+app.use('/api/calificaciones', authApi.estudiante, require('./app_api/routes/calificacion.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,4 +1,11 @@
-var socket = io('/tomando_leccion');
+var socket = io('/tomando_leccion', {
+  reconnect: true,
+  'connect timeout': 1000,
+  'reconnection delay': 2000,
+  'max reconnection attempts': 10000,
+  'force new connection':true
+})
+
 var app = new Vue({
   el: '#app',
   methods: {
@@ -55,6 +62,9 @@ var app = new Vue({
                 var a = document.getElementById('app')
                 a.setAttribute('class', 'disabled')
               }
+              if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {
+                window.location.href = '/estudiantes/leccion'
+              }
             }
           })
         }
@@ -80,6 +90,7 @@ Offline.on('down', function(data) {
 })
 
 Offline.on('up', function(data) {
+  app.estado()
   console.log('conectado');
 })
 
