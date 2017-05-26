@@ -46,6 +46,7 @@ function realtime(io) {
         var hec = yield cleanIntervals(intervals, socket.leccion._id)
         if (boton) {
           var c = yield corriendoTiempo(socket.leccion._id, true);
+          leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
         socket.interval = setInterval(function() {
           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
@@ -63,7 +64,6 @@ function realtime(io) {
         var leccion_id = socket.leccion._id
         intervals.push({leccion_id: leccion_id, interval: socket.interval})
         console.log(intervals);
-        leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
       }).catch(fail => console.log(fail))
     }
 

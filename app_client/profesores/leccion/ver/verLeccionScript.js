@@ -12,7 +12,7 @@ var appVerLeccion = new Vue({
 			self.$http.get(url).then(response => {
 				if(response.body.datos!=null){
 					self.leccion = response.body.datos;
-					self.obtenerPreguntas();	
+					self.obtenerPreguntas();
 				}
 			}, response => {
 				console.log(response)
@@ -28,7 +28,7 @@ var appVerLeccion = new Vue({
 				});
 				url = '/api/preguntas/';
 			});
-			
+
 		},
 		prueba: function(){
 			var self = this;

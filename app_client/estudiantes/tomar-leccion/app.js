@@ -31,6 +31,7 @@ var app = new Vue({
               load.setAttribute('class', 'enable')
               var a = document.getElementById('app')
               a.setAttribute('class', 'disabled')
+              esperando = true
               return
             } else {
               if (!res.codigoLeccion) {
@@ -61,6 +62,7 @@ var app = new Vue({
                 load.setAttribute('class', 'enable')
                 var a = document.getElementById('app')
                 a.setAttribute('class', 'disabled')
+                esperando = true
               }
               if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {
                 window.location.href = '/estudiantes/leccion'
@@ -78,9 +80,9 @@ var app = new Vue({
 })
 
 app.estado()
-
+var esperando = false
 socket.on('empezar leccion', function(data) {
-  if (data) {
+  if (data && esperando) {
     window.location.href = '/estudiantes/leccion'
   }
 })

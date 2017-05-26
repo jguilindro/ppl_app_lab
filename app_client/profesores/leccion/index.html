@@ -36,8 +36,8 @@
 			  					<td class="text-flow">{{leccion.nombreParalelo}}</td>
 			  					<td class="text-flow">{{date(leccion.fechaInicio)}}</td>
 			  					<td class="text-flow">{{leccion.estado}}</td>
-			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar 
-			  																		btn-small-new #0277bd light-blue darken-3"  
+			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar
+			  																		btn-small-new #0277bd light-blue darken-3"
 			  																		@click="tomarLeccion(leccion.paralelo, leccion._id)">
 			  															Tomar</a></td>
 			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" @click="calificarLeccion(leccion._id)">Calificar</a></td>
@@ -68,6 +68,8 @@
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/bower_components/moment/moment.js"></script>
+      <script src="/bower_components/moment/locale/es.js"></script>
+      <!-- <script src="/bower_components/lodash/dist/lodash.min.js"></script> -->
 			<script src="./verLeccionScript.js"></script>
 			<script src="/js/navbar.js"></script>
 		</footer>

@@ -1,6 +1,7 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
 const EstudianteModel = require('../models/estudiante.model');
+const CalificacionModel = require('../models/calificacion.model');
 var respuesta = require('../utils/responses');
 
 const obtenerTodasLecciones = (req, res) => {
@@ -125,12 +126,32 @@ const anadirTiempo = (req, res) => {
   })
 }
 
+const leccionYaCalificada = (req, res) => {
+  LeccionModel.obtenerLeccion(req.params.id_leccion, (err, leccion) => {
+    if (err) return respuesta.serverError(res);
+    if (leccion.estado == 'pendiente' || leccion.estado == 'tomando') {
+      return respuesta.ok(res, false);
+    }
+    CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, calificaciones) => {
+      if (err) return respuesta.serverError(res);
+      for (var i = 0; i < calificaciones.length; i++) {
+        if (!calificaciones[i].calificada && calificaciones[i].participantes.length != 0) {
+          return respuesta.ok(res, false);
+          break;
+        }
+      }
+      return respuesta.ok(res, true);
+    })
+  })
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
   obtenerLeccion,
   actualizarLeccion,
   eliminarLeccion,
+  leccionYaCalificada,
   // realtime
   tomarLeccion,
   anadirTiempo,

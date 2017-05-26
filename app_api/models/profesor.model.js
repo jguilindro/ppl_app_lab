@@ -19,7 +19,16 @@ const ProfesorSchema = mongoose.Schema({
   tipo: {
     type: String,
     enum: ['titular', 'peer']
-  }
+  },
+  nivelPeer: [{
+    paralelo: {
+      ref: 'Paralelo',
+      type: String
+    },
+    nivel: {
+      type: Number
+    }
+  }]
 },{timestamps: true, versionKey: false, collection: 'profesores'});
 
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {

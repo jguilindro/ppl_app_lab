@@ -111,8 +111,8 @@ const tomarLeccion = (req, res) => {
     } else {
       if (paralelo.dandoLeccion) {
         var leccion = yield obtenerLeccionPorCodigo(codigo_leccion)
-        if (!leccion) {
-          // Tiene grupo, el paralelo esta dando leccion, codigo leccion mal ingresado
+        if (!leccion || leccion._id != paralelo.leccion) {
+          // Tiene grupo, el paralelo esta dando leccion, codigo leccion mal ingresado y si el codigo es de otro curso
           respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: true, codigoLeccion: false, leccionYaComenzo: false})
           return
         } else {
