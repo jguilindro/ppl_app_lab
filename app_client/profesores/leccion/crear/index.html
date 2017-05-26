@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/bower_components/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css">
+    <link rel="stylesheet" href="/bower_components/pickadate/lib/themes/default.css">
     <link rel="stylesheet" type="text/css" href="./leccionStyle.css">
     <link rel="stylesheet" type="text/css" href="/css/navbar.css">
     <title>Nueva Leccion</title>
@@ -31,7 +32,7 @@
         <div id="test1" class="col s12">
           <div class="page">
             <div class="seccion-1 row container">
-             <h1 class="center-align flow-text">Crear una nueva leccion</h1>
+             <h1 class="center-align flow-text">Crear una nueva lección</h1>
               <form>
                 <div class="row">
                   <div class="input-field col s12">
@@ -62,7 +63,8 @@
               <div class="row">
                 <div class="input-field col s6">
                   <label for="fechaInicio" class="active">Fecha Inicio</label>
-                  <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
+                   <input id="datePicker" name="fecha">
+                  <!-- <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha"> -->
                 </div>
                 <div class="input-field col s6" id="tipoLeccion">
                   <label class="active">Tipo</label>
@@ -281,6 +283,9 @@
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/tooltipster/dist/js/tooltipster.bundle.min.js"></script>
+      <script src="/bower_components/moment/moment.js"></script>
+      <script src="/bower_components/pickadate/lib/picker.js"></script>
+      <script src="/bower_components/pickadate/lib/picker.date.js"></script>
       <script src="./app.leccion.js"></script>
       <script src="/js/summernote.js"></script>
     </footer>

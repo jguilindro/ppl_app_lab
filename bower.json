@@ -35,6 +35,7 @@
     "trumbowyg": "^2.5.1",
     "froala-wysiwyg-editor": "^2.6.0",
     "tooltipster": "^4.2.5",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "pickadate": "^3.5.6"
   }
 }

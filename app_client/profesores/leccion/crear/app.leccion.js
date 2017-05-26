@@ -574,3 +574,19 @@ function filtrarCapitulo3(capitulo){
 }
 // App.obtenerLogeado()
 App.filtrarCapitulos('estimacion|laboratorio')
+
+$('#datePicker').pickadate({
+  monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+  monthsShort: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+  weekdaysFull: ['Domingo','Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+  weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+  today: 'Hoy',
+  clear: 'Limpiar',
+  close: 'Cerrar',
+  closeOnSelect: true,
+  format: 'yyyy-mm-dd',
+  min: new Date(),
+  onClose: function(data) {
+    App.leccion_nueva.fechaInicio = moment(this.get('value')).add(1, 'day').format('YYYY-MM-DD')
+  }
+})
