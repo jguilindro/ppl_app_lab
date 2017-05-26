@@ -38,17 +38,26 @@
                     <label for="nombre">Nombre</label>
                     <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
                   </div>
-                  <div class="input-field col s6" id="materias">
+                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'peer'">
                     <select id="subject">
                       <option value="#" selected disabled>Escoger Materia...</option>
                       <option value="FISG1002">Física 2</option>
                       <option value="FISG1003">Física 3</option>
-                    </select>                  
+                    </select>
                     <label>Materia</label>
                   </div>
-                  <div class="input-field col s6" id="div-select">                  
+                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'peer'">
                     <label class="active">Paralelo:</label>
                   </div>
+
+                  <!-- profesor -->
+                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
+                    <label>Materia: </label> <br> <p>{{leccion_nueva.nombreMateria}}</p>
+                  </div>
+                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
+                    <label>Paralelo: </label><br> <p>{{paraleloEscogido.nombre}}</p>
+                  </div>
+
                 </div>
               <div class="row">
                 <div class="input-field col s6">
@@ -57,16 +66,30 @@
                 </div>
                 <div class="input-field col s6" id="tipoLeccion">
                   <label class="active">Tipo</label>
-                  <select id="select-tipo-leccion">
+                  <!-- <select id="select-tipo-leccion">
                     <option value="" disabled selected></option>
                     <option value="estimacion|laboratorio">Estimación|Laboratorio</option>
                     <option value="tutorial">Tutorial</option>
-                  </select>
+                  </select> -->
+                  <form action="#">
+                    <p>
+                      <input name="group1" v-model="tipoEscogido" type="radio" id="tests1" disabled="true"/>
+                      <!-- <label for="test1">Red</label> -->
+                    </p>
+                    <p>
+                      <input value="estimacion|laboratorio" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado1" checked/>
+                      <label for="seleccionado1">Estimación|Laboratorio</label>
+                    </p>
+                    <p>
+                      <input value="tutorial" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado2"  />
+                      <label for="seleccionado2">Tutorial</label>
+                    </p>
+                  </form>
                 </div>
               </div>
               </form>
               <div class="row">
-                
+
                 <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn ">siguiente</button>
               </div>
             </div>
@@ -145,7 +168,7 @@
                           </div>
                             </div>
                         </li>
-<!-- 
+<!--
                         <li v-for="pregunta in capitulo.preguntas" class="question">
                           <div v-bind:id="'tooltip-' + pregunta._id"
                                v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
