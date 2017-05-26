@@ -102,35 +102,40 @@ var App = new Vue({
       var  fInicio = self.leccion_nueva.fechaInicio;
       var pEscogido = self.leccion_nueva.paralelo;
       var materia = self.leccion_nueva.nombreMateria;
-      console.log(materia);
+      var error = false;
+      $("#lblNombre").removeClass("#ffebee red lighten-5");
+      $("#tipoLeccion").removeClass("#ffebee red lighten-5");
+      $("lblNombre").removeClass("#ffebee red lighten-5");
+      $("#datePicker").removeClass("#ffebee red lighten-5");
+      $("#materias").removeClass("#ffebee red lighten-5");
+      $("#div-select").removeClass("#ffebee red lighten-5");
       
       if (nombre == ""){
         $("#lblNombre").addClass("#ffebee red lighten-5");
-        return true;
+        error = true;
       }
       if (tEst == 0){
        
-        return true;
+        error = true;
       }
       if (tipo == ""){
-        $("#select-tipo-leccion").addClass("#ffebee red lighten-5");
-        return true;
+        $("#tipoLeccion").addClass("#ffebee red lighten-5");
+        error = true;
       }
       if (fInicio == ""){
         $("#datePicker").addClass("#ffebee red lighten-5");
-        return true;
+        error = true;
       }
       if (materia == ""){
         $("#materias").addClass("#ffebee red lighten-5");
-        console.log("hola mundo");
-        return true;
+        error = true;
       }
       if (pEscogido == ""){
         $("#div-select").addClass("#ffebee red lighten-5");
-        return true;
+        error = true;
       }
       
-      return false;
+      return error;
       
     },
     showTooltip: function(preguntaID, descripcion, tiempo){
