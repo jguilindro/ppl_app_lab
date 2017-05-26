@@ -41,7 +41,11 @@ const PreguntaSchema = mongoose.Schema({
   },
   puntaje: {
     type: Number
-  }
+  },
+  leccionesUsada: [{
+    ref: 'Leccion',
+    type: String
+  }]
 },{timestamps: true, versionKey: false, collection: 'preguntas'});
 
 //CRUD
@@ -68,6 +72,10 @@ PreguntaSchema.statics.eliminarPregunta = function(id_pregunta, callback) {
 //METODOS APARTE
 PreguntaSchema.statics.obtenerPreguntasPorCreador = function(id_creador, callback) {
   this.find({creador: id_creador}, callback);
+}
+
+PreguntaSchema.statics.anadirUsadaEnLeccion = function(id_pregunta,id_leccion, callback) {
+  this.update({_id: id_pregunta}, {$addToSet: {leccionesUsada: id_leccion}}, callback);
 }
 
 
