@@ -4,16 +4,13 @@
     <title>Estudiante</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/bower_components/font-awesome/css/font-awesome.min.css">
-    <!--<link rel="stylesheet" type="text/css" href="/materialnote/css/materialNote.css">-->
-    <link rel="stylesheet" type="text/css" href="/css/estudiantesbackground.css">
-    <link rel="stylesheet" type="text/css" href="./estudianteLeccionStyles.css">
+    <link rel="stylesheet" href="/bower_components/materialize/bin/materialize.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/bower_components/offline/themes/offline-language-spanish-indicator.css">
-    <!-- <link rel="stylesheet" href="/css/offline-theme-dark-indicator.css"> -->
-    <!-- <link rel="stylesheet" href="/css/offline-theme-dark.css"> -->
-      <link rel="stylesheet" href="/css/offline-theme-slide.css">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/estudiantesbackground.css">
+    <link rel="stylesheet" href="./estudianteLeccionStyles.css">
+    <link rel="stylesheet" href="/css/offline-theme-slide.css">
   </head>
   <body id="grad">
     <header>
@@ -63,7 +60,7 @@
                 <section id="area-respuesta" class="col s12">
                   <div class="row" id="row-area-respuesta">
                     <textarea v-bind:id="'textarea-' + pregunta._id" class="materialize-textarea">
-                      
+
                     </textarea>
                     <label>Respuesta</label>
                     <!--<div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
@@ -118,11 +115,8 @@
       <script src="/bower_components/offline/offline.min.js"></script>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>
-      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-      <!--<script src="/materialnote/js/ckMaterializeOverrides.js"></script>
-      <script src="/materialnote/js/materialNote.js"></script>-->
       <script src="./app.leccion.js"></script>
     </footer>
   </body>

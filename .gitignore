@@ -5,3 +5,4 @@ app_api/ws/update/*.json
 scripts/tmp
 .idea/
 .env
+*.png
