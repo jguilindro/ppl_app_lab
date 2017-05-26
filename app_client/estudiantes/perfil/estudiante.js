@@ -26,12 +26,6 @@ var app = new Vue({
           }
         }
       })
-      // this.$http.get('/api/session/usuario_conectado').then(res => {
-      //     if (res.body.estado) {
-      //       self.estudiante = res.body.datos;
-      //       self.presentarLecciones();
-      //     }
-      //   });
     },
     presentarLecciones: function(){
       var self = this;
