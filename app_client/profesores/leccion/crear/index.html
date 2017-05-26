@@ -36,7 +36,7 @@
                 <div class="row">
                   <div class="input-field col s12">
                     <label for="nombre">Nombre</label>
-                    <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" placeholder="nombre de leccion">
+                    <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
                   </div>
                   <div class="input-field col s6" id="materias">
                     <select id="subject">
@@ -230,6 +230,15 @@
           </div>
           <div class="modal-footer">
             <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+          </div>
+        </div>
+        <!-- Modal validacion -->
+        <div id="modalVal" class="modal">
+          <div class="modal-content">
+            <p class="center-align">Ha olvidado llenar un campo</p>
+          </div>
+          <div class="modal-footer">
+            <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
           </div>
         </div>
       </div>

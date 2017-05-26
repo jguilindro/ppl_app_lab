@@ -1,6 +1,7 @@
 var App = new Vue({
   mounted: function(){
     //Materialize initializers
+    $('ul.tabs').tabs();
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
@@ -93,6 +94,45 @@ var App = new Vue({
         });
       });
     },
+    validarCamposVacios: function(){
+      var self = this;
+      var  nombre = self.leccion_nueva.nombre;
+      var  tEst = self.leccion_nueva.tiempoEstimado;
+      var  tipo = self.leccion_nueva.tipo;
+      var  fInicio = self.leccion_nueva.fechaInicio;
+      var pEscogido = self.leccion_nueva.paralelo;
+      var materia = self.leccion_nueva.nombreMateria;
+      console.log(materia);
+      
+      if (nombre == ""){
+        $("#lblNombre").addClass("#ffebee red lighten-5");
+        return true;
+      }
+      if (tEst == 0){
+       
+        return true;
+      }
+      if (tipo == ""){
+        $("#select-tipo-leccion").addClass("#ffebee red lighten-5");
+        return true;
+      }
+      if (fInicio == ""){
+        $("#datePicker").addClass("#ffebee red lighten-5");
+        return true;
+      }
+      if (materia == ""){
+        $("#materias").addClass("#ffebee red lighten-5");
+        console.log("hola mundo");
+        return true;
+      }
+      if (pEscogido == ""){
+        $("#div-select").addClass("#ffebee red lighten-5");
+        return true;
+      }
+      
+      return false;
+      
+    },
     showTooltip: function(preguntaID, descripcion, tiempo){
         var tooltipID = "#tooltip-" + preguntaID;
         var max_width = ( 50 * $( window ).width() )/100;
@@ -118,7 +158,11 @@ var App = new Vue({
       var self = this;
       self.leccion_nueva.paralelo = self.paraleloEscogido.id;
       self.leccion_nueva.tipo = self.tipoEscogido;
-      this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
+      if ( self.validarCamposVacios() ){
+        //$('#modalVal').modal('open');
+        $('ul.tabs').tabs('select_tab', 'test1');
+      }else{
+        this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
         //success callback
         $('#myModal').modal('open');
         console.log(response)
@@ -140,7 +184,9 @@ var App = new Vue({
         //error callback
         alert("ALGO SALIÓ MAL!" + response);
         console.log(response)
-      });
+        });
+      }
+      
     },
     obtenerCapitulos: function(){
       var self = this;
