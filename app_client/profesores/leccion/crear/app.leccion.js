@@ -94,6 +94,14 @@ var App = new Vue({
         });
       });
     },
+    /*
+    *Cuando se da click al boton que invoca al metodo, se selecciona una pestaña
+    *pestaniasgt: Id de la pestaña a la que desea dirigirse
+    */
+    avanzarPestania: function(pestaniasgt){
+      var pestania = pestaniasgt;
+      $('ul.tabs').tabs('select_tab', pestania);
+    },
     validarCamposVacios: function(){
       var self = this;
       var  nombre = self.leccion_nueva.nombre;
@@ -113,10 +121,7 @@ var App = new Vue({
       if (nombre == ""){
         $("#lblNombre").addClass("#ffebee red lighten-5");
         error = true;
-      }
-      if (tEst == 0){
-       
-        error = true;
+
       }
       if (tipo == ""){
         $("#tipoLeccion").addClass("#ffebee red lighten-5");
@@ -135,7 +140,14 @@ var App = new Vue({
         error = true;
       }
       
-      return error;
+      if(error){
+        //$('#modalVal').modal('open');        DESCOMENTAR ESTA LINEA, XAVIER!
+        
+      }else{
+        self.avanzarPestania("test2");
+        
+      }
+
       
     },
     showTooltip: function(preguntaID, descripcion, tiempo){
@@ -163,34 +175,31 @@ var App = new Vue({
       var self = this;
       self.leccion_nueva.paralelo = self.paraleloEscogido.id;
       self.leccion_nueva.tipo = self.tipoEscogido;
-      if ( self.validarCamposVacios() ){
-        //$('#modalVal').modal('open');
-        $('ul.tabs').tabs('select_tab', 'test1');
-      }else{
-        this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-        //success callback
-        $('#myModal').modal('open');
-        console.log(response)
-        self.crearRegistroCalificacion(response.body.datos._id)
-        /**
-        *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
-        *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
-        **/
-        $("body").click(function(){
-          window.location.replace("/profesores/leccion");
-        });
-        $(document).keyup(function(e) {
-             if (e.keyCode == 27) { // escape key maps to keycode `27`
-                window.location.replace("/profesores/leccion");
-            }
-        });
-        //-------Fin de cerrar Modal-------------
-        }, response => {
-        //error callback
-        alert("ALGO SALIÓ MAL!" + response);
-        console.log(response)
-        });
-      }
+      
+      this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
+      //success callback
+      $('#myModal').modal('open');
+      console.log(response)
+      self.crearRegistroCalificacion(response.body.datos._id)
+      /**
+      *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
+      *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
+      **/
+      $("body").click(function(){
+        window.location.replace("/profesores/leccion");
+      });
+      $(document).keyup(function(e) {
+           if (e.keyCode == 27) { // escape key maps to keycode `27`
+              window.location.replace("/profesores/leccion");
+          }
+      });
+      //-------Fin de cerrar Modal-------------
+      }, response => {
+      //error callback
+      alert("ALGO SALIÓ MAL!" + response);
+      console.log(response)
+      });
+    
       
     },
     obtenerCapitulos: function(){
