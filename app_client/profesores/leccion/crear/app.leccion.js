@@ -1,6 +1,7 @@
 var App = new Vue({
   mounted: function(){
     //Materialize initializers
+    $('ul.tabs').tabs();
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
@@ -93,6 +94,62 @@ var App = new Vue({
         });
       });
     },
+    /*
+    *Cuando se da click al boton que invoca al metodo, se selecciona una pestaña
+    *pestaniasgt: Id de la pestaña a la que desea dirigirse
+    */
+    avanzarPestania: function(pestaniasgt){
+      var pestania = pestaniasgt;
+      $('ul.tabs').tabs('select_tab', pestania);
+    },
+    validarCamposVacios: function(){
+      var self = this;
+      var  nombre = self.leccion_nueva.nombre;
+      var  tEst = self.leccion_nueva.tiempoEstimado;
+      var  tipo = self.leccion_nueva.tipo;
+      var  fInicio = self.leccion_nueva.fechaInicio;
+      var pEscogido = self.leccion_nueva.paralelo;
+      var materia = self.leccion_nueva.nombreMateria;
+      var error = false;
+      $("#lblNombre").removeClass("#ffebee red lighten-5");
+      $("#tipoLeccion").removeClass("#ffebee red lighten-5");
+      $("lblNombre").removeClass("#ffebee red lighten-5");
+      $("#datePicker").removeClass("#ffebee red lighten-5");
+      $("#materias").removeClass("#ffebee red lighten-5");
+      $("#div-select").removeClass("#ffebee red lighten-5");
+      
+      if (nombre == ""){
+        $("#lblNombre").addClass("#ffebee red lighten-5");
+        error = true;
+
+      }
+      if (tipo == ""){
+        $("#tipoLeccion").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      if (fInicio == ""){
+        $("#datePicker").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      if (materia == ""){
+        $("#materias").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      if (pEscogido == ""){
+        $("#div-select").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      
+      if(error){
+        //$('#modalVal').modal('open');        DESCOMENTAR ESTA LINEA, XAVIER!
+        
+      }else{
+        self.avanzarPestania("test2");
+        
+      }
+
+      
+    },
     showTooltip: function(preguntaID, descripcion, tiempo){
         var tooltipID = "#tooltip-" + preguntaID;
         var max_width = ( 50 * $( window ).width() )/100;
@@ -118,29 +175,32 @@ var App = new Vue({
       var self = this;
       self.leccion_nueva.paralelo = self.paraleloEscogido.id;
       self.leccion_nueva.tipo = self.tipoEscogido;
+      
       this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-        //success callback
-        $('#myModal').modal('open');
-        console.log(response)
-        self.crearRegistroCalificacion(response.body.datos._id)
-        /**
-        *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
-        *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
-        **/
-        $("body").click(function(){
-          window.location.replace("/profesores/leccion");
-        });
-        $(document).keyup(function(e) {
-             if (e.keyCode == 27) { // escape key maps to keycode `27`
-                window.location.replace("/profesores/leccion");
-            }
-        });
-        //-------Fin de cerrar Modal-------------
-        }, response => {
-        //error callback
-        alert("ALGO SALIÓ MAL!" + response);
-        console.log(response)
+      //success callback
+      $('#myModal').modal('open');
+      console.log(response)
+      self.crearRegistroCalificacion(response.body.datos._id)
+      /**
+      *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
+      *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
+      **/
+      $("body").click(function(){
+        window.location.replace("/profesores/leccion");
       });
+      $(document).keyup(function(e) {
+           if (e.keyCode == 27) { // escape key maps to keycode `27`
+              window.location.replace("/profesores/leccion");
+          }
+      });
+      //-------Fin de cerrar Modal-------------
+      }, response => {
+      //error callback
+      alert("ALGO SALIÓ MAL!" + response);
+      console.log(response)
+      });
+    
+      
     },
     obtenerCapitulos: function(){
       var self = this;
