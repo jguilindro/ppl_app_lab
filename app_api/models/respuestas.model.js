@@ -61,6 +61,10 @@ respuestasSchema.statics.obtenerRespuestaDeEstudiante = function(id_leccion, id_
   this.findOne({$and: [{leccion:id_leccion}, {pregunta:id_pregunta}, {estudiante:id_estudiante}]}, callback);
 }
 
+respuestasSchema.statics.obtenerRespuestasDeEstudiante = function(id_leccion, id_estudiante, callback){
+  this.find({$and: [{leccion:id_leccion}, {estudiante:id_estudiante}]}, callback);
+}
+
 respuestasSchema.statics.actualizarRespuesta = function(id_respuesta, actualizar, callback){
   this.update({_id:id_respuesta}, {$set : {respuesta: actualizar}}, callback);
 }

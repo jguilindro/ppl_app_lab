@@ -1,184 +1,58 @@
 var App = new Vue({
-  el: '#app',
-  created: function(){
-    this.obtenerLogeado();
-  },
   mounted: function(){
     //Inicializaciones de Materializecss
     $('ul.tabs').tabs();
     $('.modal').modal();
     $('.tooltipped').tooltip({delay: 50});
-    $.get({
-      url: '/api/session/usuario_conectado',
-      success: function(data) {
-        App.idLeccion = data.datos.leccion;
-        //App.obtenerLeccion(App.idLeccion);
-        socket.emit('usuario', data.datos);
-      }
-    })
   },
+  el: '#app',
   methods: {
-    //Funciones iniciales
     obtenerLogeado: function() {
-      /*
-        Función inicial, para obtener los datos del estudiante conectado a la aplicación.
-      */
-      var self = this;
-      $.get({
-        url: '/api/session/usuario_conectado',
-        success: function(res){
+      var self = this
+      $.when($.get({
+        url: '/api/estudiantes/leccion/datos_leccion',
+        success: function(res) {
           if (res.estado) {
-            self.estudiante = res.datos;
-            self.obtenerLeccion(self.estudiante.leccion);
-            //self.obtenerGrupoDeEstudiante();
-            self.obtenerParaleloDeEstudiante();
+            self.estudiante = res.datos.estudiante;
+            self.idLeccion = res.datos.estudiante.leccion;
+            self.leccion = res.datos.leccion;
+            var tmp =  res.datos.leccion.preguntas.slice();
+            for (var i = 0; i < res.datos.leccion.preguntas.length; i++) {
+              self.preguntas.push(tmp[i].pregunta)
+            }
+            self.respuestas = res.datos.respuestas
+            if (res.datos.respuestas) {
+              for (var j = 0; j < self.preguntas.length; j++) {
+                for (var i = 0; i < res.datos.respuestas.length; i++) {
+                  if (self.preguntas[j]._id ===  res.datos.respuestas[i].pregunta) {
+                    self.preguntas[j].respuesta = res.datos.respuestas[i].respuesta;
+                    self.preguntas[j].respondida = true;
+                    var idTextarea = '#textarea-' + res.datos.respuestas[i].pregunta;
+                    $(idTextarea).val(res.datos.respuestas[i].respuesta);
+                    break;
+                  }
+                  if ( (i + 1) == res.datos.respuestas.length) {
+                    self.preguntas[j].respuesta = '';
+                    self.preguntas[j].respondida = false;
+                  }
+                }
+              }
+            }
+            self.estudiante.paralelo = res.datos.paralelo._id;
+            if (!res.datos.paralelo.dandoLeccion) {
+              window.location.href = '/estudiantes'
+            }
+            socket.emit('usuario', res.datos.estudiante);
           }
         }
+      })).then(function() {
+        self.anadirRespuestas()
       })
     },
-    obtenerGrupoDeEstudiante: function(){
-      /*
-        Función para obtener el grupo al cual el estudiante conectado pertenece. Guardo la info en estudiante.grupo
-      */
-      var self = this;
-      var urlApi = '/api/grupos/estudiante/' + self.estudiante._id;
-      $.get({
-        url: urlApi,
-        success: function(response){
-          self.estudiante.grupo = response.datos._id;
-        }
-      });
-    },
-    obtenerParaleloDeEstudiante: function(){
-      var self = this;
-      var url = '/api/paralelos/estudiante/' + this.estudiante._id;
-      $.ajax({
-        url: url,
-        method: 'GET',
-        success: function(response) {
-          self.estudiante.paralelo = response.datos._id;
-          if (!response.datos.dandoLeccion) {
-            window.location.href = '/estudiantes'
-          }
-        },
-        error: function(response) {
-
-        }
-      })
-    },
-    obtenerLeccion: function(leccionId){
-      /*
-        @Parámetros:
-          * leccionId  => id de la lección que se está tomando.
-        @Descripción: Esta función obtiene toda la información sobre la lección que se está tomando.
-        @Autor: @edisonmora95
-        @ÚltimaModificación: 24-05-2017 @edisonmora95
-      */
-      //console.log('Entrando a la funcion obtenerLeccion')
-      var self = this;
-      var url = '/api/lecciones/' + leccionId;
-      $.ajax({
-        url: url,
-        method: 'GET',
-        success: function(response) {
-          self.leccion = response.datos;
-          self.anadirParticipanteARegistro();
-          self.obtenerPreguntas(leccionId);
-          /*$.when($.ajax(self.obtenerPreguntas(leccionId))).then(function(){
-
-            $.when($.ajax(self.crearEditor())).then(function(){
-              $.each(self.preguntas, function(index, pregunta){
-                self.verirficarRespuestaEnBase(pregunta);
-              });
-            });
-          });*/
-        },
-        error: function(response) {
-          console.log('ERROR');
-        }
-      });
-
-    },
-    anadirParticipanteARegistro: function(){
-      /*
-        @Descripción: Esta función añade el registro de que el estudiante tomó la lección al registro de Calificaciones.
-        @Autor: @edisonmora95
-        @ÚltimaModificación: 21-05-2017 @edisonmora95
-      */
-      var self = this;
-      $.when($.ajax(self.obtenerGrupoDeEstudiante())).then(function(){
-        var urlRegistro = '/api/calificaciones/' + self.leccion._id + '/' + self.estudiante.grupo;
-        var estudiante = {estudiante: self.estudiante._id};  //Id del estudiante que se enviará. Consultar api
-        $.ajax({
-          url: urlRegistro,
-          type: 'PUT',
-          data: estudiante,
-          success: function(response) {
-          }
-        });
-      });
-    },
-    obtenerPreguntas: function(leccionId){
-      /*
-        @Descripción: Esta función obtiene la información completa de cada pregunta de la lección
-        @ÚltimaModificacion: 24-05-2017
-      */
-      //console.log('Entrando a la funcion obtenerPreguntas')
-      var self = this;
-      //console.log('Las preguntas de la leccion son ')
-      //console.log(self.leccion.preguntas)
-      var idPregunta = '';
-      var apiPreguntasUrl = '/api/preguntas/';
-      //Recorro el array de ids de preguntas de leccion.preguntas
-      $.each(self.leccion.preguntas, function(index, pregunta){
-        idPregunta = pregunta.pregunta;
-        apiPreguntasUrl = apiPreguntasUrl + idPregunta; //Armo la url de la api
-        $.ajax({
-          url: apiPreguntasUrl,
-          methods: 'GET',
-          success: function(response) {
-            //Una vez obtenida la información, se crea el objeto pregunta que se mostrará al estudiante.
-            //var pregunta = self.crearPregunta(response);
-            var pregunta = response.datos;
-            self.verirficarRespuestaEnBase(pregunta);
-            //pregunta.respuesta = '';
-            //pregunta.respondida = false;
-            self.preguntas.push(pregunta);
-          },
-          error: function(response) {
-            consle.log('ERROR');
-            console.log(response);
-          }
-        });
-        apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
-      });
-    },
-    verirficarRespuestaEnBase: function(pregunta){
-      /*
-        @ÚltimaModficación: 24-05-2017
-      */
-      var self = this;
-      var url = '/api/respuestas/buscar/leccion/' + self.leccion._id + '/pregunta/' + pregunta._id + '/estudiante/' + self.estudiante._id;
-      $.ajax({
-        url: url,
-        method: 'GET',
-        success: function(response) {
-          if(response.datos != null) {          //Si la respuesta existe. Entonces la pregunta se marca como respondida
-            pregunta.respuesta = response.datos.respuesta;
-            //var idEditor = '#editor-' + pregunta._id;
-            //$(idEditor).code(response.datos.respuesta); //Inserto la respuesta en el editor de texto.
-            var idTextarea = '#textarea-' + pregunta._id;
-            var respuestaTextarea = $(idTextarea).val(response.datos.respuesta);
-            pregunta.respondida = true;
-          }else{                                    //Si la respuesta no existe entonces la pregunta se marca como no respondida
-            pregunta.respuesta = '';
-            pregunta.respondida = false;
-          }
-        },
-        error: function() {
-          pregunta.respuesta = '';
-          pregunta.respondida = false;
-        }
+    anadirRespuestas: function() {
+      this.respuestas.forEach(res => {
+        var idTextarea = '#textarea-' + res.pregunta;
+        $(idTextarea).val(res.respuesta);
       })
     },
     crearPregunta: function(res){
@@ -477,6 +351,8 @@ var App = new Vue({
   }
 });
 
+App.obtenerLogeado()
+
 var socket = io('/tomando_leccion', {
   reconnect: true,
   'connect timeout': 1000,
@@ -500,16 +376,6 @@ socket.on('desconectarlo', function(dato) {
   Materialize.toast('hubo un error llamar', 15000)
 })
 
-/*
-$('body').on('click','img',function(){
-  App.mostrarModal($(this).attr('src'));
-})
-*/
-// socket.on('pregunta actual', function(pregunta) {
-//   console.log(pregunta);
-// })
-
-
 Offline.options = {
   checkOnLoad: true,
   requests: true,
@@ -526,13 +392,6 @@ Offline.on('up', function(data) {
   // socket.emit('tengo internet', App.estudiante);
 })
 
-socket.on('connect', function() {
-  console.log('conectado');
-  // pedir tiempo
-})
-
-socket.on('tu tiempo', function(tiempo) {
-})
 var interval;
 socket.on('connect', function() {
   // interval = setInterval(function () {
@@ -540,10 +399,9 @@ socket.on('connect', function() {
   // }, 5000);
   // document.getElementById('desconectado').classList.add("borrar");
   // document.getElementById('conectado').classList.remove("borrar");
-  App.obtenerParaleloDeEstudiante()
+  // App.obtenerParaleloDeEstudiante()
   document.getElementById('conectado').classList.remove("red");
   document.getElementById('conectado').classList.add("green");
-
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {

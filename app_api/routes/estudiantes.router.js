@@ -8,4 +8,5 @@ router.get('/:id_estudiante',authApi.estudiante, EstudiantesController.obtenerEs
 router.post('/', authApi.profesor, EstudiantesController.crearEstudiante);
 router.put('/calificar/leccion/:id_leccion/estudiante/:id_estudiante', authApi.profesor, EstudiantesController.calificarLeccion)
 router.get('/tomar_leccion/:codigo_leccion', authApi.estudiante, EstudiantesController.tomarLeccion)
+router.get('/leccion/datos_leccion', authApi.estudiante,EstudiantesController.leccionDatos)
 module.exports = router;

@@ -2,6 +2,9 @@ const EstudianteModel = require('../models/estudiante.model');
 const ParaleloModel = require('../models/paralelo.model');
 const LeccionModel = require('../models/leccion.model');
 const GrupoModel = require('../models/grupo.model');
+const PreguntaModel = require('../models/pregunta.model');
+const RespuestaModel = require('../models/respuestas.model');
+const CalificacionModel = require('../models/calificacion.model')
 const co = require('co')
 
 var respuesta = require('../utils/responses');
@@ -155,6 +158,78 @@ const calificarLeccion = (req, res) => {
   })
 }
 
+const leccionDatos = (req, res) => {
+  function buscarEstudiante(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      // obtendo datos estudiante
+      EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
+        if (err) return reject(new Error('No se pudo obtener estudiante'))
+        return resolve(est)
+      })
+    })
+  }
+
+  function buscarGrupo(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      // obtengo el grupo del estudiante
+      GrupoModel.obtenerGrupoDeEstudiante(id_estudiante, (err, grupo) => {
+        if (err) return reject(new Error('No se pudo obtener grupo estudiante'))
+        return resolve(grupo)
+      })
+    })
+  }
+
+  function buscarParalelo(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      // obtener el pralelo del estudiante
+      ParaleloModel.obtenerParaleloDeEstudiante(id_estudiante, (err, paralelo) => {
+        if (err) return reject(new Error('No se puedo obtener grupo estudiante'))
+        return resolve(paralelo)
+      })
+    })
+  }
+
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      // obtengo la leccion con las preguntas
+      LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'))
+        return resolve(leccion)
+      })
+    })
+  }
+
+  function obtenerRespuestas(id_leccion, id_estudiante) {
+    return new Promise((resolve, reject) => {
+      RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'))
+        return resolve(respues)
+      })
+    })
+  }
+
+  function anadirParticipanteARegistro(id_leccion,id_grupo, id_estudiante) {
+    return new Promise((resolve, reject) => {
+      CalificacionModel.anadirParticipante(id_leccion,id_grupo, id_estudiante, (err, doc) => {
+    		if(err) return reject(new Error('Error al anadir participante'));
+    		return resolve(true)
+    	});
+    })
+  }
+
+  co(function* () {
+    var id_estudiante = req.session._id
+    var estudiante = yield buscarEstudiante(id_estudiante)
+    var grupo = yield buscarGrupo(id_estudiante)
+    var paralelo = yield buscarParalelo(id_estudiante)
+    var leccion = yield obtenerLeccion(estudiante.leccion)
+    var respuestas = yield obtenerRespuestas(estudiante.leccion, id_estudiante)
+    var anadido = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante)
+    respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, anadidoARegisto: anadido})
+  })
+
+}
+
 module.exports = {
 	obtenerTodosEstudiantes,
 	crearEstudiante,
@@ -162,5 +237,6 @@ module.exports = {
   // leccion
   verificarPuedeDarLeccion,
   calificarLeccion,
-  tomarLeccion
+  tomarLeccion,
+  leccionDatos
 }
