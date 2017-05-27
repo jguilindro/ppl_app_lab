@@ -156,6 +156,11 @@ var App = new Vue({
 
 			var calificacionPreguntaPonderada = ( (calificacionPregunta * puntajePregunta) / 2 );
 
+			if (calificacionPregunta > 2) {
+				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
+				return false;
+			}
+
 			$.ajax({
 				method: 'PUT',
 				url: urlApi,
@@ -175,7 +180,7 @@ var App = new Vue({
 			var self = this;
 			self.calificacionTotal = 0;
 			$.each(self.preguntas, function(index, pregunta){
-				console.log(pregunta.respuesta.calificacion)
+				//console.log(pregunta.respuesta.calificacion)
 				self.calificacionTotal += parseInt(pregunta.respuesta.calificacion);
 			});
 			self.ponderarCalificacionLeccion();
