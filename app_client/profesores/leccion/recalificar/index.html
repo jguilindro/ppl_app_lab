@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Calificar Lección</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./recalificarStyles.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+  </head>
+  <body>
+    <header id="#navbar"></header>
+    <div id="app" class="row">
+      <h2 class="center-align title">Calificar Lección</h2>
+      <div class="form-group col s12 center-align">
+        <h5 class="title">Estudiante:</h5><h6>{{estudiante.nombres+' '+estudiante.apellidos}} ({{estudiante.correo}})</h6>
+        <h3 class="center-align title">{{leccion.nombre}}</h3>
+      </div>
+      <div class="form-group col s12">
+        <section v-for="(pregunta, index) in preguntas" class="section-pregunta">
+          <h4 class="center-align">Pregunta #{{index+1}}</h4>
+      		<div class="row row-pregunta">
+    		    <div class="col s12 col-pregunta">
+    		      <label for="nombre">Nombre de la Pregunta</label>
+              <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
+    		      <label for="descripcion">Descripción</label>
+    		      <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
+            </div>
+          </div>
+          <div class="row row-res-cal">
+            <div class="col s7 col-respuesta">
+              <label for="respuesta">Respuesta del Estudiante</label>
+              <!--<p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p> -->
+              <p>{{pregunta.respuesta.respuesta}}</p>
+            </div>
+            <div class="col s5 col-calificacion">
+              <label for="calificacion">Calificación</label>
+              <input type="number" name="calificacion" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id" v-model="pregunta.respuesta.calificacion">
+              <label for="feedback">Feedback</label>
+              <textarea v-model="pregunta.respuesta.feedback" class="materialize-textarea" name="feedback"></textarea>
+              <button class="waves-effect waves-light btn pull right" @click="recalificar(pregunta)" v-bind:id="'btn-' + pregunta._id">Calificar</button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <h5 class="center-align">Calificación total: {{calificacionTotal}}</h5>
+          <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}</h5>
+        </div>
+        <div class="col s12" id="col-btn">
+          <button class="waves-effect waves-light btn pull right" @click="enviarCalificacion">Aceptar</button>
+          <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
+        </div>
+      </div>
+      <!-- Modal Structure -->
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <p class="center-align">Lección calificada correctamente</p>
+        </div>
+        <div class="modal-footer">
+          <a  @click="regresar" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+        </div>
+      </div>
+      <!-- Modal Structure -->
+      <div id="modalErrorLeccion" class="modal">
+        <div class="modal-content">
+          <p class="center-align">Ocurrió un error al tratar de enviar la calificación total de la lección</p>
+          <p class="center-align">Intente nuevamente.</p>
+        </div>
+        <div class="modal-footer">
+          <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+        </div>
+      </div>
+      <!-- Modal Structure -->
+      <div id="modalErrorCalificar" class="modal">
+        <div class="modal-content">
+          <p class="center-align">Ocurrió un error al enviar la calificación de esta pregunta.</p>
+          <p class="center-align">Intente nuevamente.</p>
+        </div>
+        <div class="modal-footer">
+          <a class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+      <script src="/bower_components/vue/dist/vue.min.js"></script>
+      <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+      <script src="/bower_components/materialize/bin/materialize.js"></script>
+      <script src="/js/navbar.js"></script>
+      <script src="./recalificarScript.js"></script>
+    </footer>
+  </body>
+</html>

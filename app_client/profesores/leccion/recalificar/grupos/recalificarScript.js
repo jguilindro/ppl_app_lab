@@ -108,10 +108,11 @@ var appRecalificar = new Vue({
     	this.estudianteEscogido = estudiante;
     	console.log(this.estudianteEscogido);
     },
-    calificarRedireccion: function(){
-			if (self.estudianteEscogidoId){
+    recalificarRedireccion: function(){
+      var self = this;
+			if (self.estudianteEscogido){
 		  	var leccionId = window.location.href.toString().split('/')[7];
-		  	//window.location.href = '/profesores/leccion/calificar/'+leccionId+'/'+app.estudianteEscogidoId+'/'+app.grupoSeleccionado.grupo;
+		  	window.location.href = '/profesores/leccion/recalificar/'+leccionId+'/'+ self.estudianteEscogido._id + '/' + self.grupoSeleccionado.grupo;
 			}
 		}
 	}
