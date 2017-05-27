@@ -154,6 +154,7 @@ app.use('/profesores/leccion/calificar', authProfesor, procesarSession, middlePr
 
 app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
 
+app.use('/profesores/leccion/recalificar/grupos/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar/grupos')));
 /*
  Estudiantes
  */
