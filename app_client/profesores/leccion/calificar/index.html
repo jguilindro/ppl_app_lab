@@ -28,6 +28,7 @@
               <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
     		      <label for="descripcion">Descripción</label>
     		      <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
+              <p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>
             </div>
           </div>
           <div class="row">

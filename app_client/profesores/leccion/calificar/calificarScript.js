@@ -65,6 +65,9 @@ var App = new Vue({
 				});
 				self.getRespuesta(preguntaId);
 			});
+			self.preguntas.sort(function(p1, p2){
+				return ( (p1.ordenPregunta < p2.ordenPregunta) ? -1 : ( (p1.ordenPregunta > p2.ordenPregunta) ? 1 : 0) );
+			});
 		},
 		getRespuesta: function(preguntaId){
 			//Obtiene la respuesta del estudiante a cada pregunta
@@ -72,7 +75,7 @@ var App = new Vue({
 			var leccionId = window.location.href.toString().split('/')[6];
 			var estudianteId = window.location.href.toString().split('/')[7];
 			var obtenerRespuestaURL = '/api/respuestas/buscar/leccion/'+ leccionId+ '/pregunta/'+preguntaId+ '/estudiante/'+estudianteId;
-			console.log(obtenerRespuestaURL)
+			//console.log(obtenerRespuestaURL)
 			$.get({
 				url: obtenerRespuestaURL,
 				success: function(res){
@@ -80,7 +83,7 @@ var App = new Vue({
 						self.respuestas.push(res.datos)
 					}
 					
-					console.log(res)
+					//console.log(res)
 				}
 			});
 			
@@ -89,13 +92,13 @@ var App = new Vue({
 			var estudianteId = window.location.href.toString().split('/')[7];
 			var obtenerEstudianteURL = '/api/estudiantes/' + estudianteId;
 			this.$http.get(obtenerEstudianteURL).then(res => {
-				console.log("Estudiante get: ");
-				console.log(res.body.datos);
+				//console.log("Estudiante get: ");
+				//console.log(res.body.datos);
 				App.estudiante.nombres=res.body.datos.nombres;
 				App.estudiante.apellidos=res.body.datos.apellidos;
 				App.estudiante.correo=res.body.datos.correo;
 				App.estudiante.grupo=res.body.datos.grupo;
-				console.log(App.estudiante);
+				//console.log(App.estudiante);
 			});
 		},
 		calificar: function(pregunta){
@@ -106,11 +109,14 @@ var App = new Vue({
 			
 			var calificacionId = '#calificacion-' + pregunta._id;
 			var calificacion_pregunta = $(calificacionId).val();
-			
 			var puntaje_pregunta = parseInt(pregunta.puntaje);
 			
 			var feedbackId = '#feedback-' + pregunta._id;
 			var feedback_nuevo = $(feedbackId).val();
+			if (calificacion_pregunta > 2) {
+				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
+				return false;
+			}
 			//Ponderacion por cada pregunta
 			/*
 				2  									->	puntaje completo de la pregunta

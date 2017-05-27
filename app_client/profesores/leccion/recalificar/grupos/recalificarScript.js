@@ -67,6 +67,7 @@ var appRecalificar = new Vue({
     buscarNombreGrupos: function(){
       //Esta función añade el nombre de cada grupo del array de registros obtenidos.
       //Busca el nombre del grupo dentro del array grupos.
+      
       var self = this;
       $.each(self.registros, function(index, registro){
         $.each(self.grupos, function(j, grupo){
@@ -78,7 +79,11 @@ var appRecalificar = new Vue({
       });
       //Los ordeno por nombre
       self.registros.sort(function(r1, r2){
-        return ((r1.nombreGrupo < r2.nombreGrupo) ? -1 : ((r1.nombreGrupo > r2.nombreGrupo) ? 1 : 0));
+        var nombreR1 = r1.nombreGrupo;
+        var numeroR1 = parseInt(nombreR1.split(" ")[1]);
+        var nombreR2 = r2.nombreGrupo;
+        var numeroR2 = parseInt(nombreR2.split(" ")[1]);
+        return ((numeroR1 < numeroR2) ? -1 : ((numeroR1 > numeroR2) ? 1 : 0));
       });
     },
     buscarNombreEstudiantes: function(){
