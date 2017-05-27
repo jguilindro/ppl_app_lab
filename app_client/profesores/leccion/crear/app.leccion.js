@@ -14,13 +14,13 @@ var App = new Vue({
       onOpen: function(el) {
         var self = this;
         self.CollapsibleOpen = true
-        alert("asd");
       }
     });
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
     this.obtenerCapitulos();
+
   },
   created: function() {
   },
@@ -449,7 +449,7 @@ var App = new Vue({
 })
 
 App.obtenerLogeado()
-
+App.filtrarCapitulos('estimacion|laboratorio')
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
   if (!existe) {
@@ -573,7 +573,7 @@ function filtrarCapitulo3(capitulo){
   return capitulo.codigoMateria == "FISG1003";
 }
 // App.obtenerLogeado()
-App.filtrarCapitulos('estimacion|laboratorio')
+
 
 $('#datePicker').pickadate({
   monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],

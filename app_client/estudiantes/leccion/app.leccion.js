@@ -29,7 +29,6 @@ var App = new Vue({
         success: function(res){
           if (res.estado) {
             self.estudiante = res.datos;
-            console.log(self.estudiante);
             self.obtenerLeccion(self.estudiante.leccion);
             //self.obtenerGrupoDeEstudiante();
             self.obtenerParaleloDeEstudiante();
@@ -115,7 +114,6 @@ var App = new Vue({
           type: 'PUT',
           data: estudiante,
           success: function(response) {
-            console.log('Estudiante añadido al registro correctamente');
           }
         });
       });
@@ -154,7 +152,6 @@ var App = new Vue({
         });
         apiPreguntasUrl = '/api/preguntas/';    //Vuelvo a instanciar la url
       });
-      console.log(self.preguntas)
     },
     verirficarRespuestaEnBase: function(pregunta){
       /*
