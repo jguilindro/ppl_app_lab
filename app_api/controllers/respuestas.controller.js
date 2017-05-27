@@ -15,6 +15,7 @@ const crearRespuesta = (req, res) => {
 		calificacion: 0,
 		feedback: ''
 	});
+  console.log(resp);
 	resp.crearRespuesta((err) => {
 		if(err) return response.serverError(res);
 		return response.creado(res);

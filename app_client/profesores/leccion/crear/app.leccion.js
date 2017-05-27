@@ -212,6 +212,7 @@ var App = new Vue({
         self.dividirPreguntasEnCapitulos();
         self.dividirPreguntasEnLaboratorios();
         self.dividirPreguntasEnTutoriales();
+        App.filtrarCapitulos('estimacion|laboratorio')
         $.each(self.capitulos, function(index, capitulo){
           capitulo.preguntas.sort(function(a, b){
              return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -420,7 +421,7 @@ var App = new Vue({
       nombre: '',
       tiempoEstimado: '',
       tipo: '',
-      fechaInicio: '',
+      fechaInicio: moment().add(1, 'day').format('YYYY-MM-DD'),
       preguntas: [
       ],
       puntaje: 0,
@@ -449,7 +450,7 @@ var App = new Vue({
 })
 
 App.obtenerLogeado()
-App.filtrarCapitulos('estimacion|laboratorio')
+
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
   if (!existe) {
