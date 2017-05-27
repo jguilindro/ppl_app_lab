@@ -51,7 +51,7 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 } else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing') {
   app.use(morgan('tiny'))
 }
-
+app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

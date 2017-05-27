@@ -17,13 +17,13 @@ p.collection-item{
 	padding-bottom: 0px;
 }
 li.question{
-    margin-bottom: 5%; 
+    margin-bottom: 5%;
 }
 .strike {
     display: block;
     text-align: center;
     overflow: hidden;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 .strike > span {
     position: relative;
@@ -42,12 +42,16 @@ li.question{
 
 .strike > span:before {
     right: 100%;
-    margin-right: 15px;
+    margin-right: 0px;
 }
 
 .strike > span:after {
     left: 100%;
-    margin-left: 15px;
+    margin-left: 0px;
+}
+
+#capitulos {
+  margin-left: 10%;
 }
 
 #pages{
@@ -71,5 +75,11 @@ label.maxWidth{
 }
 ul.table-of-contents{
     position: fixed;
+    padding-bottom: 5%;
+}
+
+div.tiempo {
+  margin-left: 0%;
+  padding-left: 0%;
 }
 .tooltip_templates { display: none; }

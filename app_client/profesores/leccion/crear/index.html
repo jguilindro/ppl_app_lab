@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="/bower_components/tooltipster/dist/css/tooltipster.bundle.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/bower_components/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/bower_components/pickadate/lib/themes/default.css">
     <link rel="stylesheet" type="text/css" href="./leccionStyle.css">
     <link rel="stylesheet" type="text/css" href="/css/navbar.css">
     <title>Nueva Leccion</title>
@@ -31,43 +33,67 @@
         <div id="test1" class="col s12">
           <div class="page">
             <div class="seccion-1 row container">
-             <h1 class="center-align flow-text">Crear una nueva leccion</h1>
+             <h1 class="center-align flow-text">Crear una nueva lección</h1>
               <form>
                 <div class="row">
                   <div class="input-field col s12">
                     <label for="nombre">Nombre</label>
                     <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
                   </div>
-                  <div class="input-field col s6" id="materias">
+                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'peer'">
                     <select id="subject">
                       <option value="#" selected disabled>Escoger Materia...</option>
                       <option value="FISG1002">Física 2</option>
                       <option value="FISG1003">Física 3</option>
-                    </select>                  
+                    </select>
                     <label>Materia</label>
                   </div>
-                  <div class="input-field col s6" id="div-select">                  
+                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'peer'">
                     <label class="active">Paralelo:</label>
                   </div>
+
+                  <!-- profesor -->
+                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
+                    <label>Materia: </label> <br> <p>{{leccion_nueva.nombreMateria}}</p>
+                  </div>
+                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
+                    <label>Paralelo: </label><br> <p>{{paraleloEscogido.nombre}}</p>
+                  </div>
+
                 </div>
               <div class="row">
                 <div class="input-field col s6">
                   <label for="fechaInicio" class="active">Fecha Inicio</label>
-                  <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha">
+                   <input id="datePicker" name="fecha">
+                  <!-- <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha"> -->
                 </div>
                 <div class="input-field col s6" id="tipoLeccion">
                   <label class="active">Tipo</label>
-                  <select id="select-tipo-leccion">
+                  <!-- <select id="select-tipo-leccion">
                     <option value="" disabled selected></option>
                     <option value="estimacion|laboratorio">Estimación|Laboratorio</option>
                     <option value="tutorial">Tutorial</option>
-                  </select>
+                  </select> -->
+                  <form action="#">
+                    <p>
+                      <input name="group1" v-model="tipoEscogido" type="radio" id="tests1" disabled="true"/>
+                      <!-- <label for="test1">Red</label> -->
+                    </p>
+                    <p>
+                      <input value="estimacion|laboratorio" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado1" checked/>
+                      <label for="seleccionado1">Estimación|Laboratorio</label>
+                    </p>
+                    <p>
+                      <input value="tutorial" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado2"  />
+                      <label for="seleccionado2">Tutorial</label>
+                    </p>
+                  </form>
                 </div>
               </div>
               </form>
               <div class="row">
-                
-                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn ">siguiente</button>
+
+                <!-- <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn ">siguiente</button> -->
               </div>
             </div>
           </div>
@@ -125,9 +151,15 @@
               <span>Escoger las preguntas</span>
             </div>
             <main>
-              <div class="container">
+              <div class="tiempo" style="position: fixed">
+                <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{preguntas_escogidas.tiempoTotal}} Min</h4>
+              </div>
+              <div class="container" id="capitulos">
                 <div class="row">
-                  <div class="col s12 m9 l10">
+                  <!-- <div class="col s1 m1s">
+                    {{preguntas_escogidas.tiempoTotal}}
+                  </div> -->
+                  <div class="col s7 m9 l10">
                     <div v-for="capitulo in capitulosAMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
                       <ul class="preguntas collapsible" data-collapsible="accordion">
                         <li>
@@ -145,7 +177,7 @@
                           </div>
                             </div>
                         </li>
-<!-- 
+<!--
                         <li v-for="pregunta in capitulo.preguntas" class="question">
                           <div v-bind:id="'tooltip-' + pregunta._id"
                                v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
@@ -162,18 +194,18 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="row col s6">
-                    <button type="button" v-on:click="avanzarPestania('test1')" id="btnats1" class="btn ">atras</button>
-                    <button type="button" v-on:click="avanzarPestania('test4')" id="btnsgt2" class="btn ">siguiente</button>
-                  </div>
-                  <div class="col hide-on-small-only m3 l2">
+                  <!-- <div class="row col s6"> -->
+                    <!-- <button type="button" v-on:click="avanzarPestania('test1')" id="btnats1" class="btn ">atras</button>
+                    <button type="button" v-on:click="avanzarPestania('test4')" id="btnsgt2" class="btn ">siguiente</button> -->
+                  <!-- </div> -->
+                  <div class="col s4 hide-on-small-only m3 l2">
                     <ul class="section table-of-contents">
                       <li v-for="capitulo in capitulosAMostrar">
                         <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
                       </li>
-                      <li><a> <hr><br>Tiempo estimado<br>
+                      <!-- <li><a> <hr><br>Tiempo estimado<br>
                         {{preguntas_escogidas.tiempoTotal}} Minutos
-                      </a></li>
+                      </a></li> -->
                     </ul>
                   </div>
                 </div>
@@ -258,6 +290,9 @@
       <script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/tooltipster/dist/js/tooltipster.bundle.min.js"></script>
+      <script src="/bower_components/moment/moment.js"></script>
+      <script src="/bower_components/pickadate/lib/picker.js"></script>
+      <script src="/bower_components/pickadate/lib/picker.date.js"></script>
       <script src="./app.leccion.js"></script>
       <script src="/js/summernote.js"></script>
     </footer>
