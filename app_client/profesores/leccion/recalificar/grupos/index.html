@@ -51,7 +51,8 @@
                 <div class="input-field col s12">
                   <p v-for="estudiante in estudiantes">
                     <input :name="grupoSeleccionado.grupo" type="radio" class="left-align flow-text" :id="estudiante._id" @click="seleccionarEstudiante(estudiante)">
-                    <label :for="estudiante._id">{{estudiante.nombres+' '+estudiante.apellidos}}</label>
+                    <label :for="estudiante._id">{{estudiante.nombres+' '+estudiante.apellidos}}<span v-if="estudiante._id === grupoSeleccionado.estudianteCalificado" class="title calificado">    Calificado</span></label>
+
                   </p>
                 </div>
               </div>

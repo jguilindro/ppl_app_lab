@@ -92,21 +92,17 @@ var appRecalificar = new Vue({
           url: urlApi,
           success: function(res){
             self.estudiantes.push(res.datos);
-            
           }
         });
       });
-      console.log(self.estudiantes)
     },
     //Eventos
     seleccionarGrupo: function(registro){
-    	console.log(registro);
     	this.grupoSeleccionado = registro;
     	this.buscarNombreEstudiantes();
     },
     seleccionarEstudiante: function(estudiante){
     	this.estudianteEscogido = estudiante;
-    	console.log(this.estudianteEscogido);
     },
     recalificarRedireccion: function(){
       var self = this;
