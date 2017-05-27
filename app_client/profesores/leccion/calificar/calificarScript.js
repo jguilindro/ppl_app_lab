@@ -170,13 +170,16 @@ var App = new Vue({
 			//Esta funcion va a actualizar los registros de la colección de calificaciones con la nueva calificación
 			var self = this;
 			var leccionId = window.location.href.toString().split('/')[6];
+			var estudianteId = window.location.href.toString().split('/')[7];
+			console.log('El id del estudiante es: ' + estudianteId);
 			var urlApi = '/api/calificaciones/calificar/' + leccionId + '/' + self.grupo;
 			console.log('Se va a enviar un requerimiento a la url: ' + urlApi + ' con la calificacion: ' + self.calificacionPonderada);
 			$.ajax({
 				method: 'PUT',
 				url: urlApi,
 				data: {
-					calificacion: self.calificacionPonderada
+					calificacion: self.calificacionPonderada,
+					estudiante: estudianteId
 				},
 				success: function(res){
 					console.log(res)
