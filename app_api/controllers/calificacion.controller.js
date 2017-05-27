@@ -102,6 +102,17 @@ const calificar = (req, res) => {
 	});
 }
 
+const recalificar = (req, res) => {
+	var id_leccion = req.params.id_leccion;
+	var id_grupo = req.params.id_grupo;
+	var calificacion_nueva = req.body.calificacion;
+	var estudiante = req.body.estudiante;
+	CalificacionModel.calificar(id_leccion, id_grupo, calificacion_nueva, estudiante, (err, doc) => {
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	});
+}
+
 const obtenerRegistroPorLeccion = (req, res) => {
 	CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
 		if(err) return response.serverError(res);
@@ -123,5 +134,6 @@ module.exports = {
 	obtenerRegistroPorLeccion,
 	anadirParticipante,
 	calificar,
+	recalificar,
 	anadirNombreGrupo
 }

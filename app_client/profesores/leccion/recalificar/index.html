@@ -27,19 +27,19 @@
               <p v-if="pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.nombre}}</p>
     		      <label for="descripcion">Descripción</label>
     		      <p v-if="pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.descripcion" name="descripcion"></p>
+              <p class="pull right">Puntaje de pregunta: {{pregunta.puntaje}} puntos</p>
             </div>
           </div>
           <div class="row row-res-cal">
             <div class="col s7 col-respuesta">
               <label for="respuesta">Respuesta del Estudiante</label>
-              <!--<p v-for="respuesta in respuestas" v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p> -->
               <p>{{pregunta.respuesta.respuesta}}</p>
             </div>
             <div class="col s5 col-calificacion">
               <label for="calificacion">Calificación</label>
               <input type="number" name="calificacion" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id" v-model="pregunta.respuesta.calificacion">
               <label for="feedback">Feedback</label>
-              <textarea v-model="pregunta.respuesta.feedback" class="materialize-textarea" name="feedback"></textarea>
+              <textarea v-model="pregunta.respuesta.feedback" class="materialize-textarea" name="feedback" :id="'feedback-' + pregunta._id"></textarea>
               <button class="waves-effect waves-light btn pull right" @click="recalificar(pregunta)" v-bind:id="'btn-' + pregunta._id">Calificar</button>
             </div>
           </div>
@@ -47,8 +47,8 @@
       </div>
       <div class="row">
         <div class="col s12">
-          <h5 class="center-align">Calificación total: {{calificacionTotal}}</h5>
-          <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}</h5>
+          <h5 class="center-align">Calificación total: {{calificacionTotal}}/{{leccion.puntaje}}</h5>
+          <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}/100</h5>
         </div>
         <div class="col s12" id="col-btn">
           <button class="waves-effect waves-light btn pull right" @click="enviarCalificacion">Aceptar</button>
