@@ -77,7 +77,7 @@ var App = new Vue({
       var  tEst = self.leccion_nueva.tiempoEstimado;
       var  tipo = self.leccion_nueva.tipo;
       var  fInicio = self.leccion_nueva.fechaInicio;
-      var pEscogido = self.leccion_nueva.paralelo;
+      var pEscogido = self.paraleloEscogido.id;
       var materia = self.leccion_nueva.nombreMateria;
       var error = false;
       $("#lblNombre").removeClass("#ffebee red lighten-5");
@@ -96,10 +96,7 @@ var App = new Vue({
         $("#tipoLeccion").addClass("#ffebee red lighten-5");
         error = true;
       }
-      if (fInicio == ""){
-        $("#datePicker").addClass("#ffebee red lighten-5");
-        error = true;
-      }
+      
       if (materia == ""){
         $("#materias").addClass("#ffebee red lighten-5");
         error = true;
