@@ -109,7 +109,7 @@ var App = new Vue({
 			var feedbackId = '#feedback-' + pregunta._id;
 			var feedback_nuevo = $(feedbackId).val();
 			//No se permite darle una calificación mayor a 2. Puede ser 0, 1 ó 2.
-			if (calificacion_pregunta > 2) {
+			if (calificacion_pregunta > 2 || calificacion_pregunta < 0) {
 				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
 				return false;
 			}

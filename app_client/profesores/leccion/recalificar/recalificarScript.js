@@ -156,7 +156,7 @@ var App = new Vue({
 
 			var calificacionPreguntaPonderada = ( (calificacionPregunta * puntajePregunta) / 2 );
 
-			if (calificacionPregunta > 2) {
+			if (calificacionPregunta > 2 || calificacionPregunta < 0) {
 				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
 				return false;
 			}
