@@ -519,9 +519,9 @@ $('#div-select').change(function(){
   App.leccion_nueva.nombreParalelo = $('#select-paralelos option:selected').text();
 });
 
-// $('#select-tipo-leccion').change(function(){
-//   filtrarCapitulos();
-// });
+$('#select-tipo-leccion').change(function(){
+  filtrarCapitulos();
+});
 
 $('#seleccionado1').change(function(){
   App.filtrarCapitulos('estimacion|laboratorio');
