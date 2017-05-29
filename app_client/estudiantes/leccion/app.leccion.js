@@ -13,9 +13,11 @@ var App = new Vue({
         url: '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
           if (res.estado) {
+            console.log(res.datos);
             self.estudiante = res.datos.estudiante;
             self.idLeccion = res.datos.estudiante.leccion;
             self.leccion = res.datos.leccion;
+            self.estudiante.grupo = res.datos.grupo._id
             var tmp =  res.datos.leccion.preguntas.slice();
             for (var i = 0; i < res.datos.leccion.preguntas.length; i++) {
               self.preguntas.push(tmp[i].pregunta)
@@ -50,7 +52,8 @@ var App = new Vue({
       })
     },
     anadirRespuestas: function() {
-      this.respuestas.forEach(res => {
+      // var self = this;
+      this.respuestas.forEach(function(res) {
         var idTextarea = '#textarea-' + res.pregunta;
         $(idTextarea).val(res.respuesta);
       })
@@ -174,7 +177,7 @@ var App = new Vue({
         success: function(response) {
           if (response.estado) {
             // var $toastContent = $('<h3>¡Su respuesta ha sido enviada!</h3>');
-            Materialize.toast('¡Su respuesta ha sido enviada!', 4000, 'rounded');
+            Materialize.toast('¡Su respuesta ha sido enviada!', 6000, 'rounded');
             pregunta.respondida = true; //Marco que la pregunta ha sido respondida, para que no pueda corregirla hasta que termine la lección.
             self.bloquearBtnRespuesta(pregunta); //Bloqueo el btn de reponder para que no pueda volver a enviar su respuesta, hasta que termine la lección.
             self.bloquearTextAreaRespondida(pregunta); //Bloqueo el textarea de la respuesta para que no pueda editarla hasta que termine la lección.
@@ -304,7 +307,7 @@ var App = new Vue({
         method: 'PUT',
         data: resp,
         success: function(response) {
-          Materialize.toast('¡Su respuesta ha sido corregida!', 1000, 'rounded');
+          Materialize.toast('¡Su respuesta ha sido corregida!', 6000, 'rounded');
         },
         error: function(response) {
           console.log(response);
