@@ -23,6 +23,7 @@ var App = new Vue({
 
   },
   created: function() {
+    this.obtenerLogeado()
   },
   updated: function(){
     var self = this;
@@ -96,7 +97,7 @@ var App = new Vue({
         $("#tipoLeccion").addClass("#ffebee red lighten-5");
         error = true;
       }
-      
+
       if (materia == ""){
         $("#materias").addClass("#ffebee red lighten-5");
         error = true;
@@ -168,6 +169,7 @@ var App = new Vue({
 
     },
     obtenerCapitulos: function(){
+
       var self = this;
       var url = '/api/capitulos/'
       self.$http.get(url).then(response => {
@@ -446,7 +448,7 @@ var App = new Vue({
   },
 })
 
-App.obtenerLogeado()
+
 
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
