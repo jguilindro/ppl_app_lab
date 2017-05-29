@@ -6,9 +6,9 @@ var child_process = require('child_process')
 // array de los path de los archivos a cambiar
 // reemplazar todos por el cdn respectivo
 var archivos = [
-  path.join(__dirname, '../../app_client/estudiantes/perfil/index.html'),
-  // path.join(__dirname, '../../app_client/estudiantes/leccion/index.html'),
-  // path.join(__dirname, '../../app_client/estudiantes/tomar-leccion/index.html'),
+  //path.join(__dirname, '../../app_client/estudiantes/perfil/index.html'),
+  //path.join(__dirname, '../../app_client/estudiantes/leccion/index.html'),
+  path.join(__dirname, '../../app_client/estudiantes/tomar-leccion/index.html'),
   // path.join(__dirname, '../../app_client/estudiantes/ver-leccion/index.html')
 ]
 co(function* () {
