@@ -168,6 +168,7 @@ var app = new Vue({
     	// self.lecciones = self.lecciones.sort(self.sortPorUpdate);
       self.lecciones = self.lecciones.sort(self.sortPorEstado);
       // self.lecciones = self.lecciones.sort(self.sortPorEstado);
+      console.log(self.lecciones);
     },
     sortPorUpdate: function(a, b){
     	return (a.updatedAt < b.updatedAt) ? 1: -1;
