@@ -9,6 +9,8 @@ var app = new Vue({
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
+		$('.modal').modal();
+		
 		//Funciones de flujo de la aplicación
 		this.getLecciones();
 
@@ -396,6 +398,8 @@ generarReporte: function(){
 
 
 generarReporte: function(){
+	$('#modalGenerarCsv').modal({dismissible: false});  
+	$('#modalGenerarCsv').modal('open');
 	var reporteData= [];
 	var self = this;
 	var promises= [];
@@ -435,8 +439,6 @@ generarReporte: function(){
 			if(self.gruposParaleloId[indice].length!=0){
 				$.each(self.gruposParaleloId[indice], function(i,grupo){
 					promesas.push(self.$http.get("/api/grupos/"+grupo).then(data => {
-						
-						console.log(data.body);
 						if(data.body.datos != null){
 						$.each(data.body.datos.estudiantes, function(a, estudiante){
 							$.each(estudiante.lecciones, function(b, estudianteLeccion){
@@ -456,7 +458,6 @@ generarReporte: function(){
 								 	calificaciones.paralelo= self.nombreParalelo[indice];
 								 	calificaciones.materia= self.nombreMateria[indice];
 								 	calificaciones.estudiante= estudiante.nombres +' '+estudiante.apellidos;
-								 	console.log(calificaciones);
 								 	reporteData.push(calificaciones);
 
 								}
@@ -587,4 +588,5 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    $('#modalGenerarCsv').modal('close');
 }
