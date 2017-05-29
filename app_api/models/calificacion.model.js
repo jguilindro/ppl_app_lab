@@ -38,6 +38,10 @@ const CalificacionSchema = mongoose.Schema({
 	},
 	calificada: {
 		type: Boolean
+	},
+	estudianteCalificado: {
+		type: String,
+		ref: 'Estudiante'
 	}
 },{timestamps: true, versionKey: false, collection: 'calificaciones'});
 
@@ -53,8 +57,8 @@ CalificacionSchema.statics.anadirParticipante = function(id_leccion, id_grupo, i
 	this.update({leccion: id_leccion, grupo: id_grupo}, {$addToSet: {participantes: id_estudiante}}, callback);
 }
 
-CalificacionSchema.statics.calificar = function(id_leccion, id_grupo, calificacion_nueva, callback){
-	this.update({leccion: id_leccion, grupo: id_grupo}, {calificacion: calificacion_nueva, calificada: true}, callback);
+CalificacionSchema.statics.calificar = function(id_leccion, id_grupo, calificacion_nueva, estudiante, callback){
+	this.update({leccion: id_leccion, grupo: id_grupo}, {calificacion: calificacion_nueva, calificada: true, estudianteCalificado: estudiante}, callback);
 }
 
 CalificacionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, callback){

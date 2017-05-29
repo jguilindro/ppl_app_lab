@@ -40,11 +40,12 @@ const anadirParticipante = (req, res) => {
 }
 
 const calificar = (req, res) => {
+	var estudiante = req.body.estudiante;
 	var calificacion_nueva = req.body.calificacion;
 	var id_leccion = req.params.id_leccion;
 	var flag = false;
 	var todosCalificados = true;
-	CalificacionModel.calificar(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, (err, doc) => {
+	CalificacionModel.calificar(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, req.body.estudiante, (err, doc) => {
 		//Primero añado la calificación al registro
 		if(err){
 			return response.serverError(res);
@@ -101,6 +102,17 @@ const calificar = (req, res) => {
 	});
 }
 
+const recalificar = (req, res) => {
+	var id_leccion = req.params.id_leccion;
+	var id_grupo = req.params.id_grupo;
+	var calificacion_nueva = req.body.calificacion;
+	var estudiante = req.body.estudiante;
+	CalificacionModel.calificar(id_leccion, id_grupo, calificacion_nueva, estudiante, (err, doc) => {
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	});
+}
+
 const obtenerRegistroPorLeccion = (req, res) => {
 	CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
 		if(err) return response.serverError(res);
@@ -122,5 +134,6 @@ module.exports = {
 	obtenerRegistroPorLeccion,
 	anadirParticipante,
 	calificar,
+	recalificar,
 	anadirNombreGrupo
 }
