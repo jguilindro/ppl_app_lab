@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 mongoose.Promise = global.Promise;
+const paralelo = require('../models/paralelo.model');
 
 const CalificacionSchema = mongoose.Schema({
 	_id: {
@@ -61,6 +62,11 @@ CalificacionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, call
 	this.find({leccion: id_leccion}, callback);
 }
 
+// De alguna manera no encuentra la id y devuelve vacio
+CalificacionSchema.statics.obtenerRegistroPorGrupo = function(id_grupo, callback){
+	this.find({grupo: id_grupo}, callback);
+}
+
 CalificacionSchema.statics.anadirNombreGrupo = function(id_grupo, nombre_grupo, callback){
 	this.update({grupo: id_grupo}, {nombreGrupo: nombre_grupo},{multi: true}, callback)
 }
@@ -69,7 +75,6 @@ CalificacionSchema.statics.obtenerTodos = function(callback){
 	this.find({}, callback);
 }
 
-CalificacionSchema.statics.obtenerRegistroPorParalelo = function(id_grupo, id_paralelo, callback){
-	this.find({grupo: id_grupo, paralelo: id_paralelo}, callback);
-}
+
+
 module.exports = mongoose.model('Calificacion', CalificacionSchema);

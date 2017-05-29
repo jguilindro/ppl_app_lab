@@ -12,4 +12,5 @@ router.post('/comenzar_leccion/:id_leccion', authApi.profesor, LeccionController
 router.post('/:id_paralelo/estudiantes', authApi.profesor, LeccionController.habilitarEstudiantesCursoParaLeccion) // DOCUMENTACION
 router.post('/:id_leccion/mas_tiempo',authApi.profesor, LeccionController.anadirTiempo);
 
+router.get('/:id_paralelo',authApi.profesor, LeccionController.obtenerLeccionesParalelo);
 module.exports = router;

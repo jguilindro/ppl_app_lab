@@ -2,6 +2,8 @@ const CalificacionModel = require('../models/calificacion.model');
 const GrupoModel = require('../models/grupo.model');
 const EstudianteModel = require('../models/estudiante.model');
 const LeccionModel = require('../models/leccion.model');
+const ParaleloModel = require('../models/paralelo.model');
+const ParaleloController = require('../controllers/paralelos.controller');
 bodyParser        = require('body-parser');
 var response = require('../utils/responses');
 
@@ -108,6 +110,37 @@ const obtenerRegistroPorLeccion = (req, res) => {
 	});
 }
 
+//no reconoce la id del grupo, y devuelve un array vacio, es muy raro
+const obtenerRegistroPorGrupo = (req, res) => {
+	CalificacionModel.obtenerRegistroPorGrupo(req.params.id_grupo, (err, registro) => {
+		if(err) return response.serverError(res);
+		return response.ok(res, registro);
+	});
+}
+
+const obtenerRegistroParalelo = (req, res ) => {
+	var paraleloId = '';
+	var leccionesParalelo=[];
+	var registros = [];
+	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
+		if (err) return respuesta.serverError(res);
+		paraleloId = paralelos._id;
+	})
+	LeccionModel.obtenerLeccionesParalelo(paraleloId, (err, lecciones) => {
+		if (err) return respuesta.serverError(res);
+		leccionesParalelo = lecciones;
+	})
+	$.each(leccionesParalelo, function (index, value) {
+		//CalificacionModel.obtenerRegistroPorLeccion
+		CalificacionModel.obtenerRegistroPorLeccion(value._id, (err, registro) => {
+			if(err) return response.serverError(res);
+			registros.push(registro);
+			//return response.ok(res, registros);
+		});
+	})
+	return response.ok(res, registros);
+}
+
 const anadirNombreGrupo = (req, res) => {
 	CalificacionModel.anadirNombreGrupo(req.params.id_grupo, req.body.nombre_grupo, (err, doc) => {
 		if (err) return response.serverError(res);
@@ -115,12 +148,25 @@ const anadirNombreGrupo = (req, res) => {
 	})
 }
 
-const obtenerRegistroPorParalelo = (req, res) => {
-	CalificacionModel.obtenerRegistroPorParalelo(req.params.id_grupo, req.params.id_paralelo,(err, registros) => {
-		if(err) return response.serverError(res);
-		return response.ok(res, registros);
-	});
+/*
+const obtenerRegistroPorGrupos = (req, res) => {
+	var registros = [];
+	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
+		if (err) return respuesta.serverError(res);
+		console.log(paralelos);
+		console.log(paralelos.grupos);
+		return response.ok(res, paralelos);
+		$.each(paralelos.grupos,function (index, value) {
+			CalificacionModel.obtenerRegistroPorGrupos(value._id,(err, registro) => {
+				if(err) return response.serverError(res);
+				registros.push(registro);
+				//return response.ok(res, registro);
+			});
+		})
+	})
+	//return response.ok(res, registros);
 }
+*/
 
 module.exports = {
 	crearRegistro,
@@ -129,5 +175,6 @@ module.exports = {
 	anadirParticipante,
 	calificar,
 	anadirNombreGrupo,
-	obtenerRegistroPorParalelo
+	obtenerRegistroPorGrupo,
+	obtenerRegistroParalelo
 }

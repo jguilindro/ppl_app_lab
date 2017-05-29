@@ -14,7 +14,6 @@ var app = new Vue({
 		this.getLecciones();
 
 	},
-
 	el: '#preguntas',
 	data: {
 		lecciones: [],
@@ -28,7 +27,10 @@ var app = new Vue({
 		 nombreMateria: [],
 		nombreLecciones: [],
 		profesorConectado: '',
-		anioActual: ''
+		anioActual: '',
+		//
+		paraleloId: '',
+		calificaciones: {}
 	},
 	methods: {
 		obtenerLogeado: function() {
@@ -274,14 +276,61 @@ var app = new Vue({
 
 test : function(){
 	var self = this;
-	var paralelos;
-	
+	var calificacion ;
+	var _lecciones =[];
+	var _id = '';
 	this.$http.get( "/api/paralelos/profesores/mis_paralelos").then(function(response){
-		console.log("paraaa:"+ response.body.datos);
-		paralelos = response.body.datos.grupos;
-		console.log(paralelos);
+		$.each(response.body.datos, function(index, value){
+			self.paraleloId = value.id;
+			console.log(self.paraleloId);
+			//_id = value.id;
+			//console.log(_id);
+		});
 	});
-}
+	this.$http.get("/api/lecciones/"+self.paraleloId).then(function (response) {
+		console.log(response.body.datos);
+		//self.leccionesId = response.body.datos;
+		//console.log("lecciones:" + self.leccionesId);
+		_lecciones = response.body.datos;
+		console.log(_lecciones);
+	});
+
+	$.each(_lecciones, function (index, value) {
+		console.log(value);
+		self.$http.get( "/api/calificaciones/"+value._id).then(function(response){
+			console.log(response.body.datos);
+			self.calificaciones.push(response.body.datos);
+			calificacion = response.body.datos;
+		});
+	});
+
+
+
+	/*
+	* this.$http.get( "/api/calificaciones/HkDOZcC1Z").then(function(response){
+	 console.log("dentro de leccion");
+	 console.log(response.body.datos);
+	 });
+
+	 this.$http.get( "/api/calificaciones/SyTWh8sJZ").then(function(response){
+	 console.log("dentro de registros");
+	 console.log(response.body.datos);
+	 });
+
+
+	 this.$http.get( "/api/calificaciones/HkDOZcC1Z/SyTWh8sJZ").then(function(response){
+	 console.log("dentro de leccion");
+	 console.log(response.body.datos);
+	 });
+
+	 this.$http.get( "/api/calificaciones/registros").then(function(response){
+	 console.log("registros paralelo");
+	 console.log(response.body.datos);
+	 });
+	 */
+
+
+},
 
 generarReporte: function(){
 	//var Grupo = require('../../../app_api/models/grupo.model');
