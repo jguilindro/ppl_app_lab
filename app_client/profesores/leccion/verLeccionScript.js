@@ -308,7 +308,7 @@ var app = new Vue({
 		});
 
 }*/
-
+/* Segunda versión CSV backup
 generarReporte: function(){
 	var reporteData= [];
 	var self = this;
@@ -392,7 +392,107 @@ generarReporte: function(){
 
 		});
 
+}*/
+
+
+generarReporte: function(){
+	var reporteData= [];
+	var self = this;
+	var promises= [];
+	var promesas= [];
+
+				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
+		        self.profesorConectado= response.body.datos._id;
+				 }));
+
+
+				promises.push(this.$http.get("/api/lecciones").then(response => {
+		        self.todasLecciones= response.body.datos;
+		        $.each(self.todasLecciones, function(index, value){
+		        	if(value.creador == self.profesorConectado){
+		      	self.leccionesId.push(value._id);
+		      	self.nombreLecciones.push(value.nombre);
+		      }
+		      });
+
+
+
+ 			}));
+
+
+             promises.push(this.$http.get( "/api/paralelos").then(res => {
+		 	 $.each(res.body.datos, function(index, value){
+		 	 	self.paralelosDatos.push(value._id);
+		 	 	self.gruposParaleloId.push(value.grupos);
+		 	 	self.nombreParalelo.push(value.nombre);
+		 	 	self.nombreMateria.push(value.nombreMateria);
+		 	 });
+			}));
+
+		Promise.all(promises).then(function(){
+			$.each(self.leccionesId, function(index, leccion){
+		$.each(self.paralelosDatos,function(indice, paralelo){
+			if(self.gruposParaleloId[indice].length!=0){
+				$.each(self.gruposParaleloId[indice], function(i,grupo){
+					promesas.push(self.$http.get("/api/grupos/"+grupo).then(data => {
+						
+						console.log(data.body);
+						if(data.body.datos != null){
+						$.each(data.body.datos.estudiantes, function(a, estudiante){
+							$.each(estudiante.lecciones, function(b, estudianteLeccion){
+								if(estudianteLeccion.calificado == true && estudianteLeccion.leccion == leccion){
+										var calificaciones= {
+											estudiante: '',
+											materia: '',
+											paralelo: '',
+											grupo: '',
+											leccion: '',
+											calificacion: ''
+											
+											};
+								 	calificaciones.leccion= self.nombreLecciones[index];
+								 	calificaciones.grupo= data.body.datos.nombre;
+								 	calificaciones.calificacion= estudianteLeccion.calificacion;
+								 	calificaciones.paralelo= self.nombreParalelo[indice];
+								 	calificaciones.materia= self.nombreMateria[indice];
+								 	calificaciones.estudiante= estudiante.nombres +' '+estudiante.apellidos;
+								 	console.log(calificaciones);
+								 	reporteData.push(calificaciones);
+
+								}
+
+							});
+
+						});
+				}
+				}));
+				});
+
+			}
+		});
+	});
+
+		Promise.all(promesas).then(function(){
+			/*each(reporteData, function(i, data){
+				var nombre;
+				var datos= data;
+				var indice= i;
+				$.ajax({
+					async: false,
+					url: "/api/grupos/"+datos.grupo,
+					success: function( data ) {
+					nombre=data.datos.nombre;
+				}
+				});
+				reporteData[indice].grupo= nombre;
+			});*/
+			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
+			});
+
+		});
+
 }
+
 
 
 	}
