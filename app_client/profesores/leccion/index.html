@@ -45,9 +45,9 @@
 			  					<td v-else-if="leccion.estado=='tomando'">
 			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a>
 			  					</td>
-			  					<td v-else-if="leccion.estado === 'calificada' && profesor.tipo === 'titular'">
+			  					<!--<td v-else-if="leccion.estado === 'calificada' && profesor.tipo === 'titular'">
 			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="recalificarLeccion(leccion._id)">Recalificar</a>
-			  					</td>
+			  					</td>-->
 			  					<td v-if="leccion.estado=='pendiente'">
 			  						<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a>
 			  					</td>
