@@ -4,13 +4,12 @@ var app = new Vue({
 		this.obtenerLogeado();
 	},
 	mounted: function(){
+		//Inicializadores de Materialize
 		$('.button-collapse').sideNav();
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
-		//$('#modalNuevoCapitulo').modal();
-
-		this.misParalelos();
+		//Funciones de flujo de la aplicación
 		this.getLecciones();
 
 	},
@@ -33,13 +32,14 @@ var app = new Vue({
 	methods: {
 		obtenerLogeado: function() {
 			/*
-				Modificada: 19-05-2017 @edisonmora95
+				Modificada: 26-05-2017 @edisonmora95
 			*/
-      var self = this;
+			var self = this;
       $.get({
       	url: '/api/session/usuario_conectado',
       	success: function(res){
       		self.profesor = res.datos;
+      		self.misParalelos();
       	}
       });
     },
@@ -58,8 +58,7 @@ var app = new Vue({
 				Modificada: 19-05-2017 @edisonmora95
     	*/
 			var self = this;
-			this.$http.get('/api/lecciones').then(response => {
-				//success callback
+			self.$http.get('/api/lecciones').then(response => {
 				var leccionesObtenidas = response.body.datos;
 				if(self.profesor.tipo === 'titular'){
 					self.filtrarLecciones(leccionesObtenidas);
@@ -75,9 +74,8 @@ var app = new Vue({
 		},
 		filtrarLeccionesPeer: function(arrayLecciones){
 			/*
-				Creada: 19-05-2017 @edisonmora95
-				Descripción:
-					Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de su paralelo.
+				@Autor: 19-05-2017 @edisonmora95
+				@Descripción:	Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de sus paralelos.
 			*/
 			var self = this;
       var permiso = self.profesor.nivelPeer.some(nivel => {
@@ -170,6 +168,7 @@ var app = new Vue({
     	// self.lecciones = self.lecciones.sort(self.sortPorUpdate);
       self.lecciones = self.lecciones.sort(self.sortPorEstado);
       // self.lecciones = self.lecciones.sort(self.sortPorEstado);
+      console.log(self.lecciones);
     },
     sortPorUpdate: function(a, b){
     	return (a.updatedAt < b.updatedAt) ? 1: -1;
@@ -212,8 +211,10 @@ var app = new Vue({
     	})
     },
     calificarLeccion: function(id){
-    	//Completar esto luego de que Julio termine su parte
-		window.location.href = '/profesores/leccion/calificar/grupos/'+id;
+			window.location.href = '/profesores/leccion/calificar/grupos/'+id;
+    },
+    recalificarLeccion: function(id){
+			window.location.href = '/profesores/leccion/recalificar/grupos/'+ id;
     },
     tomandoLeccion(paralelo, id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
