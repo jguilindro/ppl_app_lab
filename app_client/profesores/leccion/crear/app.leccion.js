@@ -5,7 +5,6 @@ var App = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
-
     $('#modalEliminarPregunta').modal();
     $('#modalNuevoCapitulo').modal();
     $('select').material_select();
@@ -34,6 +33,36 @@ var App = new Vue({
       this.$http.get('/api/session/usuario_conectado').then(response => {
         this.profesor = response.body.datos;
       })
+    },
+    toHTML: function (str){
+      var entityMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '/': '&#x2F;',
+      '`': '&#x60;',
+      '=': '&#x3D;'
+      };
+      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
+          return entityMap[s];
+        });
+    },
+    /*
+    *Sanitizes all the text fields in a container
+    *container: Is the container in which the text fields are contained :v
+    */
+    sanitize: function (container){
+      var self = this;
+      var inputs, index;
+      container = document.getElementById("test1");
+      inputs = container.querySelectorAll("input[type=text]");
+      for (index = 0; index < inputs.length; ++index) {
+          
+          inputs[index].value = this.toHTML(inputs[index].value); 
+
+      }
     },
     crearRegistroCalificacion: function(leccionId){
       var self = this;
@@ -67,13 +96,30 @@ var App = new Vue({
     *Cuando se da click al boton que invoca al metodo, se selecciona una pestaña
     *pestaniasgt: Id de la pestaña a la que desea dirigirse
     */
-    avanzarPestania: function(pestaniasgt){
-      var pestania = pestaniasgt;
+    avanzarPestania: function(pestaniasgt,aTag){
+      var pestania = pestaniasgt;  
+      var self = this;
+      //var inputs, index;
+      tabs = document.querySelectorAll(".tab");
+      for (index = 0; index < tabs.length; ++index) {
+        
+          console.log(tabs[index]);
+          $(tabs[index]).addClass("disabled");
+          
+
+      }
+      //console.log($(".active").parentNode.nodeName);
+      $(aTag).removeClass("disabled");
+      $('ul.tabs').tabs();
       $('ul.tabs').tabs('select_tab', pestania);
+
+      
     },
     validarCamposVacios: function(){
       var self = this;
+      this.sanitize('test1');
       var  nombre = self.leccion_nueva.nombre;
+      console.log(nombre);
       var  tEst = self.leccion_nueva.tiempoEstimado;
       var  tipo = self.leccion_nueva.tipo;
       var  fInicio = self.leccion_nueva.fechaInicio;
@@ -110,7 +156,7 @@ var App = new Vue({
         //$('#modalVal').modal('open');        DESCOMENTAR ESTA LINEA, XAVIER!
 
       }else{
-        self.avanzarPestania("test2");
+        self.avanzarPestania("test2","#t2");
 
       }
 
