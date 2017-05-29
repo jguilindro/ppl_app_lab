@@ -23,7 +23,6 @@ var App = new Vue({
         if (estudiante)
           return true
       })
-      //console.log(grupo_index);
       return grupo_index
     },
     tomarLeccion() {
@@ -43,8 +42,6 @@ var App = new Vue({
                 }
               })
             }
-            // tomando leccion en paralelo
-            // /profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo
           }
         })
       }
@@ -74,48 +71,18 @@ var App = new Vue({
         $(".dropdown-button").dropdown();
       }
     })
+  },
+  created() {
+    this.obtenerLeccion()
+    this.obtenerParalelo()
   }
 })
 
-App.obtenerLeccion()
-App.obtenerParalelo()
+
 document.getElementById('terminar-leccion').disabled = true
 
 
 var leccion = io('/tomando_leccion');
-
-// leccion.on('ingresado profesor', function(data) {
-//
-// })
-
-// leccion.on('estudiante conectado', function(_estudiante) {
-//   console.log('conectado');
-//   console.log(_estudiante);
-//   var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == _estudiante._id)
-//   console.log(App.estudiantes_conectados);
-//   console.log(existe);
-//   if (!existe) {
-//     App.estudiantes_conectados.push(_estudiante)
-//     let grupo_index = App.obtenerGrupoEstudiante(_estudiante)
-//     if(grupo_index == -1) {
-//       // TODO: mensaje que un estudiante no tiene grupo
-//       console.log(`${_estudiante} no existe estudiante en grupo`);
-//     } else {
-//       App.grupos[grupo_index].estudiantes_conectados.push(_estudiante)
-//     }
-//   }
-//   console.log(App.estudiantes_conectados);
-// })
-
-// leccion.on('estudiante desconectado', function(_estudiante) {
-//   console.log('desconectado');
-//   App.grupos = App.grupos.map(grupo => {
-//     let grupop = grupo.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
-//     grupo.estudiantes_conectados = grupop
-//     return grupo
-//   })
-//   App.estudiantes_conectados = App.estudiantes_conectados.filter((estudiante) => estudiante._id != _estudiante._id)
-// })
 
 leccion.on('tiempo restante', function(tiempo) {
   // document.getElementById('leccion-no-dar').disabled = true
@@ -149,8 +116,14 @@ leccion.on('leccion datos', function(leccion) {
   console.log(App.estudiantes_conectados);
   for (var i = 0; i < App.estudiantes_conectados.length; i++) {
     var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == App.estudiantes_conectados[i]._id)
+    // esto da error de index
     let grupo_index = App.obtenerGrupoEstudiante(App.estudiantes_conectados[i])
-    App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
+    console.log(grupo_index != -1);
+    console.log(grupo_index);
+    console.log(App.grupos.length < grupo_index);
+    if (grupo_index != -1 &&  grupo_index < App.grupos.length) {
+      App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
+    }
   }
 })
 
