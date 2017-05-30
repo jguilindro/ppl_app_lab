@@ -88,7 +88,7 @@ socket.on('empezar leccion', function(data) {
   if (esperando) {
     setTimeout(function() {
       window.location.href = '/estudiantes/leccion'
-    }, getRandomArbitrary(2000, 30000))
+    }, getRandomArbitrary(2000, 45000))
   }
 })
 
