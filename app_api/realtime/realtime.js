@@ -45,7 +45,6 @@ function realtime(io) {
         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
         var hec = yield cleanIntervals(intervals, socket.leccion._id)
         if (boton) {
-          // TIEMPO_MAXIMO.add(15, 's')
           var c = yield corriendoTiempo(socket.leccion._id, true);
           leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
@@ -98,7 +97,7 @@ function realtime(io) {
             const leccion_creada = yield crearLeccionRealtime(leccionRealtime)
           } else {
             let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-            socket.emit('leccion datos', leccionR)
+            leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           }
           if (leccion_creada && PARALELO.dandoLeccion && PARALELO.leccionYaComenzo) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
             profesorRealtime()
@@ -115,7 +114,7 @@ function realtime(io) {
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.estudiante = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-          socket.broadcast.emit('leccion datos', leccionR)
+          leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
       })
@@ -133,7 +132,7 @@ function realtime(io) {
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.user = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-          socket.broadcast.emit('leccion datos', leccionR)
+          leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
       })
@@ -152,7 +151,7 @@ function realtime(io) {
             var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
             var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
-            socket.broadcast.emit('leccion datos', leccionR)
+            leccion.in(paralelo._id).emit('leccion datos', leccionR)
           } else {
             var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
           }
