@@ -45,8 +45,9 @@ function realtime(io) {
         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
         var hec = yield cleanIntervals(intervals, socket.leccion._id)
         if (boton) {
+          // TIEMPO_MAXIMO.add(15, 's')
           var c = yield corriendoTiempo(socket.leccion._id, true);
-          leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
+          leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
         socket.interval = setInterval(function() {
           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');

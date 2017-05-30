@@ -82,8 +82,13 @@ var app = new Vue({
 app.estado()
 var esperando = false
 socket.on('empezar leccion', function(data) {
-  if (data && esperando) {
-    window.location.href = '/estudiantes/leccion'
+  function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  if (esperando) {
+    setTimeout(function() {
+      window.location.href = '/estudiantes/leccion'
+    }, getRandomArbitrary(2000, 30000))
   }
 })
 
