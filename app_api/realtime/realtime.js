@@ -118,7 +118,7 @@ function realtime(io) {
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
-      })
+      }).catch(fail => console.log(fail))
     })
 
     socket.on('reconectar estudiante', function(estudiante) {

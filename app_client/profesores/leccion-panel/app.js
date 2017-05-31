@@ -1,5 +1,22 @@
 var App = new Vue({
   el: '#app',
+  mounted() {
+    $('.modal').modal({
+        dismissible: false
+    });
+    $.get({
+      url: "/navbar/profesores",
+      success: function(data) {
+        document.getElementById('#navbar').innerHTML = data;
+        $(".button-collapse").sideNav();
+        $(".dropdown-button").dropdown();
+      }
+    })
+  },
+  created() {
+    this.obtenerLeccion()
+    this.obtenerParalelo()
+  },
   methods: {
     obtenerLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
@@ -10,6 +27,7 @@ var App = new Vue({
       this.$http.get(`/api/paralelos/${id_paralelo}`).then(res => {
         this.paralelo = JSON.parse(JSON.stringify(res.body.datos))
         this.grupos = this.paralelo.grupos
+        console.log(this.paralelo);
         this.grupos.forEach(grupo => {
           grupo.estudiantes_conectados = []
         })
@@ -54,28 +72,11 @@ var App = new Vue({
     grupos: [
     ],
     leccion: {},
-    paralelo: [],
+    paralelo: {},
     tiempo: '',
     dataEstudiantes: '',
     mas_tiempo: 0
   },
-  mounted() {
-    $('.modal').modal({
-        dismissible: false
-    });
-    $.get({
-      url: "/navbar/profesores",
-      success: function(data) {
-        document.getElementById('#navbar').innerHTML = data;
-        $(".button-collapse").sideNav();
-        $(".dropdown-button").dropdown();
-      }
-    })
-  },
-  created() {
-    this.obtenerLeccion()
-    this.obtenerParalelo()
-  }
 })
 
 

@@ -38,13 +38,13 @@
 			  					<td class="text-flow">{{date(leccion.fechaInicioTomada)}}</td>
                   <td class="text-flow">{{dateTerminada(leccion.fechaInicioTomada, leccion.tiempoEstimado)}}</td>
 			  					<!-- <td class="text-flow">{{leccion.estado}}</td> -->
-			  					<td v-if="leccion.estado=='pendiente'">
+			  					<td v-if="leccion.estado=='pendiente'" v-if="profesor.tipo =='titular'">
 			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new #0277bd light-blue darken-3" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a>
 			  					</td>
 			  					<td v-else-if="leccion.estado=='terminado'">
 			  						<a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" @click="calificarLeccion(leccion._id)">Calificar</a>
 			  					</td>
-			  					<td v-else-if="leccion.estado=='tomando'">
+			  					<td v-else-if="leccion.estado=='tomando'" v-if="profesor.tipo =='titular'">
 			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a>
 			  					</td>
 			  					<!--<td v-else-if="leccion.estado === 'calificada' && profesor.tipo === 'titular'">
