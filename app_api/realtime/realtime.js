@@ -88,6 +88,7 @@ function realtime(io) {
           const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
           const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
           socket.leccion = LECCION_TOMANDO
+          socket.join(PARALELO._id)
           // registar la leccion cuando el profesor ingresa
           if (!leccion_creada) {
             let leccionRealtime = new LeccionRealtimeModel({
@@ -261,6 +262,30 @@ function obtenerLeccionRealtime(id_leccion) {
   return new Promise((resolve, reject) => {
     LeccionRealtimeModel.buscarLeccionPopulate(id_leccion, (err, leccion) => {
       if (err) return reject(new Error('Error al anadir encontrar leccion'))
+      var tmp = []
+      for (var i = 0; i < leccion.estudiantesDandoLeccion.length; i++) {
+        tmp.push({
+          _id: leccion.estudiantesDandoLeccion[i]._id,
+          nombres: leccion.estudiantesDandoLeccion[i].nombres,
+          apellidos: leccion.estudiantesDandoLeccion[i].apellidos,
+          matricula: leccion.estudiantesDandoLeccion[i].matricula,
+          correo: leccion.estudiantesDandoLeccion[i].correo,
+          leccion: leccion.estudiantesDandoLeccion[i].leccion
+        })
+      }
+      leccion.estudiantesDandoLeccion = tmp
+      var tmp2 = []
+      for (var i = 0; i < leccion.estudiantesDesconectados.length; i++) {
+        tmp2.push({
+          _id: leccion.estudiantesDesconectados[i]._id,
+          nombres: leccion.estudiantesDesconectados[i].nombres,
+          apellidos: leccion.estudiantesDesconectados[i].apellidos,
+          matricula: leccion.estudiantesDesconectados[i].matricula,
+          correo: leccion.estudiantesDesconectados[i].correo,
+          leccion: leccion.estudiantesDesconectados[i].leccion
+        })
+      }
+      leccion.estudiantesDesconectados = tmp2
       return resolve(leccion)
     })
   })

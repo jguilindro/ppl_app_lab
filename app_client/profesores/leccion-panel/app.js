@@ -113,14 +113,15 @@ leccion.on('leccion datos', function(leccion) {
     App.grupos[i].estudiantes_conectados = []
   }
   App.estudiantes_conectados = _.differenceWith(leccion.estudiantesDandoLeccion, leccion.estudiantesDesconectados, equals)
-  console.log(App.estudiantes_conectados);
+  // console.log(App.estudiantes_conectados);
+  console.log('conectados');
+  console.log(JSON.stringify(App.estudiantes_conectados))
+  console.log('desconectados');
+  console.log(JSON.stringify(leccion.estudiantesDesconectados))
   for (var i = 0; i < App.estudiantes_conectados.length; i++) {
     var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == App.estudiantes_conectados[i]._id)
     // esto da error de index
     let grupo_index = App.obtenerGrupoEstudiante(App.estudiantes_conectados[i])
-    console.log(grupo_index != -1);
-    console.log(grupo_index);
-    console.log(App.grupos.length < grupo_index);
     if (grupo_index != -1 &&  grupo_index < App.grupos.length) {
       App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
     }

@@ -10,7 +10,7 @@ var app = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
 		$('.modal').modal();
-		
+
 		//Funciones de flujo de la aplicación
 		this.getLecciones();
 
@@ -227,7 +227,40 @@ var app = new Vue({
     date: function (date) {
       var es = moment().locale('es');
       // es.localeData().months(date)
-      return moment(date).format('MMMM D YYYY');
+      // return moment(date).format('DD/MM hh:mm:ss');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // var hora = moment(date).format('hh')
+      // if ( parseInt(hora) < 5) {
+      //   return moment(date).add(8,'h').tz("America/Guayaquil").format('DD MMMM hh:mm');
+      // }
+      return moment(date).format('DD MMMM HH:mm');
+    },
+    dateInicio: function (date) {
+      var es = moment().locale('es');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // es.localeData().months(date)
+      // return moment(date).tz("America/Guayaquil").format('DD/MM');
+      return moment(date).format('DD MMMM');
+    },
+    dateTerminada: function (date, tiempoEstimado) {
+      var es = moment().locale('es');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // var hora = moment(date).format('hh')
+      // console.log(parseInt(hora));
+      // if ( parseInt(hora) < 5) {
+      //   console.log(date);
+      //   console.log(parseInt(hora));
+      //   return moment(date).add(8,'h').add(tiempoEstimado,'m').tz("America/Guayaquil").format('hh:mm');
+      // }
+
+      // es.localeData().months(date)
+      return moment(date).add(tiempoEstimado,'m').format('HH:mm');
     },
 
 		//Version inicial de generar Reporte está por backup por si acaso
@@ -398,7 +431,7 @@ generarReporte: function(){
 
 
 generarReporte: function(){
-	$('#modalGenerarCsv').modal({dismissible: false});  
+	$('#modalGenerarCsv').modal({dismissible: false});
 	$('#modalGenerarCsv').modal('open');
 	var reporteData= [];
 	var self = this;
@@ -450,7 +483,7 @@ generarReporte: function(){
 											grupo: '',
 											leccion: '',
 											calificacion: ''
-											
+
 											};
 								 	calificaciones.leccion= self.nombreLecciones[index];
 								 	calificaciones.grupo= data.body.datos.nombre;
