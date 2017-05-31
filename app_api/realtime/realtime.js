@@ -46,7 +46,7 @@ function realtime(io) {
         var hec = yield cleanIntervals(intervals, socket.leccion._id)
         if (boton) {
           var c = yield corriendoTiempo(socket.leccion._id, true);
-          leccion.in(PARALELO._id).emit('empezar leccion', true) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
+          leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
         socket.interval = setInterval(function() {
           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
@@ -88,6 +88,7 @@ function realtime(io) {
           const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
           const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
           socket.leccion = LECCION_TOMANDO
+          socket.join(PARALELO._id)
           // registar la leccion cuando el profesor ingresa
           if (!leccion_creada) {
             let leccionRealtime = new LeccionRealtimeModel({
@@ -97,7 +98,7 @@ function realtime(io) {
             const leccion_creada = yield crearLeccionRealtime(leccionRealtime)
           } else {
             let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-            socket.emit('leccion datos', leccionR)
+            leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           }
           if (leccion_creada && PARALELO.dandoLeccion && PARALELO.leccionYaComenzo) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
             profesorRealtime()
@@ -114,7 +115,7 @@ function realtime(io) {
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.estudiante = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-          socket.broadcast.emit('leccion datos', leccionR)
+          leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
       })
@@ -132,7 +133,7 @@ function realtime(io) {
           socket.join(PARALELO._id) // unir al estudiante al canal paralelo
           socket.user = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
-          socket.broadcast.emit('leccion datos', leccionR)
+          leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
       })
@@ -151,7 +152,7 @@ function realtime(io) {
             var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
             var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
-            socket.broadcast.emit('leccion datos', leccionR)
+            leccion.in(paralelo._id).emit('leccion datos', leccionR)
           } else {
             var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
           }
@@ -261,6 +262,34 @@ function obtenerLeccionRealtime(id_leccion) {
   return new Promise((resolve, reject) => {
     LeccionRealtimeModel.buscarLeccionPopulate(id_leccion, (err, leccion) => {
       if (err) return reject(new Error('Error al anadir encontrar leccion'))
+      var tmp = []
+      if (leccion) {
+        for (var i = 0; i < leccion.estudiantesDandoLeccion.length; i++) {
+          tmp.push({
+            _id: leccion.estudiantesDandoLeccion[i]._id,
+            nombres: leccion.estudiantesDandoLeccion[i].nombres,
+            apellidos: leccion.estudiantesDandoLeccion[i].apellidos,
+            matricula: leccion.estudiantesDandoLeccion[i].matricula,
+            correo: leccion.estudiantesDandoLeccion[i].correo,
+            leccion: leccion.estudiantesDandoLeccion[i].leccion
+          })
+        }
+        leccion.estudiantesDandoLeccion = tmp
+        var tmp2 = []
+        for (var i = 0; i < leccion.estudiantesDesconectados.length; i++) {
+          tmp2.push({
+            _id: leccion.estudiantesDesconectados[i]._id,
+            nombres: leccion.estudiantesDesconectados[i].nombres,
+            apellidos: leccion.estudiantesDesconectados[i].apellidos,
+            matricula: leccion.estudiantesDesconectados[i].matricula,
+            correo: leccion.estudiantesDesconectados[i].correo,
+            leccion: leccion.estudiantesDesconectados[i].leccion
+          })
+        }
+        leccion.estudiantesDesconectados = tmp2
+      } else {
+        return resolve([])
+      }
       return resolve(leccion)
     })
   })

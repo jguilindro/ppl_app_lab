@@ -23,9 +23,9 @@
           <br>
           <div class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
-              <li class="tab col s4"><a class="active" href="#test1">Preparar</a></li>
-              <li class="tab col s4"><a href="#test2">Seleccionar</a></li>
-              <li class="tab col s4"><a href="#test4">Resumen</a></li>
+              <li class="tab col s4" id="t1"><a id = "ta1" class="active" href="#test1">Preparar</a></li>
+              <li class="tab col s4 disabled" id="t2"><a id= "ta2"href="#test2">Seleccionar</a></li>
+              <li class="tab col s4 disabled" id = "t4"><a id="ta4" href="#test4">Resumen</a></li>
             </ul>
           </div>
         </div>
@@ -64,7 +64,7 @@
               <div class="row">
                 <div class="input-field col s6">
                   <label for="fechaInicio" class="active">Fecha Inicio</label>
-                   <input id="datePicker" name="fecha">
+                   <input id="datePicker" name="fecha" placeholder="fecha">
                   <!-- <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha"> -->
                 </div>
                 <div class="input-field col s6" id="tipoLeccion">
@@ -91,8 +91,8 @@
                 </div>
               </div>
               </form>
-              <div class="row">
-                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn ">siguiente</button>
+              <div class="row col s12">
+                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">siguiente</button>
               </div>
             </div>
           </div>
@@ -193,9 +193,9 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="row col s6">
-                    <button type="button" v-on:click="avanzarPestania('test1')" id="btnats1" class="btn ">atras</button>
-                    <button type="button" v-on:click="avanzarPestania('test4')" id="btnsgt2" class="btn ">siguiente</button>
+                  <div class="row col s10">
+                    <button type="button" v-on:click="avanzarPestania('test1','#t1')" id="btnats1" class="btn">atras</button>
+                    <button type="button" v-on:click="avanzarPestania('test4','#t4')" id="btnsgt2" class="btn pull right">siguiente</button>
                   </div>
                   <div class="col s4 hide-on-small-only m3 l2">
                     <ul class="section table-of-contents">
@@ -246,8 +246,8 @@
   	                </li>
   	              </div>
   	            </ul>
-                <button type="button col s6" v-on:click="avanzarPestania('test2')" id="btnats1" class="btn ">atras</button>
-  	            <button type="button" v-on:click="crearLeccion()" class="btn ">send</button>
+                <button type="button col s6" v-on:click="avanzarPestania('test2','#t2')" id="btnats1" class="btn ">atras</button>
+  	            <button type="button" v-on:click="crearLeccion()" class="btn pull right">Enviar</button>
             </div>
 
             </div>

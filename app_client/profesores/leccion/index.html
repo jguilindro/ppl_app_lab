@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Profesor</title>
+		<title>Lecciones - Profesor</title>
 		<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
@@ -20,29 +20,39 @@
 			  			<thead>
 			  				<tr>
 			  					<th>Nombre</th>
-			  					<th>Materia</th>
 				  				<th>Tipo</th>
-				  				<th>Paralelo</th>
-				  				<th>Fecha</th>
-				  				<th>Estado</th>
+				  				<th>Materia@Paralelo</th>
+                  <th>Fecha creada</th>
+				  				<th>Fecha tomada</th>
+                  <th>Hora terminada</th>
+				  				<!-- <th>Estado</th> -->
 				  				<th>Acción</th>
 			  				</tr>
 			  			</thead>
 			  			<tbody>
 			  				<tr v-for="leccion in lecciones">
 			  					<td><a v-bind:href="'./' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
-			  					<td class="text-flow">{{leccion.nombreMateria}}</td>
 			  					<td class="text-flow">{{leccion.tipo}}</td>
-			  					<td class="text-flow">{{leccion.nombreParalelo}}</td>
-			  					<td class="text-flow">{{date(leccion.fechaInicio)}}</td>
-			  					<td class="text-flow">{{leccion.estado}}</td>
-			  					<td v-if="leccion.estado=='pendiente'"><a class="waves-effect waves-light btn btn-tomar
-			  																		btn-small-new #0277bd light-blue darken-3"
-			  																		@click="tomarLeccion(leccion.paralelo, leccion._id)">
-			  															Tomar</a></td>
-			  					<td v-else-if="leccion.estado=='terminado'"><a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" @click="calificarLeccion(leccion._id)">Calificar</a></td>
-			  					<td v-else-if="leccion.estado=='tomando'"><a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a></td>
-			  					<td v-if="leccion.estado=='pendiente'"><a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a></td>
+			  					<td class="text-flow">{{leccion.nombreMateria}}@{{leccion.nombreParalelo}}</td>
+                  <td class="text-flow">{{dateInicio(leccion.fechaInicio)}}</td>
+			  					<td class="text-flow">{{date(leccion.fechaInicioTomada)}}</td>
+                  <td class="text-flow">{{dateTerminada(leccion.fechaInicioTomada, leccion.tiempoEstimado)}}</td>
+			  					<!-- <td class="text-flow">{{leccion.estado}}</td> -->
+			  					<td v-if="leccion.estado=='pendiente'">
+			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new #0277bd light-blue darken-3" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a>
+			  					</td>
+			  					<td v-else-if="leccion.estado=='terminado'">
+			  						<a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" @click="calificarLeccion(leccion._id)">Calificar</a>
+			  					</td>
+			  					<td v-else-if="leccion.estado=='tomando'">
+			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)">Entrar</a>
+			  					</td>
+			  					<!--<td v-else-if="leccion.estado === 'calificada' && profesor.tipo === 'titular'">
+			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="recalificarLeccion(leccion._id)">Recalificar</a>
+			  					</td>-->
+			  					<td v-if="leccion.estado=='pendiente'">
+			  						<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a>
+			  					</td>
 			  				</tr>
 			  			</tbody>
 			  		</table>
@@ -60,6 +70,18 @@
 			    </div>
 			  </div>
 
+			  <!-- Modal Generar CSV -->
+			  <div id="modalGenerarCsv" class="modal">
+        	<div class="modal-content">
+	          <h3 class="center-align">Generando el documento de Reporte de notas</p>
+	          <h4 class="center-align">Por favor espere un momento.</p>
+	          <div class="progress">
+		      <div class="indeterminate"></div>
+		  </div>
+	        </div>
+
+	     	 </div>
+
 		  </div>
 		</main>
 		<footer>
@@ -69,6 +91,8 @@
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/bower_components/moment/moment.js"></script>
       <script src="/bower_components/moment/locale/es.js"></script>
+      <!-- <script src="/bower_components/moment-timezone/moment-timezone.js"></script> -->
+      <!-- <script src="/bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.min.js"></script> -->
       <!-- <script src="/bower_components/lodash/dist/lodash.min.js"></script> -->
 			<script src="./verLeccionScript.js"></script>
 			<script src="/js/navbar.js"></script>

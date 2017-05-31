@@ -3,11 +3,11 @@ body{
 }
 .container{
 	margin-top: 5%;
-	width: 90%;
+	width: 100%;
 }
 main .container{
 	background-color: rgba(255,255,255,0.7);
-	padding: 5%;
+	padding: 2%;
 	padding-top: 2%;
 	height: 100%;
 	margin-top: 0px;

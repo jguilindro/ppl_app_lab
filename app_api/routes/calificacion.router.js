@@ -13,6 +13,10 @@ router.get('/:id_leccion', CalificacionController.obtenerRegistroPorLeccion);
 
 router.put('/:id_grupo', CalificacionController.anadirNombreGrupo);
 
+
 router.get('/profesores/registros/todos', CalificacionController.obtenerCalificaciones);
+
+router.put('/recalificar/leccion/:id_leccion/grupo/:id_grupo', CalificacionController.recalificar);
+
 
 module.exports = router;

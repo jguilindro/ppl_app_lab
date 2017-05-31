@@ -4,13 +4,14 @@ var app = new Vue({
 		this.obtenerLogeado();
 	},
 	mounted: function(){
+		//Inicializadores de Materialize
 		$('.button-collapse').sideNav();
 		$(".dropdown-button").dropdown({ hover: false });
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
-		//$('#modalNuevoCapitulo').modal();
+		$('.modal').modal();
 
-		this.misParalelos();
+		//Funciones de flujo de la aplicación
 		this.getLecciones();
 
 	},
@@ -35,13 +36,14 @@ var app = new Vue({
 	methods: {
 		obtenerLogeado: function() {
 			/*
-				Modificada: 19-05-2017 @edisonmora95
+				Modificada: 26-05-2017 @edisonmora95
 			*/
-      var self = this;
+			var self = this;
       $.get({
       	url: '/api/session/usuario_conectado',
       	success: function(res){
       		self.profesor = res.datos;
+      		self.misParalelos();
       	}
       });
     },
@@ -60,8 +62,7 @@ var app = new Vue({
 				Modificada: 19-05-2017 @edisonmora95
     	*/
 			var self = this;
-			this.$http.get('/api/lecciones').then(response => {
-				//success callback
+			self.$http.get('/api/lecciones').then(response => {
 				var leccionesObtenidas = response.body.datos;
 				if(self.profesor.tipo === 'titular'){
 					self.filtrarLecciones(leccionesObtenidas);
@@ -77,9 +78,8 @@ var app = new Vue({
 		},
 		filtrarLeccionesPeer: function(arrayLecciones){
 			/*
-				Creada: 19-05-2017 @edisonmora95
-				Descripción:
-					Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de su paralelo.
+				@Autor: 19-05-2017 @edisonmora95
+				@Descripción:	Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de sus paralelos.
 			*/
 			var self = this;
       var permiso = self.profesor.nivelPeer.some(nivel => {
@@ -172,6 +172,7 @@ var app = new Vue({
     	// self.lecciones = self.lecciones.sort(self.sortPorUpdate);
       self.lecciones = self.lecciones.sort(self.sortPorEstado);
       // self.lecciones = self.lecciones.sort(self.sortPorEstado);
+      console.log(self.lecciones);
     },
     sortPorUpdate: function(a, b){
     	return (a.updatedAt < b.updatedAt) ? 1: -1;
@@ -214,8 +215,10 @@ var app = new Vue({
     	})
     },
     calificarLeccion: function(id){
-    	//Completar esto luego de que Julio termine su parte
-		window.location.href = '/profesores/leccion/calificar/grupos/'+id;
+			window.location.href = '/profesores/leccion/calificar/grupos/'+id;
+    },
+    recalificarLeccion: function(id){
+			window.location.href = '/profesores/leccion/recalificar/grupos/'+ id;
     },
     tomandoLeccion(paralelo, id_leccion) {
       window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
@@ -226,7 +229,40 @@ var app = new Vue({
     date: function (date) {
       var es = moment().locale('es');
       // es.localeData().months(date)
-      return moment(date).format('MMMM D YYYY');
+      // return moment(date).format('DD/MM hh:mm:ss');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // var hora = moment(date).format('hh')
+      // if ( parseInt(hora) < 5) {
+      //   return moment(date).add(8,'h').tz("America/Guayaquil").format('DD MMMM hh:mm');
+      // }
+      return moment(date).format('DD MMMM HH:mm');
+    },
+    dateInicio: function (date) {
+      var es = moment().locale('es');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // es.localeData().months(date)
+      // return moment(date).tz("America/Guayaquil").format('DD/MM');
+      return moment(date).format('DD MMMM');
+    },
+    dateTerminada: function (date, tiempoEstimado) {
+      var es = moment().locale('es');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      // var hora = moment(date).format('hh')
+      // console.log(parseInt(hora));
+      // if ( parseInt(hora) < 5) {
+      //   console.log(date);
+      //   console.log(parseInt(hora));
+      //   return moment(date).add(8,'h').add(tiempoEstimado,'m').tz("America/Guayaquil").format('hh:mm');
+      // }
+
+      // es.localeData().months(date)
+      return moment(date).add(tiempoEstimado,'m').format('HH:mm');
     },
 
 		//Version inicial de generar Reporte está por backup por si acaso
@@ -310,6 +346,7 @@ var app = new Vue({
 
 }*/
 
+// Para probar el CSV del lado del servidor.
 test : function(){
 
 	var self = this;
@@ -320,6 +357,8 @@ test : function(){
 
 },
 
+/* Segunda versión CSV backup
+>>>>>>> b0fb910b0bcf5ca7accd36e1c9d6df21c5bde80d
 generarReporte: function(){
 	var reporteData= [];
 	var self = this;
@@ -410,7 +449,106 @@ generarReporte: function(){
 
 		});
 
+}*/
+
+
+generarReporte: function(){
+	$('#modalGenerarCsv').modal({dismissible: false});
+	$('#modalGenerarCsv').modal('open');
+	var reporteData= [];
+	var self = this;
+	var promises= [];
+	var promesas= [];
+
+				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
+		        self.profesorConectado= response.body.datos._id;
+				 }));
+
+
+				promises.push(this.$http.get("/api/lecciones").then(response => {
+		        self.todasLecciones= response.body.datos;
+		        $.each(self.todasLecciones, function(index, value){
+		        	if(value.creador == self.profesorConectado){
+		      	self.leccionesId.push(value._id);
+		      	self.nombreLecciones.push(value.nombre);
+		      }
+		      });
+
+
+
+ 			}));
+
+
+             promises.push(this.$http.get( "/api/paralelos").then(res => {
+		 	 $.each(res.body.datos, function(index, value){
+		 	 	self.paralelosDatos.push(value._id);
+		 	 	self.gruposParaleloId.push(value.grupos);
+		 	 	self.nombreParalelo.push(value.nombre);
+		 	 	self.nombreMateria.push(value.nombreMateria);
+		 	 });
+			}));
+
+		Promise.all(promises).then(function(){
+			$.each(self.leccionesId, function(index, leccion){
+		$.each(self.paralelosDatos,function(indice, paralelo){
+			if(self.gruposParaleloId[indice].length!=0){
+				$.each(self.gruposParaleloId[indice], function(i,grupo){
+					promesas.push(self.$http.get("/api/grupos/"+grupo).then(data => {
+						if(data.body.datos != null){
+						$.each(data.body.datos.estudiantes, function(a, estudiante){
+							$.each(estudiante.lecciones, function(b, estudianteLeccion){
+								if(estudianteLeccion.calificado == true && estudianteLeccion.leccion == leccion){
+										var calificaciones= {
+											estudiante: '',
+											materia: '',
+											paralelo: '',
+											grupo: '',
+											leccion: '',
+											calificacion: ''
+
+											};
+								 	calificaciones.leccion= self.nombreLecciones[index];
+								 	calificaciones.grupo= data.body.datos.nombre;
+								 	calificaciones.calificacion= estudianteLeccion.calificacion;
+								 	calificaciones.paralelo= self.nombreParalelo[indice];
+								 	calificaciones.materia= self.nombreMateria[indice];
+								 	calificaciones.estudiante= estudiante.nombres +' '+estudiante.apellidos;
+								 	reporteData.push(calificaciones);
+
+								}
+
+							});
+
+						});
+				}
+				}));
+				});
+
+			}
+		});
+	});
+
+		Promise.all(promesas).then(function(){
+			/*each(reporteData, function(i, data){
+				var nombre;
+				var datos= data;
+				var indice= i;
+				$.ajax({
+					async: false,
+					url: "/api/grupos/"+datos.grupo,
+					success: function( data ) {
+					nombre=data.datos.nombre;
+				}
+				});
+				reporteData[indice].grupo= nombre;
+			});*/
+			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
+			});
+
+		});
+
 }
+
 
 
 	}
@@ -505,4 +643,5 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    $('#modalGenerarCsv').modal('close');
 }

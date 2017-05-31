@@ -4,7 +4,7 @@
 	<title>Estudiante</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" type="text/css" href="./estudiantePerfilStyles.css">
 	</head>
@@ -31,6 +31,7 @@
 								<tr class="titles">
 									<th>Nombre</th>
 									<th>Estado</th>
+									<th>Tipo</th>
 									<th>Calificación</th>
 									<th>Fecha</th>
 									<th>   </th>
@@ -40,12 +41,13 @@
 								<tr v-for="leccion in lecciones">
 									<td>{{leccion.leccion.nombre}}</td>
 									<td>{{leccion.leccion.estado}}</td>
+									<td>{{leccion.leccion.tipo}}</td>
 									<td>{{leccion.calificacion}}</td>
 									<td>{{date(leccion.fechaEmpezado)}}</td>
-									<td v-if="leccion.leccion.estado=='terminado'">
+									<td v-if="leccion.leccion.estado === 'terminado' || leccion.leccion.estado === 'calificado'">
 											<button class="btn waves-effect waves-light" v-bind:id=leccion.leccion._id v-on:click="verLeccion($event)">Ver</button>
 									</td>
-									<td v-else>
+									<td v-else-if="leccion.leccion.estado === 'pendiente' || leccion.leccion.estado === 'tomando'">
 										<button class="btn waves-effect waves-light blue lighten-1" v-on:click="tomarLeccion()">Tomar</button>
 									</td>
 								</tr>
@@ -59,10 +61,10 @@
 			</div>
 		</main>
 		<footer>
-			<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-			<script src="/bower_components/vue/dist/vue.min.js"></script>
-			<script src="/bower_components/materialize/bin/materialize.js"></script>
-			<script src="/bower_components/moment/moment.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 			<script src="./estudiante.js"></script>
 		</footer>
 	</body>

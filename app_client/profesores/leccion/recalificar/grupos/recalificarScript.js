@@ -1,10 +1,11 @@
-var app = new Vue({
-  created: function(){
+var appRecalificar = new Vue({
+	el: '#appRecalificar',
+	created: function(){
     this.profesorLogeado();
     this.obtenerRegistrosCalificaciones();
   },
-  mounted: function(){
-    //Inicializadores de Materialize
+	mounted: function(){
+		//Inicializadores de Materialize
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('select').material_select();
@@ -16,20 +17,18 @@ var app = new Vue({
         $(".button-collapse").sideNav();
         $(".dropdown-button").dropdown();
       }
-    })
-  },
-  el: '#app',
-  data: {
-      profesor: {},
-      registros: [],    //Registros de calificaciones -> leccion, grupo, nombrGrupo, paralelo, nombreParalelo, participantes, calificada, calificacion
-      grupos: [],
-      registrosAMostrar: [],
-      grupoSeleccionado: {},
-      estudiantes: [],
-      estudianteEscogidoId: ''
+    });
 	},
-  methods: {
-    profesorLogeado: function() {
+	data: {
+		profesor: {},
+		registros: [],
+		grupos: [],
+		grupoSeleccionado: {},
+    estudiantes: [],
+    estudianteEscogido: {}
+	},
+	methods:{
+		profesorLogeado: function() {
       var self = this;
       $.get({
         url: '/api/session/usuario_conectado',
@@ -40,7 +39,7 @@ var app = new Vue({
         }
       });
 		},
-    obtenerRegistrosCalificaciones: function(){
+		obtenerRegistrosCalificaciones: function(){
       //Obtiene los registros de las calificaciones de la lección que se quiere calificar
       var self = this;
       var pathname = window.location.pathname;
@@ -50,13 +49,12 @@ var app = new Vue({
         url: urlApi,
         success: function(res){
           self.registros = res.datos;
-          console.log('Registros obtenidos')
-          console.log(self.registros)
           self.obtenerTodosGrupos();
         }
       })
     },
     obtenerTodosGrupos: function(){
+    	//Obtengo todos los grupos para comparar con los de los registros y obtener sus nombres
       var self = this;
       $.get({
         url: '/api/grupos',
@@ -69,6 +67,7 @@ var app = new Vue({
     buscarNombreGrupos: function(){
       //Esta función añade el nombre de cada grupo del array de registros obtenidos.
       //Busca el nombre del grupo dentro del array grupos.
+      
       var self = this;
       $.each(self.registros, function(index, registro){
         $.each(self.grupos, function(j, grupo){
@@ -86,14 +85,6 @@ var app = new Vue({
         var numeroR2 = parseInt(nombreR2.split(" ")[1]);
         return ((numeroR1 < numeroR2) ? -1 : ((numeroR1 > numeroR2) ? 1 : 0));
       });
-      //Los muestro en este nuevo array
-      self.registrosAMostrar = self.registros;
-      console.log(self.registrosAMostrar)
-
-      //Muestro solo los grupos que no han sido calificados
-      self.registrosAMostrar = $.grep(self.registrosAMostrar, function(registro){
-        return registro.calificada==false&&registro.participantes.length!=0;
-      })
     },
     buscarNombreEstudiantes: function(){
       //Busco el nombre de los estudiantes del grupo seleccionado para calificar para mostrarlos en la pestaña 'Seleccionar estudiantes'
@@ -109,38 +100,21 @@ var app = new Vue({
           }
         });
       });
-    }
+    },
+    //Eventos
+    seleccionarGrupo: function(registro){
+    	this.grupoSeleccionado = registro;
+    	this.buscarNombreEstudiantes();
+    },
+    seleccionarEstudiante: function(estudiante){
+    	this.estudianteEscogido = estudiante;
+    },
+    recalificarRedireccion: function(){
+      var self = this;
+			if (self.estudianteEscogido){
+		  	var leccionId = window.location.href.toString().split('/')[7];
+		  	window.location.href = '/profesores/leccion/recalificar/'+leccionId+'/'+ self.estudianteEscogido._id + '/' + self.grupoSeleccionado.grupo;
+			}
+		}
 	}
-      
 });
-
-function grupoSeleccionado(_element){
-  var self = app.$data
-  $.each(self.registrosAMostrar, function(index, registro){
-    if(_element.id==registro.grupo){
-      self.grupoSeleccionado = registro;
-      app.buscarNombreEstudiantes();
-      return false
-    }
-  })
-}
-
-function estudianteSeleccionado(_element){
-  var self = app.$data
-  self.estudianteEscogidoId = _element.id;
-}
-
-function calificarRedireccion(){
-	if (app.estudianteEscogidoId){
-  	var leccionId = window.location.href.toString().split('/')[7];
-  	window.location.href = '/profesores/leccion/calificar/'+leccionId+'/'+app.estudianteEscogidoId+'/'+app.grupoSeleccionado.grupo;
-	}
-}
-
-function regresar(){
-	window.location.href = '/profesores/grupos/'
-}
-
-function enviarFeedback(){
-	window.location.href = '/profesores/grupos/'
-}

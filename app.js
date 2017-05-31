@@ -39,7 +39,8 @@ if (os.hostname() === 'joelerll-laptop') {
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server, {'pingInterval': 4000, 'pingTimeout': 8000});
+var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
+io.set('heartbeat interval', 1)
 
 app.use(function(req, res, next){
   res.io = io;
@@ -154,6 +155,9 @@ app.use('/profesores/leccion/calificar', authProfesor, procesarSession, middlePr
 
 app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
 
+app.use('/profesores/leccion/recalificar/grupos/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar/grupos')));
+
+app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar')));
 /*
  Estudiantes
  */

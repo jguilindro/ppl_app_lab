@@ -6,3 +6,5 @@ scripts/tmp
 .idea/
 .env
 *.png
+env.env
+env.txt

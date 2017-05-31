@@ -47,11 +47,12 @@ const anadirParticipante = (req, res) => {
 }
 
 const calificar = (req, res) => {
+	var estudiante = req.body.estudiante;
 	var calificacion_nueva = req.body.calificacion;
 	var id_leccion = req.params.id_leccion;
 	var flag = false;
 	var todosCalificados = true;
-	CalificacionModel.calificar(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, (err, doc) => {
+	CalificacionModel.calificar(req.params.id_leccion, req.params.id_grupo, req.body.calificacion, req.body.estudiante, (err, doc) => {
 		//Primero añado la calificación al registro
 		if(err){
 			return response.serverError(res);
@@ -115,6 +116,17 @@ const calificar = (req, res) => {
 	 return response.ok(res, registros);
 	 });
  }
+
+const recalificar = (req, res) => {
+	var id_leccion = req.params.id_leccion;
+	var id_grupo = req.params.id_grupo;
+	var calificacion_nueva = req.body.calificacion;
+	var estudiante = req.body.estudiante;
+	CalificacionModel.calificar(id_leccion, id_grupo, calificacion_nueva, estudiante, (err, doc) => {
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	});
+}
 
 const anadirNombreGrupo = (req, res) => {
 	CalificacionModel.anadirNombreGrupo(req.params.id_grupo, req.body.nombre_grupo, (err, doc) => {
@@ -214,7 +226,7 @@ const obtenerCalificaciones = (req, res) => {
 		}
 
 		var csv = json2csv({ data: calificacionesData, fields: campos});
-		fs.writeFile('Reporte.csv', csv, function(err) {
+		fs.writeFile('Reporte1.csv', csv, function(err) {
 			if (err) throw err;
 			console.log('file saved');
 		});
@@ -228,7 +240,8 @@ module.exports = {
 	obtenerRegistro,
 	anadirParticipante,
 	calificar,
-	anadirNombreGrupo,
 	obtenerRegistroPorLeccion,
 	obtenerCalificaciones,
+	recalificar,
+	anadirNombreGrupo
 }
