@@ -40,6 +40,37 @@
 "200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","Flujo Eléctrico y Ley de Gauss","estimacion|laboratorio",40
 "201514552","ANDRES PATRICIO","PURUNCAJAS BENAVIDES","Grupo 4","FÍSICA III","1","Flujo Eléctrico y Ley de Gauss","estimacion|laboratorio",40
 "201013711","PEDRO LUIS","PIBAQUE PONCE","Grupo 4","FÍSICA III","1","Flujo Eléctrico y Ley de Gauss","estimacion|laboratorio",40
+"201505897","ALVARO FABIAN","TUTIVEN BONILLA","Grupo 1","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201508510","JOSE ANDRES","AVILA OÑATE","Grupo 1","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201401842","SERGIO RENE","PACHECO AVILA","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201514944","JOSUE STEVEN","MUÑOZ CADENA","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201300628","LUIS FIDEL","CAMACHO COELLO","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201403654","SEBASTIAN","AGUIRRE MUÑOZ","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201403516","JOSE ANDRES","PAUCAR PANTALEON","Grupo 2","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201418569","KATHERINE NATHALY","GALLARDO ROMERO","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201503643","SAMANTHA NICOLE","SANCHEZ CRESPO","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201405524","IVAN","FONSECA HERNANDEZ","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201515208","KARLA KATERINE","MANTILLA CRUZ","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201508530","LUIS ADRIAN","URDIALES GUTIERREZ","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201405487","DANIELA ALEXANDRA","ICHAZO ORTEGA","Grupo 5","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201314015","ROBERTH PATRICIO","PINEDA RUIZ","Grupo 6","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201303507","TITO SEBASTIAN","CELY ZAVALA","Grupo 6","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201310323","ALDO ALEXANDER","MERO PAREDES","Grupo 6","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201225904","RICHARD IVAN","RECALDE ANCHUNDIA","Grupo 6","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201416278","JONATHAN JAVIER","CORDERO MACIAS","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201310481","MARCO ANTONIO","QUITO CLAVIJO","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201514552","ANDRES PATRICIO","PURUNCAJAS BENAVIDES","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201515404","FERNANDO ROBERTO","YEPEZ HIDALGO","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201013711","PEDRO LUIS","PIBAQUE PONCE","Grupo 4","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201204018","MARIA DE LOS ANGELES","ALAVA RUIZ","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201314514","FREDDY ISAAC","MORA OÑATE","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201417217","LUIS ARTURO","MONTOYA PAREDES","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201313731","ALLISON ESTEFANIA","MUÑOZ ZAMBRANO","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
+"201409520","DENISSE MICHELLE","QUIMÍ CAICEDO","Grupo 3","FÍSICA III","1","Potencial Eléctrico","tutorial",0
 "201514944","JOSUE STEVEN","MUÑOZ CADENA",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",19.64
 "201513240","DAVID SAUL","ZAMBRANO CHICAIZA",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",19.64
 "201300628","LUIS FIDEL","CAMACHO COELLO",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",19.64
@@ -73,7 +104,6 @@
 "201310323","ALDO ALEXANDER","MERO PAREDES",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",89.29
 "201145128","DAVID MARCELO","CORONEL JARAMILLO",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",89.29
 "201314015","ROBERTH PATRICIO","PINEDA RUIZ",,"FÍSICA III",,"Carga Eléctrica y Campo Eléctrico  ","tutorial",89.29
-"201409608","LUIS ALBERTO","REYES LEMA","Grupo 1","FÍSICA III","1","AAAAAA","estimacion|laboratorio",0
 "201401842","SERGIO RENE","PACHECO AVILA","Grupo 2","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",69.23
 "201514944","JOSUE STEVEN","MUÑOZ CADENA","Grupo 2","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",69.23
 "201403654","SEBASTIAN","AGUIRRE MUÑOZ","Grupo 2","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",69.23
@@ -106,20 +136,36 @@
 "201515208","KARLA KATERINE","MANTILLA CRUZ","Grupo 5","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",80.77
 "201405524","IVAN","FONSECA HERNANDEZ","Grupo 5","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",80.77
 "201418569","KATHERINE NATHALY","GALLARDO ROMERO","Grupo 5","FÍSICA III","1","Flujo Eléctrico y la Ley de Gauss","tutorial",80.77
-"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",50
-"201403449","DANNY EDUARDO","JIMENEZ PARRA","Grupo 1","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",50
-"201300628","LUIS FIDEL","CAMACHO COELLO","Grupo 2","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",50
-"201401842","SERGIO RENE","PACHECO AVILA","Grupo 2","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",50
-"201314514","FREDDY ISAAC","MORA OÑATE","Grupo 3","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",0
-"201204018","MARIA DE LOS ANGELES","ALAVA RUIZ","Grupo 3","FÍSICA III","1","Lección prueba Pinela","estimacion|laboratorio",0
-"201401842","SERGIO RENE","PACHECO AVILA","Grupo 2","FÍSICA III","1","WWWWWWW","estimacion|laboratorio",0
-"201300628","LUIS FIDEL","CAMACHO COELLO","Grupo 2","FÍSICA III","1","WWWWWWW","estimacion|laboratorio",0
-"201409608","LUIS ALBERTO","REYES LEMA","Grupo 1","FÍSICA III","1","Potencial Eléctrico","tutorial",0
-"201409608","LUIS ALBERTO","REYES LEMA","Grupo 1","FÍSICA III","1","Pinela","estimacion|laboratorio",0
-"201514944","JOSUE STEVEN","MUÑOZ CADENA","Grupo 2","FÍSICA III","1","Pinela","estimacion|laboratorio",0
-"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","ASXC","tutorial",0
-"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","ASXC","tutorial",0
-"201418569","KATHERINE NATHALY","GALLARDO ROMERO","Grupo 5","FÍSICA III","1","ASXC","tutorial",0
-"201508530","LUIS ADRIAN","URDIALES GUTIERREZ","Grupo 5","FÍSICA III","1","ASXC","tutorial",0
-"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","ASXC","tutorial",0
-"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","ASXC","tutorial",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","AASSADA","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","AASSADA","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","AAAA","estimacion|laboratorio",0
+"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","AAAA","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","AAAA","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","AAAA","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","ASASA","estimacion|laboratorio",0
+"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","ASASA","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","ASASA","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","ASASA","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","QWQWQWQWQ","estimacion|laboratorio",0
+"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","QWQWQWQWQ","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","QWQWQWQWQ","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","QWQWQWQWQ","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","DDSADADSSA","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","DDSADADSSA","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","DDSADADSSA","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","QQQQQQQQQQQQ","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","QQQQQQQQQQQQ","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","AAAAAAA","tutorial",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","AAAAAAA","tutorial",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","SASASA","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","ZZZZZZZZZZZZZZZZ","estimacion|laboratorio",0
+"201516648","CARLOS LUIS","ASTUDILLO QUIMI","Grupo 3","FÍSICA III","1","ZZZZZZZZZZZZZZZZ","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","ZZZZZZZZZZZZZZZZ","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","ZZZZZZZZZZZZZZZZ","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","asasada","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","asasada","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","asasada","estimacion|laboratorio",0
+"201513240","DAVID SAUL","ZAMBRANO CHICAIZA","Grupo 2","FÍSICA III","1","ASASAAS","estimacion|laboratorio",0
+"200906618","ALEX CARMELO","MURILLO SALGUERO","Grupo 4","FÍSICA III","1","ASASAAS","estimacion|laboratorio",0
+"201417335","CARLOS DANILO","ALAVA BRAVO","Grupo 1","FÍSICA III","1","ASASAAS","estimacion|laboratorio",0
+"201403449","DANNY EDUARDO","JIMENEZ PARRA","Grupo 1","FÍSICA III","1","ASASAAS","estimacion|laboratorio",0
