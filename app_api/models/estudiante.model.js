@@ -23,11 +23,11 @@ const EstudianteSchema = mongoose.Schema({
 	matricula: {
 		type: String
 	},
-  dandoLeccion: {
+  tomandoLeccion: { // si ingreso a tomar-leccion
     type: Boolean,
     'default': false
   },
-  esperandoLeccion: {
+  bloqueadoLeccion: { // reemplazado por esperandoLeccion
     type: Boolean,
     'default': true
   },
@@ -130,7 +130,7 @@ EstudianteSchema.statics.anadirEstudianteDandoLeccion = function(id_estudiante,i
     leccion: id_leccion,
     fechaEmpezado: current_time_guayaquil,
   }
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}, $addToSet: {lecciones: leccion_nueva}},callback)
+  this.update({_id: id_estudiante}, {$addToSet: {lecciones: leccion_nueva}},callback)
 }
 
 EstudianteSchema.statics.leccionYaAnadida = function(id_estudiante,id_leccion,callback) {
@@ -149,13 +149,13 @@ EstudianteSchema.statics.anadirEstudianteLeccion = function(id_estudiante, id_le
 EstudianteSchema.statics.veficarPuedeDarLeccion = function(id_estudiante, callback) {
   this.findOne({_id:id_estudiante}, callback)
 }
-
-EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante,callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}},callback)
-}
+//
+// EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante,callback) {
+//   this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}},callback)
+// }
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false, esperandoLeccion: true, codigoIngresado: false}}, callback)
+  this.update({_id: id_estudiante}, {$set: {codigoIngresado: false}}, callback)
 }
 
 EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudiante, callback) {
@@ -167,9 +167,6 @@ EstudianteSchema.statics.calificarLeccion = function(id_estudiante, id_leccion, 
   this.update({_id: id_estudiante, "lecciones.leccion": id_leccion}, {$set: {"lecciones.$.calificacion": calificacion_nueva, "lecciones.$.calificado": true}}, callback);
 }
 
-EstudianteSchema.statics.esperandoLeccion = function(id_estudiante, callback) {
-  this.update({_id: id_estudiante}, {$set: {esperandoLeccion: false}})
-}
 
 EstudianteSchema.statics.codigoLeccion = function(id_estudiante, callback) {
   this.update({_id: id_estudiante}, {$set: {codigoIngresado: true}}, callback)
