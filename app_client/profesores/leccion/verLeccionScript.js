@@ -15,7 +15,6 @@ var app = new Vue({
 		this.getLecciones();
 
 	},
-
 	el: '#preguntas',
 	data: {
 		lecciones: [],
@@ -29,7 +28,10 @@ var app = new Vue({
 		 nombreMateria: [],
 		nombreLecciones: [],
 		profesorConectado: '',
-		anioActual: ''
+		anioActual: '',
+		//
+		paraleloId: '',
+		calificaciones: []
 	},
 	methods: {
 		obtenerLogeado: function() {
@@ -343,7 +345,20 @@ var app = new Vue({
 		});
 
 }*/
+
+// Para probar el CSV del lado del servidor.
+test : function(){
+
+	var self = this;
+
+	this.$http.get( "/api/calificaciones/profesores/registros/todos").then(function(response){
+		console.log(response.body.datos);
+	});
+
+},
+
 /* Segunda versión CSV backup
+>>>>>>> b0fb910b0bcf5ca7accd36e1c9d6df21c5bde80d
 generarReporte: function(){
 	var reporteData= [];
 	var self = this;
@@ -352,20 +367,21 @@ generarReporte: function(){
 
 				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
 		        self.profesorConectado= response.body.datos._id;
+					//console.log("Profesor conectado:");
+					//console.log(self.profesorConectado);
 				 }));
 
 
 				promises.push(this.$http.get("/api/lecciones").then(response => {
 		        self.todasLecciones= response.body.datos;
+					//console.log("todas las lecciones:");
+					//console.log(self.todasLecciones);
 		        $.each(self.todasLecciones, function(index, value){
 		        	if(value.creador == self.profesorConectado){
 		      	self.leccionesId.push(value._id);
 		      	self.nombreLecciones.push(value.nombre);
 		      }
 		      });
-
-
-
  			}));
 
 
@@ -384,6 +400,12 @@ generarReporte: function(){
 			if(self.gruposParaleloId[indice].length!=0){
 				$.each(self.gruposParaleloId[indice], function(i,grupo){
 					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
+						self.$http.get('/api/grupos/'+grupo).then(function (response) {
+								console.log("Hmmm::"+response.body.datos);
+							}
+						);
+						//console.log(data.body.datos[0]);
+						//console.log(data.body.datos[0].participantes);
 						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
 							var calificaciones= {
 								leccion: '',
@@ -397,7 +419,7 @@ generarReporte: function(){
 				 	calificaciones.calificacion= data.body.datos[0].calificacion;
 				 	calificaciones.paralelo= self.nombreParalelo[indice];
 				 	calificaciones.materia= self.nombreMateria[indice];
-				 	console.log(calificaciones);
+				 	//console.log(calificaciones);
 				 	reporteData.push(calificaciones);
 
 					}

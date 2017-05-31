@@ -13,6 +13,13 @@ const obtenerTodasLecciones = (req, res) => {
   })
 }
 
+const obtenerLeccionesParalelo = (req, res) => {
+  LeccionModel.obtenerLeccionesParalelo(id_paralelo, (err, leccion) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res,leccion);
+  })
+}
+
 const obtenerLeccion = (req, res) => {
   const { id_leccion } = req.params
   LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
@@ -172,4 +179,5 @@ module.exports = {
   anadirTiempo,
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
+  obtenerLeccionesParalelo
 }
