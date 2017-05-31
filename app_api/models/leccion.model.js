@@ -100,6 +100,10 @@ LeccionSchema.statics.obtenerLeccion = function(id_leccion, callback) {
   this.findOne({_id: id_leccion}, callback);
 }
 
+LeccionSchema.statics.obtenerLeccionPopulate = function(id_leccion, callback) {
+  this.findOne({_id: id_leccion}).populate({path: 'preguntas.pregunta'}).exec(callback);
+}
+
 LeccionSchema.statics.actualizarLeccion = function(id_leccion, actualizar, callback) {
   this.update(
     {_id: id_leccion},

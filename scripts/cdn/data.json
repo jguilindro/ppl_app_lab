@@ -1,36 +1,90 @@
 {
-	"cdn": {
-		"vue": "https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js",
-		"jquery": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
-		"materialize": {
-			"css": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css",
-			"js": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"
+	"cdn": [
+		{
+			"nombre": "vue",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js"
 		},
-		"lodash": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js",
-		"font-awesome": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-    "offline": {
-      "js": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/offline.min.js",
-      "css_language": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-language-spanish-indicator.css",
-      "css_theme": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-theme-slide.css"
-    },
-    "socketio": "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js",
-    "momentjs": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"
-	},
-	"locales": {
-		"vue": "/bower_components/vue/dist/vue.min.js",
-		"jquery": "/bower_components/jquery/dist/jquery.min.js",
-		"materialize": {
-			"js": "/bower_components/materialize/bin/materialize.js",
-			"css": "/bower_components/materialize/bin/materialize.css"
+		{
+			"nombre": "jquery",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
 		},
-		"lodash": "",
-		"font-awesome": "/bower_components/font-awesome/css/font-awesome.min.css",
-		"offline": {
-			"js": "/bower_components/offline/offline.min.js",
-			"css_language": "/bower_components/offline/themes/offline-language-spanish-indicator.css",
-			"css_theme": "/css/offline-theme-slide.css"
+		{
+			"nombre": "materialize_css",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css"
 		},
-		"socketio": "/bower_components/socket.io-client/dist/socket.io.min.js",
-		"momentjs": "/bower_components/moment/moment.js"
-	}
+		{
+			"nombre": "materialize_js",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"
+		},
+		{
+			"nombre": "font_awesome",
+			"link": "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+		},
+		{
+			"nombre": "offline_js",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/offline.min.js"
+		},
+		{
+			"nombre": "offline_css",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-language-spanish-indicator.css"
+		},
+		{
+			"nombre": "offline_theme",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.18/themes/offline-theme-slide.css"
+		},
+		{
+			"nombre": "socketio",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"
+		},
+		{
+			"nombre": "momentjs",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"
+		},
+		{
+			"nombre": "lodash",
+			"link": "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
+		}
+	],
+	"locales": [
+		{
+			"nombre": "vue",
+			"link": "/bower_components/vue/dist/vue.min.js"
+		},
+		{
+			"nombre": "jquery",
+			"link": "/bower_components/jquery/dist/jquery.min.js"
+		},
+		{
+			"nombre": "materialize_css",
+			"link": "/bower_components/materialize/bin/materialize.css"
+		},
+		{
+			"nombre": "materialize_js",
+			"link": "/bower_components/materialize/bin/materialize.js"
+		},
+		{
+			"nombre": "font_awesome",
+			"link": "/bower_components/font-awesome/css/font-awesome.min.css"
+		},
+		{
+			"nombre": "offline_js",
+			"link": "/bower_components/offline/offline.min.js"
+		},
+		{
+			"nombre": "offline_css",
+			"link": "/bower_components/offline/themes/offline-language-spanish-indicator.css"
+		},
+		{
+			"nombre": "offline_theme",
+			"link": "/css/offline-theme-slide.css"
+		},
+		{
+			"nombre": "socketio",
+			"link": "/bower_components/socket.io-client/dist/socket.io.min.js"
+		},
+		{
+			"nombre": "momentjs",
+			"link": "/bower_components/moment/moment.js"
+		}
+	]
 }

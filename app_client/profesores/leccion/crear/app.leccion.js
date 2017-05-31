@@ -1,6 +1,7 @@
 var App = new Vue({
   mounted: function(){
-    //Materialize initializers
+    //Materialize initializer
+    $('ul.tabs').tabs();
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('.scrollspy').scrollSpy();
@@ -10,61 +11,30 @@ var App = new Vue({
     $('select').material_select();
     $('.modal').modal();
     $('.collapsible').collapsible({
-      onOpen: function(el) { 
+      onOpen: function(el) {
         var self = this;
         self.CollapsibleOpen = true
-        alert("asd");
       }
     });
     //Flujo
     //this.getPreguntas();
     this.getParalelos();
     this.obtenerCapitulos();
+
+  },
+  created: function() {
   },
   updated: function(){
     var self = this;
       self.DOMupdated = true;
   },
   el: '#app',
-  data: {
-    capitulosObtenidos: [],
-    capitulos: [],
-    tutoriales: [],
-    laboratorios: [],
-    preguntasEstimacion: [],
-    preguntasTutorial: [],
-    preguntasLaboratorio: [],
-    capitulosAMostrar: [],
-    leccion_nueva: {
-      nombre: '',
-      tiempoEstimado: '',
-      tipo: '',
-      fechaInicio: '',
-      preguntas: [
-      ],
-      puntaje: 0,
-      paralelo: '',
-      nombreParalelo: '',
-      nombreMateria: '',
-      codigoMateria: ''
-    },
-    paralelos: [],
-    paralelo_filtrado: [],
-    preguntas: [],
-    pregunta_tutorial: [],
-    preguntas_escogidas: {
-      preguntas: [],
-      tiempoTotal: 0
-    },
-    paraleloEscogido: {
-      nombre: '',
-      id: ''
-    },
-    tipoEscogido: '',
-    DOMupdated: false,
-    CollapsibleOpen: false
-  },
   methods: {
+    obtenerLogeado: function() {
+      this.$http.get('/api/session/usuario_conectado').then(response => {
+        this.profesor = response.body.datos;
+      })
+    },
     crearRegistroCalificacion: function(leccionId){
       var self = this;
       var grupos = [];
@@ -93,6 +63,59 @@ var App = new Vue({
         });
       });
     },
+    /*
+    *Cuando se da click al boton que invoca al metodo, se selecciona una pestaña
+    *pestaniasgt: Id de la pestaña a la que desea dirigirse
+    */
+    avanzarPestania: function(pestaniasgt){
+      var pestania = pestaniasgt;
+      $('ul.tabs').tabs('select_tab', pestania);
+    },
+    validarCamposVacios: function(){
+      var self = this;
+      var  nombre = self.leccion_nueva.nombre;
+      var  tEst = self.leccion_nueva.tiempoEstimado;
+      var  tipo = self.leccion_nueva.tipo;
+      var  fInicio = self.leccion_nueva.fechaInicio;
+      var pEscogido = self.paraleloEscogido.id;
+      var materia = self.leccion_nueva.nombreMateria;
+      var error = false;
+      $("#lblNombre").removeClass("#ffebee red lighten-5");
+      $("#tipoLeccion").removeClass("#ffebee red lighten-5");
+      $("lblNombre").removeClass("#ffebee red lighten-5");
+      $("#datePicker").removeClass("#ffebee red lighten-5");
+      $("#materias").removeClass("#ffebee red lighten-5");
+      $("#div-select").removeClass("#ffebee red lighten-5");
+
+      if (nombre == ""){
+        $("#lblNombre").addClass("#ffebee red lighten-5");
+        error = true;
+
+      }
+      if (tipo == ""){
+        $("#tipoLeccion").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      
+      if (materia == ""){
+        $("#materias").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+      if (pEscogido == ""){
+        $("#div-select").addClass("#ffebee red lighten-5");
+        error = true;
+      }
+
+      if(error){
+        //$('#modalVal').modal('open');        DESCOMENTAR ESTA LINEA, XAVIER!
+
+      }else{
+        self.avanzarPestania("test2");
+
+      }
+
+
+    },
     showTooltip: function(preguntaID, descripcion, tiempo){
         var tooltipID = "#tooltip-" + preguntaID;
         var max_width = ( 50 * $( window ).width() )/100;
@@ -119,28 +142,30 @@ var App = new Vue({
       self.leccion_nueva.paralelo = self.paraleloEscogido.id;
       self.leccion_nueva.tipo = self.tipoEscogido;
       this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-        //success callback
-        $('#myModal').modal('open');
-        console.log(response)
-        self.crearRegistroCalificacion(response.body.datos._id)
-        /**
-        *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
-        *Al apretar cualquier parte del body, reenviará al menú de lecciones, 
-        **/
-        $("body").click(function(){
-          window.location.replace("/profesores/leccion");
-        });
-        $(document).keyup(function(e) {
-             if (e.keyCode == 27) { // escape key maps to keycode `27`
-                window.location.replace("/profesores/leccion");
-            }
-        });
-        //-------Fin de cerrar Modal-------------
-        }, response => {
-        //error callback
-        alert("ALGO SALIÓ MAL!" + response);
-        console.log(response)
+      //success callback
+      $('#myModal').modal('open');
+      console.log(response)
+      self.crearRegistroCalificacion(response.body.datos._id)
+      /**
+      *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
+      *Al apretar cualquier parte del body, reenviará al menú de lecciones,
+      **/
+      $("body").click(function(){
+        window.location.replace("/profesores/leccion");
       });
+      $(document).keyup(function(e) {
+           if (e.keyCode == 27) { // escape key maps to keycode `27`
+              window.location.replace("/profesores/leccion");
+          }
+      });
+      //-------Fin de cerrar Modal-------------
+      }, response => {
+      //error callback
+      alert("ALGO SALIÓ MAL!" + response);
+      console.log(response)
+      });
+
+
     },
     obtenerCapitulos: function(){
       var self = this;
@@ -184,6 +209,7 @@ var App = new Vue({
         self.dividirPreguntasEnCapitulos();
         self.dividirPreguntasEnLaboratorios();
         self.dividirPreguntasEnTutoriales();
+        App.filtrarCapitulos('estimacion|laboratorio')
         $.each(self.capitulos, function(index, capitulo){
           capitulo.preguntas.sort(function(a, b){
              return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -209,7 +235,7 @@ var App = new Vue({
       var self = this;
       if(self.DOMupdated && !self.CollapsibleOpen){
         $('.collapsible').collapsible({
-          onOpen: function(el) { 
+          onOpen: function(el) {
             self.CollapsibleOpen = true;
           },
           onClose: function(el){
@@ -291,6 +317,28 @@ var App = new Vue({
         //successfull callback
         if(response.body.estado) {
           self.paralelos = response.body.datos
+          if (this.profesor.tipo == 'titular') {
+            var materia = self.paralelos[0].codigo
+            App.leccion_nueva.codigoMateria = materia
+            //Filtrando para física 2
+            if(materia == "FISG1002"){
+            App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo2);
+              App.leccion_nueva.nombreMateria = "Física 2"
+              self.paraleloEscogido.id = self.paralelos[0]._id
+              self.paraleloEscogido.nombre = self.paralelos[0].nombre
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+            }
+            //Filtrando para física 3
+            if(materia == "FISG1003"){
+              App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3);
+              App.leccion_nueva.nombreMateria = "Física 3"
+              self.paraleloEscogido.id = self.paralelos[0]._id
+              self.paraleloEscogido.nombre = self.paralelos[0].nombre
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+            }
+            //Eliminando y agregando label donde serán colocados los paralelos.
+            App.filtrarCapitulos(App.tipoEscogido);
+          }
           //self.crearSelectParalelos();
         }
         }, response => {
@@ -324,9 +372,81 @@ var App = new Vue({
       });
       $('#div-select').append(select);
       $('#select-paralelos').material_select();
+    },
+    filtrarCapitulos: function (opcion){
+      if (opcion === 'estimacion|laboratorio') {
+        App.$data.tipoEscogido = $('#seleccionado1').val();
+        $valor = $('#seleccionado1');
+      } else {
+        App.$data.tipoEscogido = $('#seleccionado2').val();
+        $valor = $('#seleccionado2');
+      }
+      console.log(App.$data.tipoEscogido);
+      App.$data.tipoEscogido = $valor.val();
+      App.$data.leccion_nueva.tipo = App.$data.tipoEscogido;
+      //Sección de filtrar las preguntas por capítulos.
+      var materia = $("#subject").val()
+      if($valor.val()=='estimacion|laboratorio'){
+        App.$data.capitulosAMostrar = [];
+        App.$data.capitulosAMostrar = App.$data.capitulos.concat(App.$data.laboratorios);
+      }else if($valor.val()=='tutorial'){
+        App.$data.capitulosAMostrar = [];
+        App.$data.capitulosAMostrar = App.$data.tutoriales;
+      }
+
+      if(materia == "FISG1002"){
+        App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo2);
+      }
+      if(materia == "FISG1003"){
+        App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo3);
+      }
+
+      //uncheck all checked checkbox, la función sirve... pero hay otros errores por arreglar.
+      //unCheckPreguntas();
     }
-  }
+  },
+  data: {
+    capitulosObtenidos: [],
+    capitulos: [],
+    tutoriales: [],
+    laboratorios: [],
+    preguntasEstimacion: [],
+    preguntasTutorial: [],
+    preguntasLaboratorio: [],
+    capitulosAMostrar: [],
+    leccion_nueva: {
+      nombre: '',
+      tiempoEstimado: '',
+      tipo: '',
+      fechaInicio: moment().add(1, 'day').format('YYYY-MM-DD'),
+      preguntas: [
+      ],
+      puntaje: 0,
+      paralelo: '',
+      nombreParalelo: '',
+      nombreMateria: '',
+      codigoMateria: ''
+    },
+    paralelos: [],
+    paralelo_filtrado: [],
+    preguntas: [],
+    pregunta_tutorial: [],
+    preguntas_escogidas: {
+      preguntas: [],
+      tiempoTotal: 0
+    },
+    paraleloEscogido: {
+      nombre: '',
+      id: ''
+    },
+    tipoEscogido: 'estimacion|laboratorio',
+    DOMupdated: false,
+    CollapsibleOpen: false,
+    profesor: ''
+  },
 })
+
+App.obtenerLogeado()
 
 function preguntaSeleccionada(_element) {
   var existe = App.leccion_nueva.preguntas.some(pregunta => _element.id == pregunta.pregunta)
@@ -394,13 +514,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
   })
 });
 
-$('#div-select').change(function(){ 
+$('#div-select').change(function(){
   App.leccion_nueva.paralelo = $('#select-paralelos option:selected').val();
   App.leccion_nueva.nombreParalelo = $('#select-paralelos option:selected').text();
 });
 
-$('#select-tipo-leccion').change(function(){
-  filtrarCapitulos();
+// $('#select-tipo-leccion').change(function(){
+//   filtrarCapitulos();
+// });
+
+$('#seleccionado1').change(function(){
+  App.filtrarCapitulos('estimacion|laboratorio');
+});
+
+$('#seleccionado2').change(function(){
+  App.filtrarCapitulos('tutorial');
 });
 
 $("#subject").change(function(){
@@ -413,7 +541,7 @@ $("#subject").change(function(){
   }
   //Filtrando para física 3
   if(materia == "FISG1003"){
-   App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3); 
+   App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3);
    App.leccion_nueva.nombreMateria = "Física 3"
   }
   //Eliminando y agregando label donde serán colocados los paralelos.
@@ -421,33 +549,9 @@ $("#subject").change(function(){
   var label = $("<label>").addClass("active").text("Paralelo:");
   $("#div-select").append(label);
   App.crearSelectParalelos();
+  App.filtrarCapitulos(App.tipoEscogido);
 
-  filtrarCapitulos();
 });
-
-function filtrarCapitulos(){
-  App.$data.tipoEscogido = $('#select-tipo-leccion option:selected').val();
-  App.$data.leccion_nueva.tipo = App.$data.tipoEscogido;
-  //Sección de filtrar las preguntas por capítulos.
-  var materia = $("#subject").val()
-  if($('#select-tipo-leccion option:selected').val()=='estimacion|laboratorio'){
-    App.$data.capitulosAMostrar = [];
-    App.$data.capitulosAMostrar = App.$data.capitulos.concat(App.$data.laboratorios);
-  }else if($('#select-tipo-leccion option:selected').val()=='tutorial'){
-    App.$data.capitulosAMostrar = [];
-    App.$data.capitulosAMostrar = App.$data.tutoriales;
-  }
-
-  if(materia == "FISG1002"){
-    App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo2);
-  }
-  if(materia == "FISG1003"){
-    App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo3);
-  }
-
-  //uncheck all checked checkbox, la función sirve... pero hay otros errores por arreglar.
-  //unCheckPreguntas();
-}
 
 function unCheckPreguntas(){
   App.preguntas_escogidas.preguntas = [];
@@ -466,5 +570,21 @@ function filtrarCapitulo2(capitulo){
 function filtrarCapitulo3(capitulo){
   return capitulo.codigoMateria == "FISG1003";
 }
+// App.obtenerLogeado()
 
 
+$('#datePicker').pickadate({
+  monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+  monthsShort: ['En', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+  weekdaysFull: ['Domingo','Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+  weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+  today: 'Hoy',
+  clear: 'Limpiar',
+  close: 'Cerrar',
+  closeOnSelect: true,
+  format: 'yyyy-mm-dd',
+  min: new Date(),
+  onClose: function(data) {
+    App.leccion_nueva.fechaInicio = moment(this.get('value')).add(1, 'day').format('YYYY-MM-DD')
+  }
+})

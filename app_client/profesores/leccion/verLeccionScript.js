@@ -9,7 +9,7 @@ var app = new Vue({
 		$('.scrollspy').scrollSpy();
 		$('#modalEliminarLeccion').modal();
 		//$('#modalNuevoCapitulo').modal();
-		
+
 		this.misParalelos();
 		this.getLecciones();
 
@@ -30,7 +30,7 @@ var app = new Vue({
 		anioActual: '',
 		//
 		paraleloId: '',
-		calificaciones: {}
+		calificaciones: []
 	},
 	methods: {
 		obtenerLogeado: function() {
@@ -42,7 +42,6 @@ var app = new Vue({
       	url: '/api/session/usuario_conectado',
       	success: function(res){
       		self.profesor = res.datos;
-      		console.log(self.profesor);
       	}
       });
     },
@@ -52,10 +51,9 @@ var app = new Vue({
     		url: '/api/paralelos/profesores/mis_paralelos',
     		success: function(res){
     			self.paralelos = res.datos;
-    			console.log(self.paralelos);
     		}
     	});
-    	
+
     },
     getLecciones: function(){
     	/*
@@ -63,14 +61,14 @@ var app = new Vue({
     	*/
 			var self = this;
 			this.$http.get('/api/lecciones').then(response => {
-				//success callback				
+				//success callback
 				var leccionesObtenidas = response.body.datos;
 				if(self.profesor.tipo === 'titular'){
 					self.filtrarLecciones(leccionesObtenidas);
 				}else if(self.profesor.tipo === 'peer'){
 					self.filtrarLeccionesPeer(leccionesObtenidas);
 				}
-				
+
 			}, response => {
 				//error callback
 				console.log(response)
@@ -84,14 +82,30 @@ var app = new Vue({
 					Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de su paralelo.
 			*/
 			var self = this;
-			$.each(arrayLecciones, function(index, leccion){
-				$.each(self.paralelos, function(j, paralelo){
-					if(leccion.paralelo === paralelo._id){
-						self.lecciones.push(leccion);
-					}
-				})
-			});
-			self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+      var permiso = self.profesor.nivelPeer.some(nivel => {
+        return nivel.nivel === 1
+      })
+      if (permiso) {
+        self.profesor.nivelPeer.forEach(nivel => {
+          if (nivel.nivel === 1) {
+            self.lecciones = arrayLecciones.filter(leccion => {
+              if (leccion.paralelo == nivel.paralelo && leccion.estado != 'pendiente') {
+                $.get({
+                  url: `/api/lecciones/${leccion._id}/calificada`,
+                  success: function(res) {
+                    if (res.datos) {
+                      leccion.estado = 'calificada'
+                    }
+                  }
+                })
+                return leccion
+              }
+            })
+          }
+        })
+        self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+        self.lecciones = self.lecciones.sort(self.sortPorEstado);
+      }
 		},
 		nuevaPregunta: function(){
 			window.location.href = '/profesores/leccion/crear'
@@ -102,13 +116,13 @@ var app = new Vue({
 			var url = '/api/lecciones/' + id;
 			this.$http.delete(url).then(response => {
 				self.lecciones= [];
-				this.getLecciones();			
+				this.getLecciones();
 			}, response => {
 				//error callback
 				console.log(response)
 			});
 		},
-		
+
 		crearModalEliminarLeccion: function(id, nombre){
 			var self = this;
 			var leccionId = id;
@@ -124,7 +138,7 @@ var app = new Vue({
 			var btnEliminar = $('<a/>').attr({
 				'href': '#!',
 				'class': 'modal-action modal-close waves-effect waves-green btn-flat'
-			});			
+			});
 			btnEliminar.text('Eliminar');
 			btnEliminar.click(function(){
 				self.eliminarLeccion(leccionId);
@@ -138,19 +152,39 @@ var app = new Vue({
 			$('#modalEliminarLeccionFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarLeccion').modal('open');
 		},
-		
-		
+
+
     filtrarLecciones: function(arrayLecciones){
     	var self = this;
     	$.each(arrayLecciones, function(index, leccion){
     		if(leccion.creador==self.profesor._id){
-    			self.lecciones.push(leccion);
+          $.get({
+            url: `/api/lecciones/${leccion._id}/calificada`,
+            success: function(res) {
+              if (res.datos) {
+                leccion.estado = 'calificada'
+              }
+              self.lecciones.push(leccion);
+            }
+          })
     		}
     	})
-    	self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+    	// self.lecciones = self.lecciones.sort(self.sortPorUpdate);
+      self.lecciones = self.lecciones.sort(self.sortPorEstado);
+      // self.lecciones = self.lecciones.sort(self.sortPorEstado);
     },
     sortPorUpdate: function(a, b){
-    	return (a.updatedAt < b.updatedAt ) ? 1: -1;
+    	return (a.updatedAt < b.updatedAt) ? 1: -1;
+    },
+    sortPorEstado: function(a ,b){
+      console.log(a.estado);
+      if (a.estado > b.estado) {
+        return 1;
+      }
+      if (a.estado < b.estado) {
+        return -1;
+      }
+      return 0;
     },
     tomarLeccion: function(paralelo, id){
     	var self = this;
@@ -190,27 +224,29 @@ var app = new Vue({
       return moment(date);
     },
     date: function (date) {
-      return moment(date).format('MMMM Do YYYY');
+      var es = moment().locale('es');
+      // es.localeData().months(date)
+      return moment(date).format('MMMM D YYYY');
     },
-		
+
 		//Version inicial de generar Reporte está por backup por si acaso
 /*
     generarReporte: function(){
 	var reporteData= [];
-	
+
 	var self = this;
 	var promises= [];
 	var promesas= [];
-				 
+
 				promises.push(this.$http.get("/api/lecciones").then(response => {
 		        self.todasLecciones= response.body.datos;
 		        $.each(self.todasLecciones, function(index, value){
 		      	self.leccionesId.push(value._id);
 		      	self.nombreLecciones.push(value.nombre);
 		      });
-		       
 
- 	
+
+
  			}));
 
 
@@ -252,7 +288,7 @@ var app = new Vue({
 			}
 		});
 	});
-		
+
 		Promise.all(promesas).then(function(){
 			$.each(reporteData, function(i, data){
 				var nombre;
@@ -271,69 +307,20 @@ var app = new Vue({
 			});
 
 		});
-		
+
 }*/
 
 test : function(){
+
 	var self = this;
-	var calificacion ;
-	var _lecciones =[];
-	var _id = '';
-	this.$http.get( "/api/paralelos/profesores/mis_paralelos").then(function(response){
-		$.each(response.body.datos, function(index, value){
-			self.paraleloId = value.id;
-			console.log(self.paraleloId);
-			//_id = value.id;
-			//console.log(_id);
-		});
-	});
-	this.$http.get("/api/lecciones/"+self.paraleloId).then(function (response) {
+
+	this.$http.get( "/api/calificaciones/profesores/registros/todos").then(function(response){
 		console.log(response.body.datos);
-		//self.leccionesId = response.body.datos;
-		//console.log("lecciones:" + self.leccionesId);
-		_lecciones = response.body.datos;
-		console.log(_lecciones);
 	});
-
-	$.each(_lecciones, function (index, value) {
-		console.log(value);
-		self.$http.get( "/api/calificaciones/"+value._id).then(function(response){
-			console.log(response.body.datos);
-			self.calificaciones.push(response.body.datos);
-			calificacion = response.body.datos;
-		});
-	});
-
-
-
-	/*
-	* this.$http.get( "/api/calificaciones/HkDOZcC1Z").then(function(response){
-	 console.log("dentro de leccion");
-	 console.log(response.body.datos);
-	 });
-
-	 this.$http.get( "/api/calificaciones/SyTWh8sJZ").then(function(response){
-	 console.log("dentro de registros");
-	 console.log(response.body.datos);
-	 });
-
-
-	 this.$http.get( "/api/calificaciones/HkDOZcC1Z/SyTWh8sJZ").then(function(response){
-	 console.log("dentro de leccion");
-	 console.log(response.body.datos);
-	 });
-
-	 this.$http.get( "/api/calificaciones/registros").then(function(response){
-	 console.log("registros paralelo");
-	 console.log(response.body.datos);
-	 });
-	 */
-
 
 },
 
 generarReporte: function(){
-	//var Grupo = require('../../../app_api/models/grupo.model');
 	var reporteData= [];
 	var self = this;
 	var promises= [];
@@ -356,8 +343,6 @@ generarReporte: function(){
 		      	self.nombreLecciones.push(value.nombre);
 		      }
 		      });
-		       
-
  			}));
 
 
@@ -405,7 +390,7 @@ generarReporte: function(){
 			}
 		});
 	});
-		
+
 		Promise.all(promesas).then(function(){
 			$.each(reporteData, function(i, data){
 				var nombre;
@@ -424,7 +409,7 @@ generarReporte: function(){
 			});
 
 		});
-		
+
 }
 
 
@@ -452,70 +437,70 @@ document.addEventListener("DOMContentLoaded", function(event) {
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
     var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
-    
-    var CSV = '';    
+
+    var CSV = '';
     //Set Report title in first row or line
-    
+
     CSV += ReportTitle + '\r\n\n';
 
     //This condition will generate the Label/Header
     if (ShowLabel) {
         var row = "";
-        
+
         //This loop will extract the label from 1st index of on array
         for (var index in arrData[0]) {
-            
+
             //Now convert each value to string and comma-seprated
             row += index + ',';
         }
 
         row = row.slice(0, -1);
-        
+
         //append Label row with line break
         CSV += row + '\r\n';
     }
-    
+
     //1st loop is to extract each row
     for (var i = 0; i < arrData.length; i++) {
         var row = "";
-        
+
         //2nd loop will extract each column and convert it in string comma-seprated
         for (var index in arrData[i]) {
             row += '"' + arrData[i][index] + '",';
         }
 
         row.slice(0, row.length - 1);
-        
+
         //add a line break after each row
         CSV += row + '\r\n';
     }
 
-    if (CSV == '') {        
+    if (CSV == '') {
         alert("Invalid data");
         return;
-    }   
-    
+    }
+
     //Generate a file name
     var fileName = "";
     //this will remove the blank-spaces from the title and replace it with an underscore
-    fileName += ReportTitle.replace(/ /g,"_");   
-    
+    fileName += ReportTitle.replace(/ /g,"_");
+
     //Initialize file format you want csv or xls
     var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
-    
+
     // Now the little tricky part.
     // you can use either>> window.open(uri);
     // but this will not work in some browsers
-    // or you will not get the correct file extension    
-    
+    // or you will not get the correct file extension
+
     //this trick will generate a temp <a /> tag
-    var link = document.createElement("a");    
+    var link = document.createElement("a");
     link.href = uri;
-    
+
     //set the visibility hidden so it will not effect on your web-layout
     link.style = "visibility:hidden";
     link.download = fileName + ".csv";
-    
+
     //this part will append the anchor tag and remove it after automatic click
     document.body.appendChild(link);
     link.click();

@@ -59,7 +59,8 @@ CalificacionSchema.statics.calificar = function(id_leccion, id_grupo, calificaci
 }
 
 CalificacionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, callback){
-	this.find({leccion: id_leccion}, callback);
+	//this.find({leccion: id_leccion}, callback);
+	this.find({leccion: id_leccion}).populate({path: 'participantes'}).exec(callback);
 }
 
 // De alguna manera no encuentra la id y devuelve vacio

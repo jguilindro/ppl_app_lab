@@ -26,7 +26,7 @@
 }
 .take{
 	background-color: #42a5f5;
-} 
+}
 .titles{
 	background-color: rgba(255,255,255,0.6);
 }
@@ -73,4 +73,45 @@ section a{
 .logout{
 	padding-top: 2%;
 	padding-left: 2%;
+}
+
+.clearer{
+			clear: left;
+		}
+.calificacion-good{
+	background-color: rgba(0, 128, 0, 0.4);
+}
+.calificacion-reg{
+	background-color: rgba(255, 255, 0, 0.4);
+}
+.take{
+	background-color: #42a5f5;
+}
+#grad{
+	background-color:   #d3dbdb;
+}
+tr{
+	background-color: rgba(255,255,255,0.3);
+}
+.titles{
+	background-color: rgba(255,255,255,0.6);
+}
+
+
+div.disabled {
+  display: none;
+}
+
+div#loader {
+  margin-top: 15%;
+}
+
+div.enable {
+  display: block;
+  text-align: center;
+  margin-top: 2%;
+}
+
+h2.mensaje {
+
 }

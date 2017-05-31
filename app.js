@@ -39,8 +39,8 @@ if (os.hostname() === 'joelerll-laptop') {
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server, {'pingInterval': 1000, 'pingTimeout': 5000});
-io.set('heartbeat interval', 1)
+var io = require('socket.io')(server, {'pingInterval': 4000, 'pingTimeout': 8000});
+
 app.use(function(req, res, next){
   res.io = io;
   next();
@@ -51,7 +51,7 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 } else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing') {
   app.use(morgan('tiny'))
 }
-
+app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

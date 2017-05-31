@@ -1,7 +1,10 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
 const EstudianteModel = require('../models/estudiante.model');
+const CalificacionModel = require('../models/calificacion.model');
+const PreguntaModel = require('../models/pregunta.model');
 var respuesta = require('../utils/responses');
+var co = require('co')
 
 const obtenerTodasLecciones = (req, res) => {
   LeccionModel.obtenerTodasLecciones((err, lecciones) => {
@@ -27,6 +30,14 @@ const obtenerLeccion = (req, res) => {
 
 // TODO: anadir el creador con el login
 const crearLeccion = (req, res) => {
+  var anadirPregunta = function(id_pregunta, id_leccion) {
+    return new Promise((resolve, reject) => {
+      PreguntaModel.anadirUsadaEnLeccion(id_pregunta, id_leccion, (err, res ) => {
+        if (err) return reject(err)
+        return resolve(true)
+      })
+    })
+  }
   let leccion = new LeccionModel({
     creador: req.session._id,
     nombre: req.body.nombre,
@@ -39,6 +50,11 @@ const crearLeccion = (req, res) => {
     nombreParalelo: req.body.nombreParalelo,
     nombreMateria: req.body.nombreMateria,
     codigoMateria: req.body.codigoMateria
+  })
+  co(function*() {
+    for (var i = 0; i < leccion.preguntas.length; i++) {
+      var c = yield anadirPregunta(leccion.preguntas[i].pregunta, leccion._id)
+    }
   })
   leccion.crearLeccion((err, doc) => {
     if (err) {
@@ -132,12 +148,32 @@ const anadirTiempo = (req, res) => {
   })
 }
 
+const leccionYaCalificada = (req, res) => {
+  LeccionModel.obtenerLeccion(req.params.id_leccion, (err, leccion) => {
+    if (err) return respuesta.serverError(res);
+    if (leccion.estado == 'pendiente' || leccion.estado == 'tomando') {
+      return respuesta.ok(res, false);
+    }
+    CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, calificaciones) => {
+      if (err) return respuesta.serverError(res);
+      for (var i = 0; i < calificaciones.length; i++) {
+        if (!calificaciones[i].calificada && calificaciones[i].participantes.length != 0) {
+          return respuesta.ok(res, false);
+          break;
+        }
+      }
+      return respuesta.ok(res, true);
+    })
+  })
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
   obtenerLeccion,
   actualizarLeccion,
   eliminarLeccion,
+  leccionYaCalificada,
   // realtime
   tomarLeccion,
   anadirTiempo,

@@ -4,8 +4,13 @@ const EstudianteModel = require('../models/estudiante.model');
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
 const ParaleloController = require('../controllers/paralelos.controller');
+const co = require('co');
+var json2csv = require('json2csv');
+var fs = require('fs');
+
 bodyParser        = require('body-parser');
 var response = require('../utils/responses');
+
 
 const crearRegistro = (req, res) => {
 	GrupoModel.obtenerGrupo(req.body.grupo, (err, grupo) => {
@@ -103,43 +108,13 @@ const calificar = (req, res) => {
 	});
 }
 
-const obtenerRegistroPorLeccion = (req, res) => {
-	CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
-		if(err) return response.serverError(res);
-		return response.ok(res, registros);
-	});
-}
 
-//no reconoce la id del grupo, y devuelve un array vacio, es muy raro
-const obtenerRegistroPorGrupo = (req, res) => {
-	CalificacionModel.obtenerRegistroPorGrupo(req.params.id_grupo, (err, registro) => {
-		if(err) return response.serverError(res);
-		return response.ok(res, registro);
-	});
-}
-
-const obtenerRegistroParalelo = (req, res ) => {
-	var paraleloId = '';
-	var leccionesParalelo=[];
-	var registros = [];
-	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
-		if (err) return respuesta.serverError(res);
-		paraleloId = paralelos._id;
-	})
-	LeccionModel.obtenerLeccionesParalelo(paraleloId, (err, lecciones) => {
-		if (err) return respuesta.serverError(res);
-		leccionesParalelo = lecciones;
-	})
-	$.each(leccionesParalelo, function (index, value) {
-		//CalificacionModel.obtenerRegistroPorLeccion
-		CalificacionModel.obtenerRegistroPorLeccion(value._id, (err, registro) => {
-			if(err) return response.serverError(res);
-			registros.push(registro);
-			//return response.ok(res, registros);
-		});
-	})
-	return response.ok(res, registros);
-}
+ const obtenerRegistroPorLeccion = (req, res) => {
+	 CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
+	 if(err) return response.serverError(res);
+	 return response.ok(res, registros);
+	 });
+ }
 
 const anadirNombreGrupo = (req, res) => {
 	CalificacionModel.anadirNombreGrupo(req.params.id_grupo, req.body.nombre_grupo, (err, doc) => {
@@ -148,33 +123,112 @@ const anadirNombreGrupo = (req, res) => {
 	})
 }
 
-/*
-const obtenerRegistroPorGrupos = (req, res) => {
-	var registros = [];
-	ParaleloModel.obtenerParalelosProfesor(req.session._id, (err, paralelos) => {
-		if (err) return respuesta.serverError(res);
-		console.log(paralelos);
-		console.log(paralelos.grupos);
-		return response.ok(res, paralelos);
-		$.each(paralelos.grupos,function (index, value) {
-			CalificacionModel.obtenerRegistroPorGrupos(value._id,(err, registro) => {
-				if(err) return response.serverError(res);
-				registros.push(registro);
-				//return response.ok(res, registro);
-			});
+
+//Funciones para obtener los datos para generar el csv
+const obtenerCalificaciones = (req, res) => {
+	function obtenerParaleloProfesor(id_profesor){
+		return new Promise((resolve, reject) => {
+			ParaleloModel.obtenerParalelosProfesor(id_profesor, (err, paralelos) => {
+				if (err) return reject(new Error('No se pudo obtener los paralelos'))
+				return resolve(paralelos)
+			})
 		})
-	})
-	//return response.ok(res, registros);
+	}
+
+	function obtenerLecciones(id_paralelo) {
+		return new Promise((resolve, reject) => {
+			LeccionModel.obtenerLeccionesParalelo(id_paralelo, (err, lecciones) => {
+				if (err) return reject(new Error('No se pudo obtener las lecciones'))
+				return resolve(lecciones)
+			})
+		})
+	}
+
+	function obtenerCalificacionPorLeccion(id_leccion){
+		return new Promise((resolve, reject) => {
+			CalificacionModel.obtenerRegistroPorLeccion(id_leccion, (err, registro) => {
+				if (err) return reject(new Error('No se puedo obtener el registro'))
+				return resolve(registro)
+			})
+		})
+	}
+
+	co(function* () {
+		var id_profe = req.session._id;
+		var calificacionesData = []; //Data para el JSON
+		var campos = ['matricula', 'nombreEstudiante', 'apellidoEstudiante', 'grupo', 'materia', 'paralelo', 'nombreLeccion', 'tipoLeccion', 'puntaje'];
+
+		var paralelo = yield obtenerParaleloProfesor(id_profe);
+		//var lecciones = yield obtenerLecciones(paralelo[0]._id);
+
+		if (paralelo.length > 1){
+			console.log("OH NOOO ES UN PEER!!!");
+			for(var z=0; z< paralelo.length; z++){
+				var lecciones = yield obtenerLecciones(paralelo[z]._id);
+				for (var i = 0; i < lecciones.length; i++){
+					var calificacionesPorLeccion = yield obtenerCalificacionPorLeccion(lecciones[i]);
+					for (var j = 0; j < calificacionesPorLeccion.length; j++){
+						var calificacion = calificacionesPorLeccion[j];
+						var participantes = calificacion.participantes;
+						for (var x =0; x < participantes.length; x++){
+							var calificacionJSON = {
+								matricula: participantes[x].matricula,
+								nombreEstudiante: participantes[x].nombres,
+								apellidoEstudiante: participantes[x].apellidos,
+								grupo: calificacion.nombreGrupo,
+								materia: paralelo[0].nombreMateria,
+								paralelo: calificacion.nombreParalelo,
+								nombreLeccion: lecciones[i].nombre,
+								tipoLeccion: lecciones[i].tipo,
+								puntaje: calificacion.calificacion
+							}
+							calificacionesData.push(calificacionJSON);
+						}
+					}
+				}
+			}
+		}else {
+			console.log("Es un profesor!");
+			var lecciones = yield obtenerLecciones(paralelo[0]._id);
+			for (var i = 0; i < lecciones.length; i++){
+				var calificacionesPorLeccion = yield obtenerCalificacionPorLeccion(lecciones[i]);
+				for (var j = 0; j < calificacionesPorLeccion.length; j++){
+					var calificacion = calificacionesPorLeccion[j];
+					var participantes = calificacion.participantes;
+					for (var x =0; x < participantes.length; x++){
+						var calificacionJSON = {
+							matricula: participantes[x].matricula,
+							nombreEstudiante: participantes[x].nombres,
+							apellidoEstudiante: participantes[x].apellidos,
+							grupo: calificacion.nombreGrupo,
+							materia: paralelo[0].nombreMateria,
+							paralelo: calificacion.nombreParalelo,
+							nombreLeccion: lecciones[i].nombre,
+							tipoLeccion: lecciones[i].tipo,
+							puntaje: calificacion.calificacion
+						}
+						calificacionesData.push(calificacionJSON);
+					}
+				}
+			}
+		}
+
+		var csv = json2csv({ data: calificacionesData, fields: campos});
+		fs.writeFile('Reporte.csv', csv, function(err) {
+			if (err) throw err;
+			console.log('file saved');
+		});
+		response.ok(res)
+	}).catch(fail => console.log(fail))
 }
-*/
+
 
 module.exports = {
 	crearRegistro,
 	obtenerRegistro,
-	obtenerRegistroPorLeccion,
 	anadirParticipante,
 	calificar,
 	anadirNombreGrupo,
-	obtenerRegistroPorGrupo,
-	obtenerRegistroParalelo
+	obtenerRegistroPorLeccion,
+	obtenerCalificaciones,
 }
