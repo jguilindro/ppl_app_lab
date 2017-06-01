@@ -36,7 +36,7 @@
 			  					<td class="text-flow">{{leccion.nombreMateria}}@{{leccion.nombreParalelo}}</td>
                   <td class="text-flow">{{dateInicio(leccion.fechaInicio)}}</td>
 			  					<td class="text-flow">{{date(leccion.fechaInicioTomada)}}</td>
-                  <td class="text-flow">{{dateTerminada(leccion.fechaInicioTomada, leccion.tiempoEstimado)}}</td>
+                  <td class="text-flow">{{dateTerminada(leccion, leccion.tiempoEstimado)}}</td>
 			  					<!-- <td class="text-flow">{{leccion.estado}}</td> -->
 			  					<td v-if="leccion.estado=='pendiente'" v-if="profesor.tipo =='titular'">
 			  						<a class="waves-effect waves-light btn btn-tomar btn-small-new #0277bd light-blue darken-3" @click="tomarLeccion(leccion.paralelo, leccion._id)">Tomar</a>

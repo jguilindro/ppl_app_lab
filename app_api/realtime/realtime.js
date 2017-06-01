@@ -271,7 +271,9 @@ function obtenerLeccionRealtime(id_leccion) {
             apellidos: leccion.estudiantesDandoLeccion[i].apellidos,
             matricula: leccion.estudiantesDandoLeccion[i].matricula,
             correo: leccion.estudiantesDandoLeccion[i].correo,
-            leccion: leccion.estudiantesDandoLeccion[i].leccion
+            leccion: leccion.estudiantesDandoLeccion[i].leccion,
+            codigoIngresado: leccion.estudiantesDandoLeccion[i].codigoIngresado,
+            dandoLeccion: leccion.estudiantesDandoLeccion[i].dandoLeccion
           })
         }
         leccion.estudiantesDandoLeccion = tmp
@@ -283,7 +285,9 @@ function obtenerLeccionRealtime(id_leccion) {
             apellidos: leccion.estudiantesDesconectados[i].apellidos,
             matricula: leccion.estudiantesDesconectados[i].matricula,
             correo: leccion.estudiantesDesconectados[i].correo,
-            leccion: leccion.estudiantesDesconectados[i].leccion
+            leccion: leccion.estudiantesDesconectados[i].leccion,
+            codigoIngresado: leccion.estudiantesDesconectados[i].codigoIngresado,
+            dandoLeccion: leccion.estudiantesDesconectados[i].dandoLeccion
           })
         }
         leccion.estudiantesDesconectados = tmp2

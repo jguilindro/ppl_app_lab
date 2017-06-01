@@ -1,6 +1,8 @@
 const ParaleloModel = require('../models/paralelo.model');
+const GrupoModel = require('../models/grupo.model');
 var respuesta = require('../utils/responses');
 const utils = require('../utils')
+var co = require('co')
 
 const obtenerTodosParalelos = (req, res) => {
   ParaleloModel.obtenerTodosParalelos((err,paralelos) => {
@@ -15,6 +17,44 @@ const obtenerParalelo = (req, res) => {
     if (err) return respuesta.serverError(res);
     return respuesta.ok(res, paralelo)
   })
+}
+
+const obtenerParaleloParaLeccion = (req, res) => {
+  function obtenerParalelo (id_paralelo) {
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParalelo(id_paralelo, (err, paralelo) => {
+        if (err) return reject(new Error('Error al obtener el paralelo'))
+        delete paralelo.updatedAt
+        delete paralelo.createdAt
+
+        paralelo.peers = []
+        return resolve(paralelo)
+      })
+    })
+  }
+
+  function obtenerGrupo(id_grupo) {
+    return new Promise((resolve, reject) => {
+      GrupoModel.obtenerGrupo(id_grupo, (err, grupo) => {
+        if (err) return reject(new Error('Error al obtener el grupo'))
+        return resolve(grupo)
+      })
+    })
+  }
+
+  co(function* () {
+    var grupos = []
+    var paralelo = yield obtenerParalelo(req.params.id_paralelo)
+    for (var i = 0; i < paralelo.grupos.length; i++) {
+      var grupo = yield obtenerGrupo(paralelo.grupos[i]._id)
+      if (grupo) {
+        grupos.push(grupo)
+      }
+    }
+    paralelo.grupos = []
+    paralelo.grupos = grupos
+    respuesta.ok(res, paralelo)
+  }).catch(fail => console.log(fail))
 }
 
 // TODO: Verificar que existe profesor y estudiante
@@ -189,5 +229,6 @@ module.exports = {
   obtenerParaleloDeEstudiante,
 	// lecciones
   leccionYaComenzo,
-  dandoLeccion
+  dandoLeccion,
+  obtenerParaleloParaLeccion
 }

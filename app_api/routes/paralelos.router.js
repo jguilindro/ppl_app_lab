@@ -27,4 +27,5 @@ router.get('/estudiante/:id_estudiante',authApi.estudiante, ParalelosController.
 // Lecciones
 router.post('/:id_paralelo/leccion/:id_leccion', authApi.estudiante, ParalelosController.dandoLeccion) // <= DOCUMENTACION
 router.post('/:id_paralelo/leccion_ya_comenzo',authApi.estudiante,  ParalelosController.leccionYaComenzo)
+router.get('/:id_paralelo/obtener_paralelo',authApi.profesor, ParalelosController.obtenerParaleloParaLeccion)
 module.exports = router

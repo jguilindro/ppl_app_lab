@@ -24,10 +24,9 @@ var App = new Vue({
     },
     obtenerParalelo() {
       var id_paralelo = window.location.href.toString().split('/')[7]
-      this.$http.get(`/api/paralelos/${id_paralelo}`).then(res => {
+      this.$http.get(`/api/paralelos/${id_paralelo}/obtener_paralelo`).then(res => {
         this.paralelo = JSON.parse(JSON.stringify(res.body.datos))
         this.grupos = this.paralelo.grupos
-        console.log(this.paralelo);
         this.grupos.forEach(grupo => {
           grupo.estudiantes_conectados = []
         })
@@ -36,12 +35,21 @@ var App = new Vue({
     obtenerGrupoEstudiante(_estudiante) {
       let grupo_index = this.grupos.findIndex(grupo => {
         let estudiante = grupo.estudiantes.find(estudiante => {
-          return estudiante === _estudiante._id
+          return estudiante._id === _estudiante._id
         })
         if (estudiante)
           return true
       })
       return grupo_index
+    },
+    obtenerConectados(id_grupo) {
+      var grupo =  App.grupos.find(function(g) {
+        return g._id == id_grupo
+      })
+      return grupo.estudiantes_conectados.length
+    },
+    bloquearEstudiante(id_estudiante) {
+      console.log(id_estudiante);
     },
     tomarLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
@@ -124,7 +132,29 @@ leccion.on('leccion datos', function(leccion) {
     // esto da error de index
     let grupo_index = App.obtenerGrupoEstudiante(App.estudiantes_conectados[i])
     if (grupo_index != -1 &&  grupo_index < App.grupos.length) {
+      // for (var i = 0; i < App.grupos[grupo_index].estudiantes_conectados.length; i++) {
+      //   if (App.grupos[grupo_index].estudiantes_conectados[i].codigoIngresado) {
+      //     $('#esperando-'+ App.grupos[grupo_index].estudiantes_conectados[i]._id).addClass('spinner')
+      //   }
+      // }
       App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
+    }
+  }
+  for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
+    $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
+    $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
+    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
+    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
+    $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
+  }
+  for (var i = 0; i < App.estudiantes_conectados.length; i++) {
+    $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
+    $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
+    if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
+      $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+    }
+    if (App.estudiantes_conectados[i].dandoLeccion) {
+       $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
     }
   }
 })

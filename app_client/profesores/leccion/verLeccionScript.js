@@ -248,21 +248,16 @@ var app = new Vue({
       // return moment(date).tz("America/Guayaquil").format('DD/MM');
       return moment(date).format('DD MMMM');
     },
-    dateTerminada: function (date, tiempoEstimado) {
+    dateTerminada: function (leccion, tiempoEstimado) {
       var es = moment().locale('es');
-      if (date == undefined || date == '') {
+      console.log(leccion.fechaTerminada);
+      if (leccion.fechaInicioTomada == undefined || leccion.fechaInicioTomada == '') {
         return '----'
       }
-      // var hora = moment(date).format('hh')
-      // console.log(parseInt(hora));
-      // if ( parseInt(hora) < 5) {
-      //   console.log(date);
-      //   console.log(parseInt(hora));
-      //   return moment(date).add(8,'h').add(tiempoEstimado,'m').tz("America/Guayaquil").format('hh:mm');
-      // }
-
-      // es.localeData().months(date)
-      return moment(date).add(tiempoEstimado,'m').format('HH:mm');
+      if (leccion.fechaTerminada) {
+        return moment(leccion.fechaTerminada).format('HH:mm');
+      }
+      return moment(leccion.fechaInicioTomada).add(tiempoEstimado,'m').format('HH:mm');
     },
 
 		//Version inicial de generar Reporte está por backup por si acaso

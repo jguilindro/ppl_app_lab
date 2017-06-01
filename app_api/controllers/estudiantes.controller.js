@@ -127,6 +127,7 @@ const tomarLeccion = (req, res) => {
           if (paralelo.leccionYaComenzo) {
             // Tiene grupo, el paralelo esta dando leccion, ingreso bien el codigo leccion, leccion ya comenzo
             var codigo_valido = ingresadocodigoLeccion(_id)
+
             respuesta.ok(res, {tieneGrupo: true, paraleloDandoLeccion: true, codigoLeccion: true, leccionYaComenzo: true})
           } else {
             // Tiene grupo, el paralelo esta dando leccion, ingreso bien el codigo leccion, leccion no ha empezado
@@ -217,8 +218,19 @@ const leccionDatos = (req, res) => {
     })
   }
 
+  function anadirLeccionYaComenzo(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      EstudianteModel.anadirLeccionYaComenzo(id_estudiante, (err, res) => {
+        if (err) return reject(new Error('Erro al anadir leccion ya comenzo'))
+        if (res) return resolve(true)
+        return resolve(false)
+      })
+    })
+  }
+
   co(function* () {
     var id_estudiante = req.session._id
+    var leccionYaComenzo = anadirLeccionYaComenzo(id_estudiante)
     var estudiante = yield buscarEstudiante(id_estudiante)
     var grupo = yield buscarGrupo(id_estudiante)
     var paralelo = yield buscarParalelo(id_estudiante)

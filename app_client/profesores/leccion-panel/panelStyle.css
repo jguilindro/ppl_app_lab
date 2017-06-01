@@ -2,6 +2,7 @@ body{
 	background-color:   #d3dbdb;
 }
 
+
 div.botones {
 	padding-top: 2%;
 	text-align: center;
@@ -10,12 +11,17 @@ btn {
  background-color: #000 !important;
 }
 
-.container{
+.containere{
 	background-color: white;
 	padding: 2%;
+  margin-left: 5%;
+  margin-right: 5%;
+  /*margin-left: 20px;
+  margin-right: 20px;*/
 	height: 100%;
 
 }
+
 div.grupin{
 	/*max-height: 400px;*/
 	margin-bottom: 25px;
@@ -29,8 +35,8 @@ h3.code{
 	font-weight: bold;
 	color: rgba(0,0,0,0.5);
 }
-p.group-name{
-	font-size: 2em;
+div.group-name{
+	font-size: 1.8em;
 	font-weight: bold;
 }
 .clearer{
@@ -49,6 +55,13 @@ p.group-name{
 	border-top: 0px;
 	margin-top: 0px;
 	margin-bottom: 0px;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  padding-left: 2%;
+}
+
+.estudiantes {
+  padding: 2%;
 }
 
 div.divisor{
@@ -77,5 +90,99 @@ div.divisor{
 div.estado {
   position:fixed;
   top:15%;
-  margin-left: 10%;
+  margin-left: 0%;
+}
+
+/*estados estudiante online*/
+.online {
+  -webkit-transition: width 2s; /* Safari */
+   transition: width 2s;
+    transition-duration: 3s;
+  background-color: green;
+  width: 20px;
+  height: 20px;
+  float: left;
+  border-radius: 10px 10px 10px 10px;
+  margin-right: 5px;
+}
+
+.offline {
+  -webkit-transition: width 2s; /* Safari */
+   transition: width 2s;
+    transition-duration: 3s;
+  background-color: red;
+  width: 20px;
+  height: 20px;
+  float: left;
+  border-radius: 10px 10px 10px 10px;
+  margin-right: 5px;
+
+}
+
+.no-ingresado {
+  background-color: gray;
+  width: 20px;
+  height: 20px;
+  float: left;
+  border-radius: 10px 10px 10px 10px;
+  margin-right: 5px;
+}
+
+.dando-leccion {
+  background-color: yellow;
+  width: 20px;
+  height: 20px;
+  float: left;
+  border-radius: 10px 10px 10px 10px;
+  margin-right: 5px;
+}
+
+/*
+total de estudiantes conectados
+ */
+
+/*boton bloquear estudiante*/
+
+/*acciones*/
+/*
+tipeando codigo
+esperando leccion
+dando leccion
+en pagina tomando-leccion
+bloqueado(colocar una linea intermedia o raya que diga que fue bloqueado, hablar de como setear eso en info de las lecciones.- Seria en estudiantes lecciones un campo bloqueado)
+ */
+ .loader {
+   display: flex;
+   height: 50vh;
+   justify-content: center;
+   align-items: center;
+ }
+
+ .spinner {
+   height: 4vh;
+   width: 4vh;
+   border: 5px solid rgba(0, 174, 239, 0.2);
+   border-top-color: rgba(0, 174, 239, 0.8);
+   border-radius: 100%;
+   animation: rotation 0.6s infinite linear 0.25s;
+   padding-right: 10px;
+   margin-right: 10px;
+   /* the opacity is used to lazyload the spinner, see animation delay */
+   /* this avoid the spinner to be displayed when visible for a very short period of time */
+   opacity: 0;
+ }
+
+ @keyframes rotation {
+   from {
+     opacity: 1;
+     transform: rotate(0deg);
+   }
+   to {
+     opacity: 1;
+     transform: rotate(359deg);
+   }
+ }
+
+.icono {
+  padding-right: 2%;
 }

@@ -39,6 +39,9 @@ const LeccionSchema = mongoose.Schema({
   fechaInicioTomada: { // DOCUMENTACION
     type: Date
   },
+  fechaTerminada: { // DOCUMENTACION
+    type: Date
+  },
   codigo: {
     type: String,
     unique: true
@@ -142,7 +145,8 @@ LeccionSchema.statics.comenzarLeccion = function(id_leccion, callback) {
 
 LeccionSchema.statics.leccionTerminada = function(id_leccion, callback) {
   let fecha = moment();
-  this.update({_id: id_leccion}, {$set: {estado: 'terminado',leccionYaComenzo: false}}, callback)
+  let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
+  this.update({_id: id_leccion}, {$set: {estado: 'terminado',leccionYaComenzo: false, fechaTerminada: current_time_guayaquil}}, callback)
 }
 
 LeccionSchema.statics.leccionTerminadaDevelop = function(id_leccion, callback) {

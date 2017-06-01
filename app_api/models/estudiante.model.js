@@ -29,9 +29,13 @@ const EstudianteSchema = mongoose.Schema({
   },
   bloqueadoLeccion: { // reemplazado por esperandoLeccion
     type: Boolean,
-    'default': true
+    'default': false
   },
   codigoIngresado: {
+    type: Boolean,
+    'default': false
+  },
+  dandoLeccion: { // si ya ingreso a la pagina de leccion
     type: Boolean,
     'default': false
   },
@@ -150,12 +154,12 @@ EstudianteSchema.statics.veficarPuedeDarLeccion = function(id_estudiante, callba
   this.findOne({_id:id_estudiante}, callback)
 }
 //
-// EstudianteSchema.statics.anadirEstudianteTerminoLeccion = function(id_estudiante,callback) {
-//   this.update({_id: id_estudiante}, {$set: {dandoLeccion: false}},callback)
-// }
+EstudianteSchema.statics.anadirLeccionYaComenzo = function(id_estudiante,callback) {
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}},callback)
+}
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
-  this.update({_id: id_estudiante}, {$set: {codigoIngresado: false}}, callback)
+  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false,codigoIngresado: false}}, callback)
 }
 
 EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudiante, callback) {

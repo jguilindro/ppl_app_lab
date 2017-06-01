@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/bower_components/offline/themes/offline-language-spanish-indicator.css">
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="./panelStyle.css">
   <link rel="stylesheet" type="text/css" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/offline-theme-dark-indicator.css">
@@ -17,7 +18,7 @@
 <body>
   <header id="#navbar"></header>
   <div id="app">
-  	<div class="container">
+  	<div class="containere">
       <!-- Modal Structure -->
        <div id="modal1" class="modal">
          <div class="modal-content" style="text-align: center;">
@@ -63,11 +64,21 @@
 	    </div> -->
 	    <div class="estudiantes row">
 	    	<div v-for="(grupo, index) in paralelo.grupos">
-		      <div v-if="index%3 == 0" class = "divisor"></div>
-            <div class="col s4 grupin">
-              <p class="group-name center-align">{{grupo.nombre}}</p>
-              <div v-for="estudiante in grupo.estudiantes_conectados">
-                <p class="student center-align">{{estudiante.nombres}} {{estudiante.apellidos}}</p>
+		      <div v-if="index%2 == 0" class = "divisor"></div>
+            <div class="col s6 grupin estudiantes" v-if="grupo.estudiantes.length != 0">
+              <div class="group-name center-align">{{grupo.nombre}}  <i class="fa fa-group fa-lg" style="float: right;">{{obtenerConectados(grupo._id)}}/{{grupo.estudiantes.length}}</i></div>
+              <div v-for="estudiante in grupo.estudiantes">
+                <div class="" style="float: left">
+                  <div class="switch">
+                    <label>
+                      <input type="checkbox" v-on:change="bloquearEstudiante(estudiante._id)">
+                      <span class="lever"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="student left-align "> <div class="offline" v-bind:id="estudiante._id"></div>    {{estudiante.nombres}} {{estudiante.apellidos}}
+                  <span v-bind:id="'esperando-' + estudiante._id" style="float: right;" class=""></span>
+                </div>
               </div>
             </div>
 		    </div>

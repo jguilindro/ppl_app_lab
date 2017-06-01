@@ -10,6 +10,7 @@ var app = new Vue({
   el: '#app',
   methods: {
     verificarEstudiantPuedeDarLeccion: function() {
+      var self = this
       if (!app.codigo_leccion) {
         Materialize.toast('Ingrese el código', 4000)
       } else {
@@ -31,6 +32,8 @@ var app = new Vue({
               load.setAttribute('class', 'enable')
               var a = document.getElementById('app')
               a.setAttribute('class', 'disabled')
+              console.log(self.estudiante);
+              socket.emit('usuario', self.estudiante)
               esperando = true
               return
             } else {
@@ -62,6 +65,7 @@ var app = new Vue({
                 load.setAttribute('class', 'enable')
                 var a = document.getElementById('app')
                 a.setAttribute('class', 'disabled')
+                socket.emit('usuario', user.datos)
                 esperando = true
               }
               if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {
@@ -76,10 +80,13 @@ var app = new Vue({
   data: {
     estudiante: {},
     codigo_leccion: ''
+  },
+  created: function() {
+    this.estado()
   }
 })
 
-app.estado()
+
 var esperando = false
 socket.on('empezar leccion', function(data) {
   function getRandomArbitrary(min, max) {
@@ -88,7 +95,7 @@ socket.on('empezar leccion', function(data) {
   if (esperando) {
     setTimeout(function() {
       window.location.href = '/estudiantes/leccion'
-    }, getRandomArbitrary(2000, 45000))
+    }, parseInt(getRandomArbitrary(2000, 45000), 10))
   }
 })
 
