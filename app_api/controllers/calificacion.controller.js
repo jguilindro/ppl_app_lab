@@ -3,10 +3,13 @@ const GrupoModel = require('../models/grupo.model');
 const EstudianteModel = require('../models/estudiante.model');
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
+const ProfesorModel = require('../models/profesor.model');
 const ParaleloController = require('../controllers/paralelos.controller');
 const co = require('co');
 var json2csv = require('json2csv');
 var fs = require('fs');
+var Excel = require("exceljs");
+var unstream = require('unstream');
 
 bodyParser        = require('body-parser');
 var response = require('../utils/responses');
@@ -75,7 +78,7 @@ const calificar = (req, res) => {
 					//Finalmente, tengo que cambiar el estado de la lección a 'calificado'
 					//Para eso reviso primero si ya todos los grupos de esta lección fueron calificados.
 					CalificacionModel.obtenerRegistroPorLeccion(id_leccion, (err, registros) => {
-						if(err){ 
+						if(err){
 							return response.serverError(res);
 						}
 						else{
@@ -234,6 +237,251 @@ const obtenerCalificaciones = (req, res) => {
 	}).catch(fail => console.log(fail))
 }
 
+const csv = function(req, res) {
+  // matricula, nombresEstudiante, apellidos, grupo, materia, paralelo, nombreLeccion, tipoLeccion, calificacion
+  var lecciones = req.body.lecciones
+  var paralelos = req.body.paralelos
+  var grupos = req.body.grupos
+  var id_profesor = req.session._id
+  function obtenerParalelosPeer(id_profesor) {
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParaleloPeerCsv(id_profesor, (err, paralelos) => {
+        if (err) return reject(new Error('No se puedo obtener paralelos profesor'))
+        return resolve(paralelos)
+      })
+    })
+  }
+
+  function obtenerParalelosProfesor(id_profesor) {
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParalelosProfesor(id_profesor, (err, paralelos) => {
+        if (err) return reject(new Error('No se puedo obtener paralelos profesor'))
+        return resolve(paralelos)
+      })
+    })
+  }
+
+  function obtenerProfesor(id_profesor) {
+    return new Promise((resolve, reject) => {
+      ProfesorModel.obtenerProfesor(id_profesor, (err ,profesor) => {
+        if (err) return reject(new Error('No se puedo obtener profesor'))
+        return resolve(profesor)
+      })
+    })
+  }
+
+  function obtenerCalificacionesPorLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      CalificacionModel.obtenerRegistroPorLeccionCsv(id_leccion, (err, lecciones) => {
+        if (err) return reject(new Error('No se puedo obtener leccion'))
+        return resolve(lecciones)
+      })
+    })
+  }
+
+  function obtenerCalificacionesPorParalelo(id_paralelo) {
+    return new Promise((resolve, reject) => {
+      CalificacionModel.obtenerRegistroPorParaleloCsv(id_paralelo, (err, lecciones) => {
+        if (err) return reject(new Error('No se puedo obtener leccion'))
+        return resolve(lecciones)
+      })
+    })
+  }
+
+  function obtenerNivelParaleloPeer(peer) {
+    return new Promise((resolve, reject) => {
+      for (var i = 0; i < peer.nivelPeer.length; i++) {
+        if (peer.nivelPeer[i].nivel == 1) {
+          return resolve(peer.nivelPeer[i].paralelo)
+        }
+      }
+      return resolve(false) // no es profesor nivel peer uno de ningun paralelo
+    })
+  }
+
+  function obtenerLeccionesParalelo(id_paralelo) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccionesParalelo(id_paralelo, (err, leccionesParalelo) => {
+        if (err) return reject(new Error('No se puedo obtener leccion'))
+        return resolve(leccionesParalelo)
+      })
+    })
+  }
+
+
+  function obtenerParaleloDePeer(id_paralelo, paralelos) {
+    return new Promise((resolve, reject) => {
+      for (var i = 0; i < paralelos.length; i++) {
+        if (paralelos[i]._id == id_paralelo) {
+          return resolve(paralelos[i])
+        }
+      }
+      return resolve(false)
+    })
+  }
+
+  function noAsistencia(grupoTodos, grupoAsistencia) {
+    var no_asistieron = []
+    for (var i = 0; i < grupoTodos.estudiantes.length; i++) {
+      var est = grupoAsistencia.participantes.some(est => est._id == grupoTodos.estudiantes[i]._id)
+      if (!est) {
+        no_asistieron.push(grupoTodos.estudiantes[i])
+      }
+    }
+    return no_asistieron
+  }
+
+  function buscarEstudiantesGrupo(id_grupo, paralelo) {
+    return paralelo.grupos.find(grup => {
+      if (id_grupo == grup._id) {
+        return grup
+      }
+    })
+  }
+
+  function obtenerTodosEstudiantes() {
+    return new Promise((resolve, reject) => {
+
+    })
+  }
+
+  function ordenarPorGrupo(grupos) {
+    return grupos.sort(function(a, b) {
+      var a = parseInt(a.grupo.split(' ')[1])
+      var b = parseInt(b.grupo.split(' ')[1])
+      if (a > b) {
+        return 1
+      } else if (a < b) {
+        return -1
+      }
+      return -1
+    })
+  }
+
+  function leccionCalificada(leccion, calificaciones) {
+    for (var i = 0; i < calificaciones.length; i++) {
+      // console.log(calificaciones[i].leccion)
+      if (leccion.estado == 'pendiente' || leccion.estado == 'tomando') {
+        return false
+      }
+      if (calificaciones[i].leccion == leccion._id) {
+        if ((!calificaciones[i].calificada && calificaciones[i].participantes.length != 0)) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
+  function generarRowsGrupo(grupoCompleto, paralelo, leccionParalelo, noAsistieron, calificacion) {
+    var grupo = []
+    var estudiantes = grupoCompleto.estudiantes
+    var no_entro = 'si'
+    for (var i = 0; i < estudiantes.length; i++) {
+      var no = noAsistieron.some(es => es._id == estudiantes[i]._id)
+      if (no) {
+        no_entro = 'no'
+      }
+      grupo.push({
+        matricula: estudiantes[i].matricula,
+        nombres: estudiantes[i].nombres,
+        apellidos: estudiantes[i].apellidos,
+        grupo: grupoCompleto.nombre,
+        materia: paralelo.nombreMateria,
+        paralelo: paralelo.nombre,
+        nombreLeccion: leccionParalelo.nombre,
+        tipoLeccion: leccionParalelo.tipo,
+        noEntroALeccion: no_entro,
+        calificacion: calificacion.calificacion
+      })
+      no_entro = 'si'
+    }
+    return grupo
+  }
+
+  co(function* (){
+    var workbook = new Excel.Workbook();
+    workbook.creator = 'joelerll';
+    workbook.created = new Date();
+    workbook.modified = new Date();
+
+    var profesor = yield obtenerProfesor(id_profesor)
+    var paralelo_titular = yield obtenerParalelosProfesor(id_profesor)
+
+    var paralelos_peer = yield obtenerParalelosPeer(id_profesor)
+    if (paralelos_peer) {
+      if (!lecciones && !paralelos && !grupos) {
+        var paralelo_peer_asignado = yield obtenerNivelParaleloPeer(profesor)
+        var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo_peer_asignado)
+        var paralelo = yield obtenerParaleloDePeer(paralelo_peer_asignado, paralelos_peer)
+        var documento = []
+        for (var i = 0; i < leccionesParalelo.length; i++) {
+          var calificaciones_leccion = yield obtenerCalificacionesPorLeccion(leccionesParalelo[i]._id)
+          var calificada = leccionCalificada(leccionesParalelo[i], calificaciones_leccion)
+          if (!calificada) {
+            continue
+          }
+          var row = []
+          if (calificaciones_leccion.length) {
+            for (var j = 0; j < calificaciones_leccion.length; j++) {
+              // console.log(calificaciones_leccion[i]);
+              if (!calificaciones_leccion[j].grupo) {
+                continue
+              }
+              var grupoCompleto = buscarEstudiantesGrupo(calificaciones_leccion[j].grupo._id, paralelo)
+              if (!grupoCompleto) {
+                continue
+              }
+              var noAsistieron = noAsistencia(grupoCompleto, calificaciones_leccion[j])
+              row = generarRowsGrupo(grupoCompleto, paralelo, leccionesParalelo[i], noAsistieron, calificaciones_leccion[j])
+              documento = documento.concat(row)
+            }
+            documento = ordenarPorGrupo(documento)
+            var worksheet =  workbook.addWorksheet(`${leccionesParalelo[i].nombre.trim()}@${leccionesParalelo[i].tipo}`, {
+              pageSetup:{paperSize: 9, orientation:'landscape'}
+            });
+            worksheet.columns = [
+                { header: 'matricula', key: 'matricula', width: 12 },
+                { header: 'nombres', key: 'nombres', width: 25 },
+                { header: 'apellidos', key: 'apellidos', width: 25},
+                { header: 'grupo', key: 'grupo', width: 8},
+                { header: 'materia', key: 'materia', width: 10},
+                { header: 'paralelo', key: 'paralelo', width: 10},
+                { header: 'nombreLeccion', key: 'nombreLeccion', width: 30},
+                { header: 'tipoLeccion', key: 'tipoLeccion', width: 20},
+                { header: 'Dio', key: 'noEntroALeccion', width: 4},
+                { header: 'calificacion', key: 'calificacion', width: 15, 'font': {'size': 12,'color': {'argb': 'FFFF6600'}}},
+            ];
+            worksheet.autoFilter = 'B1:D1';
+            var titulos = {
+                name: 'Comic Sans MS',
+                family: 4,
+                size: 9,
+                bold: true
+            }
+            var aligin = { vertical: 'middle', horizontal: 'center' }
+            var celdas = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1']
+            for (var l = 0; l < celdas.length; l++) {
+              worksheet.getCell(celdas[l]).font = titulos
+              worksheet.getCell(celdas[l]).alignment = aligin
+            }
+            var newArray = documento.slice();
+            for (var k = 0; k < newArray.length; k++) {
+              worksheet.addRow({matricula: newArray[k].matricula, nombres: newArray[k].nombres, apellidos: newArray[k].apellidos, grupo: newArray[k].grupo, materia: newArray[k].materia, paralelo: newArray[k].paralelo, nombreLeccion: newArray[k].nombreLeccion, tipoLeccion: newArray[k].tipoLeccion, noEntroALeccion: newArray[k].noEntroALeccion, calificacion:  newArray[k].calificacion});
+            }
+            documento = []
+          }
+        }
+
+        workbook.xlsx.write(unstream({}, function(data) {
+          res.send(data)
+          return
+        }))
+
+      }
+    }
+  }).catch(fail => console.log(fail))
+}
 
 module.exports = {
 	crearRegistro,
@@ -243,5 +491,6 @@ module.exports = {
 	obtenerRegistroPorLeccion,
 	obtenerCalificaciones,
 	recalificar,
-	anadirNombreGrupo
+	anadirNombreGrupo,
+  csv
 }

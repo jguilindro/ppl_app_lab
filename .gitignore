@@ -8,3 +8,4 @@ scripts/tmp
 *.png
 env.env
 env.txt
+*.csv

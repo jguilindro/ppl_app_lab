@@ -123,11 +123,19 @@ ParaleloSchema.statics.eliminarProfesorDeParalelo = function(id_paralelo, callba
 }
 
 ParaleloSchema.statics.obtenerParalelosProfesor = function(id_profesor, callback) {
-  this.find({profesor: id_profesor}).populate({path: 'grupos.estudiantes estudiantes grupos '}).exec(callback);
+  this.find({profesor: id_profesor}).populate({path: 'grupos estudiantes'}).exec(callback);
 }
 
 ParaleloSchema.statics.obtenerParaleloPeer = function(id_profesor, callback) {
-  this.find({peers: id_profesor}).populate({path: 'grupos.estudiantes estudiantes grupos '}).exec(callback);
+  this.find({peers: id_profesor}).populate({path: 'grupos estudiantes'}).exec(callback);
+}
+
+ParaleloSchema.statics.obtenerParaleloPeerCsv = function(id_profesor, callback) {
+  this.find({peers: id_profesor}).populate({
+    path: 'grupos',
+    populate: { path: 'estudiantes' },
+    select: 'estudiantes nombre'
+  }).exec(callback);
 }
 
 /* PEERS*/

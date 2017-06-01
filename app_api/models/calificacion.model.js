@@ -67,6 +67,21 @@ CalificacionSchema.statics.obtenerRegistroPorLeccion = function(id_leccion, call
 	this.find({leccion: id_leccion}).populate({path: 'participantes'}).exec(callback);
 }
 
+CalificacionSchema.statics.obtenerRegistroPorLeccionCsv = function(id_leccion, callback){
+	//this.find({leccion: id_leccion}, callback);
+	this.find({leccion: id_leccion}).populate({path: 'participantes grupo'}).exec(callback);
+}
+
+CalificacionSchema.statics.obtenerRegistroPorParalelo = function(id_paralelo, callback){
+	//this.find({leccion: id_leccion}, callback);
+	this.find({paralelo: id_paralelo}).populate({path: 'leccion grupo'}).exec(callback);
+}
+
+CalificacionSchema.statics.obtenerRegistroPorParaleloCsv = function(id_paralelo, callback){
+	//this.find({leccion: id_leccion}, callback);
+	this.find({paralelo: id_paralelo, calificada: true}).populate({path: 'leccion grupo'}).exec(callback);
+}
+
 // De alguna manera no encuentra la id y devuelve vacio
 CalificacionSchema.statics.obtenerRegistroPorGrupo = function(id_grupo, callback){
 	this.find({grupo: id_grupo}, callback);

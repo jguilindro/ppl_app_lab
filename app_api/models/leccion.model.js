@@ -96,7 +96,7 @@ LeccionSchema.statics.obtenerTodasLecciones = function(callback) {
 }
 
 LeccionSchema.statics.obtenerLeccionesParalelo = function (id_paralelo, callback) {
-  this.find({paralelo: id_paralelo}, callback);
+  this.find({paralelo: id_paralelo}).sort({createdAt: 1}).exec(callback);
 }
 
 LeccionSchema.statics.obtenerLeccion = function(id_leccion, callback) {

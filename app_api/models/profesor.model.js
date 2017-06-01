@@ -39,6 +39,10 @@ ProfesorSchema.statics.obtenerProfesorPorCorreo = function(correo_profesor, call
   this.findOne({correo: correo_profesor}, callback)
 }
 
+ProfesorSchema.statics.obtenerProfesor = function(id_profesor, callback) {
+  this.findOne({_id: id_profesor}, callback)
+}
+
 ProfesorSchema.statics.obtenerProfesorPorNombres = function(nombres_profesor, callback) {
   this.findOne({nombres: nombres_profesor}, callback)
 }

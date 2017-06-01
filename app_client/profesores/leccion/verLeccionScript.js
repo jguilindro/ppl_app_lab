@@ -178,7 +178,6 @@ var app = new Vue({
     	return (a.updatedAt < b.updatedAt) ? 1: -1;
     },
     sortPorEstado: function(a ,b){
-      console.log(a.estado);
       if (a.estado > b.estado) {
         return 1;
       }
@@ -250,7 +249,6 @@ var app = new Vue({
     },
     dateTerminada: function (leccion, tiempoEstimado) {
       var es = moment().locale('es');
-      console.log(leccion.fechaTerminada);
       if (leccion.fechaInicioTomada == undefined || leccion.fechaInicioTomada == '') {
         return '----'
       }
@@ -346,8 +344,15 @@ test : function(){
 
 	var self = this;
 
-	this.$http.get( "/api/calificaciones/profesores/registros/todos").then(function(response){
-		console.log(response.body.datos);
+	this.$http.post( "/api/calificaciones/csv").then(function(response){
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    url = window.URL.createObjectURL(response.body);
+    a.href = url;
+    a.download = app.profesor.correo.split('@')[0] + '.xlsx';
+    a.click();
+    window.URL.revokeObjectURL(url);
 	});
 
 },
