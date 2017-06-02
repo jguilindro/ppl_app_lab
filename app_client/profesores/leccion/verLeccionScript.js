@@ -348,7 +348,9 @@ test : function(){
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
+    console.log(response);
     url = window.URL.createObjectURL(response.body);
+    console.log(url);
     a.href = url;
     a.download = app.profesor.correo.split('@')[0] + '.xlsx';
     a.click();
