@@ -6,7 +6,6 @@ const ParaleloModel = require('../models/paralelo.model');
 const ProfesorModel = require('../models/profesor.model');
 const ParaleloController = require('../controllers/paralelos.controller');
 const co = require('co');
-var json2csv = require('json2csv');
 var fs = require('fs');
 var Excel = require("exceljs");
 var unstream = require('unstream');
@@ -228,12 +227,12 @@ const obtenerCalificaciones = (req, res) => {
 			}
 		}
 
-		var csv = json2csv({ data: calificacionesData, fields: campos});
-		fs.writeFile('Reporte1.csv', csv, function(err) {
-			if (err) throw err;
-			console.log('file saved');
-		});
-		response.ok(res)
+		// var csv = json2csv({ data: calificacionesData, fields: campos});
+		// fs.writeFile('Reporte1.csv', csv, function(err) {
+		// 	if (err) throw err;
+		// 	console.log('file saved');
+		// });
+		// response.ok(res)
 	}).catch(fail => console.log(fail))
 }
 
@@ -444,13 +443,13 @@ const csv = function(req, res) {
                 { header: 'matricula', key: 'matricula', width: 12 },
                 { header: 'nombres', key: 'nombres', width: 25 },
                 { header: 'apellidos', key: 'apellidos', width: 25},
+                { header: 'calificacion', key: 'calificacion', width: 15, 'font': {'size': 12,'color': {'argb': 'FFFF6600'}}},
                 { header: 'grupo', key: 'grupo', width: 8},
                 { header: 'materia', key: 'materia', width: 10},
                 { header: 'paralelo', key: 'paralelo', width: 10},
                 { header: 'nombreLeccion', key: 'nombreLeccion', width: 30},
                 { header: 'tipoLeccion', key: 'tipoLeccion', width: 20},
-                { header: 'Dio', key: 'noEntroALeccion', width: 4},
-                { header: 'calificacion', key: 'calificacion', width: 15, 'font': {'size': 12,'color': {'argb': 'FFFF6600'}}},
+                { header: 'dio leccion', key: 'noEntroALeccion', width: 13}
             ];
             worksheet.autoFilter = 'B1:D1';
             var titulos = {
@@ -459,8 +458,11 @@ const csv = function(req, res) {
                 size: 9,
                 bold: true
             }
+
             var aligin = { vertical: 'middle', horizontal: 'center' }
             var celdas = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1']
+            var fill = { type: 'pattern', pattern:'darkTrellis', fgColor:{argb:'93C0F2'}, bgColor:{argb:'FFC0C0C0'}}
+
             for (var l = 0; l < celdas.length; l++) {
               worksheet.getCell(celdas[l]).font = titulos
               worksheet.getCell(celdas[l]).alignment = aligin
@@ -468,23 +470,15 @@ const csv = function(req, res) {
             var newArray = documento.slice();
             for (var k = 0; k < newArray.length; k++) {
               worksheet.addRow({matricula: newArray[k].matricula, nombres: newArray[k].nombres, apellidos: newArray[k].apellidos, grupo: newArray[k].grupo, materia: newArray[k].materia, paralelo: newArray[k].paralelo, nombreLeccion: newArray[k].nombreLeccion, tipoLeccion: newArray[k].tipoLeccion, noEntroALeccion: newArray[k].noEntroALeccion, calificacion:  newArray[k].calificacion});
+              worksheet.getCell('D' + (k + 2)).fill = fill;
             }
+            // worksheet.getCell('J2').fill = ;
             documento = []
           }
         }
 
         workbook.xlsx.write(unstream({}, function(data) {
-          // var mime = require('mime')
-          // res.set({
-          //   'Content-Type': 'application/octet-stream',
-          // })
-          // mime.lookup(data);
-          console.log(data.toString('base64'));
-          // var arr = new Uint8Array(data);
-          respuesta.ok(res,data.toString('base64'));
-          // res.end(data, 'binary');
-          // res.send(new Buffer(data, 'binary'))
-          return
+          return respuesta.ok(res,data.toString('base64'))
         }))
 
       }

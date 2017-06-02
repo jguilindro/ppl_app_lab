@@ -8,7 +8,6 @@ bodyParser        = require('body-parser'),
 session           = require('express-session'),
 MongoStore        = require('connect-mongo')(session),
 CASAuthentication = require('cas-authentication'),
-sendSeekable = require('send-seekable'),
 MongoClient  = require('mongodb').MongoClient,
 URL         = require('./app_api/utils/change_database').local(),
 os = require('os');
@@ -53,7 +52,7 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 } else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing') {
   app.use(morgan('tiny'))
 }
-app.use(sendSeekable);
+
 app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
