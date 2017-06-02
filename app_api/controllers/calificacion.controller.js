@@ -474,13 +474,14 @@ const csv = function(req, res) {
         }
 
         workbook.xlsx.write(unstream({}, function(data) {
-          var mime = require('mime')
-          res.set({
-            'Content-Type': 'application/octet-stream',
-          })
+          // var mime = require('mime')
+          // res.set({
+          //   'Content-Type': 'application/octet-stream',
+          // })
           // mime.lookup(data);
-          console.log(data);
-          res.sendSeekable(data);
+          console.log(data.toString('base64'));
+          // var arr = new Uint8Array(data);
+          respuesta.ok(res,data.toString('base64'));
           // res.end(data, 'binary');
           // res.send(new Buffer(data, 'binary'))
           return

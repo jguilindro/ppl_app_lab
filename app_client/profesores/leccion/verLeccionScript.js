@@ -348,8 +348,20 @@ test : function(){
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
-    console.log(typeof(response.body));
-    url = window.URL.createObjectURL(response.body);
+    // console.log(Object.values(response.body));
+    console.log(response.body.datos);
+    var byteCharacters = atob(response.body.datos);
+    var byteNumbers = new Array(byteCharacters.length);
+      for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      var blob = new Blob([byteArray], {type: 'application/octet-stream'});
+    // var blob = new Blob(Object.values(response.body), {type: "octet/stream"});
+    // // Blob f = response.body.getBodyAsBlob()
+    // // console.log(file);
+    // // console.log(response.body.toString());
+    url = window.URL.createObjectURL(blob);
     console.log(url);
     a.href = url;
     a.download = app.profesor.correo.split('@')[0] + '.xlsx';
@@ -361,6 +373,7 @@ test : function(){
   	// var event = document.createEvent('MouseEvents');
   	// event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
   	// link.dispatchEvent(event);
+
 	});
 
 },
