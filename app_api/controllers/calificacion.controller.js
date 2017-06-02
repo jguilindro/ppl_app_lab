@@ -474,7 +474,14 @@ const csv = function(req, res) {
         }
 
         workbook.xlsx.write(unstream({}, function(data) {
-          res.send(data)
+          var mime = require('mime')
+          res.set({
+            'Content-Type': 'application/octet-stream',
+          })
+          // mime.lookup(data);
+          console.log(data);
+          res.end(data, 'binary');
+          // res.send(new Buffer(data, 'binary'))
           return
         }))
 

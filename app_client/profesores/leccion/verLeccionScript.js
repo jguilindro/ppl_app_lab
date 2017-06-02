@@ -348,13 +348,19 @@ test : function(){
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
-    console.log(response);
+    console.log(typeof(response.body));
     url = window.URL.createObjectURL(response.body);
     console.log(url);
     a.href = url;
     a.download = app.profesor.correo.split('@')[0] + '.xlsx';
     a.click();
     window.URL.revokeObjectURL(url);
+    // var link = document.createElement('a');
+  	// link.setAttribute('href',response.url);
+  	// link.setAttribute('download',app.profesor.correo.split('@')[0] + '.xlsx');
+  	// var event = document.createEvent('MouseEvents');
+  	// event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+  	// link.dispatchEvent(event);
 	});
 
 },
