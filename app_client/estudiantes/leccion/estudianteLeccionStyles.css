@@ -87,3 +87,8 @@ div.estado {
 #row-area-respuesta label{
 	margin-bottom: 5%;
 }
+
+img{
+	max-width: 100%;
+	max-height: 100%;
+}
