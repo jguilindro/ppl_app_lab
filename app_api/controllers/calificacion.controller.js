@@ -480,7 +480,8 @@ const csv = function(req, res) {
           })
           // mime.lookup(data);
           console.log(data);
-          res.end(data, 'binary');
+          res.sendSeekable(data);
+          // res.end(data, 'binary');
           // res.send(new Buffer(data, 'binary'))
           return
         }))
