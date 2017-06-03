@@ -75,7 +75,7 @@ gulp.task('nodemon', function (cb) {
 	var started = false;
 
 	return nodemon({
-		script: './bin/www',
+		script: 'app.js',
     "ignore": [
   		".git",
   	 "node_modules/**/node_modules",

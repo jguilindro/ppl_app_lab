@@ -1,3 +1,8 @@
+var os = require('os');
+require('dotenv').load()
+if (os.hostname() === 'srv01appPPL') {
+  require('dotenv').load()
+}
 const express     = require('express');
 path              = require('path');
 favicon           = require('serve-favicon');
@@ -9,12 +14,12 @@ session           = require('express-session'),
 MongoStore        = require('connect-mongo')(session),
 CASAuthentication = require('cas-authentication'),
 MongoClient  = require('mongodb').MongoClient,
-URL         = require('./app_api/utils/change_database').local(),
-os = require('os');
+URL         = require('./app_api/utils/change_database').local();
 
 // CAS URLS
 var URL_CAS_LOCALHOST = 'http://localhost:3000'
 var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
+var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec/'
 var SERVICE_URL = ''
 if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'testing' || process.env.NODE_ENV == 'api') {
   SERVICE_URL = URL_CAS_LOCALHOST
@@ -22,6 +27,8 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
   SERVICE_URL = URL_CAS_PRODUCTION
 } else if (process.env.NODE_ENV == 'testing') {
   SERVICE_URL = URL_CAS_PRODUCTION
+} else if (os.hostname() === 'srv01appPPL') {
+  SERVICE_URL = URL_ESPOL_SERVER
 }
 
 // base de datos mongoose
@@ -38,7 +45,13 @@ if (os.hostname() === 'joelerll-laptop') {
 }
 
 var app = express();
+
 var server = require('http').Server(app);
+var debug = require('debug')('espol-ppl:server');
+var port = normalizePort(process.env.PORT || '8000');
+app.set('port', port);
+server.listen(port);
+// var server = require('../app').server;
 var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
 io.set('heartbeat interval', 1)
 
@@ -105,7 +118,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
   var procesarSession = function(req, res, next) {
     next()
   }
-} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' ) {
+} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' || os.hostname() === 'srv01appPPL') {
   app.get( '/', cas.bounce, function(req, res, next) {
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
@@ -262,4 +275,56 @@ app.use(function(err, req, res, next) {
   res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
 
-module.exports = {app: app, server: server};
+// module.exports = {app: app, server: server};
+
+// var app = require('../app').app;
+var debug = require('debug')('espol-ppl:server');
+// var http = require('http');
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+  return false;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
