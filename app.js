@@ -1,5 +1,4 @@
 var os = require('os');
-require('dotenv').load()
 if (os.hostname() === 'srv01appPPL') {
   require('dotenv').load()
 }

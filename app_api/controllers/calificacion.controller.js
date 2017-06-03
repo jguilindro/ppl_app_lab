@@ -451,7 +451,6 @@ const csv = function(req, res) {
             } else {
               var fecha = moment(leccionesParalelo[i].fechaInicioTomada).add('m',leccionesParalelo[i].tiempoEstimado).format('DD_MMMM_YYYY-hh_mm')
             }
-            console.log(fecha);
             var worksheet =  workbook.addWorksheet(fecha, {
               pageSetup:{paperSize: 9, orientation:'landscape'}
             });

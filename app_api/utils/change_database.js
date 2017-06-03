@@ -73,7 +73,7 @@ const local = function() {
       return require('../config/main').local
   } else if (os.hostname() === 'DESKTOP-CIH4I1V') {
     if (process.env.NODE_ENV == 'development') {
-      console.log('development mlab')
+      console.log('development local')
       return require('../config/main').local //local
     } else if (process.env.NODE_ENV == 'production') {
       console.log('production mlab')
