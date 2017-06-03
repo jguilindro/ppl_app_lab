@@ -69,7 +69,9 @@ const local = function() {
       console.log('api EMERGENCIA PELIGRO')
       return require('../config/main').mlab_production
     }
-  }else {
+  } else if (os.hostname() === 'srv01appPPL') {
+      return require('../config/main').local
+  } else {
     if (process.env.NODE_ENV == 'development') {
       console.log('development mlab')
       return require('../config/main').mlab //local
