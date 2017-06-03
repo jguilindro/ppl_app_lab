@@ -71,6 +71,23 @@ const local = function() {
     }
   } else if (os.hostname() === 'srv01appPPL') {
       return require('../config/main').local
+  } else if (os.hostname() === 'DESKTOP-CIH4I1V') {
+    if (process.env.NODE_ENV == 'development') {
+      console.log('development mlab')
+      return require('../config/main').local //local
+    } else if (process.env.NODE_ENV == 'production') {
+      console.log('production mlab')
+      return require('../config/main').mlab_production
+    } else if (process.env.NODE_ENV == 'production-test') {
+      console.log('production-test mlab')
+      return require('../config/main').mlab
+    } else if (process.env.NODE_ENV == 'testing') {
+      console.log('testing mlab')
+      return require('../config/main').mlab_testing
+    } else if (process.env.NODE_ENV == 'api') {
+      console.log('api EMERGENCIA PELIGRO')
+      return require('../config/main').local_production
+    }
   } else {
     if (process.env.NODE_ENV == 'development') {
       console.log('development mlab')
