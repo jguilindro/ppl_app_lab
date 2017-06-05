@@ -28,17 +28,20 @@
 						</div>
 					</ul>
 				</div>
-				<div v-for="grupo in grupos">
+				<div v-for="(grupo, index) in grupos">
 					<div v-bind:id=grupo[0].pregunta class="col s12" style='display: none'>
 						<!--Ahora se debe colocar todas las respuestas-->
+						<h3 class="nota">- Calificación: {{calificacion[index]}}/{{preguntas[index].puntaje}} -</h3>
+						<div class="row">
+							<div class="col s6 estatico">
+							<h4>Feedback: </h4>
+							{{feedback[index]}}
+						</div>
 						<div class="col s6">
 							<div v-for="respuesta in grupo">
-								<p><b>Nombre:</b> {{respuesta.estudiante}}</p>
 								<p><b>Respuesta:</b></p><p v-html="respuesta.respuesta"></p>
-								<p><b>Feedback:</b></p><p v-html="respuesta.feedback"></p>
-								<hr>
-								<p><b>Calificación obtenida:</b> {{respuesta.calificacion}}</p>
 							</div>
+						</div>
 						</div>
 					</div>
 				</div>

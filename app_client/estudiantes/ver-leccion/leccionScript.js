@@ -8,6 +8,9 @@ var App = new Vue({
   data: {
     estudiante: {},
     leccion: {},
+    feedback:[],
+    preguntas: [],
+    calificacion:[],
     grupos: []
   },
   methods: {
@@ -25,7 +28,6 @@ var App = new Vue({
         });
     },
     obtenerLeccion: function(){
-      //  rkK9Xv8Ax id de la lección para pruebas inmediatas.
       var self = this;
       path = window.location.pathname;
             
@@ -63,11 +65,33 @@ var App = new Vue({
       }
       this.$http.post(url, param).then(response => {
         //success callback
-        this.grupos.push(response.body.datos)
+        if(response.body.datos)
+        this.obtenerFeedback(response.body.datos);
+        this.obtenerCalificacion(response.body.datos);
+        this.grupos.push(response.body.datos);
         }, response => {
         //error callback
         console.log(response)
       });
+    },
+    //Esta función pide como parámetro el array de respuesta de cada pregunta, para poder llenar una data de feedback
+    obtenerFeedback: function(respuestasPorPregunta){
+      var self = this;
+      $.each(respuestasPorPregunta, function(index, value){
+        //En teoría el feedback es sólo para una persona
+        if(value.feedback != ""){
+          self.feedback.push(value.feedback);
+          return;
+        }
+      })
+    },
+    obtenerCalificacion: function(respuestasPorPregunta){
+      var self = this;
+      var temp, tempCmp;
+      $.each(respuestasPorPregunta, function(index, value){
+        if (index == 0)
+          self.calificacion.push(value.calificacion);
+      })
     },
     obtenerPregunta: function(pregunta_id, index){
       //Esta función retorna el título y descripción de la pregunta
@@ -90,13 +114,15 @@ var App = new Vue({
       url = url + pregunta_id;
       this.$http.get(url).then(response => {
         //success callback
+        /*
         pregunta.capitulo       = response.body.datos.capitulo
         pregunta.descripcion    = response.body.datos.descripcion
         pregunta.nombre         = response.body.datos.nombre
         pregunta.tiempoEstimado = response.body.datos.tiempoEstimado
         pregunta._id            = response.body.datos._id
-
-        this.grupos[index][0].contestado = pregunta;
+        */
+        
+        self.preguntas.push(response.body.datos);
         }, response => {
         //error callback
         console.log(response);
