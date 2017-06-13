@@ -1,3 +1,22 @@
+// var socket = io({transports: ['websocket']});
+if (window.location.href.toString().split('/')[2] === "ppl-assessment.espol.edu.ec") {
+  var socket = io('ws://ppl-assessment.espol.edu.ec:8000/tomando_leccion', {
+    reconnect: true,
+    'connect timeout': 1000,
+    'reconnection delay': 2000,
+    'max reconnection attempts': 10000,
+    'force new connection':true
+  })
+} else {
+  var socket = io('ws://localhost:8000/tomando_leccion', {
+    reconnect: true,
+    'connect timeout': 1000,
+    'reconnection delay': 2000,
+    'max reconnection attempts': 10000,
+    'force new connection':true
+  })
+}
+
 var App = new Vue({
   mounted: function(){
     //Inicializaciones de Materializecss
@@ -355,14 +374,6 @@ var App = new Vue({
 });
 
 App.obtenerLogeado()
-
-var socket = io('/tomando_leccion', {
-  reconnect: true,
-  'connect timeout': 1000,
-  'reconnection delay': 2000,
-  'max reconnection attempts': 10000,
-  'force new connection':true
-})
 
 socket.on('tiempo restante', function(tiempo) {
   App.tiempo = tiempo

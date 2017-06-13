@@ -16,9 +16,9 @@ MongoClient  = require('mongodb').MongoClient,
 URL         = require('./app_api/utils/change_database').local();
 
 // CAS URLS
-var URL_CAS_LOCALHOST = 'http://localhost:3000'
+var URL_CAS_LOCALHOST = 'http://localhost:8000'
 var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
-var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec/'
+var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
 var SERVICE_URL = ''
 if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'testing' || process.env.NODE_ENV == 'api') {
   SERVICE_URL = URL_CAS_LOCALHOST
@@ -52,8 +52,8 @@ app.set('port', port);
 server.listen(port);
 // var server = require('../app').server;
 var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
-io.set('heartbeat interval', 1)
-
+// io.set('heartbeat interval', 1)
+// io.set('transports', ['websocket']);
 app.use(function(req, res, next){
   res.io = io;
   next();
@@ -61,7 +61,7 @@ app.use(function(req, res, next){
 
 if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'api') {
   app.use(morgan('dev'));
-} else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing') {
+} else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing' || os.hostname() === 'srv01appPPL') {
   app.use(morgan('tiny'))
 }
 
@@ -72,12 +72,12 @@ app.use(cookieParser());
 
 app.use(session({
 	secret: require('./app_api/config/main').secret,  // <= en un env
-	resave: false,
-  expire: 1 * 24 * 60 * 60 ,
-	saveUninitialized: false,
+	resave: true,
+  // expire: 1 * 24 * 60 * 60 ,
+	saveUninitialized: true,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 12 * 60 * 60 // = 14 days. Default
+      // ttl: 12 * 60 * 60 // = 14 days. Default
     })
 }));
 
@@ -103,6 +103,14 @@ app.all('/*', function(req, res, next) {
   next();
 });
 
+function redirecion(req, res , next) {
+  if (!req.session.cas_user) {
+    res.redirect('/')
+  } else {
+    next();
+  }
+}
+
 
 // Control de rutas(para que estudiantes no puedan ingresar a profesor ruta)
 var procesarSession = require('./app_api/config/auth.cas.config').session
@@ -117,13 +125,17 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
   var procesarSession = function(req, res, next) {
     next()
   }
+
+  var redirecion = function(req, res, next) {
+    next()
+  }
 } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' || os.hostname() === 'srv01appPPL') {
   app.get( '/', cas.bounce, function(req, res, next) {
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
-  var authProfesor = cas.bounce;
+  var authProfesor = cas.block;
   var authApiProfesor = cas.block;
-  var authEstudiante = cas.bounce;
+  var authEstudiante = cas.block;
   var authApiEstudiante = cas.block;
   app.get('/api/session/usuario_conectado', require('./app_api/controllers/login.controller').obtenerUsuarioLoggeado)
   app.get( '/api/session/logout', cas.logout)
@@ -132,57 +144,49 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
 require('./app_api/realtime/realtime')(io)
 
 //vistas
-app.use('/profesores', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores')));
+app.use('/profesores',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores')));
 
-app.use('/profesores/grupos',authProfesor , procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
+app.use('/profesores/grupos', redirecion,authProfesor , procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
 
-app.use('/profesores/preguntas/estimacion', authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
+app.use('/profesores/preguntas/estimacion', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
 
-app.use('/profesores/preguntas/estimacion/:id', authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+app.use('/profesores/preguntas/estimacion/:id', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-app.use('/profesores/preguntas/tutorial', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
+app.use('/profesores/preguntas/tutorial',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
 
-app.use('/profesores/preguntas/tutorial/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+app.use('/profesores/preguntas/tutorial/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-app.use('/profesores/preguntas/laboratorio', authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
+app.use('/profesores/preguntas/laboratorio', redirecion,authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 
-app.use('/profesores/preguntas/laboratorio/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+app.use('/profesores/preguntas/laboratorio/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-app.use('/profesores/preguntas/nueva-pregunta', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
+app.use('/profesores/preguntas/nueva-pregunta',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 
-app.use('/profesores/leccion/crear',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/crear')));
+app.use('/profesores/leccion/crear',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/crear')));
 
-app.use('/profesores/leccion/',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/')))
+app.use('/profesores/leccion/',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/')))
 
-app.use('/profesores/leccion/calificar/grupos/:id_leccion',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar/grupos')))
+app.use('/profesores/leccion/calificar/grupos/:id_leccion',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar/grupos')))
 
-app.use('/profesores/leccion/calificar/:id_leccion/:id_estudiante/:id_grupo',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')))
+app.use('/profesores/leccion/calificar/:id_leccion/:id_estudiante/:id_grupo',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')))
 
-app.use('/profesores/lecciones',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
+app.use('/profesores/lecciones',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/lecciones')))
 
-app.use('/profesores/leccion/modificar/:id',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
+app.use('/profesores/leccion/modificar/:id',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/modificar')))
 
-app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,authProfesor, procesarSession,  middleProfesorControl,express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
+app.use('/profesores/leccion-panel/:id_leccion/paralelo/:id_paralelo' ,redirecion,authProfesor, procesarSession,  middleProfesorControl,express.static(path.join(__dirname, 'app_client/profesores/leccion-panel')));
 
-app.use('/profesores/leccion/calificar', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')));
+app.use('/profesores/leccion/calificar',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/calificar')));
 
-app.use('/profesores/leccion/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
+app.use('/profesores/leccion/:id',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/ver/')));
 
-app.use('/profesores/leccion/recalificar/grupos/:id', authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar/grupos')));
+app.use('/profesores/leccion/recalificar/grupos/:id',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar/grupos')));
 
-app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar')));
+app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar')));
 /*
  Estudiantes
  */
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
-
-function redirecion(req, res , next) {
-  if (!req.session || !req.session._id) {
-    res.redirect('/')
-  } else {
-    next()
-  }
-}
 
 app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 
