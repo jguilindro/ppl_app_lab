@@ -47,10 +47,10 @@ var App = new Vue({
       url = url + estudiante._id;
       this.$http.get(url).then(response => {
         //Success callback
-        for(var x = 0; x < this.leccion.preguntas.length; x++){
-          this.obtenerRespuestas(response.body.datos._id, self.leccion._id, this.leccion.preguntas[x].pregunta);
-          this.obtenerPregunta(this.leccion.preguntas[x].pregunta, x);
-        }        
+	    $.each(this.leccion.preguntas, function(index, value){
+	   	  self.obtenerRespuestas(response.body.datos._id, self.leccion._id, value.pregunta);
+	      self.obtenerPregunta(value.pregunta);
+	    })    
       }, response => {
         //Error callback
       });    
@@ -66,9 +66,9 @@ var App = new Vue({
       this.$http.post(url, param).then(response => {
         //success callback
         if(response.body.datos)
-        this.obtenerFeedback(response.body.datos);
-        this.obtenerCalificacion(response.body.datos);
-        this.grupos.push(response.body.datos);
+	        this.obtenerFeedback(response.body.datos);
+	        this.obtenerCalificacion(response.body.datos);
+	        this.grupos.push(response.body.datos);
         }, response => {
         //error callback
         console.log(response)
@@ -79,9 +79,9 @@ var App = new Vue({
       var self = this;
       $.each(respuestasPorPregunta, function(index, value){
         //En teoría el feedback es sólo para una persona
-        if(value.feedback != ""){
-          self.feedback.push(value.feedback);
-          return;
+        if(index == 0){
+          	self.feedback.push(value.feedback);
+          	return;
         }
       })
     },
@@ -93,7 +93,7 @@ var App = new Vue({
           self.calificacion.push(value.calificacion);
       })
     },
-    obtenerPregunta: function(pregunta_id, index){
+    obtenerPregunta: function(pregunta_id){
       //Esta función retorna el título y descripción de la pregunta
       /*
         Esta función es una tontera, pero lo que hace es cambiar un poco el objeto de grupos,
