@@ -92,7 +92,7 @@ document.getElementById('terminar-leccion').disabled = true
 
 
 var leccion = io('/tomando_leccion');
-
+// var socket = io({transports: ['websocket']});
 leccion.on('tiempo restante', function(tiempo) {
   // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
@@ -194,17 +194,17 @@ leccion.on('connect', function() {
   })
 })
 
-leccion.on('connecting', function() {
-  console.log('tratando de reconecta');
-})
+// leccion.on('connecting', function() {
+//   console.log('tratando de reconecta');
+// })
+//
+// leccion.on('connect_failed', function() {
+//   console.log('tratando de recontar');
+// })
 
-leccion.on('connect_failed', function() {
-  console.log('tratando de recontar');
-})
-
-leccion.on('disconnect', function() {
-  //console.log('desconectado');
-})
+// leccion.on('disconnect', function() {
+//   //console.log('desconectado');
+// })
 
 $('#comenzar-leccion').one('click', function() {
     $('#comenzar-leccion').attr('disabled','disabled');
