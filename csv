@@ -1,0 +1,51 @@
+[33mcommit 4cb58c7c9fc46027cfd6236214baf61ecfa91177[m
+Merge: 20eea39 b0fb910
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Wed May 31 01:58:08 2017 -0500
+
+    Merge
+
+[33mcommit 20eea39e40dae7d4647b9af593f8ee5355c2efed[m
+Merge: d689a6c 2522258
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Wed May 31 01:48:07 2017 -0500
+
+    CSV server side, probado para profesores, falta para peers, además falta que se cree el modal y especificar el path de descarga
+
+[33mcommit d689a6cb27fa5f765e23fd6fb6584d32619307a9[m
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Sun May 28 19:56:26 2017 -0500
+
+     pruebas para obtener las calificaciones de los paralelos y csv
+
+[33mcommit 08ea469a4fd0f74d070262742a0431fe6f7de85a[m
+Merge: 37dbdd6 1d28b80
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Thu May 25 10:07:36 2017 -0500
+
+    Merge branch 'master' of https://github.com/razerjon24/ppl_app_lab
+
+[33mcommit 37dbdd6eebf5e36c9cddc0c4677b0fd3be4f9709[m
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Thu May 25 10:07:19 2017 -0500
+
+    modelo calificaciones, buscar registro por paralelo, prueba
+
+[33mcommit b5e54659067d61f51e9175bf0a24d10990237544[m
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Thu May 18 21:27:38 2017 -0500
+
+    correción de texto en leccion/crear
+
+[33mcommit 59539dba74980b661f0d01cd20f06828a140ad25[m
+Merge: 358ca0d efd5f7b
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Tue May 16 12:06:21 2017 -0500
+
+    Merge branch 'master' of https://github.com/razerjon24/ppl_app_lab
+
+[33mcommit 358ca0d24882d457ca1f3104a9aaf61a62ab8b74[m
+Author: oscarpol <oscarmoreno_ds@hotmail.com>
+Date:   Tue May 16 12:05:51 2017 -0500
+
+    Correción de faltas ortograficas
