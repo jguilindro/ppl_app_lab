@@ -17,14 +17,12 @@ LeccionRealtimeModel = require('../models/leccionRealtime'),
 LeccionModel         = require('../models/leccion.model');
 // var highestTimeoutId = setTimeout(function(){});
 // var noofTimeOuts = setTimeout('')
-var i = setInterval(function(){},100000)
 var intervals = []
 
 function realtime(io) {
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
     // inicializador de profesor timer, crear en la base de datos los profesor
-    var inter;
     function profesorRealtime(boton) {
       co(function *() {
         const HORA_LOCAL = moment();

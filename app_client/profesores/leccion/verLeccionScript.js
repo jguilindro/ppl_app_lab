@@ -348,13 +348,21 @@ test : function(){
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
-    url = window.URL.createObjectURL(response.body);
-    a.href = url;
-    a.download = app.profesor.correo.split('@')[0] + '.xlsx';
-    a.click();
-    window.URL.revokeObjectURL(url);
+    if (response.body.estado) {
+      var byteCharacters = atob(response.body.datos);
+      var byteNumbers = new Array(byteCharacters.length);
+      for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      var blob = new Blob([byteArray], {type: 'application/octet-stream'});
+      url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = app.profesor.correo.split('@')[0] + '.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
 	});
-
 },
 
 /* Segunda versión CSV backup

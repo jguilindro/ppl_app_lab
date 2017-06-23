@@ -51,7 +51,6 @@ var app = new Vue({
         success: function(res){
           self.registros = res.datos;
           console.log('Registros obtenidos')
-          console.log(self.registros)
           self.obtenerTodosGrupos();
         }
       })
@@ -88,7 +87,6 @@ var app = new Vue({
       });
       //Los muestro en este nuevo array
       self.registrosAMostrar = self.registros;
-      console.log(self.registrosAMostrar)
 
       //Muestro solo los grupos que no han sido calificados
       self.registrosAMostrar = $.grep(self.registrosAMostrar, function(registro){
@@ -101,7 +99,7 @@ var app = new Vue({
       self.estudiantes = [];  //Tengo que vaciarlo para que si el usuario selecciona un grupo y luego otro entonces no se acumulen los estudiantes en este array
       $.each(self.grupoSeleccionado.participantes, function(index, estudiante){
         //Por cada estudiante del grupo seleccionado, hago una llamada a la api para conseguir su nombre.
-        var urlApi = '/api/estudiantes/' + estudiante;
+        var urlApi = '/api/estudiantes/' + estudiante._id;
         $.get({
           url: urlApi,
           success: function(res){
@@ -111,7 +109,7 @@ var app = new Vue({
       });
     }
 	}
-      
+
 });
 
 function grupoSeleccionado(_element){

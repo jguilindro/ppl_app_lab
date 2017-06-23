@@ -138,6 +138,15 @@ ParaleloSchema.statics.obtenerParaleloPeerCsv = function(id_profesor, callback) 
   }).exec(callback);
 }
 
+ParaleloSchema.statics.obtenerParaleloProfesorCsv = function(id_profesor, callback) {
+  this.findOne({profesor: id_profesor}).populate({
+    path: 'grupos',
+    populate: { path: 'estudiantes' },
+    select: 'estudiantes nombre'
+  }).exec(callback);
+}
+
+
 /* PEERS*/
 ParaleloSchema.statics.anadirPeerAParalelo = function(id_paralelo, id_profesor, callback) {
   this.update({_id: id_paralelo}, {$addToSet: {'peers': id_profesor}}, callback);

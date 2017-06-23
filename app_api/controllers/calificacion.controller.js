@@ -6,8 +6,8 @@ const ParaleloModel = require('../models/paralelo.model');
 const ProfesorModel = require('../models/profesor.model');
 const ParaleloController = require('../controllers/paralelos.controller');
 const co = require('co');
-var json2csv = require('json2csv');
 var fs = require('fs');
+var moment = require('moment');
 var Excel = require("exceljs");
 var unstream = require('unstream');
 
@@ -228,12 +228,12 @@ const obtenerCalificaciones = (req, res) => {
 			}
 		}
 
-		var csv = json2csv({ data: calificacionesData, fields: campos});
-		fs.writeFile('Reporte1.csv', csv, function(err) {
-			if (err) throw err;
-			console.log('file saved');
-		});
-		response.ok(res)
+		// var csv = json2csv({ data: calificacionesData, fields: campos});
+		// fs.writeFile('Reporte1.csv', csv, function(err) {
+		// 	if (err) throw err;
+		// 	console.log('file saved');
+		// });
+		// response.ok(res)
 	}).catch(fail => console.log(fail))
 }
 
@@ -254,7 +254,7 @@ const csv = function(req, res) {
 
   function obtenerParalelosProfesor(id_profesor) {
     return new Promise((resolve, reject) => {
-      ParaleloModel.obtenerParalelosProfesor(id_profesor, (err, paralelos) => {
+      ParaleloModel.obtenerParaleloProfesorCsv(id_profesor, (err, paralelos) => {
         if (err) return reject(new Error('No se puedo obtener paralelos profesor'))
         return resolve(paralelos)
       })
@@ -332,6 +332,9 @@ const csv = function(req, res) {
   }
 
   function buscarEstudiantesGrupo(id_grupo, paralelo) {
+    if (!paralelo.grupos ) {
+      return false
+    }
     return paralelo.grupos.find(grup => {
       if (id_grupo == grup._id) {
         return grup
@@ -409,11 +412,17 @@ const csv = function(req, res) {
     var paralelo_titular = yield obtenerParalelosProfesor(id_profesor)
 
     var paralelos_peer = yield obtenerParalelosPeer(id_profesor)
-    if (paralelos_peer) {
+    if (paralelos_peer || paralelo_titular) {
       if (!lecciones && !paralelos && !grupos) {
-        var paralelo_peer_asignado = yield obtenerNivelParaleloPeer(profesor)
-        var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo_peer_asignado)
-        var paralelo = yield obtenerParaleloDePeer(paralelo_peer_asignado, paralelos_peer)
+        // console.log(paralelo_titular);
+        if (paralelos_peer.length) {
+          var paralelo_peer_asignado = yield obtenerNivelParaleloPeer(profesor)
+          var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo_peer_asignado)
+          var paralelo = yield obtenerParaleloDePeer(paralelo_peer_asignado, paralelos_peer)
+        } else {
+          var paralelo = paralelo_titular
+          var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo._id)
+        }
         var documento = []
         for (var i = 0; i < leccionesParalelo.length; i++) {
           var calificaciones_leccion = yield obtenerCalificacionesPorLeccion(leccionesParalelo[i]._id)
@@ -429,7 +438,7 @@ const csv = function(req, res) {
                 continue
               }
               var grupoCompleto = buscarEstudiantesGrupo(calificaciones_leccion[j].grupo._id, paralelo)
-              if (!grupoCompleto) {
+              if (!grupoCompleto || grupoCompleto.length == 0) {
                 continue
               }
               var noAsistieron = noAsistencia(grupoCompleto, calificaciones_leccion[j])
@@ -437,45 +446,54 @@ const csv = function(req, res) {
               documento = documento.concat(row)
             }
             documento = ordenarPorGrupo(documento)
-            var worksheet =  workbook.addWorksheet(`${leccionesParalelo[i].nombre.trim()}@${leccionesParalelo[i].tipo}`, {
+            if (leccionesParalelo[i].fechaTerminada) {
+              var fecha = moment(leccionesParalelo[i].fechaTerminada).format('DD_MMMM_YYYY-hh_mm')
+            } else {
+              var fecha = moment(leccionesParalelo[i].fechaInicioTomada).add('m',leccionesParalelo[i].tiempoEstimado).format('DD_MMMM_YYYY-hh_mm')
+            }
+            var worksheet =  workbook.addWorksheet(fecha, {
               pageSetup:{paperSize: 9, orientation:'landscape'}
             });
             worksheet.columns = [
                 { header: 'matricula', key: 'matricula', width: 12 },
                 { header: 'nombres', key: 'nombres', width: 25 },
                 { header: 'apellidos', key: 'apellidos', width: 25},
+                { header: 'calificación', key: 'calificacion', width: 15, 'font': {'size': 12,'color': {'argb': 'FFFF6600'}}},
                 { header: 'grupo', key: 'grupo', width: 8},
+                { header: 'dio lección', key: 'noEntroALeccion', width: 15},
+                { header: 'nombre lección', key: 'nombreLeccion', width: 54},
+                { header: 'tipo lección', key: 'tipoLeccion', width: 23},
                 { header: 'materia', key: 'materia', width: 10},
                 { header: 'paralelo', key: 'paralelo', width: 10},
-                { header: 'nombreLeccion', key: 'nombreLeccion', width: 30},
-                { header: 'tipoLeccion', key: 'tipoLeccion', width: 20},
-                { header: 'Dio', key: 'noEntroALeccion', width: 4},
-                { header: 'calificacion', key: 'calificacion', width: 15, 'font': {'size': 12,'color': {'argb': 'FFFF6600'}}},
             ];
-            worksheet.autoFilter = 'B1:D1';
+            // worksheet.autoFilter = 'B1:D1';
             var titulos = {
                 name: 'Comic Sans MS',
                 family: 4,
                 size: 9,
                 bold: true
             }
+
             var aligin = { vertical: 'middle', horizontal: 'center' }
             var celdas = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1', 'J1']
+            var fill = { type: 'pattern', pattern:'darkTrellis', fgColor:{argb:'93C0F2'}, bgColor:{argb:'FFC0C0C0'}}
+
             for (var l = 0; l < celdas.length; l++) {
               worksheet.getCell(celdas[l]).font = titulos
               worksheet.getCell(celdas[l]).alignment = aligin
             }
             var newArray = documento.slice();
             for (var k = 0; k < newArray.length; k++) {
-              worksheet.addRow({matricula: newArray[k].matricula, nombres: newArray[k].nombres, apellidos: newArray[k].apellidos, grupo: newArray[k].grupo, materia: newArray[k].materia, paralelo: newArray[k].paralelo, nombreLeccion: newArray[k].nombreLeccion, tipoLeccion: newArray[k].tipoLeccion, noEntroALeccion: newArray[k].noEntroALeccion, calificacion:  newArray[k].calificacion});
+              worksheet.addRow({matricula: parseInt(newArray[k].matricula), nombres: newArray[k].nombres, apellidos: newArray[k].apellidos, grupo: newArray[k].grupo, materia: newArray[k].materia, paralelo: parseInt(newArray[k].paralelo), nombreLeccion: newArray[k].nombreLeccion, tipoLeccion: newArray[k].tipoLeccion, noEntroALeccion: newArray[k].noEntroALeccion, calificacion:  newArray[k].calificacion});
+              worksheet.getCell('D' + (k + 2)).fill = fill;
             }
+            // worksheet.getCell('J2').fill = ;
             documento = []
           }
         }
 
         workbook.xlsx.write(unstream({}, function(data) {
-          res.send(data)
-          return
+          return respuesta.ok(res,data.toString('base64'))
         }))
 
       }
