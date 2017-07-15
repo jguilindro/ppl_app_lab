@@ -152,6 +152,8 @@ var App = new Vue({
               }
 
               if (!usuario.codigoIngresado && paralelo.leccionYaComenzo) {
+                document.getElementById('leccion-panel').setAttribute('class', 'disabled');
+                document.getElementById('loading').setAttribute('class', 'disabled');
                 document.getElementById('tomar-leccion').setAttribute('class', 'enable');
               }
 
@@ -539,8 +541,8 @@ if (!supportsWebSockets) {
 
 socket.on('empezar leccion', function(data) {
   App.obtenerLogeado();
-  document.getElementById('leccion-panel').setAttribute('class', 'enable');
-  App.flagDandoLeccion = true;
-  document.getElementById('loading').setAttribute('class', 'disabled');
-  document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
+  // document.getElementById('leccion-panel').setAttribute('class', 'enable');
+  // App.flagDandoLeccion = true;
+  // document.getElementById('loading').setAttribute('class', 'disabled');
+  // document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
 })
