@@ -42,7 +42,7 @@ var app = new Vue({
       return moment(date).format('MMMM Do YYYY');
     },
     tomarLeccion : function(){
-        window.location.href = '/estudiantes/tomar-leccion'
+        window.location.href = '/estudiantes/leccion'
     },
     verLeccion: function(event){
       leccion = event.currentTarget.id;
