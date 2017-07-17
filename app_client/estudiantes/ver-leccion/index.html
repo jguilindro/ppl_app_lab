@@ -33,17 +33,15 @@
 						<!--Ahora se debe colocar todas las respuestas-->
 						<h3 class="nota">- Calificación: {{calificacion[index]}}/{{preguntas[index].puntaje}} -</h3>
 						<div class="row">
-							<div class="col s12 estatico">
-							<b><h3>Feedback: </h3></b>
-							<h5>{{feedback[index]}}</h5>
-						</div>
-						<!-- 
+						<b><h3>Feedback: </h3></b>
+							<div class="col s6 estatico">
+								<h5>{{feedback[index]}}</h5>
+							</div>
 						<div class="col s6">
 							<div v-for="respuesta in grupo">
 								<p><b>Respuesta:</b></p><p v-html="respuesta.respuesta"></p>
 							</div>
 						</div>
-						-->
 						</div>
 					</div>
 				</div>
