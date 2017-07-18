@@ -3,14 +3,39 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm install && npm run gulp",
+    "start": "npm-run-all --parallel watchify mon sync",
     "postinstall": "bower install",
-    "gulp": "gulp"
+    "production": "npm install && npm run bower install npm run build",
+    "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
+    "parcel": "browserify  -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js -p [ parcelify -o app_client/estudiantes/dist/build.css ]",
+    "mon": "env-cmd .env nodemon app.js --config nodemon.json",
+    "env:development": "cross-env NODE_ENV=development",
+    "prestart": "npm run parcel && npm run env:development",
+    "build": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c warnings=false -m > app_client/estudiantes/dist/build.js",
+    "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
+    "parcelify": "parcelify",
+    "browser-sync": "browser-sync",
+    "bower": "bower",
+    "nodemon": "nodemon"
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "vueify"
+    ]
+  },
+  "style": [
+    "./node_modules/vue-material/dist/vue-material.css",
+    "./public/css/offline-theme-slide.css",
+    "./public/bower_components/offline/themes/offline-language-spanish-indicator.css"
+  ],
+  "browser": {
+    "vue": "vue/dist/vue.common.js",
+    "vue-router": "vue-router/dist/vue-router.common.js",
+    "materialize-css": "materialize-css/dist/js/materialize.min.js"
   },
   "dependencies": {
-    "async": "^2.1.5",
     "body-parser": "~1.16.0",
-    "bower": "^1.8.0",
     "cas-authentication": "^0.0.8",
     "cheerio": "^0.22.0",
     "co": "^4.6.0",
@@ -21,18 +46,15 @@
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.3",
     "cron": "^1.2.1",
-    "csv": "^1.1.1",
     "debug": "~2.6.0",
-    "deep-diff": "^0.3.6",
     "dotenv": "^4.0.0",
+    "env-cmd": "^5.1.0",
     "exceljs": "^0.4.10",
     "express": "~4.14.1",
     "express-messages": "^1.0.1",
     "express-session": "^1.15.1",
     "jsondiffpatch": "^0.2.4",
-    "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
-    "materialnote": "^1.2.1",
     "moment": "^2.18.1",
     "moment-duration-format": "^1.3.0",
     "moment-timezone": "^0.5.13",
@@ -40,9 +62,6 @@
     "mongoose": "^4.9.0",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "~1.7.0",
-    "multer": "^1.3.0",
-    "node-soap": "^1.0.0",
-    "node-telegram-bot-api": "^0.27.0",
     "schema-inspector": "^1.6.8",
     "serve-favicon": "~2.3.2",
     "shortid": "^2.2.8",
@@ -51,18 +70,51 @@
     "tracer": "^0.8.7",
     "unstream": "^2.0.0",
     "uuid": "^3.0.1",
-    "validator": "^7.0.0",
-    "vue-material": "^0.7.1",
-    "xlsx": "^0.10.3",
-    "xss": "^0.3.3"
+    "validator": "^7.0.0"
   },
   "devDependencies": {
+    "axios": "^0.16.2",
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-istanbul": "^4.1.1",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.3.2",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "babel-runtime": "^6.0.0",
+    "babelify": "^7.3.0",
+    "bower": "^1.8.0",
     "browser-sync": "^2.18.8",
-    "gulp": "^3.9.1",
-    "gulp-nodemon": "^2.2.1",
-    "gulp-open": "^2.0.0",
+    "browserify": "^13.1.0",
+    "browserify-hmr": "^0.3.1",
+    "cross-env": "^2.0.0",
+    "envify": "^3.4.1",
     "jsonfile": "^3.0.0",
+    "materialnote": "^1.2.1",
     "nodemon": "^1.11.0",
-    "prettyjson": "^1.2.1"
-  }
+    "npm-run-all": "^2.3.0",
+    "offline-js": "^0.7.19",
+    "parcelify": "^2.2.0",
+    "prettyjson": "^1.2.1",
+    "socket.io-client": "^2.0.3",
+    "uglify-js": "^2.5.0",
+    "vue": "^2.4.1",
+    "vue-material": "^0.7.1",
+    "vue-router": "^2.7.0",
+    "vue-socket.io": "^2.1.1-a",
+    "vueify": "^9.0.0",
+    "vuetify": "^0.14.1",
+    "vuex": "^2.3.1",
+    "watchify": "^3.4.0"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

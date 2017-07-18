@@ -8,7 +8,6 @@ var cursos = []
 var profesores = []
 var estudiantes = []
 var url = require('../../app_api/utils/change_database').session();
-var MongoClient = require('mongodb').MongoClient
 var EstudianteModel = require('../../app_api/models/estudiante.model')
 var ParaleloModel = require('../../app_api/models/paralelo.model')
 var estudiante = {

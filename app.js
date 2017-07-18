@@ -15,33 +15,10 @@ CASAuthentication = require('cas-authentication'),
 MongoClient  = require('mongodb').MongoClient,
 URL         = require('./app_api/utils/change_database').local();
 
-// CAS URLS
-var URL_CAS_LOCALHOST = 'http://localhost:8000'
-var URL_CAS_PRODUCTION = 'https://ppl-espol.herokuapp.com'
-var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
-var SERVICE_URL = ''
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'testing' || process.env.NODE_ENV == 'api') {
-  SERVICE_URL = URL_CAS_LOCALHOST
-} else if (process.env.NODE_ENV == 'production') {
-  SERVICE_URL = URL_CAS_PRODUCTION
-} else if (process.env.NODE_ENV == 'testing') {
-  SERVICE_URL = URL_CAS_PRODUCTION
-} else if (os.hostname() === 'srv01appPPL') {
-  SERVICE_URL = URL_ESPOL_SERVER
-}
-
 // base de datos mongoose
 require('./app_api/models/db')
 // sync db y ws
 require('./app_api/ws').update()
-
-if (os.hostname() === 'joelerll-laptop') {
-  // require('./app_api/utils/telegram_bot')
-} else if (process.env.NODE_ENV == 'production') {
-  // require('./app_api/utils/telegram_bot')
-} else if (process.env.APP && process.env.APP == 'realtime' || process.env.NODE_ENV == 'api') {
-  require('./app_api/utils/telegram_bot')
-}
 
 var app = express();
 
@@ -50,18 +27,42 @@ var debug = require('debug')('espol-ppl:server');
 var port = normalizePort(process.env.PORT || '8000');
 app.set('port', port);
 server.listen(port);
-// var server = require('../app').server;
+
 var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
-// io.set('heartbeat interval', 1)
-// io.set('transports', ['websocket']);
 app.use(function(req, res, next){
   res.io = io;
   next();
 });
 
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' || process.env.NODE_ENV == 'api') {
+
+// CAS URLS
+var URL_CAS_LOCALHOST = 'http://localhost:8000'
+var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
+var SERVICE_URL = ''
+
+
+// variables de entorno
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test') {
   app.use(morgan('dev'));
-} else if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'testing' || os.hostname() === 'srv01appPPL') {
+  SERVICE_URL = URL_CAS_LOCALHOST
+  /*
+  const webpack = require('webpack')
+  const path = require('path')
+  const webpackDevMiddleware = require('webpack-dev-middleware')
+  const webpackHotMiddleware = require('webpack-hot-middleware')
+  const WebpackConfig = require('./webpack.config')
+  const compiler = webpack(WebpackConfig)
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: '/__build__/',
+    stats: {
+      colors: true,
+      chunks: false
+    }
+  }))
+  app.use(webpackHotMiddleware(compiler))
+  */
+} else if (os.hostname() === 'srv01appPPL' || process.env.NODE_ENV == 'production') {
+  SERVICE_URL = URL_ESPOL_SERVER
   app.use(morgan('tiny'))
 }
 
@@ -118,18 +119,19 @@ var procesarSessionEstudiante = require('./app_api/config/auth.cas.config').sess
 var middleEstudianteControl = require('./app_api/config/auth.cas.config').middlewareControlEstudiante
 var middleProfesorControl = require('./app_api/config/auth.cas.config').middlewareControlProfesor
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'api') {
+
+// variables de entorno de middlewares
+if (process.env.NODE_ENV === 'development') {
   app.use('/', express.static(path.join(__dirname, 'app_client/login')));
   app.use('/api/session', require('./app_api/routes/login.router'));
   var { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
   var procesarSession = function(req, res, next) {
     next()
   }
-
   var redirecion = function(req, res, next) {
     next()
   }
-} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || process.env.NODE_ENV === 'testing' || os.hostname() === 'srv01appPPL') {
+} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || os.hostname() === 'srv01appPPL') {
   app.get( '/', cas.bounce, function(req, res, next) {
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
@@ -187,6 +189,8 @@ app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',r
  Estudiantes
  */
 const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
+
+app.use('/estudiantes/single_page',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/dist')));
 
 app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
 

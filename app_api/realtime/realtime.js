@@ -1,6 +1,5 @@
 const cookie = require('cookie'),
 cookieParser = require('cookie-parser'),
-MongoClient  = require('mongodb').MongoClient,
 moment       = require('moment'),
 tz           = require('moment-timezone'),
 logger       = require('tracer').colorConsole(),
