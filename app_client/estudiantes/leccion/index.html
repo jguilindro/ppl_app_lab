@@ -67,10 +67,21 @@
                     <!--<div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
 
                     </div>-->
-                  </div>
+                    <section style="margin: 3% 0;">
+                    <label>Subir una imagen</label>
+                    <label hidden v-bind:id="'urlImagen-' + pregunta._id">ImagenURL</label>
+                    <br />
+                    <input id="archivo" type='file' @change="getImage(pregunta._id,$event)"/>
+                    </section>
+                    <section>
+                    <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#" alt="your image" />
+                    </section>
+                    <section>
+                    <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
+                    </section>
+                    </div>
                   <div class="row" id="botones">
                     <button href="." class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</button>
-                  </div>
                 </section>
               </div>
             </div>
@@ -119,6 +130,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
       <script src="./app.leccion.js"></script>
+      <script src="/scripts/j-i-c/src/JIC.js" type="text/javascript"></script>
     </footer>
   </body>
 </html>
