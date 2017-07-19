@@ -17,7 +17,7 @@
 // }
 
 var socket = io('/tomando_leccion', {
-    // reconnect: true,
+    reconnect: true,
     // // 'connect timeout': 1000,
     // // 'reconnection delay': 2000,
     // // 'max reconnection attempts': 10000,
