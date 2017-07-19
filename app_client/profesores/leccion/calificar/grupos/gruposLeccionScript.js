@@ -114,8 +114,10 @@ var app = new Vue({
 
 function grupoSeleccionado(_element){
   var self = app.$data
+  console.log(_element.id)
   $.each(self.registrosAMostrar, function(index, registro){
-    if(_element.id==registro.grupo){
+    console.log(registro.grupo)
+    if(_element.id==registro.grupo._id){
       self.grupoSeleccionado = registro;
       app.buscarNombreEstudiantes();
       return false
