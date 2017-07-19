@@ -27,27 +27,26 @@
       <div id="app" class="container">
         <div id="tomar-leccion" class="disabled" v-show="!flagDandoLeccion">
           <section class="center-align v-center">
-  					<h1 class="center-align title">Bienvenido</h1>
-  					<h2>{{estudiante.nombres}}</h2>
-  					<div class="form-horizontal">
-  						<div class="form-group code">
-  							<input type="tel" v-model="codigo_leccion"class="form-control" id="codigo" placeholder="Ingrese el código" v-on:keyup.13="verificarEstudiantPuedeDarLeccion()" pattern="[0-9]*" inputmode="numeric">
-  						</div>
-  						<div class="form-group">
-  							<div class="col-sm col-sm-10  enter-align">
-  								<button type="button" v-on:click="verificarEstudiantPuedeDarLeccion()" class="btn btn-default black">Ingresar</button>
-  							</div>
-  						</div>
-  					</div>
-  				</section>
-  				<section>
-  					<br><br><br>
-  					<div class="right-align">
-  						<!-- <a href="/estudiantes">O tomarlo después</a> -->
-  					</div>
-  				</section>
+            <h1 class="center-align title">Bienvenido</h1>
+            <h2>{{estudiante.nombres}}</h2>
+            <div class="form-horizontal">
+              <div class="form-group code">
+                <input type="tel" v-model="codigo_leccion"class="form-control" id="codigo" placeholder="Ingrese el código" v-on:keyup.13="verificarEstudiantPuedeDarLeccion()" pattern="[0-9]*" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <div class="col-sm col-sm-10  enter-align">
+                  <button type="button" v-on:click="verificarEstudiantPuedeDarLeccion()" class="btn btn-default black">Ingresar</button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <br><br><br>
+            <div class="right-align">
+              <!-- <a href="/estudiantes">O tomarlo después</a> -->
+            </div>
+          </section>
         </div>
-
         <div id="leccion-panel" class="disabled" v-show="flagDandoLeccion">
           <section id="nombre-leccion">
             <h2 class="center-align"><b>{{leccion.nombre}}</b></h2>
@@ -64,6 +63,7 @@
               <div class="col s12">
                 <ul class="tabs-fixed-width tabs">
                   <li class="tab"><a class="active" href="#instrucciones">Instrucciones</a></li>
+
                   <li class="tab" v-for="pregunta in leccion.preguntas"><a v-bind:href="'#' + pregunta.pregunta._id">{{pregunta.ordenPregunta}}</a></li>
                   <li class="tab"><a href="#terminar">Terminar</a></li>
                 </ul>
@@ -78,7 +78,7 @@
                   <p>No se olviden de enviar cada respuesta luego de completarla. Si responden una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
                 </div>
               </div>
-              
+
               <div class="col s12" v-bind:id="pregunta._id" v-for="(pregunta, index) in preguntas" style="display: none">
                 <div class="row row-pregunta">
                   <section id="area-pregunta" class="col s12">
@@ -93,10 +93,6 @@
 
                       </textarea>
                       <label>Respuesta</label>
-                      <!--<div v-bind:id="'editor-' + pregunta._id" class="myEditor col s12">
-
-
-                    </div>-->
                       <section style="margin: 3% 0;">
                         <label>Subir una imagen</label>
                         <label hidden v-bind:id="'urlImagen-' + pregunta._id">ImagenURL</label>
@@ -110,19 +106,13 @@
                         <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
                       </section>
                     </div>
-                  <div class="row" id="botones">
-                    <button href="." class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</button>
-                </section>
-
-                      </div>-->
-                    </div>
                     <div class="row" id="botones">
                       <button href="." class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</button>
                     </div>
                   </section>
                 </div>
-
               </div>
+
               <div id="terminar" class="col s12">
                 <div class="row row-terminar center-align">
                   <section class="col s12">
@@ -160,7 +150,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </main>
     <footer>
@@ -169,8 +158,8 @@
       <script src="/bower_components/vue/dist/vue.min.js"></script>
       <script src="/bower_components/materialize/bin/materialize.js"></script>
       <script src="/bower_components/socket.io-client/dist/socket.io.min.js"></script>
-      <script src="./app.leccion.js"></script>
       <script src="/scripts/j-i-c/src/JIC.js" type="text/javascript"></script>
+      <script src="./app.leccion.js"></script>
     </footer>
   </body>
 </html>

@@ -40,7 +40,6 @@ var App = new Vue({
       $.when($.get({
         url: '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
-          console.log(res)
           if (res.estado) {
             self.estudiante = res.datos.estudiante;
             self.idLeccion = res.datos.estudiante.leccion;
@@ -321,8 +320,10 @@ var App = new Vue({
       //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
       var idTextarea = '#textarea-' + pregunta._id;
       var respuestaTextarea = $(idTextarea).val();
-      var idUrlImagen = '#urlImagen-' + pregunta._id;
-      var URLImagen= $(idUrlImagen).text();
+      var idSrcImage = '#source_image-' + pregunta._id;
+      var urlImagen = $(idSrcImage).attr('aux');
+
+
       var respuesta = {
         estudiante: self.estudiante._id,
         leccion: self.leccion._id,
@@ -333,8 +334,9 @@ var App = new Vue({
         respuesta: respuestaTextarea,
         feedback: '',
         calificacion: 0,
-        imagenes: URLImagen
+        imagenes: urlImagen
       }
+      console.log(respuesta)
       return respuesta;
     },
     bloquearBtnRespuesta: function(pregunta){
@@ -451,13 +453,18 @@ var App = new Vue({
       $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
       $('#modal_Img').modal('open');
     },
+    mostrarModal: function(imageUrl){
+      $("#modal_Img .modal-content").empty();
+      $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
+      $('#modal_Img').modal('open');
+    },
     getImage: function(pregunta, event) {
       /*
             @Descripción: Esta función obtiene la imagen subida por el usuario
             @Autor: @edisonmora95, @jguilindro
             @FechaModificación: 18-07-2017 @jguilindro
           */
-          var input= event.target;
+      var input= event.target;
 
       if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -474,12 +481,14 @@ var App = new Vue({
               @Descripción: Esta función comprime una imagen subida por el usuario
               @Autor: @edisonmora95, @jguilindro
               @FechaModificación: 18-07-2017 @jguilindro
+              @Params:
+                pregunta -> id de la pregunta a la cual se responde con la imagen
       */
       var output_format = "jpg";
       var source_image = document.getElementById('source_image-'+pregunta);
       var result_image = document.getElementById('result_image-'+pregunta);
       if (source_image.src == "") {
-          alert("You must load an image first!");
+          alert("Debes ingresar una imagen primero!");
           return false;
       }
       var quality = 15;
@@ -517,7 +526,13 @@ var App = new Vue({
           App.loading(false);
           var url = JSON.parse(xhr.responseText)
           alert("Imagen subida exitosamente");
-          //console.log(url.data.link);//Link de la imagen en imgur
+          console.log('Url de la imagen')
+          console.log(url.data.link);//Link de la imagen en imgur
+
+          var idSrcImage = '#source_image-' + pregunta;
+          $(idSrcImage).attr('aux', url.data.link);
+
+
           var idUrlImagen = '#urlImagen-' + pregunta;
            $(idUrlImagen).text(url.data.link);
            //console.log($(idUrlImagen).text());//Link de la imagen en imgur

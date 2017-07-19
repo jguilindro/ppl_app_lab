@@ -47,9 +47,9 @@ const respuestasSchema = mongoose.Schema({
 	feedback: {
 		type: String
 	},
-  imagenes: [{
+  imagenes:{
     type: String
-  }]
+  }
 }, {versionKey: false, timestamps: true, collection: 'respuestas'})
 
 respuestasSchema.methods.crearRespuesta = function(callback){
