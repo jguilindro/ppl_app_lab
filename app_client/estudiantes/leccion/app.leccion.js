@@ -40,6 +40,7 @@ var App = new Vue({
       $.when($.get({
         url: '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
+          console.log(res)
           if (res.estado) {
             self.estudiante = res.datos.estudiante;
             self.idLeccion = res.datos.estudiante.leccion;
@@ -450,90 +451,84 @@ var App = new Vue({
       $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
       $('#modal_Img').modal('open');
     },
-  
+    getImage: function(pregunta, event) {
+      /*
+            @Descripción: Esta función obtiene la imagen subida por el usuario
+            @Autor: @edisonmora95, @jguilindro
+            @FechaModificación: 18-07-2017 @jguilindro
+          */
+          var input= event.target;
 
-getImage: function(pregunta, event) {
-  /*
-        @Descripción: Esta función obtiene la imagen subida por el usuario
-        @Autor: @edisonmora95, @jguilindro
-        @FechaModificación: 18-07-2017 @jguilindro
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#source_image-'+pregunta).attr('src', e.target.result);
+          App.comprimir(pregunta);//Comprime la imagen obtenida
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+
+    comprimir: function(pregunta){
+      /*
+              @Descripción: Esta función comprime una imagen subida por el usuario
+              @Autor: @edisonmora95, @jguilindro
+              @FechaModificación: 18-07-2017 @jguilindro
       */
-      var input= event.target;
+      var output_format = "jpg";
+      var source_image = document.getElementById('source_image-'+pregunta);
+      var result_image = document.getElementById('result_image-'+pregunta);
+      if (source_image.src == "") {
+          alert("You must load an image first!");
+          return false;
+      }
+      var quality = 15;
 
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      $('#source_image-'+pregunta).attr('src', e.target.result);
-      App.comprimir(pregunta);//Comprime la imagen obtenida
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-},
+      $('#source_image-'+pregunta).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
+        result_image.src = jic.compress(source_image,quality,output_format).src;
+      });
+     
+      $('#result_image-'+pregunta).ready(function(){
+        var image_width=$(result_image).width(),
+          image_height=$(result_image).height();
+              
+        if(image_width > image_height){
+          result_image.style.width="320px";
+        }else{
+          result_image.style.height="300px";
+        }
+        result_image.style.display = "block";
+        App.subirImagen((result_image.src).substring(23), pregunta);//Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
+      });
+    },
 
- comprimir: function(pregunta){
-  /*
-        @Descripción: Esta función comprime una imagen subida por el usuario
-        @Autor: @edisonmora95, @jguilindro
-        @FechaModificación: 18-07-2017 @jguilindro
-      */
-  var output_format = "jpg";
-  var source_image = document.getElementById('source_image-'+pregunta);
-  var result_image = document.getElementById('result_image-'+pregunta);
-  if (source_image.src == "") {
-      alert("You must load an image first!");
-      return false;
-  }
-  var quality = 15;
-
-  $('#source_image-'+pregunta).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
-  result_image.src = jic.compress(source_image,quality,output_format).src;
-  });
-
- 
- $('#result_image-'+pregunta).ready(function(){
-    var image_width=$(result_image).width(),
-      image_height=$(result_image).height();
-          
-    if(image_width > image_height){
-      result_image.style.width="320px";
-    }else{
-      result_image.style.height="300px";
-    }
-   result_image.style.display = "block";
-   App.subirImagen((result_image.src).substring(23), pregunta);//Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
-  });
-
-  
-},
-
-subirImagen: function(imagenSrc, pregunta){
-  /*
+    subirImagen: function(imagenSrc, pregunta){
+      /*
         @Descripción: Esta función sube la imagen comprimida a imgur y devuelve la url.
         @Autor: @jguilindro
         @FechaModificación: 18-07-2017 @jguilindro
       */
-            var clientId = "300fdfe500b1718";
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://api.imgur.com/3/image', true);
-            xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-            xhr.onreadystatechange = function () {
-              if (xhr.status === 200 && xhr.readyState === 4) {
-                App.loading(false);
-                var url = JSON.parse(xhr.responseText)
-                alert("Imagen subida exitosamente");
-                //console.log(url.data.link);//Link de la imagen en imgur
-                var idUrlImagen = '#urlImagen-' + pregunta;
-                 $(idUrlImagen).text(url.data.link);
-                 //console.log($(idUrlImagen).text());//Link de la imagen en imgur
-                document.getElementById('result_image-'+ pregunta).setAttribute("hidden", false);
-              } 
-              if (xhr.status === 400){
-                alert("Hubo un error al subir la imagen. Intentelo de nuevo.");
-              }
-            }
-            xhr.send(imagenSrc);//Envia la imagen
-
-}
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/image', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function () {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          App.loading(false);
+          var url = JSON.parse(xhr.responseText)
+          alert("Imagen subida exitosamente");
+          //console.log(url.data.link);//Link de la imagen en imgur
+          var idUrlImagen = '#urlImagen-' + pregunta;
+           $(idUrlImagen).text(url.data.link);
+           //console.log($(idUrlImagen).text());//Link de la imagen en imgur
+          document.getElementById('result_image-'+ pregunta).setAttribute("hidden", false);
+        } 
+        if (xhr.status === 400){
+          alert("Hubo un error al subir la imagen. Intentelo de nuevo.");
+        }
+      }
+      xhr.send(imagenSrc);//Envia la imagen
+    }
 
   },
   data: {

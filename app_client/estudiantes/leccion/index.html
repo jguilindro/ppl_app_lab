@@ -47,6 +47,7 @@
   					</div>
   				</section>
         </div>
+
         <div id="leccion-panel" class="disabled" v-show="flagDandoLeccion">
           <section id="nombre-leccion">
             <h2 class="center-align"><b>{{leccion.nombre}}</b></h2>
@@ -63,7 +64,6 @@
               <div class="col s12">
                 <ul class="tabs-fixed-width tabs">
                   <li class="tab"><a class="active" href="#instrucciones">Instrucciones</a></li>
-
                   <li class="tab" v-for="pregunta in leccion.preguntas"><a v-bind:href="'#' + pregunta.pregunta._id">{{pregunta.ordenPregunta}}</a></li>
                   <li class="tab"><a href="#terminar">Terminar</a></li>
                 </ul>
@@ -78,6 +78,7 @@
                   <p>No se olviden de enviar cada respuesta luego de completarla. Si responden una pregunta pero no envían su respuesta, no tendrán la calificación.</p>
                 </div>
               </div>
+              
               <div class="col s12" v-bind:id="pregunta._id" v-for="(pregunta, index) in preguntas" style="display: none">
                 <div class="row row-pregunta">
                   <section id="area-pregunta" class="col s12">
@@ -96,18 +97,18 @@
 
 
                     </div>-->
-                    <section style="margin: 3% 0;">
-                    <label>Subir una imagen</label>
-                    <label hidden v-bind:id="'urlImagen-' + pregunta._id">ImagenURL</label>
-                    <br />
-                    <input id="archivo" type='file' @change="getImage(pregunta._id,$event)"/>
-                    </section>
-                    <section>
-                    <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#" alt="your image" />
-                    </section>
-                    <section>
-                    <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
-                    </section>
+                      <section style="margin: 3% 0;">
+                        <label>Subir una imagen</label>
+                        <label hidden v-bind:id="'urlImagen-' + pregunta._id">ImagenURL</label>
+                        <br />
+                        <input id="archivo" type='file' @change="getImage(pregunta._id,$event)"/>
+                      </section>
+                      <section>
+                        <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#" alt="your image" />
+                      </section>
+                      <section>
+                        <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
+                      </section>
                     </div>
                   <div class="row" id="botones">
                     <button href="." class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</button>
@@ -159,6 +160,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </main>
     <footer>
