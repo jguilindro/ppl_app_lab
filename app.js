@@ -192,33 +192,32 @@ app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstud
 
 app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
 
-// app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
-//   var EstudianteModel = require('./app_api/models/estudiante.model')
-//   var ParaleloModel = require('./app_api/models/paralelo.model')
-//   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
-//     ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-//       if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
-//         res.redirect('/estudiantes/leccion')
-//       } else {
-//         next()
-//       }
-//     })
-//   })
-// } , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+  var EstudianteModel = require('./app_api/models/estudiante.model')
+  var ParaleloModel = require('./app_api/models/paralelo.model')
+  EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
+    ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
+      if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
+        res.redirect('/estudiantes/leccion')
+      } else {
+        next()
+      }
+    })
+  })
+} , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
 
 app.use('/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
-  next();
-  // var EstudianteModel = require('./app_api/models/estudiante.model')
-  // var ParaleloModel = require('./app_api/models/paralelo.model')
-  // EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
-  //   ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-  //     if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
-  //       next()
-  //     } else {
-  //       res.redirect('/estudiantes/tomar-leccion')
-  //     }
-  //   })
-  // })
+  var EstudianteModel = require('./app_api/models/estudiante.model')
+  var ParaleloModel = require('./app_api/models/paralelo.model')
+  EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
+    ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
+      if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
+        next()
+      } else {
+        res.redirect('/estudiantes/tomar-leccion')
+      }
+    })
+  })
 },express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // app.use('/estudiantes/tomar-leccion' , procesarSession, middleEstudianteControl, estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));

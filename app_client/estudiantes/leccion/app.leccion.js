@@ -18,7 +18,7 @@
 // }
 
 var socket = io('/tomando_leccion', {
-    // reconnect: true,
+    reconnect: true,
     // // 'connect timeout': 1000,
     // // 'reconnection delay': 2000,
     // // 'max reconnection attempts': 10000,
@@ -41,6 +41,7 @@ var App = new Vue({
         url: '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
           if (res.estado) {
+            console.log(res.datos);
             self.estudiante = res.datos.estudiante;
             self.idLeccion = res.datos.estudiante.leccion;
             self.leccion = res.datos.leccion;
@@ -68,101 +69,14 @@ var App = new Vue({
               }
             }
             self.estudiante.paralelo = res.datos.paralelo._id;
-            if (res.datos.paralelo.dandoLeccion) {
-              self.estado();
-              // this.verificarEstudiantPuedeDarLeccion();
-              // verificar si el estudiante esta dando leccion
-            } else {
-              document.getElementById('tomar-leccion').setAttribute('class', 'enable');
+            if (!res.datos.paralelo.dandoLeccion) {
+              window.location.href = '/estudiantes'
             }
             socket.emit('usuario', res.datos.estudiante);
           }
         }
       })).then(function() {
         self.anadirRespuestas()
-      })
-    },
-    verificarEstudiantPuedeDarLeccion: function() {
-      var self = this
-      if (!self.codigo_leccion) {
-        Materialize.toast('Ingrese el código', 4000)
-      } else {
-        $.ajax({
-          method: 'GET',
-          url: '/api/estudiantes/tomar_leccion/'+ self.codigo_leccion,
-          success: function(res) {
-            var res = res.datos
-            if (!res.tieneGrupo) {
-              Materialize.toast('No esta asignado a ningun grupo', 4000)
-              return
-            }
-            if (!res.paraleloDandoLeccion) {
-              Materialize.toast('El paralelo no esta dando lección', 4000)
-              return
-            }
-            if (!res.leccionYaComenzo && res.codigoLeccion) {
-              socket.emit('usuario', self.estudiante);
-              document.getElementById('leccion-panel').setAttribute('class', 'disabled');
-              document.getElementById('loading').setAttribute('class', 'enable');
-              document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
-              esperando = true
-              return
-            } else {
-              if (!res.codigoLeccion) {
-                Materialize.toast('El código de la lección no es valido', 4000)
-                return
-              }
-            }
-            if (res.leccionYaComenzo) {
-              self.obtenerLogeado();
-              document.getElementById('leccion-panel').setAttribute('class', 'enable');
-              self.flagDandoLeccion = true;
-              document.getElementById('loading').setAttribute('class', 'disabled');
-              document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
-            }
-          }
-        })
-      }
-    },
-    estado: function() { // usado cuando recarga la pagina
-      var self = this
-      $.get({
-        url: '/api/session/usuario_conectado',
-        success: function(user) {
-          var usuario = user.datos
-          // app.estudiante = user.datos
-          // socket.emit('usuario', user.datos)
-          $.get({
-            url: '/api/paralelos/estudiante/'+ usuario._id,
-            success: function(par) {
-              var paralelo = par.datos
-              if (usuario.codigoIngresado && !paralelo.leccionYaComenzo) {
-                document.getElementById('leccion-panel').setAttribute('class', 'disabled');
-                self.flagDandoLeccion = true;
-                document.getElementById('loading').setAttribute('class', 'enable');
-                document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
-                esperando = true
-              }
-              if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {
-                console.log('ssss');
-                document.getElementById('leccion-panel').setAttribute('class', 'enable');
-                self.flagDandoLeccion = true;
-                document.getElementById('loading').setAttribute('class', 'disabled');
-                document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
-              }
-
-              if (!usuario.codigoIngresado && paralelo.leccionYaComenzo) {
-                document.getElementById('leccion-panel').setAttribute('class', 'disabled');
-                document.getElementById('loading').setAttribute('class', 'disabled');
-                document.getElementById('tomar-leccion').setAttribute('class', 'enable');
-              }
-
-              if (!usuario.codigoIngresado && !paralelo.leccionYaComenzo) {
-                document.getElementById('tomar-leccion').setAttribute('class', 'enable');
-              }
-            }
-          })
-        }
       })
     },
     anadirRespuestas: function() {
@@ -464,9 +378,7 @@ var App = new Vue({
     },
     respuestas: [],
     corregirHabilitado: false,
-    flag: false,
-    flagDandoLeccion: false,
-    codigo_leccion: '',
+    flag: false
   }
 });
 
@@ -538,11 +450,3 @@ supportsWebSockets = 'WebSocket' in window || 'MozWebSocket' in window;
 if (!supportsWebSockets) {
   Materialize.toast('No Soportado', 6000)
 }
-
-socket.on('empezar leccion', function(data) {
-  App.obtenerLogeado();
-  // document.getElementById('leccion-panel').setAttribute('class', 'enable');
-  // App.flagDandoLeccion = true;
-  // document.getElementById('loading').setAttribute('class', 'disabled');
-  // document.getElementById('tomar-leccion').setAttribute('class', 'disabled');
-})
