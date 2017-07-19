@@ -162,7 +162,7 @@ function realtime(io) {
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
             leccion.in(paralelo._id).emit('leccion datos', leccionR)
           } else {
-            // var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
+            var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
             // var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
           }
         }
