@@ -66,7 +66,6 @@
                       <label>Respuesta</label>
                       <section style="margin: 3% 0;">
                         <label>Subir una imagen</label>
-                        <label hidden v-bind:id="'urlImagen-' + pregunta._id">ImagenURL</label>
                         <br />
                         <input id="archivo" type='file' @change="getImage(pregunta._id,$event)"/>
                       </section>
@@ -75,6 +74,9 @@
                       </section>
                       <section>
                         <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
+                      </section>
+                      <section>
+                        <img hidden v-bind:id="'loading-'+ pregunta._id" src="/img/loading.gif" />
                       </section>
                     </div>
                     <div class="row" id="botones">
