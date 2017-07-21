@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm-run-all --parallel watchify mon sync",
+    "ins": "npm install && npm run dev",
     "postinstall": "bower install",
-    "production": "npm install && npm run bower install npm run build",
+    "dev": "npm-run-all --parallel watchify mon sync",
+    "production": "npm install && npm run build",
     "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
     "parcel": "browserify  -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js -p [ parcelify -o app_client/estudiantes/dist/build.css ]",
     "mon": "env-cmd .env nodemon app.js --config nodemon.json",
-    "env:development": "cross-env NODE_ENV=development",
+    "premon": "cross-env NODE_ENV=development",
     "prestart": "npm run parcel && npm run env:development",
     "build": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c warnings=false -m > app_client/estudiantes/dist/build.js",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
@@ -111,14 +112,5 @@
     "vuetify": "^0.14.1",
     "vuex": "^2.3.1",
     "watchify": "^3.4.0"
-  },
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }

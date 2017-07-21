@@ -25,3 +25,6 @@ server.js
 karma.conf.js
 gulpfile.js
 webpack.config.js
+data/db/*.bson
+data/db/*.json
+.env_debug

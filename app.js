@@ -24,7 +24,24 @@ var app = express();
 
 var server = require('http').Server(app);
 var debug = require('debug')('espol-ppl:server');
-var port = normalizePort(process.env.PORT || '8000');
+var port = normalizePort('8000')
+// CAS URLS
+if (process.env.MODO == 'debug') {
+  process.env.NODE_ENV = 'debug'
+}
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV == 'development') {
+  var URL_CAS_LOCALHOST = 'http://localhost:8000'
+} else if (process.env.NODE_ENV == 'debug') {
+  var URL_CAS_LOCALHOST = 'http://localhost:7000'
+  port = normalizePort('7000')
+} else {
+  port = normalizePort(process.env.PORT || '8000');
+}
+var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
+var URL_HEROKU = 'https://ppl-realtime.herokuapp.com/'
+var SERVICE_URL = ''
+
 app.set('port', port);
 server.listen(port);
 
@@ -34,15 +51,8 @@ app.use(function(req, res, next){
   next();
 });
 
-
-// CAS URLS
-var URL_CAS_LOCALHOST = 'http://localhost:8000'
-var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
-var SERVICE_URL = ''
-
-
 // variables de entorno
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test') {
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' ||process.env.NODE_ENV == 'debug') {
   app.use(morgan('dev'));
   SERVICE_URL = URL_CAS_LOCALHOST
   /*
@@ -63,6 +73,9 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
   */
 } else if (os.hostname() === 'srv01appPPL' || process.env.NODE_ENV == 'production') {
   SERVICE_URL = URL_ESPOL_SERVER
+  app.use(morgan('tiny'))
+} else if (process.env.NODE_ENV == 'testing') {
+  SERVICE_URL = URL_HEROKU
   app.use(morgan('tiny'))
 }
 
@@ -99,8 +112,8 @@ app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 // El problema de las imagenes es por el cors, esta puede ser la solucion
 app.all('/*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   next();
 });
 
@@ -121,7 +134,7 @@ var middleProfesorControl = require('./app_api/config/auth.cas.config').middlewa
 
 
 // variables de entorno de middlewares
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug') {
   app.use('/', express.static(path.join(__dirname, 'app_client/login')));
   app.use('/api/session', require('./app_api/routes/login.router'));
   var { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
@@ -131,7 +144,7 @@ if (process.env.NODE_ENV === 'development') {
   var redirecion = function(req, res, next) {
     next()
   }
-} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || os.hostname() === 'srv01appPPL') {
+} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || os.hostname() === 'srv01appPPL' || process.env.NODE_ENV == 'testing') {
   app.get( '/', cas.bounce, function(req, res, next) {
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
