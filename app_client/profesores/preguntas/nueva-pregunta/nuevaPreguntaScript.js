@@ -42,7 +42,8 @@ var app = new Vue({
 			nombre: '',
 			descripcion: '',
 			tipoPregunta: '',	//v_f, justifiacación u opcion
-			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
+			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiple'
+            newOpcionText: '',
 			tipoLeccion: '',	// estimacion, tutorial o laboratorio
 			tiempoEstimado: 0,
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
@@ -80,6 +81,18 @@ var app = new Vue({
     }
 	},
 	methods: {
+	  agregarOpcion: function () {
+	    if (!this.newOpcionText==''){
+	      console.log("no esta vacio")
+          this.pregunta.opciones.push({
+            opcion: this.newOpcionText
+          })
+          this.newOpcionText= ''
+        }
+        else{
+          alert('Opcion vacia!');
+        }
+      },
     obtenerLogeado: function() {
       var self = this;
       this.$http.get('/api/session/usuario_conectado').

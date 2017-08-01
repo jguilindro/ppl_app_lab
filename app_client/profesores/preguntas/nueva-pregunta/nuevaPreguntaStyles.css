@@ -52,3 +52,8 @@ body{
 	background-color: #4a148c;
 	color: white;
 }
+
+.log ul .player-turn {
+	color: blue;
+	background-color: #e4e8ff;
+}
