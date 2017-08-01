@@ -1,11 +1,15 @@
-version: '2'
+# https://github.com/yannart/docker-compose-demo
+# https://docs.docker.com/samples/httpd/#httpdalpine
+# https://docs.docker.com/compose/compose-file/#compose-and-docker-compatibility-matrix
+
+version: '3'
 
 services:
   web:
     build: .
     container_name: "ppl"
     env_file:
-      - .env
+      .env
     links:
       - mongodb
     depends_on:
@@ -15,10 +19,8 @@ services:
     volumes:
       - ".:/home/app"
     command: npm run dev
-    restart: always
     ports:
       - "8000:8000"
-
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
@@ -35,3 +37,9 @@ services:
     volumes:
       - "./data/db:/home/app/data/db"
     command: mongorestore --drop  --quiet --host mongodb --port 27017 --db ppl /home/app/data/db
+
+  # apache:
+  #   image: httpd:2.4
+  #   volumes:
+  #     - "./apache2:/etc/apache2"
+  # command: a2enmod proxy rewrite proxy_http proxy_wstunnel

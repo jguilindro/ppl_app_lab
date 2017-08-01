@@ -8,10 +8,9 @@ const state = {
   apellidos,
   correo,
   matricula,
-  leccion_id,
   bloqueadoLeccion,
   codigoIngresado,
-  tomandoLeccion,
+  tomandoLeccion
 }
 
 // getters

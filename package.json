@@ -2,10 +2,24 @@
   "name": "espol-ppl",
   "version": "0.0.0",
   "private": true,
+  "apidoc": {
+    "title": "PPL docs",
+    "description": "aplicacion ppl",
+    "url": "http://localhost:8000/api/",
+    "sampleUrl": "http://localhost:8000/api/",
+    "header": {
+      "title": "Instrucciones",
+      "filename": "public/docs_files/header.md"
+    },
+    "footer": {
+      "title": "Desarrollador",
+      "filename": "public/docs_files/footer.md"
+    }
+  },
   "scripts": {
     "ins": "npm install && npm run dev",
     "postinstall": "bower install",
-    "dev": "npm-run-all --parallel watchify mon sync",
+    "dev": "npm-run-all --parallel watchify mon sync docs parcel",
     "production": "npm install && npm run build",
     "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
     "parcel": "browserify  -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js -p [ parcelify -o app_client/estudiantes/dist/build.css ]",
@@ -14,10 +28,17 @@
     "prestart": "npm run parcel && npm run env:development",
     "build": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c warnings=false -m > app_client/estudiantes/dist/build.js",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
+    "doc:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
+    "doc:code": "gitbook build ./docs/code",
+    "doc:code:i": "gitbook install ./docs/code",
+    "doc:code:s": "gitbook serve ./docs/code",
+    "docs": "npm-run-all doc:api doc:code",
     "parcelify": "parcelify",
     "browser-sync": "browser-sync",
     "bower": "bower",
-    "nodemon": "nodemon"
+    "nodemon": "nodemon",
+    "apidoc": "apidoc",
+    "gitbook": "gitbook"
   },
   "browserify": {
     "transform": [
@@ -75,6 +96,7 @@
     "validator": "^7.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
     "axios": "^0.16.2",
     "babel-core": "^6.0.0",
     "babel-loader": "^6.2.10",
@@ -95,6 +117,7 @@
     "eslint": "^4.2.0",
     "eslint-plugin-html": "^3.1.0",
     "esprima": "^4.0.0",
+    "gitbook-cli": "^2.3.2",
     "jsonfile": "^3.0.0",
     "materialnote": "^1.2.1",
     "nodemon": "^1.11.0",
