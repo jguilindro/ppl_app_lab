@@ -37,11 +37,12 @@ var app = new Vue({
   },
 	el: '#preguntaNueva',
 	data: {
+        selected: 'hello',
 		pregunta: {
 			nombre: '',
 			descripcion: '',
 			tipoPregunta: '',	//v_f, justifiacación u opcion
-			//opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
+			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
 			tipoLeccion: '',	// estimacion, tutorial o laboratorio
 			tiempoEstimado: 0,
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
@@ -51,10 +52,10 @@ var app = new Vue({
 			puntaje: 2
 		},
 		profesor: {},
-    capitulosObtenidos: [],
-    capitulos: [],
-    tutoriales: [],
-    laboratorios: [],
+      capitulosObtenidos: [],
+      capitulos: [],
+      tutoriales: [],
+      laboratorios: [],
     capituloEscogido:{
       nombre: '',
       id: ''

@@ -69,9 +69,16 @@ const local = function() {
       console.log('api EMERGENCIA PELIGRO')
       return require('../config/main').mlab_production
     }
-  } else if (os.hostname() === 'srv01appPPL') {
+  } else if (os.hostname() === 'Oscar') {
+    console.log("Local")
       return require('../config/main').local
-  } else if (os.hostname() === 'DESKTOP-CIH4I1V') {
+
+  }
+ else if (os.hostname() === 'srv01appPPL') {
+  return require('../config/main').local
+
+}
+  else if (os.hostname() === 'DESKTOP-CIH4I1V') {
     if (process.env.NODE_ENV == 'development') {
       console.log('development local')
       return require('../config/main').local //local

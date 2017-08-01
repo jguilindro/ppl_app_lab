@@ -29,16 +29,27 @@
 						<div class="row" id="row-descripcion">
 							<div class="input-field col s12">
 								<div id="firstEditor" class="myEditor">
-				        	
 				        </div>
+							</div>
+						</div>
+						<!-- opcion de preguntas multiples -->
+						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='opcion'">
+							<div class="col s12"><p> Prueba opcion multiple</p></div>
+							<div class="input-field col s10">
+								<input placeholder="Ingresar opción para la pregunta" id="pregunta_1" type="text" class="validate">
+								<label for="pregunta_1">Opción multiple</label>
+							</div>
+							<div class="col s2"><a class="waves-effect waves-light btn" @click="pregunta.opciones.push()">Agregar</a></div>
+							<div class="col s2 offset-s10">
+								<a class="btn-floating btn-large waves-effect waves-light red" @click=""><i class="material-icons">add</i></a>
 							</div>
 						</div>
 						<!--Tipos de preguntas y de leccion-->
 						<div class="row" id="row-tipos">
 							<div class="input-field col s6">
-								<select id="tipo-pregunta">
+								<select id="tipo-pregunta" v-model="selected">
 									<option value="" disabled selected>seleccione...</option>
-									<option value="opcion">Opcion multiple</option>
+									<option value="opcion" >Opcion multiple</option>
 									<option value="v_f">V/F</option>
 									<option value="justificacion">Justificacion</option>
 								</select>

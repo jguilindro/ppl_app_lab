@@ -73,7 +73,7 @@ EstudianteSchema.methods.generarJwt = function() {
     nombres: this.nombres,
     apellidos: this.apellidos,
     exp: parseInt(expiracion.getTime() / 1000),
-  }, config.secret );// process.env.JWT_SECRET
+  }, config.secret );// process..env.JWT_SECRET
 };
 
 EstudianteSchema.statics.obtenerTodosEstudiantes = function(callback) {
