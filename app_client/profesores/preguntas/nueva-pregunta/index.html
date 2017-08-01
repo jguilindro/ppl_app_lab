@@ -35,11 +35,11 @@
 						<!-- opcion de preguntas multiples -->
 						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='opcion'">
 							<div class="input-field col s12">
-								<input placeholder="Ingresar opción para la pregunta" id="pregunta_1" type="text" class="validate"
+								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
 									   v-model="newOpcionText"
 									   @keyup.enter="agregarOpcion"
 								>
-								<label for="pregunta_1">Opción multiple</label>
+								<label for="pregunta">Opción multiple</label>
 							</div>
 							<!--<div class="col s2"><a class="waves-effect waves-light btn" @click="agregarOpcion">Agregar</a></div>-->
 							<!--<section class="row log">

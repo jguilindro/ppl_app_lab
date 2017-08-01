@@ -24,6 +24,7 @@ const PreguntaSchema = mongoose.Schema({
     enum: ['v_f','opcion', 'justificacion'],
     'default': 'justificacion'
   },
+  opciones: [],
   capitulo: {
     type: String
   },
