@@ -19,7 +19,7 @@ var pregunta = new Vue({
 			descripcion: '',
 			//imagenes: [],	//Es opcional añadir imágenes a la pregunta
 			tipoPregunta: '',	//V/F, justifiacación u opción múltiple
-			//opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
+			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiplie'
 			tipoLeccion: '',	// Lección, tutorial o laboratorio
 			tiempoEstimado: 0,
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro

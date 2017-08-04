@@ -94,6 +94,15 @@
 		              	<p v-html="preguntaObtenida.descripcion"></p>	
 		              </div>
 	              </div>
+				  <!-- Opcion multiple -->
+					<div class="row row-ver" id="row-ver-opciones" v-if="preguntaObtenida.tipoPregunta=='opcion'">
+						<label>Opciones:</label>
+						<ul v-for="opcion in preguntaObtenida.opciones">
+							<div v-for="(value, key, index) in opcion">
+								<p>{{key}}: {{value}} </p>
+							</div>
+						</ul>
+					</div>
 	              <!--Tipos-->
 	              <div class="row row-ver" id="row-ver-tipos">
 	              	<div class="pull left">
@@ -161,9 +170,16 @@
 										<!--Descripcion-->
 										<div class="row row-editar" id="row-editar-descripcion">
 											<div class="input-field col s12">
-												<div id="firstEditor" class="myEditor">
-								        	
-								        </div>
+												<div id="firstEditor" class="myEditor"></div>
+											</div>
+										</div>
+										<!-- Opcion multiple -->
+										<div class="row row-editar" id="row-editar-opcion" v-if="preguntaEditar.tipoPregunta=='opcion'">
+											<label>Opciones:</label>
+											<div v-for="opcion in preguntaEditar.opciones">
+												<div class="input-field col s10" v-for="(value, key, index) in opcion">
+													<input type="text" :id="value" v-model="value">
+												</div>
 											</div>
 										</div>
 										<!--File uploader-->
