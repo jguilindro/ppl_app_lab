@@ -1,0 +1,17 @@
+{
+  "root": ".",
+  "title": "ppl",
+  "author": "Joel Rodriguez",
+  "language": "es",
+  "variables": {
+    "hello": "everyone"
+  },
+  "structure": {
+    "glossary": "GLOSSARY.md"
+  },
+  "plugins" : [
+
+  ],
+  "pluginsConfig": {
+  }
+}

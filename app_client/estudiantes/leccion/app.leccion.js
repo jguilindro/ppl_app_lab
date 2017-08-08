@@ -19,10 +19,10 @@
 
 var socket = io('/tomando_leccion', {
     'reconnect': true,
-    'connect timeout': 1000,
-    'reconnection delay': 2000,
-    'max reconnection attempts': 10000,
-    'force new connection':true
+    // 'connect timeout': 1000,
+    // 'reconnection delay': 2000,
+    // 'max reconnection attempts': 10000,
+    'forceNew':true
 })
 
 
@@ -383,7 +383,7 @@ var App = new Vue({
         $('#loading-'+ pregunta).hide();
         $('#source_image-'+pregunta).hide();
         $('#result_image-'+pregunta).hide();
-         
+
        var input= event.target;
 
        if (input.files && input.files[0]) {
@@ -409,7 +409,7 @@ var App = new Vue({
        var output_format = "jpg";
        var source_image = document.getElementById('source_image-'+pregunta);
        var result_image = document.getElementById('result_image-'+pregunta);
-       
+
        var quality = 15;
 
        $('#source_image-'+pregunta).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
@@ -541,7 +541,12 @@ socket.on('connect', function() {
 })
 
 socket.on('connect_failed', function() {
-  console.log('fallo al tratando de recontar');
+  $.get({
+    url: '/api/session/usuario_conectado',
+    success: function(data) {
+      socket.emit('reconectar estudiante', data.datos)
+    }
+  })
 })
 
 socket.on('disconnect', function() {

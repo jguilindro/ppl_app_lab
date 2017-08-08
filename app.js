@@ -266,6 +266,10 @@ app.use('/otros', function(req, res, next) {
 // navbars
 app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/profesores/partials/navbar.html')))
 
+// documentation
+app.use('/docs/api' ,express.static(path.join(__dirname, 'docs/api')))
+app.use('/docs/code' ,express.static(path.join(__dirname, 'docs/code/_book')))
+
 var authApi = require('./app_api/config/auth.api')
 // app_api OJO aqui esta expuesta
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));

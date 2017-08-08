@@ -12,10 +12,9 @@ env.txt
 *.log*
 
 ## ignorar builds
-app_client/estudiantes/dist/build.css
-app_client/estudiantes/dist/build.js
+app_client/estudiantes/dist/*.css
+app_client/estudiantes/dist/*.js
 app_client/estudiantes/dist/build-webpack.js
-app_client/estudiantes/tomar-leccion
 
 ## webpack files
 .postcssrc.js
@@ -27,4 +26,10 @@ gulpfile.js
 webpack.config.js
 data/db/*.bson
 data/db/*.json
+data/db/*
 .env_debug
+docs/api/*
+docs/code/_book/
+package-lock.json
+
+apache2/
