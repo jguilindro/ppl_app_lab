@@ -12,8 +12,8 @@ env.txt
 *.log*
 
 ## ignorar builds
-app_client/estudiantes/dist/build.css
-app_client/estudiantes/dist/build.js
+app_client/estudiantes/dist/*.css
+app_client/estudiantes/dist/*.js
 app_client/estudiantes/dist/build-webpack.js
 
 ## webpack files
@@ -30,5 +30,6 @@ data/db/*
 .env_debug
 docs/api/*
 docs/code/_book/
+package-lock.json
 
 apache2/
