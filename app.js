@@ -44,7 +44,7 @@ var SERVICE_URL = ''
 
 app.set('port', port);
 server.listen(port);
-
+// var io = require("socket.io").listen(server)
 var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
 app.use(function(req, res, next){
   res.io = io;

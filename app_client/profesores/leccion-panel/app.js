@@ -105,11 +105,17 @@ leccion.on('tiempo restante', function(tiempo) {
 })
 
 leccion.on('terminado leccion', function(match) {
-  App.tiempo = 'leccion detenida'
-  // document.getElementById('leccion-no-dar').disabled = true
-  document.getElementById('terminar-leccion').disabled = true
-  document.getElementById('comenzar-leccion').disabled = true
-  $('#modal1').modal('open');
+  if (!match) {
+    Materialize.toast('Hubo un error al terminar la leccion', 5000);
+  } else {
+    App.tiempo = 'leccion detenida'
+    // document.getElementById('leccion-no-dar').disabled = true
+    // document.getElementById('aument').disabled = true
+    document.getElementById('anadir-tiempo').disabled = true
+    document.getElementById('terminar-leccion').disabled = true
+    document.getElementById('comenzar-leccion').disabled = true
+    $('#modal1').modal('open');
+  }
 })
 
 leccion.on('leccion datos', function(leccion) {
@@ -158,7 +164,7 @@ leccion.on('leccion datos', function(leccion) {
     }
   }
 })
-
+var conectado_estado = false
 function comenzar() {
   // document.getElementById('anadir-tiempo').disabled = false
   leccion.emit('comenzar leccion', true)
@@ -168,7 +174,6 @@ function terminarLeccion() {
   leccion.emit('parar leccion', 'la leccion ha sido detenida')
   document.getElementById('terminar-leccion').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
-  $('#modal1').modal('open');
 }
 
 function terminarLeccionDevelopment() {
@@ -178,14 +183,25 @@ function terminarLeccionDevelopment() {
 
 Offline.on('down', function(data) {
   console.log('desconectado');
+  document.getElementById('anadir-tiempo').disabled = true
+  document.getElementById('terminar-leccion').disabled = true
+  document.getElementById('anadir-tiempo').disabled = true
 })
 
 Offline.on('up', function(data) {
   console.log('conectado');
+  document.getElementById('terminar-leccion').disabled = false
+  document.getElementById('anadir-tiempo').disabled = false
   // emitir a calcular el tiempo y enviarselo a todos estudiantes
 })
 
 leccion.on('connect', function() {
+  $('.toast').remove()
+  if (conectado_estado) {
+    document.getElementById('anadir-tiempo').disabled = true
+    document.getElementById('terminar-leccion').disabled = true
+  }
+  conectado_estado = true
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {
@@ -198,13 +214,17 @@ leccion.on('connect', function() {
 //   console.log('tratando de reconecta');
 // })
 //
-// leccion.on('connect_failed', function() {
-//   console.log('tratando de recontar');
-// })
+leccion.on('connect_failed', function() {
+  document.getElementById('anadir-tiempo').disabled = true
+  document.getElementById('terminar-leccion').disabled = true
+})
 
-// leccion.on('disconnect', function() {
-//   //console.log('desconectado');
-// })
+leccion.on('disconnect', function() {
+  Materialize.toast('<h3 style="color: red;"> NO ESTA CONECTADO </h3>');
+  document.getElementById('anadir-tiempo').disabled = true
+  document.getElementById('terminar-leccion').disabled = true
+  document.getElementById('anadir-tiempo').disabled = true
+})
 
 $('#comenzar-leccion').one('click', function() {
     $('#comenzar-leccion').attr('disabled','disabled');
@@ -241,3 +261,18 @@ function mas() {
 $('#input-tiempo').keypress(function(event){
     event.preventDefault();
 });
+
+
+function terminarPrueba() {
+  $.ajax({
+    url: '/api/lecciones/terminar_leccion',
+    method: 'POST',
+    success: function(response) {
+      console.log(response);
+    }
+  })
+}
+
+leccion.on('get_message', function(mensaje) {
+  console.log(mensaje);
+})

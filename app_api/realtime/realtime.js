@@ -3,7 +3,6 @@ cookieParser = require('cookie-parser'),
 moment       = require('moment'),
 tz           = require('moment-timezone'),
 logger       = require('tracer').colorConsole(),
-CronJob = require('cron').CronJob,
 co           = require('co');
 
 require("moment-duration-format");
@@ -15,11 +14,8 @@ ParaleloModel        = require('../models/paralelo.model'),
 GrupoModel           = require('../models/grupo.model'),
 LeccionRealtimeModel = require('../models/leccionRealtime'),
 LeccionModel         = require('../models/leccion.model');
-// var highestTimeoutId = setTimeout(function(){});
-// var noofTimeOuts = setTimeout('')
+
 var intervals = []
-var crons = []
-var crons_intervals = []
 
 function realtime(io) {
   var leccion = io.of('/tomando_leccion');
@@ -39,39 +35,36 @@ function realtime(io) {
           socket.join(PARALELO.grupos[i]._id) // crear los room para cada grupo
         }
 
-        // setear y mostar el tiempo que inicio la leccion y en que acabara
         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
         console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-        var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
 
+         var hec = yield cleanIntervals(intervals, socket.leccion._id)
         if (boton) {
           var c = yield corriendoTiempo(socket.leccion._id, true);
           leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
-        var job = new CronJob({
-          cronTime: '* * * * * *', // ejecuta cada segundo lo de onTick
-          onTick: function() {
-            let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-            var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-            if (!isNaN(duration)) {
-              if (parseInt(duration) == 0) {
-                cleanCrons(crons_intervals, PARALELO.leccion);
-                leccionTerminada(PARALELO, PARALELO.leccion)
-                leccion.in(PARALELO._id).emit('terminado leccion', true)
-              }
-            }
+        socket.interval = setInterval(function() {
+          let tiempo_temp = TIEMPO_MAXIMO
+          let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+          var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+          if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
+            clearInterval(socket.interval);
+            leccionTerminada(PARALELO, PARALELO.leccion)
+            leccion.in(PARALELO._id).emit('terminado leccion', true)
+            leccion.in(PARALELO._id).emit('tiempo restante', 'leccion terminada')
+          } else {
             leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
-          },
-          onComplete: function() {
-            console.log(`Terminada ejecucion del cron la leccion ${PARALELO.leccion}`);
-          },
-          start: true,
-        })
+          }
+        }, 1000)
+        socket.interval.ref()
         var leccion_id = socket.leccion._id
-        crons_intervals.push({leccion_id: leccion_id, job: job});
-        console.log(crons_intervals);
-      }).catch(fail => console.log(fail))
+        intervals.push({leccion_id: leccion_id, interval: socket.interval})
+        console.log(intervals);
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
+      })
     }
 
     socket.on('comenzar leccion', function() {
@@ -87,11 +80,11 @@ function realtime(io) {
     socket.on('usuario', function(usuario) {
       // guardar el usuario conectado
       socket.user = usuario
-      // FIXME: se crean varios socketid
       co(function* () {
         const profesor = yield obtenerProfesor(usuario)
-        if (profesor) {
-          const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+        const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
+        const paralelo = yield obtenerParaleloDeEstudiante(usuario)
+        if (profesor && PARALELO) {
           const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
           const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
           socket.leccion = LECCION_TOMANDO
@@ -110,8 +103,7 @@ function realtime(io) {
           if (leccion_creada && PARALELO.dandoLeccion && PARALELO.leccionYaComenzo) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
             profesorRealtime()
           }
-        } else {
-          const paralelo = yield obtenerParaleloDeEstudiante(usuario)
+        } else if (paralelo) {
           const estudiante_anadido = yield estudianteConectado(paralelo.leccion, usuario._id)
           const estudiante_rec = yield estudianteReconectado(paralelo.leccion, usuario._id)
           const estudiante = yield obtenerEstudiante(socket.user)
@@ -125,7 +117,10 @@ function realtime(io) {
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
-      }).catch(fail => console.log(fail))
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
+      })
     })
 
     socket.on('reconectar estudiante', function(estudiante) {
@@ -143,6 +138,9 @@ function realtime(io) {
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
         }
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
       })
     })
 
@@ -161,11 +159,16 @@ function realtime(io) {
             let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
             leccion.in(paralelo._id).emit('leccion datos', leccionR)
           } else {
-            var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
-            // var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
+            if (socket.leccion) {
+              // var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
+              var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
+            }
           }
         }
-      }).catch(fail => console.log(fail))
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
+      })
     })
 
     // terminar leccion
@@ -174,10 +177,18 @@ function realtime(io) {
         // TODO: verificar que sea un profesor
         const profesor = yield obtenerProfesor(socket.user)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
-        leccionTerminada(PARALELO, PARALELO.leccion)
-        leccion.in(PARALELO._id).emit('terminado leccion', true)
-      }).catch(fail => console.log(fail))
+        var intervals_done = yield cleanIntervals(intervals, socket.leccion._id)
+        // var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
+        var lecciones_terminadas = yield leccionTerminada(PARALELO, PARALELO.leccion)
+        if (profesor &&  PARALELO && lecciones_terminadas && intervals_done) {
+          leccion.in(PARALELO._id).emit('terminado leccion', true)
+        } else {
+          leccion.in(PARALELO._id).emit('terminado leccion', false)
+        }
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
+      })
     })
 
     // solo se usa para pruebas
@@ -188,7 +199,10 @@ function realtime(io) {
         clearInterval(socket.interval)
         leccionTerminadaDevelop(PARALELO, PARALELO.leccion)
         leccion.in(PARALELO._id).emit('terminado leccion', true)
-      }).catch(fail => console.log(fail))
+      }).catch(fail => {
+        let error = new Error(fail)
+        console.log(error);
+      })
     })
   })
 
@@ -205,7 +219,7 @@ function cleanIntervals(todos_intervals, id_leccion) {
         clearInterval(inicial.interval)
       }
     })
-    return resolve(intervals)
+    return resolve(true)
   })
 }
 
@@ -216,6 +230,7 @@ function cleanCrons(todos_crons, id_leccion) {
         return inicial
       } else {
         inicial.job.stop()
+        return resolve(true)
       }
     })
     return resolve(crons_intervals)
@@ -413,7 +428,13 @@ function leccionTerminada(paralelo, id_leccion) {
       })
     }))
   })
-  Promise.all(promises).then(values => {
+  return Promise.all(promises).then(values => {
+    for (var i = 0; i < values.length; i++) {
+      if (values[i] != true){
+        return false
+      }
+    }
+    return true
     console.log('terminado leccion estudiantes');
   }, fail => {
    console.log(fail);
