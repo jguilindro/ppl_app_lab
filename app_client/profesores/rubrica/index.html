@@ -1,9 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>rubrica</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="./style.css">
+
 </head>
 <body>
-<h1></h1>
+	<header id="#navbar"></header>
+	<section>
+		<div class="container row">
+			<article class="col s12 m12">
+				<div class="image col s3 m3 offset-m1">
+					<h3 class="center-align">aquí va la imagen</h3>
+				</div>
+				<div class="col s7 m7"><h4>Rúbrica exposición de problema en grupo</h4></div>
+				
+				<div class="col s2 m2"><span>Fecha: </span> {{date}} </div>
+				<div class="col s2 m2"><span>Grupo: </span> {{Grupo}} </div>
+				<div class="col s2 m2"><span>Ejercicio: </span> {{ex}} </div>
+				<div class="col s2 m2"><span>Materia: </span> {{ev}} </div>
+
+				<div class="col s2 m2"><span>Evaluador: </span> {{ev}} </div>
+				<div class="col s2 m2"><span>Paralelo: </span> {{par}} </div>
+				<div class="col s2 m2"><span>Capítulo: </span> {{chapter}} </div>
+			</article>
+			<article class="col s10 m10 offset-m2">
+				<div class="col s10 m10 left-align offset-m1 
+								#90caf9 blue lighten-3">presentación</div><br><br>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Le presentación fue clara y entendible</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+			</article>
+			<article class="col s10 m10 offset-m2">
+				<div class="col s10 m10 left-align offset-m1
+							#e6ee9c lime lighten-3">Trabajo en grupo</div> <br><br>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Los estudiantes permitieron que cada uno explique parte del problema.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">La presentación de cada uno de los estudiantes demuestra conexión entre ellos y promueve discusión lógica del tema.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Los miembros del grupo se tratan con respeto y cortesía.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+			</article>
+			<article class="col s10 m10 offset-m2">
+				<div class="col s10 m10 left-align offset-m1
+							#84ffff cyan accent-1">Introducción</div><br><br>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">La presentación del problema es clara y siguen un orden lógico en la presentación.	</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">La física involucrada en el problema es explicada en forma clara y precisa.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Explican claramente el objetivo del problema y cómo van a utilizar los conceptos físicos.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+			</article>
+			<article class="col s10 m10 offset-m2">
+				<div class="col s10 m10 left-align offset-m1
+							#ffecb3 amber lighten-4">Contenido individual</div><br><br>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Las expresiones matemáticas fueron apropiadas, detalladas y con respuestas correctas.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Los estudiantes identifican el origen de las ecuaciones y sus limitaciones.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Las teorías o leyes utilizadas fueron descritas y utilizadas con propiedad.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+				<span class="sub-article col m10 offset-m2">
+					<div class="col s10 m7 center-align">Las conclusiones están explícitamente ligadas al problema y son físicamente correctas.</div>
+					<div class="input-field col s1 m1 offset-m2">
+						<input id="as" type="text" class="validate">
+						<label for=""></label>
+					</div>
+				</span>
+			</article>
+	</div>
+	</section>
+	<footer>
+		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="/bower_components/vue/dist/vue.min.js"></script>
+		<script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
+		<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+		<script type="text/javascript" src="./script.js"></script>
+	</footer>
 </body>
 </html>

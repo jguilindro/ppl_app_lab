@@ -1,0 +1,30 @@
+.container{
+	width: 90%;
+	margin: auto;
+	background-color: white;
+}
+body{
+  background-color:   #d3dbdb;
+}
+#info div{
+  height: 40vh;
+  margin-bottom: 3%;
+}
+a{
+  color: black;
+}
+a:hover{
+  color:grey;
+}
+span a{
+  color: #039be5;
+}
+.container .row{
+  background-color: rgba(255,255,255,0.7);
+  height:   100%;
+  margin-bottom:  10px;
+}
+#source_image, #result_image{
+  width: 50%;
+  height: 50%;
+}
