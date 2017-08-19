@@ -281,6 +281,7 @@ app.use('/api/preguntas', require('./app_api/routes/preguntas.router'));
 app.use('/api/respuestas', authApi.estudiante, require('./app_api/routes/respuestas.router'));
 app.use('/api/capitulos', authApi.profesor, require('./app_api/routes/capitulo.router'));
 app.use('/api/calificaciones', authApi.estudiante, require('./app_api/routes/calificacion.router'));
+app.use('/api/rubrica', authApi.profesor, require('./app_api/routes/rubrica.router'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
