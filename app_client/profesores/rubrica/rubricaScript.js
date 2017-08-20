@@ -31,15 +31,18 @@ let rubricaApp = new Vue({
 	},
 	mounted: function(){
 		this.inicializarDOM();
+	    $('select').material_select();
+		this.obtenerLogeado();
 	},
 	data: {
 		profesores: profesores,
+		profesor: {},
 		grupos: grupos,
 		paralelos: paralelos,
 		ejercicios: ejercicios,
 		capitulos: capitulos,
 		ಠ_ಠ: '',
-		Ѿ: 'butt',
+		Ѿ: moment().format("DD/MM/YYYY"),
 		rubrica: {
 			materia: '',
 			paralelo: '',
@@ -119,7 +122,11 @@ let rubricaApp = new Vue({
 
 				}
 			});
-		}
+		},
+		obtenerLogeado: function() {
+      		this.$http.get('/api/session/usuario_conectado').then(response => {
+        	this.profesor = response.body.datos;
+      	})}
 	}
 });
 
