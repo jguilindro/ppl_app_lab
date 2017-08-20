@@ -3,28 +3,16 @@
 	margin: auto;
 	background-color: white;
 }
+.container article.title{
+  margin-top: 3%;
+  margin-bottom: 2%;
+}
+p.no-margin-top{
+  margin:0px;
+}
+div.image img, p.fifthy-left{
+  margin-left: 50%;
+}
 body{
   background-color:   #d3dbdb;
-}
-#info div{
-  height: 40vh;
-  margin-bottom: 3%;
-}
-a{
-  color: black;
-}
-a:hover{
-  color:grey;
-}
-span a{
-  color: #039be5;
-}
-.container .row{
-  background-color: rgba(255,255,255,0.7);
-  height:   100%;
-  margin-bottom:  10px;
-}
-#source_image, #result_image{
-  width: 50%;
-  height: 50%;
 }
