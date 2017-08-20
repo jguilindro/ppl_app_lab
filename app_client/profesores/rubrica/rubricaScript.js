@@ -21,7 +21,19 @@ const ejercicios = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12
 
 const capitulos = ['21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
 
-const idsInput = ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'];
+const idsInput = [
+	'#presentacion-1', 
+	'#trabajoEnGrupo-1', 
+	'#trabajoEnGrupo-2', 
+	'#trabajoEnGrupo-3', 
+	'#introduccion-1', 
+	'#introduccion-2', 
+	'#introduccion-3', 
+	'#contenidoIndividual-1', 
+	'#contenidoIndividual-2', 
+	'#contenidoIndividual-3', 
+	'#contenidoIndividual-4'
+];
 
 
 let rubricaApp = new Vue({
@@ -78,6 +90,11 @@ let rubricaApp = new Vue({
     		self.rubrica.capitulo = $('#selectCapitulo option:selected').text();
     	});
 
+    	$('.calificacion').on('change paste', function(){
+    		let calificacionNoPonderada = self.sumarCalificaciones(idsInput);
+    		self.rubrica.calificacion = self.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
+    	});
+
 		},
 		//////////////////////////////////////
 		//Helpers
@@ -85,11 +102,19 @@ let rubricaApp = new Vue({
 		sumarCalificaciones: function(arrayInputs){
 			let suma = 0;
 			$.each(arrayInputs, function(index, input){
-				let valor = input.val();
+				let valor = 0;
+				let valorInput = $(input).val();
+				if( valorInput != '' ){
+					valor = parseInt( valorInput );
+				}
 				suma += valor;
 			});
-
 			return suma;
+		},
+		ponderarCalificacion: function(calificacionNoPonderada){
+			const calificacionMaxima = 22;
+			let calificacionPonderada = ( ( calificacionNoPonderada * 20 ) / calificacionMaxima );
+			return calificacionPonderada;
 		},
 		validarRubrica(){
 			let flag = true;
@@ -100,12 +125,14 @@ let rubricaApp = new Vue({
 		//////////////////////////////////////
 		calificar: function(){
 			let self = this;
-			self.rubrica.calificacion = this.sumarCalificaciones(idsInput);
-			if(self.validar()){
+			let calificacionNoPonderada = this.sumarCalificaciones(idsInput);
+			self.rubrica.calificacion = this.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
+			console.log(self.rubrica.calificacion)
+			/*if(self.validar()){
 				self.llamadaApi(self.rubrica);
 			}else{
 				//Mostar errores
-			}
+			}*/
 		},
 		llamadaApi(data){
 			$.ajax({
