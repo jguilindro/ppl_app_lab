@@ -19,24 +19,34 @@
 						<img src="/img/ppl-logo.jpg">
 					</div>	
 					<div class="col s9 m9"><h4>Rúbrica exposición de problema en grupo</h4></div>
-					
-					<div class="col s2 m2"><span>Fecha: </span>  </div>
-					<div class="col s2 m2"><span>Grupo: </span>  </div>
-					<div class="col s2 m2"><span>Ejercicio: </span>  </div>
-					<div class="col s2 m2"><span>Materia: </span>  </div>
+					<div class="col s2 m2"><span>Fecha: 	</span>					{{Ѿ}}						</div>
+					<div class="col s1 m2 input-field">	<select id="selectGrupo">
+															<option v-for="grupo in grupos">{{grupo}}</option>
+														</select><label>Grupos</label>							</div>
+					<div class="col s1 m2 input-field">	<select id="selectEjercicio">
+															<option v-for="ejercicio in ejercicios">{{ejercicio}}</option>
+														</select><label>Ejercicios</label></div>					
+					<div class="col s3 m2"><span>Evaluador: </span>	{{profesor.nombres}} {{profesor.apellidos}}	</div>
 
 					<div class="col s3 m3"><p class="fifthy-left no-margin-top">Rúbrica ppl</p></div>
-					<div class="col s2 m2"><span>Evaluador: </span>  </div>
-					<div class="col s2 m2"><span>Paralelo: </span> </div>
-					<div class="col s2 m2"><span>Capítulo: </span> </div>
-				</article>
+					
+					<div class="col s1 m2 input-field">	<select id="selectMateria">
+															<option>Física 2</option>
+															<option>Física 3</option>
+														</select><label>Materias</label></div>
+					<div class="col s1 m2 input-field">	<select id="selectParalelo">
+															<option v-for="paralelo in paralelos">{{paralelo}}</option>
+														</select><label>Paralelo</label></div>
+					<div class="col s1 m2 input-field">	<select id="selectCapitulo">
+															<option v-for="capitulo in capitulos">{{capitulo}}</option>
+														</select><label>Capitulos</label></div>				</article>
 			</div>
 			<div class="row">
 				<article class="col s10 m10 offset-m2">
 					<div class="col s10 m10 left-align offset-m1 #90caf9 blue lighten-3">Presentación</div>
 					<br><br>
 					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Le presentación fue clara y entendible</div>
+						<div class="col s10 m7 center-align">La presentación fue clara y entendible</div>
 						<div class="input-field col s1 m1 offset-m2">
 							<input id="presentacion-1" type="number" class="validate calificacion" min="0" max="2">
 							<label for=""></label>
@@ -130,7 +140,14 @@
 				</article>
 			</div>
 			<div class="row">
-				<a class="waves-effect waves-light btn pull right" @click="calificar">Calificar</a>
+				<div class="col m12">
+					<div class="col m3 m6 offset-m3">
+						<a class="waves-effect waves-light btn" @click="calificar">Calificar</a>
+					</div>
+					<div class="col m2 offset-m1">
+						<p>Total <label>{{rubrica.calificacion}}</label></p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -139,6 +156,7 @@
 		<script src="/bower_components/materialize/bin/materialize.js"></script>
 		<script src="/bower_components/vue/dist/vue.min.js"></script>
 		<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+		<script src="/bower_components/moment/moment.js"></script>
 		<script src="./rubricaScript.js"></script>
 	</footer>
 </body>

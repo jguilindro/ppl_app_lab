@@ -1,7 +1,11 @@
+body{
+  background-color:   #d3dbdb;
+}
 .container{
 	width: 90%;
 	margin: auto;
 	background-color: white;
+  min-height: 100%;
 }
 .container article.title{
   margin-top: 3%;
@@ -13,6 +17,7 @@ p.no-margin-top{
 div.image img, p.fifthy-left{
   margin-left: 50%;
 }
-body{
-  background-color:   #d3dbdb;
+
+.select-wrapper input.select-dropdown{
+  margin-bottom: 0px;
 }
