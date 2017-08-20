@@ -8,6 +8,9 @@ const RubricaSchema = mongoose.Schema({
 		unique: true,
 		'default': require('shortid').generate
 	},
+	materia: {
+		type: String,
+	},
 	paralelo: {
 		type: String,
 	},

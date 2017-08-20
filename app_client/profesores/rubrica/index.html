@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>rubrica</title>
+	<title>Rúbrica</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
 		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 		<link rel="stylesheet" type="text/css" href="./style.css">
-
 </head>
 <body>
 	<header id="#navbar"></header>
-	<section>
+	<section id="rubricaApp">
 		<div class="container row">
 			<article class="col s12 m12">
 				<div class="image col s3 m3 offset-m1">
@@ -20,14 +19,14 @@
 				</div>
 				<div class="col s7 m7"><h4>Rúbrica exposición de problema en grupo</h4></div>
 				
-				<div class="col s2 m2"><span>Fecha: </span> {{date}} </div>
-				<div class="col s2 m2"><span>Grupo: </span> {{Grupo}} </div>
-				<div class="col s2 m2"><span>Ejercicio: </span> {{ex}} </div>
-				<div class="col s2 m2"><span>Materia: </span> {{ev}} </div>
+				<div class="col s2 m2"><span>Fecha: </span>  {{ಠ_ಠ}}</div>
+				<div class="col s2 m2"><span>Grupo: </span>  </div>
+				<div class="col s2 m2"><span>Ejercicio: </span> </div>
+				<div class="col s2 m2"><span>Materia: </span>  </div>
 
-				<div class="col s2 m2"><span>Evaluador: </span> {{ev}} </div>
-				<div class="col s2 m2"><span>Paralelo: </span> {{par}} </div>
-				<div class="col s2 m2"><span>Capítulo: </span> {{chapter}} </div>
+				<div class="col s2 m2"><span>Evaluador: </span>  </div>
+				<div class="col s2 m2"><span>Paralelo: </span>  </div>
+				<div class="col s2 m2"><span>Capítulo: </span>  </div>
 			</article>
 			<article class="col s10 m10 offset-m2">
 				<div class="col s10 m10 left-align offset-m1 
@@ -35,7 +34,7 @@
 				<span class="sub-article col m10 offset-m2">
 					<div class="col s10 m7 center-align">Le presentación fue clara y entendible</div>
 					<div class="input-field col s1 m1 offset-m2">
-						<input id="as" type="text" class="validate">
+						<input id="as" type="number" class="validate">
 						<label for=""></label>
 					</div>
 				</span>
@@ -122,14 +121,17 @@
 					</div>
 				</span>
 			</article>
-	</div>
+		</div>
+		<div class="row">
+			<a class="waves-effect waves-light btn pull right" @click="calificar">Calificar</a>
+		</div>
 	</section>
 	<footer>
 		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="/bower_components/materialize/bin/materialize.js"></script>
 		<script src="/bower_components/vue/dist/vue.min.js"></script>
-		<script src="/bower_components/vue-router/dist/vue-router.min.js"></script>
 		<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
-		<script type="text/javascript" src="./script.js"></script>
+		<script src="./rubricaScript.js"></script>
 	</footer>
 </body>
 </html>
