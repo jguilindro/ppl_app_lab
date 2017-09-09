@@ -23,7 +23,15 @@ const RubricaSchema = mongoose.Schema({
 	ejercicio: {
 		type: String
 	},
-	calificacion: {
+	calificaciones: [{
+		regla: {
+			type: String
+		},
+		calificacion: {
+			type: Number
+		}
+	}],
+	total: {
 		type: Number
 	},
 	evaluador: {
@@ -31,7 +39,7 @@ const RubricaSchema = mongoose.Schema({
 	}
 }, {timestamps: true, versionKey: false, collection: 'rubricas'});
 
-RubricaSchema.statics.crearRegistro = function(callback){
+RubricaSchema.methods.crearRegistro = function(callback){
 	this.save(callback);
 }
 
@@ -57,7 +65,7 @@ RubricaSchema.statics.obtenerRegistrosDeCapituloDeGrupo = function(paralelo, gru
 }
 
 /*
-	Obtiene los registros de toods los ejercicios del capítulo indicado de todos los grupos del paralelo indicado
+	Obtiene los registros de toods los ejercicios del capítulo indicado de TODOS LOS GRUPOS del paralelo indicado
 */
 RubricaSchema.statics.obtenerRegistrosDeCapituloDeParalelo = function(paralelo, capitulo, callback){
 	this.find({ paralelo : paralelo, capitulo : capitulo }, callback);

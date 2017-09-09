@@ -4,12 +4,22 @@ var response = require('../utils/responses');
 
 
 const crearRegistro = (req, res) => {
-	const registro = new RubricaModel({
+	let arrayCalificaciones = JSON.parse(req.body.calificaciones);
+	let rub = JSON.parse(req.body.rubrica);
 
+	const registro = new RubricaModel({
+		materia : rub.materia,
+		paralelo : rub.paralelo,
+		grupo : rub.grupo,
+		capitulo : rub.capitulo,
+		ejercicio : rub.ejercicio,
+		calificaciones : arrayCalificaciones,
+		total : rub.calificacion,
+		evaluador : rub.evaluador
 	});
 
-	registro.crearRegistro(registro, (err, doc) => {
-		if(err) return response.serverError(res);
+	registro.crearRegistro((err, doc) => {
+		if(err) return response.serverError(res)
 		return response.creado(res);
 	});
 };

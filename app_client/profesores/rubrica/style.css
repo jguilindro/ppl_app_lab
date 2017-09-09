@@ -7,7 +7,7 @@ body{
 	background-color: white;
   min-height: 100%;
 }
-.container article.title{
+.container article.header{
   margin-top: 3%;
   margin-bottom: 2%;
 }
@@ -20,4 +20,14 @@ div.image img, p.fifthy-left{
 
 .select-wrapper input.select-dropdown{
   margin-bottom: 0px;
+}
+
+
+#mainSelecciones{
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.title{
+  font-weight: bold;
 }
