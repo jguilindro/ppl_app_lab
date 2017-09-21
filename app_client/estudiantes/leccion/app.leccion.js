@@ -18,11 +18,11 @@
 // }
 
 var socket = io('/tomando_leccion', {
-    reconnect: true,
-    'connect timeout': 1000,
-    'reconnection delay': 2000,
-    'max reconnection attempts': 10000,
-    'force new connection':true
+    'reconnect': true,
+    // 'connect timeout': 1000,
+    // 'reconnection delay': 2000,
+    // 'max reconnection attempts': 10000,
+    'forceNew':true
 })
 
 
@@ -377,14 +377,21 @@ var App = new Vue({
        /*
              @Descripción: Esta función obtiene la imagen subida por el usuario
              @Autor: @edisonmora95, @jguilindro
-             @FechaModificación: 18-07-2017 @jguilindro
+             @FechaModificación: 19-07-2017 @jguilindro
            */
+        $('#btn-responder-' + pregunta).attr("disabled", true);//Bloquear boton de envio
+        $('#loading-'+ pregunta).hide();
+        $('#source_image-'+pregunta).hide();
+        $('#result_image-'+pregunta).hide();
+
        var input= event.target;
 
        if (input.files && input.files[0]) {
          var reader = new FileReader();
+
          reader.onload = function (e) {
            $('#source_image-'+pregunta).attr('src', e.target.result);
+           $('#loading-'+ pregunta).show();//Muestra loading
            App.comprimir(pregunta);//Comprime la imagen obtenida
          };
          reader.readAsDataURL(input.files[0]);
@@ -395,17 +402,14 @@ var App = new Vue({
        /*
                @Descripción: Esta función comprime una imagen subida por el usuario
                @Autor: @edisonmora95, @jguilindro
-               @FechaModificación: 18-07-2017 @jguilindro
+               @FechaModificación: 19-07-2017 @jguilindro
                @Params:
                  pregunta -> id de la pregunta a la cual se responde con la imagen
        */
        var output_format = "jpg";
        var source_image = document.getElementById('source_image-'+pregunta);
        var result_image = document.getElementById('result_image-'+pregunta);
-       if (source_image.src == "") {
-           alert("Debes ingresar una imagen primero!");
-           return false;
-       }
+
        var quality = 15;
 
        $('#source_image-'+pregunta).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
@@ -413,15 +417,6 @@ var App = new Vue({
        });
 
        $('#result_image-'+pregunta).ready(function(){
-         var image_width=$(result_image).width(),
-           image_height=$(result_image).height();
-
-         if(image_width > image_height){
-           result_image.style.width="320px";
-         }else{
-           result_image.style.height="300px";
-         }
-         result_image.style.display = "block";
          App.subirImagen((result_image.src).substring(23), pregunta);//Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
        });
      },
@@ -430,7 +425,7 @@ var App = new Vue({
        /*
          @Descripción: Esta función sube la imagen comprimida a imgur y devuelve la url.
          @Autor: @jguilindro
-         @FechaModificación: 18-07-2017 @jguilindro
+         @FechaModificación: 19-07-2017 @jguilindro
        */
        var clientId = "300fdfe500b1718";
        var xhr = new XMLHttpRequest();
@@ -441,18 +436,30 @@ var App = new Vue({
            App.loading(false);
            var url = JSON.parse(xhr.responseText)
            Materialize.toast('Imagen subida exitosamente', 5000, 'rounded');
-           console.log('Url de la imagen')
-           console.log(url.data.link);//Link de la imagen en imgur
+           //console.log('Url de la imagen')
+           //console.log(url.data.link);//Link de la imagen en imgur
+
 
            var idSrcImage = '#source_image-' + pregunta;
            $(idSrcImage).attr('aux', url.data.link);
 
 
-           var idUrlImagen = '#urlImagen-' + pregunta;
-            $(idUrlImagen).text(url.data.link);
-            //console.log($(idUrlImagen).text());//Link de la imagen en imgur
-           document.getElementById('result_image-'+ pregunta).setAttribute("hidden", false);
-         }
+           var result_image = document.getElementById('result_image-'+pregunta);
+           $('#result_image-'+pregunta).attr('src', url.data.link);
+
+           var image_width=$(result_image).width(), image_height=$(result_image).height();
+
+             if(image_width > image_height){
+               result_image.style.width="320px";
+             }else{
+               result_image.style.height="300px";
+             }
+             result_image.style.display = "block";
+                //console.log($(idUrlImagen).text());//Link de la imagen en imgur
+               $('#loading-'+ pregunta).hide();//Esconde loading
+               document.getElementById('result_image-'+ pregunta).setAttribute("hidden", false);
+               $('#btn-responder-' + pregunta).attr("disabled", false);
+             }
          if (xhr.status === 400){
            Materialize.toast('<span style="color: red">Hubo un error al subir la imagen. Intentelo de nuevo.</span>', 5000, 'rounded');
          }
@@ -534,7 +541,12 @@ socket.on('connect', function() {
 })
 
 socket.on('connect_failed', function() {
-  console.log('fallo al tratando de recontar');
+  $.get({
+    url: '/api/session/usuario_conectado',
+    success: function(data) {
+      socket.emit('reconectar estudiante', data.datos)
+    }
+  })
 })
 
 socket.on('disconnect', function() {

@@ -1,3 +1,22 @@
+
+var sub = {
+  template: '<div class="row">\
+  <ul>\
+    <li v-for="(opcion, index) in preguntas">\
+      <div class="card-panel teal">\
+        <span class="white-text"">{{ opcion.opcion }} </span>\
+        <button @click="deleteSub(index)">Eliminar</button>\
+      </div></li>\
+  </ul></div>',
+  props: ['preguntas'],
+  methods:{
+    deleteSub(index){
+      this.$emit('sub-deleted', index);
+    }
+  }
+}
+
+
 var app = new Vue({
   mounted() {
     this.obtenerLogeado();
@@ -5,9 +24,9 @@ var app = new Vue({
     
     //MaterialNote
     $('.myEditor').materialnote({
-        height: "50vh",
+        height: '50vh',
         onImageUpload: function(files, editor, $editable) {
-        var clientId = "300fdfe500b1718";
+        var clientId = '300fdfe500b1718';
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://api.imgur.com/3/upload', true);
         xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
@@ -24,12 +43,12 @@ var app = new Vue({
          xhr.send(files[0]);
       }
     });
-    $(".note-editor").find("button").attr("type", "button");
-    this.$http.get("/../navbar/profesores").then(response =>{
+    $('.note-editor').find('button').attr('type', 'button');
+    this.$http.get('/../navbar/profesores').then(response =>{
       console.log(response)
       document.getElementById('#navbar').innerHTML = response.body;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
+      $('.button-collapse').sideNav();
+      $('.dropdown-button').dropdown();
     });
     //Materialize
     $('select').material_select();
@@ -37,6 +56,7 @@ var app = new Vue({
   },
 	el: '#preguntaNueva',
 	data: {
+        subpregunta: '<div class="input-field col s12"> <div id="firstEditor" class="myEditor"></div> </div>',
         selected: 'hello',
 		pregunta: {
 			nombre: '',
@@ -44,6 +64,7 @@ var app = new Vue({
 			tipoPregunta: '',	//v_f, justifiacación u opcion
 			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiple'
             newOpcionText: '',
+      subpreguntas: [], // Array con las descripciones de las supbreguntas
 			tipoLeccion: '',	// estimacion, tutorial o laboratorio
 			tiempoEstimado: 0,
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
@@ -79,20 +100,27 @@ var app = new Vue({
       nombreMateria: '',
       codigoMateria: ''
     }
-	},
+  },
+  components: {
+    'sub-pregunta': sub
+  },
 	methods: {
 	  agregarOpcion: function () {
 	    if (!this.newOpcionText==''){
-	      console.log("no esta vacio")
+	      console.log('no esta vacio')
           this.pregunta.opciones.push({
             opcion: this.newOpcionText
           })
           this.newOpcionText= ''
+          console.log(this.pregunta.opciones)
         }
         else{
           alert('Opcion vacia!');
         }
       },
+    deleteSub(index){
+      this.pregunta.opciones.splice(index,1);
+    },
     obtenerLogeado: function() {
       var self = this;
       this.$http.get('/api/session/usuario_conectado').
@@ -140,7 +168,7 @@ var app = new Vue({
       */
       //Todos los parametros de id vienen sin el #
       var self = this;
-      var select = $('<select>').attr({"id": idSelect});
+      var select = $('<select>').attr({'id': idSelect});
       var optionSelectedAux = '#' + idSelect + ' option:selected';
       select.change(function(){
         if(tipo=='estimacion'){
@@ -168,7 +196,7 @@ var app = new Vue({
           divSelect -> elemento div que contendrá al select
       */
       var self = this;
-      var optionDisabled = $('<option>').val("").text("");
+      var optionDisabled = $('<option>').val('').text('');
       select.append(optionDisabled);
       $.each(capitulos, function(index, capitulo){
         var option = $('<option>').val(capitulo._id).text(capitulo.nombre);
@@ -181,11 +209,13 @@ var app = new Vue({
 			console.log(self.pregunta);
 			var url = '/api/preguntas';
 			self.$http.post(url, self.pregunta).then(response => {
-				//success callback
+        //success callback
+        console.log('success!')
 				console.log(response)
 				$('#myModal').modal('open')
 			}, response => {
-				//error callback
+        //error callback
+        console.log('fallo')
 				console.log(response)
 			});
 		},
@@ -231,12 +261,12 @@ var app = new Vue({
       //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
       //Requiere el estado, si está cargando algo o no.
       if (estado){
-        $(".note-editable").append('<div id="onLoad" class="preloader-wrapper big active"></div>');
-        $("#onLoad").append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
-        $("#load-2").append('<div id="load-3" class="circle-clipper left"></div>');
-        $("#load-3").append('<div id="load-4" class="circle"></div>');
+        $('.note-editable').append('<div id="onLoad" class="preloader-wrapper big active"></div>');
+        $('#onLoad').append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
+        $('#load-2').append('<div id="load-3" class="circle-clipper left"></div>');
+        $('#load-3').append('<div id="load-4" class="circle"></div>');
       }else{
-        $("#onLoad").remove();
+        $('#onLoad').remove();
       }
     },
     crearLaboratorio: function(){

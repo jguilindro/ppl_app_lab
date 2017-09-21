@@ -175,6 +175,11 @@ const leccionYaCalificada = (req, res) => {
   })
 }
 
+const terminarLeccion = (req, res, next) => {
+  res.io.of('/tomando_leccion').emit('get_message','something')
+  res.send('asd')
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -188,5 +193,6 @@ module.exports = {
   anadirTiempo,
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
-  obtenerLeccionesParalelo
+  obtenerLeccionesParalelo,
+  terminarLeccion
 }

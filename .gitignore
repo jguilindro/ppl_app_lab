@@ -10,3 +10,26 @@ env.env
 env.txt
 *.csv
 *.log*
+
+## ignorar builds
+app_client/estudiantes/dist/*.css
+app_client/estudiantes/dist/*.js
+app_client/estudiantes/dist/build-webpack.js
+
+## webpack files
+.postcssrc.js
+.eslintrc
+package.backup.json
+server.js
+karma.conf.js
+gulpfile.js
+webpack.config.js
+data/db/*.bson
+data/db/*.json
+data/db/*
+.env_debug
+docs/api/*
+docs/code/_book/
+package-lock.json
+
+apache2/

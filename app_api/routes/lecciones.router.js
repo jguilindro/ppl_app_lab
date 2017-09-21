@@ -19,4 +19,6 @@ router.get('/:id_leccion/calificada' ,authApi.profesor, LeccionController.leccio
 
 router.get('/recalificar/:id_leccion', LeccionController.obtenerLeccionRecalificar);
 
+router.post('/terminar_leccion', LeccionController.terminarLeccion);
+
 module.exports = router;

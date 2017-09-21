@@ -28,12 +28,11 @@
 						<!--Descripcion-->
 						<div class="row" id="row-descripcion">
 							<div class="input-field col s12">
-								<div id="firstEditor" class="myEditor">
-				        </div>
+								<div id="firstEditor" class="myEditor"></div>
 							</div>
 						</div>
 						<!-- opcion de preguntas multiples -->
-						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='opcion'">
+						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='23333'">
 							<div class="input-field col s12">
 								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
 									   v-model="newOpcionText"
@@ -41,21 +40,31 @@
 								>
 								<label for="pregunta">Opción multiple</label>
 							</div>
-							<!--<div class="col s2"><a class="waves-effect waves-light btn" @click="agregarOpcion">Agregar</a></div>-->
-							<!--<section class="row log">
-								<div class="col s12">
-									<ul>
-										<li class="player-turn" v-for="(opcion, i) in pregunta.opciones" >{{ opcion }} ({{ i }})</li>
-									</ul>
-								</div>
-							</section> -->
-							<div class="col s12">
-								<ul>
+							<!--<div class="col s2"><a class="waves-effect waves-light btn" @click="agregarOpcion">Agregar</a></div>
+							<div class="col s6">Añadir subpregunta</div>
+							<div class="col s6 offset-s6"><a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a></div>
+							-->		
+								<!--<ul>
 									<li class="player-turn" v-for="(opcion, i) in pregunta.opciones" >{{ opcion }} ({{ i }})</li>
-								</ul>
+								</ul>-->
 							</div>
 
 						</div>
+						<!--Subpregunta-->
+						<div class="row" id="row-sub" v-show="pregunta.tipoLeccion=='tutorial'">
+							<div class="input-field col s12">
+								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
+									   v-model="newOpcionText"
+									   @keyup.enter="agregarOpcion"
+								>
+								<label for="pregunta">Añadir Subpregunta</label>
+							</div>
+
+							<div class="col s12">
+								<sub-pregunta :preguntas="pregunta.opciones" @sub-deleted="deleteSub"></sub-pregunta>
+							</div>
+						</div>
+
 						<!--Tipos de preguntas y de leccion-->
 						<div class="row" id="row-tipos">
 							<div class="input-field col s6">

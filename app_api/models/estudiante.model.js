@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
-var jwt             = require('jsonwebtoken');
 var config = require('../config/main')
 mongoose.Promise = global.Promise;
 var moment = require('moment')

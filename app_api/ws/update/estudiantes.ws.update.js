@@ -21,8 +21,7 @@ const ParaleloModel = require('../../models/paralelo.model');
 const GrupoModel = require('../../models/grupo.model')
 const utils  = require('../utils.ws');
 
-const diff    = require('deep-diff').diff,
-co            = require('co'),
+const co            = require('co'),
 logger        = require('tracer').console(),
 path          = require('path'),
 _             = require('lodash'),
