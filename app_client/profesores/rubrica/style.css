@@ -31,3 +31,10 @@ div.image img, p.fifthy-left{
 .title{
   font-weight: bold;
 }
+
+.modal-footer.row{
+  margin-bottom: 1% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  
+}

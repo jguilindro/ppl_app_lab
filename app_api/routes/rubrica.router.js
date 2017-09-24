@@ -9,6 +9,7 @@ router.get('/paralelo/:paralelo/grupo/:grupo', RubricaController.obtenerRegistro
 
 router.get('/paralelo/:paralelo/grupo/:grupo/capitulo/:capitulo', RubricaController.obtenerRegistrosDeCapituloDeGrupo);
 
+router.post('/CSV', RubricaController.csv);
 
 module.exports = router;
 

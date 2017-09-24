@@ -67,8 +67,8 @@ RubricaSchema.statics.obtenerRegistrosDeCapituloDeGrupo = function(paralelo, gru
 /*
 	Obtiene los registros de toods los ejercicios del capítulo indicado de TODOS LOS GRUPOS del paralelo indicado
 */
-RubricaSchema.statics.obtenerRegistrosDeCapituloDeParalelo = function(paralelo, capitulo, callback){
-	this.find({ paralelo : paralelo, capitulo : capitulo }, callback);
+RubricaSchema.statics.obtenerRegistrosDeCapituloDeParalelo = function(materia, paralelo, capitulo, callback){
+	this.find({ materia: materia, paralelo : paralelo, capitulo : capitulo }, callback);
 }
 
 module.exports = mongoose.model('Rubrica', RubricaSchema);

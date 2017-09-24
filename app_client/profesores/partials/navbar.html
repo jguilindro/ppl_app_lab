@@ -15,7 +15,6 @@
   <nav>
     <!-- Dropdown Structure -->
     <ul id="dropdownPreguntasDesktop" class="dropdown-content">
-
       <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
       <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
       <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
@@ -25,6 +24,14 @@
       <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
       <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
     </ul>
+    <ul id="dropdownRubricaDesktop" class="dropdown-content">
+      <li><a href="/profesores/rubrica">Ingresar</a></li>
+      <li><a href="#modalCSV" class="modal-trigger">CSV</a></li>
+    </ul>
+    <ul id="dropdownRubricaMobile" class="dropdown-content">
+      <li><a href="/profesores/rubrica">Ingresar</a></li>
+      <li><a href="#modalCSV" class="modal-trigger">CSV</a></li>
+    </ul>
     <div class="nav-wrapper">
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right">
@@ -32,7 +39,8 @@
         <li><a href="/profesores/leccion">Lección</a></li>
         <li><a href="/profesores/leccion/crear">Crear lección</a></li>
         <li><a href="/profesores/grupos/">Grupos</a></li>
-        <li><a href="/profesores/rubrica">Rubrica</a></li>
+        <!--Dropdown button-->
+        <li><a class="dropdown-button" data-activates="dropdownRubricaDesktop">Rúbrica<i class="material-icons right">arrow_drop_down</i></a></li>
         <!--Dropdown button-->
         <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
         <li>
@@ -47,7 +55,7 @@
         <li><a href="/profesores/leccion">Lección</a></li>
         <li><a href="/profesores/leccion/crear">Crear lección</a></li>
         <li><a href="/profesores/grupos/">Grupos</a></li>
-        <li><a href="/profesores/rubrica">Rubrica</a></li>
+        <li><a class="dropdown-button" data-activates="dropdownRubricaMobile">Rúbrica<i class="material-icons right">arrow_drop_down</i></a></li>
         <!--Dropdown button-->
         <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
         <li>
@@ -59,4 +67,54 @@
       </ul>
     </div>
   </nav>
+  <!-- Modal Structure -->
+  <div id="modalCSV" class="modal">
+    <div class="modal-content">
+      <h4>CSV</h4>
+      <section class="row">
+        <form class="col s12">
+          <section class="row">
+            <article class="input-field col s4">
+              <select id="selectMateriaCSV">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="Física 2">Física 2</option>
+                <option value="Física 3">Física 3</option>
+              </select>
+              <label>Materia</label>
+            </article>
+            <article class="input-field col s4">
+              <select multiple id="selectParalelosCSV">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <label>Paralelos</label>
+            </article>
+            <article class="input-field col s4">
+              <select multiple id="selectCapitulosCSV">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+              </select>
+              <label>Capítulos</label>
+            </article>
+          </section>
+        </form>
+      </section>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action waves-effect waves-green btn-flat" id="descargar">Descargar</a>
+    </div>
+  </div>
 </div>

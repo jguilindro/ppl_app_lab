@@ -33,20 +33,20 @@ function descargarCSV(){
     url: '/api/rubrica/csv',
     data: csv,
     success: function(res){
-      var a = document.createElement("a");
+      var a   = document.createElement("a");
       document.body.appendChild(a);
       a.style = "display: none";
       if (res.estado) {
-        var byteCharacters = atob(res.datos);
-        var byteNumbers = new Array(byteCharacters.length);
+        var byteCharacters  = atob(res.datos);
+        var byteNumbers     = new Array(byteCharacters.length);
         for (var i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+            byteNumbers[i]  = byteCharacters.charCodeAt(i);
         }
         var byteArray = new Uint8Array(byteNumbers);
-        var blob = new Blob([byteArray], {type: 'application/octet-stream'});
-        url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = 'hola' + '.xlsx';
+        var blob      = new Blob([byteArray], {type: 'application/octet-stream'});
+        url           = window.URL.createObjectURL(blob);
+        a.href        = url;
+        a.download    = 'rubrica' + '.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
       }

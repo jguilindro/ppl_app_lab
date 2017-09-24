@@ -13,6 +13,8 @@ const profesores = [
 	'Jose Jimenez'
 ];
 
+const materias = ['Física 2', 'Física 3'];
+
 const grupos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'];
 
 const paralelos = ['1', '2', '3', '4'];
@@ -57,14 +59,10 @@ let rubricaApp = new Vue({
 	el: '#rubricaApp',
 	created: function(){
 		this.obtenerLogeado(this);
-
 	},
 	mounted: function(){
 		this.inicializarDOM(this);
 		this.esconderDivs();
-		
-		
-		//$("#seccionReglas").children().prop('disabled',true);
 	},
 	data: {
 		profesores: profesores,
@@ -85,7 +83,6 @@ let rubricaApp = new Vue({
 			evaluador: '',
 			calificaciones: []
 		}
-
 	},
 	methods: {
 		//////////////////////////////////////
@@ -101,7 +98,7 @@ let rubricaApp = new Vue({
   			type: 'GET',
   			url: urlApi,
   			success: function(res){
-  				console.log(res)
+  				//console.log(res)
   				if(res.estado){
   					const noHayRegistros = (res.datos.length === 0);
   					if(noHayRegistros){
@@ -126,8 +123,12 @@ let rubricaApp = new Vue({
 			$('.button-collapse').sideNav();
     	$(".dropdown-button").dropdown({ hover: false });
     	$('select').material_select();
+    	$('.modal').modal({
+    		dismissible: false, // Modal can be dismissed by clicking outside of the modal
+      	opacity: .5, // Opacity of modal background
+    	});
     	self.bloquearSelects();
-    	//Funciones onChange
+    	/* Funciones onChange */
     	$('#selectMateria').change(function(){
     		self.rubrica.materia = $('#selectMateria option:selected').text();
     		self.desbloquearSelectMaterialize('#selectCapitulo');
@@ -152,9 +153,9 @@ let rubricaApp = new Vue({
     	});
 
     	$('#selectEjercicio').change(function(){
-    		let ejercicioSeleccionado =  $('#selectEjercicio option:selected').text() ;
+    		let ejercicioSeleccionado =  $('#selectEjercicio option:selected').text();
     		self.rubrica.ejercicio = ejercicioSeleccionado;
-    		self.mostrarCalificacionesEjercicioSeleccionado(self, ejercicioSeleccionado - 1, arrayCalificaciones);
+    		self.mostrarCalificacionesEjercicioSeleccionado(self, ejercicioSeleccionado - 1, arrayCalificaciones, idsInput);
     		self.mostrarDivs();
     	});
 
@@ -171,22 +172,25 @@ let rubricaApp = new Vue({
 				numEjercicio -> número del ejercicio seleccionado, el cual se va a calificar o recalificar
 				arrayCalificaciones -> array que contiene las calificaciones de todos los 15 ejercicios
 		*/
-		mostrarCalificacionesEjercicioSeleccionado: function(self, numEjercicio, arrayCalificaciones){
-			console.log('Inicializando calificaciones del ejercicio: ' + numEjercicio)
+		mostrarCalificacionesEjercicioSeleccionado: function(self, numEjercicio, arrayCalificaciones, idsInput){
+			//console.log('Inicializando calificaciones del ejercicio: ' + numEjercicio)
 			//Primero selecciono el ejercicio que se quiere mostrar del array de calificaciones
 			let calificacionesEjercicio = arrayCalificaciones[numEjercicio];	//Array que contiene las calificaciones de los input del ejercicio seleccionado
-			
+			//console.log(calificacionesEjercicio)
 			if(calificacionesEjercicio.length > 0){
 				//Luego inicializo todos los inputs con los valores indicados en el array seleccionado
-				for(let i = 0; i < arrayCalificaciones.length; i++) {
-					let idInput = '#' + arrayCalificaciones[i].regla;
+				for(let i = 0; i < calificacionesEjercicio.length; i++) {
+					let idInput = '#' + calificacionesEjercicio[i].regla;
 					$(idInput).val(calificacionesEjercicio[i].calificacion);
 				}
 				
 				let calificacionNoPonderada = self.sumarCalificaciones(idsInput);
 	    	self.rubrica.calificacion = self.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
 			}else{
-				console.log('Este ejercicio no tiene registros de calificaciones en la base de datos')
+				console.log('Este ejercicio no tiene registros de calificaciones en la base de datos');
+				$.each(idsInput, function(index, idInput){
+					$(idInput).val(0);
+				});
 			}
 
 		},
@@ -263,16 +267,16 @@ let rubricaApp = new Vue({
 			self.rubrica.calificacion = this.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
 			let ejercicioSeleccionado = self.rubrica.ejercicio;
 			$.each(idsInput, function(index, id){
-				let regla = id.split("#")[1];
-				let calificacion = $(id).val();
-				if(calificacion != ''){
+				let regla 				= id.split("#")[1];
+				let calificacion 	= $(id).val();
+				if( calificacion != '' ){
 					calificacion = parseInt(calificacion);
 				}else{
 					calificacion = 0;
 				}
 				let obj = {
-					regla: regla,
-					calificacion: calificacion
+					regla 				: regla,
+					calificacion 	: calificacion
 				};
 				
 				arrayCalificaciones[ejercicioSeleccionado-1][index] = obj;
@@ -280,59 +284,41 @@ let rubricaApp = new Vue({
 			self.rubrica.calificaciones = arrayCalificaciones[ejercicioSeleccionado-1];
 
 			var rubrica = {
-				materia : self.rubrica.materia,
-				paralelo : self.rubrica.paralelo,
-				grupo : self.rubrica.grupo,
-				capitulo : self.rubrica.capitulo,
+				materia 	: self.rubrica.materia,
+				paralelo 	: self.rubrica.paralelo,
+				grupo 		: self.rubrica.grupo,
+				capitulo 	: self.rubrica.capitulo,
 				ejercicio : self.rubrica.ejercicio,
-				total : self.rubrica.calificacion,
+				total 		: self.rubrica.calificacion,
 			};
-			rubrica = JSON.stringify(rubrica)
-			var calificaciones = JSON.stringify(self.rubrica.calificaciones)
+			rubrica 						= JSON.stringify(rubrica);
+			var calificaciones 	= JSON.stringify(self.rubrica.calificaciones);
 
 			var obj = {
 				rubrica : rubrica,
 				calificaciones : calificaciones
-			}
-
+			};
+			self.llamadaApi(obj);
+		},
+		llamadaApi(data){
 			$.ajax({
 				type: 'POST',
 				url: '/api/rubrica/',
-				data: obj,
+				data: data,
 				success: function(res){
 					console.log('Exito')
 					console.log(res)
+					if(res.estado){
+						$('#modalCalificacionExitosa').modal('open');
+					}
 					//Actualizar los valores el array
-					//console.log(res)
 				},
 				error: function(err){
 					console.log('Error')
 					console.log(err)
-					//console.log(err)
-				}
-			});
-			//self.llamadaApi(self.rubrica);
-
-		},
-		llamadaApi(data){
-			
-			$.ajax({
-				type: 'POST',
-				url: '/api/rubrica/',
-				data: rubrica,
-				dataType : 'json',
-				complete: function(){
-					console.log('Exito')
-					//Actualizar los valores el array
-					//console.log(res)
-				},
-				error: function(){
-					console.log('Error')
-					//console.log(err)
 				}
 			});
 		},
-		
 	}
 });
 

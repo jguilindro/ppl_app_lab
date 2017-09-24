@@ -31,8 +31,7 @@
 							<div class="col s4 input-field">	
 								<select id="selectMateria">
 									<option value="" disabled selected></option>
-									<option>Física 2</option>
-									<option>Física 3</option>
+									<option v-for="materia in materias">{{materia}}</option>
 								</select>
 								<label>Materias</label>
 							</div>
@@ -171,6 +170,21 @@
 						<p>Total <label>{{rubrica.calificacion}}/15</label></p>
 					</div>
 				</div>
+			</section>
+
+			<section id="modals">
+				<!-- Modal Structure -->
+			  <div id="modalCalificacionExitosa" class="modal">
+			    <div class="modal-content center-align">
+			      <h4 class="title">Calificación Exitosa</h4>
+			      <p>Se ha ingresado su calificación a este ejercicio.</p>
+			      <p>¿Desea seguir calificando o terminar?</p>
+			    </div>
+			    <div class="modal-footer row">
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat col s6 center-align">Continuar</a>
+			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat col s6 center-align">Terminar</a>
+			    </div>
+			  </div>
 			</section>
 		</main>
 		<footer>
