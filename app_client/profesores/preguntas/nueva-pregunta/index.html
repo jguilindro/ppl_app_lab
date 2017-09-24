@@ -19,27 +19,29 @@
 				<div class="row" id="row-crear-pregunta">
 					<form class="col s12">
 						<!--Titulo-->
-						<div class="row" id="row-nombre">
+						<section class="row" id="row-nombre">
 							<div class="input-field col s12">
 								<input type="text" name="nombre" id="nombre" v-model="pregunta.nombre">
 								<label for="nombre">Título</label>
 							</div>
-						</div>
+						</section>
 						<!--Descripcion-->
-						<div class="row" id="row-descripcion">
+						<section class="row" id="row-descripcion">
+							<label>Descripción</label>
 							<div class="input-field col s12">
+
 								<div id="firstEditor" class="myEditor"></div>
 							</div>
-						</div>
+						</section>
 						<!-- opcion de preguntas multiples -->
 						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='23333'">
-							<div class="input-field col s12">
+							<!--<div class="input-field col s12">
 								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
 									   v-model="newOpcionText"
 									   @keyup.enter="agregarOpcion"
 								>
 								<label for="pregunta">Opción multiple</label>
-							</div>
+							</div>-->
 							<!--<div class="col s2"><a class="waves-effect waves-light btn" @click="agregarOpcion">Agregar</a></div>
 							<div class="col s6">Añadir subpregunta</div>
 							<div class="col s6 offset-s6"><a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a></div>
@@ -48,27 +50,11 @@
 									<li class="player-turn" v-for="(opcion, i) in pregunta.opciones" >{{ opcion }} ({{ i }})</li>
 								</ul>-->
 							</div>
-
 						</div>
-						<!--Subpregunta-->
-						<div class="row" id="row-sub" v-show="pregunta.tipoLeccion=='tutorial'">
-							<div class="input-field col s12">
-								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
-									   v-model="newOpcionText"
-									   @keyup.enter="agregarOpcion"
-								>
-								<label for="pregunta">Añadir Subpregunta</label>
-							</div>
-
-							<div class="col s12">
-								<sub-pregunta :preguntas="pregunta.opciones" @sub-deleted="deleteSub"></sub-pregunta>
-							</div>
-						</div>
-
 						<!--Tipos de preguntas y de leccion-->
-						<div class="row" id="row-tipos">
+						<section class="row" id="row-tipos">
 							<div class="input-field col s6">
-								<select id="tipo-pregunta" v-model="selected">
+								<select id="tipo-pregunta">
 									<option value="" disabled selected>seleccione...</option>
 									<option value="opcion" >Opcion multiple</option>
 									<option value="v_f">V/F</option>
@@ -85,27 +71,27 @@
 								</select>
 								<label>Tipo de leccion:</label>
 							</div>
-						</div>
+						</section>
 						<!--Capitulo-->
-						<div class="row" id="row-capitulo" v-show="pregunta.tipoLeccion=='estimacion'">
+						<section class="row" id="row-capitulo" v-show="pregunta.tipoLeccion=='estimacion'">
 							<div class="input-field col s9" id="div-select-capitulo">
 								<label class="active">Capítulos</label>
 							</div>
 							<div class="col s3">
 								<a class="waves-effect waves-light btn" href="#modalNuevoCapitulo">Nuevo capítulo</a>
 							</div>
-						</div>
+						</section>
 						<!--Tutorial-->
-						<div class="row" id="row-tutorial" v-show="pregunta.tipoLeccion=='tutorial'">
+						<section class="row" id="row-tutorial" v-show="pregunta.tipoLeccion=='tutorial'">
 							<div class="input-field col s9" id="div-select-tutorial">
 								<label class="lblEditar active">Tutorial</label>
 							</div>
 							<div class="col s3">
 								<a class="waves-effect waves-light btn" href="#modalNuevoTutorial">Nuevo tutorial</a>
 							</div>
-						</div>
+						</section>
 						<!--Laboratorio-->
-						<div class="row" id="row-laboratorio" v-show="pregunta.tipoLeccion=='laboratorio'">
+						<section class="row" id="row-laboratorio" v-show="pregunta.tipoLeccion=='laboratorio'">
 							<div class="input-field col s9" id="div-select-laboratorio">
 								
 								<label class="lblEditar active">Laboratorio</label>
@@ -113,23 +99,46 @@
 							<div class="col s3">
 								<a class="waves-effect waves-light btn" href="#modalNuevoLaboratorio">Nuevo laboratorio</a>
 							</div>
-						</div>
+						</section>
+						<!--Subpregunta-->
+						<section class="row" id="row-sub" v-show="pregunta.tipoLeccion=='tutorial'">
+							<!--<div id="container-subpregunta-1">
+								<label>Subpregunta #1</label>
+								<section class="input-field col s12" id="section-subpregunta-1">
+									<div id="subpregunta-1" class="myEditor"></div>
+								</section>
+								<section class="row" id="tiempo-puntaje">
+									<div class="input-field col s6">
+										<input type="number" min="0" id="tiempo" v-model="pregunta.tiempoEstimado">
+										<label for="tiempo" class="lblEditar">Tiempo estimado</label>
+									</div>
+									<div class="input-field col s6">
+										<input type="number" min="0" id="puntaje" v-model="pregunta.puntaje">
+										<label for="puntaje" class="lblEditar">Puntaje</label>
+									</div>
+								</section>
+								<section class="buttons row">
+									<a class="waves-effect waves-light btn pull right" @click="eliminarDiv('#section-subpregunta-1')">Eliminar subpregunta</a>
+									<a class="waves-effect waves-light btn pull right" @click="agregarSubpregunta">Nueva subpregunta</a>
+								</section>
+							</div>-->
+						</section>
 						<!--Tiempo y puntaje-->
-						<div class="row" id="tiempo-puntaje">
+						<section class="row" id="tiempo-puntaje">
 							<div class="input-field col s6">
 								<input type="number" min="0" id="tiempo" v-model="pregunta.tiempoEstimado">
-								<label for="tiempo" class="lblEditar">Tiempo estimado</label>
+								<label for="tiempo" class="lblEditar">Tiempo total</label>
 							</div>
 							<div class="input-field col s6">
 								<input type="number" min="0" id="puntaje" v-model="pregunta.puntaje">
-								<label for="puntaje" class="lblEditar">Puntaje</label>
+								<label for="puntaje" class="lblEditar">Puntaje total</label>
 							</div>
-						</div>
+						</section>
 						<!--Botones-->
-						<div class="buttons row">
+						<section class="buttons row">
           		<a class="waves-effect waves-light btn pull right" @click="crearPregunta">Aceptar</a>
           		<a class="waves-effect waves-light btn" @click="cancelar">Cancelar</a>
-          	</div>
+          	</section>
 					</form>
 				</div>
 			
