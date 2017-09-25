@@ -16,6 +16,30 @@ var sub = {
   }
 }
 
+var modal = {
+  template: '<div class="modal-footer">\
+                <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="continuar">Si</a>\
+                <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="regresar">No</a>\
+						</div>\
+            ',
+  methods: {
+    regresar(){
+      console.log(1234);
+			window.location.href = '/profesores/preguntas/estimacion'
+		},
+    continuar(){
+      console.log(1234);
+      window.location.href = '/profesores/preguntas/nueva-pregunta'
+    }
+  }                  
+}
+
+new Vue({
+  el: '#app',
+  components:{
+    'modal': modal
+  }
+})
 
 var app = new Vue({
   created(){
@@ -73,6 +97,9 @@ var app = new Vue({
       nombreMateria: '',
       codigoMateria: ''
     }
+  },
+  components:{
+    'modal-buttons': modal
   },
 	methods: {
     obtenerLogeado: function(self) {
