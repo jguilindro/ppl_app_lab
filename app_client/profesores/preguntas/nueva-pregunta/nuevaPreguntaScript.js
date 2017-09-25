@@ -11,7 +11,7 @@ var sub = {
   props: ['preguntas'],
   methods:{
     deleteSub(index){
-      this.$emit('sub-deleted', index);
+      this.$emit('subdeleted', index);
     }
   }
 }
@@ -58,13 +58,14 @@ var app = new Vue({
 	data: {
         subpregunta: '<div class="input-field col s12"> <div id="firstEditor" class="myEditor"></div> </div>',
         selected: 'hello',
+         newOpcionText: '',
 		pregunta: {
 			nombre: '',
 			descripcion: '',
 			tipoPregunta: '',	//v_f, justifiacación u opcion
 			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiple'
-            newOpcionText: '',
-      subpreguntas: [], // Array con las descripciones de las supbreguntas
+           
+      //subpreguntas: [], // Array con las descripciones de las supbreguntas
 			tipoLeccion: '',	// estimacion, tutorial o laboratorio
 			tiempoEstimado: 0,
 			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
@@ -290,6 +291,7 @@ var app = new Vue({
       window.location.href = '/profesores/preguntas/estimacion'
     },
 		regresar: function(){
+      console.log(1234)
 			window.location.href = '/profesores/preguntas/estimacion'
 		},
     continuar: function(){

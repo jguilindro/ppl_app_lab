@@ -33,13 +33,15 @@
 						</div>
 						<!-- opcion de preguntas multiples -->
 						<div class ="row" id="row-opcion" v-show="pregunta.tipoPregunta=='23333'">
-							<div class="input-field col s12">
+							<!--
+								<div class="input-field col s12">
 								<input placeholder="Ingresar opción para la pregunta" id="pregunta" type="text" class="validate"
 									   v-model="newOpcionText"
 									   @keyup.enter="agregarOpcion"
 								>
 								<label for="pregunta">Opción multiple</label>
 							</div>
+							-->
 							<!--<div class="col s2"><a class="waves-effect waves-light btn" @click="agregarOpcion">Agregar</a></div>
 							<div class="col s6">Añadir subpregunta</div>
 							<div class="col s6 offset-s6"><a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a></div>
@@ -61,7 +63,7 @@
 							</div>
 
 							<div class="col s12">
-								<sub-pregunta :preguntas="pregunta.opciones" @sub-deleted="deleteSub"></sub-pregunta>
+								<sub-pregunta :preguntas="pregunta.opciones" @subdeleted="deleteSub"></sub-pregunta>
 							</div>
 						</div>
 
@@ -140,9 +142,9 @@
 			      <p class="center-align">Pregunta creada correctamente</p>
 			      <p>¿Desea seguir creando preguntas?</p>
 			    </div>
-			    <div class="modal-footer">
-			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="continuar">Si</a>
-			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="regresar">No</a>
+			    <div class="modal-footer">o
+			      <a id="crear" class="modal-action mdal-close waves-effect waves-green btn-flat" @click="continuar">Si</a>
+			      <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="regresar">No</a>
 			    </div>
 			  </div>
 
