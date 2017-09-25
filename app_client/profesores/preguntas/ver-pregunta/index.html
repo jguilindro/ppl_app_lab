@@ -93,7 +93,21 @@
 		              <div id="divDescripcion">
 		              	<p v-html="preguntaObtenida.descripcion"></p>	
 		              </div>
-	              </div>
+								</div>
+								<!--Subpreguntas -->
+								<div class="row row-ver" id="row-ver-subpreguntas" v-if="preguntaObtenida.subpreguntas.length >0">
+									<label>Subpreguntas</label>
+									<ul>
+										<li v-for="subpregunta in preguntaObtenida.subpreguntas">
+												<div class="card-panel teal lighten-5">
+													<p> Subpregunta # {{subpregunta.orden}}</p>
+													<p>Contenido: {{subpregunta.contenido}}</p>
+													<p>Puntaje: {{subpregunta.puntaje}} </p>
+												</div>
+										</li>
+									</ul>
+								</div>
+
 				  <!-- Opcion multiple -->
 					<div class="row row-ver" id="row-ver-opciones" v-if="preguntaObtenida.tipoPregunta=='opcion'">
 						<label>Opciones:</label>
@@ -172,6 +186,25 @@
 											<div class="input-field col s12">
 												<div id="firstEditor" class="myEditor"></div>
 											</div>
+										</div>
+										<!--Subpreguntas-->
+										<div class="row row-editar" id="row-editar-subpreguntas" v-if="preguntaObtenida.subpreguntas.length >0">
+											<label>Subpreguntas:</label>
+											<ul>
+												<li v-for="subpregunta in preguntaEditar.subpreguntas">
+													<div class="card-panel teal lighten-5" >
+															<p class="center-align">Subpregunta</p>
+															<label for="subpregunta.orden" class="lblEditar">Orden:</label>
+															<input type="number" id="subpregunta.orden" v-model="subpregunta.orden">
+															
+															<label for="subpregunta.contenido" class="lblEditar">Contenido:</label>
+															<input type="text" id="subpregunta.contenido" v-model="subpregunta.contenido">
+															
+															<label for="subpregunta.puntaje" class="lblEditar">Puntaje:</label>
+															<input type="number" id="subpregunta.puntaje" v-model="subpregunta.puntaje">
+													</div>
+												</li>
+											</ul>
 										</div>
 										<!-- Opcion multiple -->
 										<div class="row row-editar" id="row-editar-opcion" v-if="preguntaEditar.tipoPregunta=='opcion'">

@@ -6,7 +6,7 @@ var pregunta = new Vue({
 		//Inicializadores de Materialize y MaterialNote		
 		$('.button-collapse').sideNav();
 		$('.myEditor').materialnote();
-		$(".note-editor").find("button").attr("type", "button");		//No borrar. Corrige el error estupido de materialNote
+		$('.note-editor').find('button').attr('type', 'button');		//No borrar. Corrige el error estupido de materialNote
 		$('select').material_select();
 		$('.modal').modal();
 	},
@@ -55,6 +55,8 @@ var pregunta = new Vue({
 				//Copio los valores de la pregutaObtenida en preguntaEditar que será un temporal
 				self.preguntaEditar = self.preguntaObtenida;
 				console.log(self.preguntaEditar.tipoPregunta)
+				console.log(self.preguntaEditar.subpreguntas)
+				console.log(self.preguntaEditar.descripcion)
 				//$('.myEditor').materialnote('code', self.preguntaEditar.descripcion)
 				$('#firstEditor').code(self.preguntaEditar.descripcion);
 				//$('#select-editar-tipo-pregunta').material_select('destroy');
@@ -72,8 +74,8 @@ var pregunta = new Vue({
 			//$('#select-editar-tipo-pregunta').val(self.preguntaEditar.tipoPregunta)
 		},
 		mostrarModal: function(imageUrl){
-			$("#myModal .modal-content").empty();
-			$("<img>",{'src': imageUrl }).appendTo("#myModal .modal-content")
+			$('#myModal .modal-content').empty();
+			$('<img>',{'src': imageUrl }).appendTo('#myModal .modal-content')
 			$('#myModal').modal('open');
 		},
 		actualizarPregunta: function(){
@@ -81,11 +83,12 @@ var pregunta = new Vue({
 			if(self.editable){
 				console.log('Pregunta actualizada: ');
 				console.log(self.preguntaEditar);
+				console.log(self.preguntaEditar.subpreguntas)
 				var preguntaId = window.location.href.toString().split('/')[6]
 				var url = '/api/preguntas/' + preguntaId;
 				this.$http.put(url, self.preguntaEditar).then(response => {
 					//success callback
-					//console.log(response);
+					console.log(response);
 					location.reload();
 				}, response => {
 					//error callback
@@ -149,13 +152,13 @@ $('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
   
 })
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', function(event) {
   $.get({
-    url: "../../navbar/profesores",
+    url: '../../navbar/profesores',
     success: function(data) {
       document.getElementById('#navbar').innerHTML = data;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
+      $('.button-collapse').sideNav();
+      $('.dropdown-button').dropdown();
     }
   })
 });

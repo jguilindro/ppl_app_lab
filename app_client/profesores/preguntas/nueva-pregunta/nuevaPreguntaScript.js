@@ -30,6 +30,7 @@ var app = new Vue({
 	el: '#preguntaNueva',
 	data: {
     subTotales        : 0,
+    link: 'https://www.google.com.ec',
 		pregunta          : {
 			nombre         : '',
 			descripcion    : '',
@@ -392,11 +393,11 @@ var app = new Vue({
       console.log(1234);
 			window.location.href = '/profesores/preguntas/estimacion'
 		},
-    continuar(){
+    continuar: function(){
       console.log(1234);
-      router.go('https://www.google.com.ec')
-      window.location.href = 'https://www.google.com.ec'
-      //window.location.href = '/profesores/preguntas/nueva-pregunta'
+      //router.go('https://www.google.com.ec')
+      //window.location.href = 'https://www.google.com.ec'
+      window.location.href = '/profesores/preguntas/nueva-pregunta'
     }
 	},
 });
