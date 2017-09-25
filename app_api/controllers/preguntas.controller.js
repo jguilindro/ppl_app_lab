@@ -35,7 +35,7 @@ const crearPregunta = (req, res) => {
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
     descripcion: req.body.descripcion,
-    opciones: req.body.opciones,
+    subpreguntas: req.body.subpreguntas,
   })
   pregunta.crearPregunta((err, pregunta) => {
     if (err) return respuesta.serverError(res);

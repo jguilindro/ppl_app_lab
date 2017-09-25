@@ -18,132 +18,179 @@ var sub = {
 
 
 var app = new Vue({
+  created(){
+    this.obtenerLogeado(this);
+    this.obtenerCapitulos(this);
+  },
   mounted() {
-    this.obtenerLogeado();
-    this.obtenerCapitulos();
-    
-    //MaterialNote
-    $('.myEditor').materialnote({
-        height: '50vh',
-        onImageUpload: function(files, editor, $editable) {
-        var clientId = '300fdfe500b1718';
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-        xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-        app.loading(true);
-         xhr.onreadystatechange = function () {
-            if (xhr.status === 200 && xhr.readyState === 4) {
-              console.log('subido');
-              app.loading(false);
-              var url = JSON.parse(xhr.responseText)
-              console.log(url.data.link);
-              $('.myEditor').materialnote('editor.insertImage', url.data.link);
-            }
-         }
-         xhr.send(files[0]);
-      }
-    });
-    $('.note-editor').find('button').attr('type', 'button');
-    this.$http.get('/../navbar/profesores').then(response =>{
-      console.log(response)
-      document.getElementById('#navbar').innerHTML = response.body;
-      $('.button-collapse').sideNav();
-      $('.dropdown-button').dropdown();
-    });
-    //Materialize
-    $('select').material_select();
-    $('.modal').modal();
+    this.inicializarMaterialize(this);
+    this.generarNavbar();
+    this.inicializarEditor(this, '#firstEditor');
   },
 	el: '#preguntaNueva',
 	data: {
-        subpregunta: '<div class="input-field col s12"> <div id="firstEditor" class="myEditor"></div> </div>',
-        selected: 'hello',
-         newOpcionText: '',
-		pregunta: {
-			nombre: '',
-			descripcion: '',
-			tipoPregunta: '',	//v_f, justifiacación u opcion
-			opciones: [],		//Se llena solo si tipoPregunta=='Opcion multiple'
-           
-      //subpreguntas: [], // Array con las descripciones de las supbreguntas
-			tipoLeccion: '',	// estimacion, tutorial o laboratorio
-			tiempoEstimado: 0,
-			creador: '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
-			capitulo: '',		//Se llena solo si tipoLeccion=='leccion'
-			tutorial: '',		//Se llena solo si tipoLeccion=='tutorial'
-			laboratorio: '',	//Se llena solo si tipoLeccion=='Laboratorio'
-			puntaje: 2
+    subTotales        : 0,
+		pregunta          : {
+			nombre         : '',
+			descripcion    : '',
+			tipoPregunta   : '',	//v_f, justifiacación u opcion
+			opciones       : [],		//Se llena solo si tipoPregunta=='Opcion multiple'
+      subpreguntas   : [], // Array con las descripciones de las supbreguntas
+			tipoLeccion    : '',	// estimacion, tutorial o laboratorio
+			tiempoEstimado : 0,
+			creador        : '',		//Se deberia llenar con las sesiones, trabajo de Julio Guilindro
+			capitulo       : '',		//Se llena solo si tipoLeccion=='leccion'
+			tutorial       : '',		//Se llena solo si tipoLeccion=='tutorial'
+			laboratorio    : '',	//Se llena solo si tipoLeccion=='Laboratorio'
+			puntaje        : 2,
+      subpreguntas   : []
 		},
-		profesor: {},
-      capitulosObtenidos: [],
-      capitulos: [],
-      tutoriales: [],
-      laboratorios: [],
-    capituloEscogido:{
+		profesor          : {},
+    capitulosObtenidos: [],
+    capitulos         : [],
+    tutoriales        : [],
+    laboratorios      : [],
+    capituloEscogido  :{
       nombre: '',
-      id: ''
+      id    : ''
     },
-    nuevoCapitulo: {
-      nombre: '',
-      tipo: 'estimacion',
+    nuevoCapitulo     : {
+      nombre       : '',
+      tipo         : 'estimacion',
       nombreMateria: '',
       codigoMateria: ''
     },
-    nuevoTutorial: {
-      nombre: '',
-      tipo: 'tutorial',
+    nuevoTutorial     : {
+      nombre       : '',
+      tipo         : 'tutorial',
       nombreMateria:'',
       codigoMateria:''
     },
-    nuevoLaboratorio: {
-      nombre: '',
-      tipo: 'laboratorio',
+    nuevoLaboratorio  : {
+      nombre       : '',
+      tipo         : 'laboratorio',
       nombreMateria: '',
       codigoMateria: ''
     }
   },
-  components: {
-    'sub-pregunta': sub
-  },
 	methods: {
-	  agregarOpcion: function () {
-	    if (!this.newOpcionText==''){
-	      console.log('no esta vacio')
-          this.pregunta.opciones.push({
-            opcion: this.newOpcionText
-          })
-          this.newOpcionText= ''
-          console.log(this.pregunta.opciones)
-        }
-        else{
-          alert('Opcion vacia!');
-        }
-      },
-    deleteSub(index){
-      this.pregunta.opciones.splice(index,1);
-    },
-    obtenerLogeado: function() {
-      var self = this;
+    obtenerLogeado: function(self) {
       this.$http.get('/api/session/usuario_conectado').
-        then(res => {
-          if (res.body.estado) {
-            self.profesor = res.body.datos;
-            self.pregunta.creador = self.profesor._id;
-          }
-        });
+      then(res => {
+        if (res.body.estado) {
+          self.profesor         = res.body.datos;
+          self.pregunta.creador = self.profesor._id;
+        }
+      });
     },
-    obtenerCapitulos: function(){
-      var self = this;
+    obtenerCapitulos: function(self){
       var url = '/api/capitulos/';
       self.$http.get(url).then(response => {
         self.capitulosObtenidos = response.body.datos;
-        self.dividirCapitulosObtenidos();
+        self.dividirCapitulosObtenidos(self);
       }, response => {
         console.log(response)
       });
     },
-    dividirCapitulosObtenidos: function(){
-      var self = this;
+    inicializarMaterialize: function(self){
+      $('select').material_select();
+      $('.modal').modal();
+
+      $('#tipo-leccion').change( function(){
+        var seleccion = $('#tipo-leccion').val();
+        if( seleccion === 'tutorial' ){
+          self.agregarSubpregunta();
+        }
+      });
+    },
+    inicializarEditor: function(self, idEditor){
+      $(idEditor).materialnote({
+        height: '50vh',
+        onImageUpload: function(files, editor, $editable) {
+          self.subirImagen(files, editor, $editable, idEditor);
+        }
+      });
+      $('.note-editor').find('button').attr('type', 'button');
+    },
+    subirImagen: function(files, editor, $editable, idEditor){
+      var clientId = '300fdfe500b1718';
+      var xhr      = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      app.loading(true);
+      xhr.onreadystatechange = function () {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          console.log('subido');
+          app.loading(false);
+          var url = JSON.parse(xhr.responseText)
+          console.log(url.data.link);
+          $(idEditor).materialnote('editor.insertImage', url.data.link);
+        }
+      }
+      xhr.send(files[0]);
+    },
+    generarNavbar: function(){
+      this.$http.get('/../navbar/profesores').then(response =>{
+        document.getElementById('#navbar').innerHTML = response.body;
+        $('.button-collapse').sideNav();
+        $('.dropdown-button').dropdown();
+      });
+    },
+    agregarSubpregunta: function(){
+      this.subTotales++;
+      //Div container subpregunta
+      var idContainer  = 'container-subpregunta-' + this.subTotales; 
+      var divContainer = $('<div>').attr('id', idContainer);
+      //Label de subpregunta
+      var labelSub      = $('<label>').html('Subpregunta #' + this.subTotales);
+      //Section que alojará al editor
+      var idSectionEditor = 'section-subpregunta-' + this.subTotales;
+      var sectionEditor   = $('<section>').addClass('input-field col s12')
+                                          .attr('id', idSectionEditor);
+      //Div del editor
+      var idEditor      = 'subpregunta-' + this.subTotales;
+      var divEditor     = $('<div>').attr('id', idEditor).addClass('myEditor');
+      //Div puntaje
+
+      sectionEditor.append(divEditor);
+      //Section de botón nueva subpregunta
+      var sectionBtn    = $('<section>').addClass('row buttons');
+      var crearBtn      = $('<a>').addClass('waves-effect waves-light btn pull right').html('Nueva subpregunta');
+      crearBtn.click( function(){
+        app.agregarSubpregunta();
+      });
+      var eliminarBtn   = $('<a>').addClass('waves-effect waves-light btn').html('Eliminar subpregunta');
+      eliminarBtn.click( function(){
+        app.eliminarDiv('#' + idContainer);
+      });
+      sectionBtn.append(crearBtn, eliminarBtn);
+
+      divContainer.append(labelSub, sectionEditor, sectionBtn);
+      $('#row-sub').append(divContainer);
+      
+      this.inicializarEditor(this, '#' + idEditor);
+    },
+    eliminarDiv: function(idDiv){
+      app.subTotales--;
+      $(idDiv).empty();
+    },
+	  agregarOpcion: function () {
+	    if (!this.newOpcionText==''){
+	      console.log('no esta vacio')
+        this.pregunta.opciones.push({
+          opcion: this.newOpcionText
+        })
+        this.newOpcionText= ''
+        console.log(this.pregunta.opciones)
+      }
+      else{
+        alert('Opcion vacia!');
+      }
+    },
+    deleteSub(index){
+      this.pregunta.opciones.splice(index,1);
+    },
+    dividirCapitulosObtenidos: function(self){
       $.each(self.capitulosObtenidos, function(index, capitulo){
         if(capitulo.tipo.toLowerCase()=='estimacion'){
           self.capitulos.push(capitulo);
@@ -159,14 +206,14 @@ var app = new Vue({
       self.crearSelectCapitulos('select-tutorial', self.capituloEscogido, 'div-select-tutorial', self.tutoriales, 'tutorial');
       self.crearSelectCapitulos('select-laboratorios', self.capituloEscogido, 'div-select-laboratorio', self.laboratorios, 'laboratorio');
     },
+    /*
+      Parámetros:
+        idSelect -> id del elemento select que se va a crear en esta función para contener a los grupos deseados. Ejemplo: select-capitulos
+        capituloEscogido ->  Elemento de data con el cual se hará el 2 way data binding. Almacenará el capitulo escogido del select
+        idDivSelect -> id del div que contendrá al elemento select que se va a crear
+        capitulos -> Los capitulos que se van a mostrar en el select
+    */
     crearSelectCapitulos: function(idSelect, capituloEscogido, idDivSelect, capitulos, tipo){
-      /*
-        Parámetros:
-          idSelect -> id del elemento select que se va a crear en esta función para contener a los grupos deseados. Ejemplo: select-capitulos
-          capituloEscogido ->  Elemento de data con el cual se hará el 2 way data binding. Almacenará el capitulo escogido del select
-          idDivSelect -> id del div que contendrá al elemento select que se va a crear
-          capitulos -> Los capitulos que se van a mostrar en el select
-      */
       //Todos los parametros de id vienen sin el #
       var self = this;
       var select = $('<select>').attr({'id': idSelect});
@@ -189,13 +236,13 @@ var app = new Vue({
       divSelect.append(select);
       select.material_select();
     },
+    /*
+      Parámetros:
+        select -> elemento select creado en la función crearSelectGrupo que mostrará a los capitulos deseados
+        capitulos -> los capitulos que se mostrarán como opciones dentro del select
+        divSelect -> elemento div que contendrá al select
+    */
     crearSelectOptions: function(select, capitulos, divSelect){
-      /*
-        Parámetros:
-          select -> elemento select creado en la función crearSelectGrupo que mostrará a los capitulos deseados
-          capitulos -> los capitulos que se mostrarán como opciones dentro del select
-          divSelect -> elemento div que contendrá al select
-      */
       var self = this;
       var optionDisabled = $('<option>').val('').text('');
       select.append(optionDisabled);
@@ -205,14 +252,33 @@ var app = new Vue({
       });
       divSelect.append(select);
     },
+    vincularSubpreguntas: function(){
+      app.pregunta.subpreguntas = [];
+      var contador = 1;
+      var idEditor = '#subpregunta-';
+      var aux = app.subTotales;
+      while( aux >= 0 ){
+        idEditor      = idEditor + contador;
+        var divExiste = ( $(idEditor).length != 0 );
+        if( divExiste ){
+          var contenido = $(idEditor).code();
+          app.pregunta.subpreguntas.push(contenido);
+        }
+        contador++;
+        aux--;
+        idEditor = '#subpregunta-';
+      }
+    },
 		crearPregunta: function(){
 			var self = this;
+      app.vincularSubpreguntas();
 			console.log(self.pregunta);
 			var url = '/api/preguntas';
 			self.$http.post(url, self.pregunta).then(response => {
         //success callback
         console.log('success!')
-				console.log(response)
+        console.log(response)
+
 				$('#myModal').modal('open')
 			}, response => {
         //error callback
@@ -291,11 +357,14 @@ var app = new Vue({
       window.location.href = '/profesores/preguntas/estimacion'
     },
 		regresar: function(){
-      console.log(1234)
+      console.log(1234);
 			window.location.href = '/profesores/preguntas/estimacion'
 		},
-    continuar: function(){
-      window.location.href = '/profesores/preguntas/nueva-pregunta'
+    continuar(){
+      console.log(1234);
+      router.go('https://www.google.com.ec')
+      window.location.href = 'https://www.google.com.ec'
+      //window.location.href = '/profesores/preguntas/nueva-pregunta'
     }
 	},
 });
