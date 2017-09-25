@@ -117,6 +117,7 @@ var app = new Vue({
         $('.dropdown-button').dropdown();
       });
     },
+    /* Lo siento por el que tenga que modificar esto... */
     agregarSubpregunta: function(){
       this.subTotales++;
       //Div container subpregunta
@@ -131,22 +132,44 @@ var app = new Vue({
       //Div del editor
       var idEditor      = 'subpregunta-' + this.subTotales;
       var divEditor     = $('<div>').attr('id', idEditor).addClass('myEditor');
-      //Div puntaje
 
       sectionEditor.append(divEditor);
-      //Section de botón nueva subpregunta
-      var sectionBtn    = $('<section>').addClass('row buttons');
-      var crearBtn      = $('<a>').addClass('waves-effect waves-light btn pull right').html('Nueva subpregunta');
+      //Section puntaje-btns
+      var sectionPtBtn = $('<section>').addClass('row section-pt-btn')
+                                          .attr('id', 'section-pt-btn-subpregunta-' + app.subTotales);
+      //Div puntaje
+      var divPt    = $('<div>').addClass('input-field col s6')
+                                    .attr('id', 'div-pt-subpregunta-' + app.subTotales);
+      var labelPt  = $('<label>').html('Puntaje');
+      var idInputPuntaje = 'input-pt-subpregunta' + app.subTotales;
+      var inputPuntaje  = $('<input>').attr(
+        {
+          'type' : 'number', 
+          'min'  : 0, 
+          'id'   : idInputPuntaje
+        });
+      divPt.append(labelPt, inputPuntaje);                                    
+      //Div de botón nueva subpregunta
+      var divBtn    = $('<div>').addClass('row row-buttons')
+                                    .attr('id', 'div-btns-subpregunta-' + app.subTotales);
+      var add = $('<i>').addClass('material-icons').html('add');
+      var crearBtn      = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right');
+      crearBtn.append(add);
       crearBtn.click( function(){
         app.agregarSubpregunta();
       });
-      var eliminarBtn   = $('<a>').addClass('waves-effect waves-light btn').html('Eliminar subpregunta');
+      var del = $('<i>').addClass('material-icons').html('delete');
+      var eliminarBtn   = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right red');
+      eliminarBtn.append(del)
       eliminarBtn.click( function(){
         app.eliminarDiv('#' + idContainer);
       });
-      sectionBtn.append(crearBtn, eliminarBtn);
+      divBtn.append(crearBtn, eliminarBtn);
 
-      divContainer.append(labelSub, sectionEditor, sectionBtn);
+      sectionPtBtn.append(divPt, divBtn);
+
+
+      divContainer.append(labelSub, sectionEditor, sectionPtBtn);
       $('#row-sub').append(divContainer);
       
       this.inicializarEditor(this, '#' + idEditor);
@@ -237,17 +260,27 @@ var app = new Vue({
       app.pregunta.subpreguntas = [];
       var contador = 1;
       var idEditor = '#subpregunta-';
+      var idInput = '#input-pt-subpregunta';
       var aux = app.subTotales;
       while( aux >= 0 ){
         idEditor      = idEditor + contador;
+        idInput       = idInput + contador;
         var divExiste = ( $(idEditor).length != 0 );
         if( divExiste ){
-          var contenido = $(idEditor).code();
-          app.pregunta.subpreguntas.push(contenido);
+          var subpregunta       = {};
+          var contenido         = $(idEditor).code();
+          var puntaje           = $(idInput).val();
+          if( contenido != '' ){
+            subpregunta.contenido = contenido;
+            subpregunta.puntaje   = puntaje;
+            subpregunta.orden     = contador;
+            app.pregunta.subpreguntas.push(subpregunta);  
+          }
         }
         contador++;
         aux--;
         idEditor = '#subpregunta-';
+        idInput  = '#input-pt-subpregunta';
       }
     },
 		crearPregunta: function(){
