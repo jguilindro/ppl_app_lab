@@ -31,5 +31,8 @@ data/db/*
 docs/api/*
 docs/code/_book/
 package-lock.json
-
+hacer
 apache2/
+yarn-error*
+npm-error*
+npm.error*

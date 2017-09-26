@@ -94,6 +94,7 @@ document.getElementById('terminar-leccion').disabled = true
 var leccion = io('/tomando_leccion');
 // var socket = io({transports: ['websocket']});
 leccion.on('tiempo restante', function(tiempo) {
+  console.log(tiempo)
   // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
   document.getElementById('terminar-leccion').disabled = false
@@ -146,21 +147,23 @@ leccion.on('leccion datos', function(leccion) {
       App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
     }
   }
-  for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
-    $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
-    $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
-    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
-    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
-    $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
-  }
-  for (var i = 0; i < App.estudiantes_conectados.length; i++) {
-    $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
-    $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
-    if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
-      $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+  if (App.paralelo.estudiantes) {
+    for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
+      $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
+      $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
+      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
+      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
+      $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
     }
-    if (App.estudiantes_conectados[i].dandoLeccion) {
-       $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
+    for (var i = 0; i < App.estudiantes_conectados.length; i++) {
+      $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
+      $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
+      if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
+        $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+      }
+      if (App.estudiantes_conectados[i].dandoLeccion) {
+         $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
+      }
     }
   }
 })
@@ -205,6 +208,7 @@ leccion.on('connect', function() {
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {
+      console.log(data);
       leccion.emit('usuario', data.datos)
     }
   })

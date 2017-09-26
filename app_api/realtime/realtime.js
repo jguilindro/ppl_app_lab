@@ -1,12 +1,11 @@
-const cookie = require('cookie'),
-cookieParser = require('cookie-parser'),
-moment       = require('moment'),
+const moment       = require('moment'),
 tz           = require('moment-timezone'),
 logger       = require('tracer').colorConsole(),
 co           = require('co');
-
+var os = require('os')
 require("moment-duration-format");
-
+var debug = require('debug')
+//https://github.com/nodejs/node-v0.x-archive/issues/2157
 const URL            = require('../utils/change_database').local(),
 EstudianteModel      = require('../models/estudiante.model'),
 ProfesorModel        = require('../models/profesor.model'),
@@ -14,15 +13,46 @@ ParaleloModel        = require('../models/paralelo.model'),
 GrupoModel           = require('../models/grupo.model'),
 LeccionRealtimeModel = require('../models/leccionRealtime'),
 LeccionModel         = require('../models/leccion.model');
+var fs = require('fs');
 
 var intervals = []
+function bytesToSize(bytes) {
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+   if (bytes == 0) return '0 Byte';
+   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
 
+function loggerCPU() {
+  console.log('==============')
+ //1 global.gc();
+  logger.trace('user_realtime', bytesToSize(process.cpuUsage().user));
+  logger.trace('system_realtime', bytesToSize(process.cpuUsage().system));
+  logger.trace('heapTotal', bytesToSize(process.memoryUsage().heapTotal));
+  logger.trace('heapUsed', bytesToSize(process.memoryUsage().heapUsed));
+}
+
+clientes_conectados = -1
+// inter = setInterval(function() {
+//   console.log(clientes_conectados)
+//   loggerCPU()
+// }, 1000)
 function realtime(io) {
+  // inter.ref()
+  // setInterval(function() {
+  //   clientes_conectados = io.engine.clientsCount
+  // }, 1000)
+  
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
+    // var clients[socket.id] = socket;
+    // console.log(clientes);
     // inicializador de profesor timer, crear en la base de datos los profesor
     function profesorRealtime(boton) {
+      loggerCPU()
+      console.log('profesor realtime');
       co(function *() {
+        debug('lello')
         const HORA_LOCAL = moment();
         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
         const profesor = yield obtenerProfesor(socket.user)
@@ -31,9 +61,9 @@ function realtime(io) {
         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada)
         const leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
         socket.join(PARALELO._id) // crear el room para emitir el tiempo de paralelo
-        for (var i = 0; i < PARALELO.grupos.length; i++) {
-          socket.join(PARALELO.grupos[i]._id) // crear los room para cada grupo
-        }
+        // for (var i = 0; i < PARALELO.grupos.length; i++) {
+        //   socket.join(PARALELO.grupos[i]._id) // crear los room para cada grupo
+        // }
 
         console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
         const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm')
@@ -44,10 +74,12 @@ function realtime(io) {
           var c = yield corriendoTiempo(socket.leccion._id, true);
           leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
         }
+        loggerCPU()
         socket.interval = setInterval(function() {
           let tiempo_temp = TIEMPO_MAXIMO
           let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-          var duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+          //duration = -1
+          let duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
           if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
             clearInterval(socket.interval);
             leccionTerminada(PARALELO, PARALELO.leccion)
@@ -56,11 +88,22 @@ function realtime(io) {
           } else {
             leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
           }
+          delete tiempo_rest
+          delete tiempo_temp
+          delete duration
         }, 1000)
         socket.interval.ref()
+        loggerCPU()
         var leccion_id = socket.leccion._id
         intervals.push({leccion_id: leccion_id, interval: socket.interval})
-        console.log(intervals);
+        delete HORA_LOCAL
+        delete CURRENT_TIME_GUAYAQUIL
+        delete profesor
+        delete PARALELO
+        delete LECCION_TOMANDO
+        delete INICIO_LECCION
+        delete leccionR 
+        // console.log(intervals);
       }).catch(fail => {
         let error = new Error(fail)
         console.log(error);
@@ -68,7 +111,10 @@ function realtime(io) {
     }
 
     socket.on('comenzar leccion', function() {
+      loggerCPU()
+      console.log('comenzar leccion');
       co(function*() {
+        logger.trace('hello', process.cpuUsage());
         const leccionR = yield obtenerLeccionRealtime(socket.leccion._id)
         if (!leccionR.corriendoTiempo) {
           profesorRealtime(true)
@@ -80,30 +126,40 @@ function realtime(io) {
     socket.on('usuario', function(usuario) {
       // guardar el usuario conectado
       socket.user = usuario
+      // console.log(`usuario ${Object.keys(io.sockets.sockets).length}`);
+      // console.log();
       co(function* () {
+        loggerCPU()
         const profesor = yield obtenerProfesor(usuario)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
         const paralelo = yield obtenerParaleloDeEstudiante(usuario)
         if (profesor && PARALELO) {
+          loggerCPU()
           const LECCION_TOMANDO = yield obtenerLeccion(PARALELO.leccion)
           const leccion_creada = yield leccionYaCreada(LECCION_TOMANDO._id)
           socket.leccion = LECCION_TOMANDO
           socket.join(PARALELO._id)
           // registar la leccion cuando el profesor ingresa
           if (!leccion_creada) {
+            loggerCPU()
             let leccionRealtime = new LeccionRealtimeModel({
               leccion: LECCION_TOMANDO._id,
               profesor: profesor._id
             })
             const leccion_creada = yield crearLeccionRealtime(leccionRealtime)
+            delete leccionRealtime
+            delete leccion_creada
           } else {
             let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
             leccion.in(PARALELO._id).emit('leccion datos', leccionR)
+            delete leccionR
           }
           if (leccion_creada && PARALELO.dandoLeccion && PARALELO.leccionYaComenzo) { // verificar cuando el profesor se conecte por primera vez no comienze la leccion
+            loggerCPU()
             profesorRealtime()
           }
         } else if (paralelo) {
+          loggerCPU()
           const estudiante_anadido = yield estudianteConectado(paralelo.leccion, usuario._id)
           const estudiante_rec = yield estudianteReconectado(paralelo.leccion, usuario._id)
           const estudiante = yield obtenerEstudiante(socket.user)
@@ -115,15 +171,29 @@ function realtime(io) {
           socket.estudiante = estudiante
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
+          loggerCPU()
           socket.emit('leccion id', LECCION_ID)
+          delete estudiante_anadido
+          delete estudiante_rec
+          delete estudiante
+          delete GRUPO
+          delete PARALELO
+          delete LECCION_ID
+          delete leccionR
         }
+        delete profesor
+        delete paralelo
+        delete PARALELO
       }).catch(fail => {
         let error = new Error(fail)
+        loggerCPU()
         console.log(error);
       })
     })
 
     socket.on('reconectar estudiante', function(estudiante) {
+      // cambio
+      console.log('reconectar estudiante');
       co(function*() {
         if (estudiante) {
           const GRUPO = yield obtenerGrupo(estudiante)
@@ -137,6 +207,12 @@ function realtime(io) {
           let leccionR = yield obtenerLeccionRealtime(PARALELO.leccion)
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           socket.emit('leccion id', LECCION_ID)
+          delete GRUPO
+          delete PARALELO
+          delete LECCION_ID
+          delete estudiante_anadido
+          delete estudiante_rec
+          delete leccionR
         }
       }).catch(fail => {
         let error = new Error(fail)
@@ -145,10 +221,13 @@ function realtime(io) {
     })
 
     socket.on('aumentar tiempo', function(minutos) {
+      loggerCPU()
       profesorRealtime()
     })
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function(user) {
+      loggerCPU()
+      // cambio
       co(function* () {
         if (socket.user) {
           var estudiante = yield obtenerEstudiante(socket.user)
@@ -174,6 +253,7 @@ function realtime(io) {
     // terminar leccion
     socket.on('parar leccion', function(data) {
       co(function *() {
+        loggerCPU()
         // TODO: verificar que sea un profesor
         const profesor = yield obtenerProfesor(socket.user)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)

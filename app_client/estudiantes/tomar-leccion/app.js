@@ -135,6 +135,7 @@ socket.on('connect', function() {
 })
 
 socket.on('disconnect', function() {
+  socket.disconnect() 
   document.getElementById('desconectado').classList.remove("borrar")
   document.getElementById("conectado").classList.add("borrar");
   console.log('desconectado');
