@@ -11,114 +11,51 @@
   	<link rel="stylesheet" type="text/css" href="/css/navbar.css">
 	</head>
 	<body>
-		<header id="#navbar">
-			<div class="contenedor">
-			  <a href="/profesores">
-			    <div id="logo">
-			      <div class="row logos">
-			          <div class="col s12 m1 offset-s4 offset-m2">
-			            <img src="/img/thumbnail_espol(blanco).jpg" id="logo-pagina">
-			          </div>
-			          <div class="col s12 m4 offset-s2">
-			              <h5>Sistema de</h5>
-			              <h4>Calificación y Desarrollo PPL</h4>
-			          </div>
-			      </div>
-			  </div>
-			  </a>
-			  <nav>
-			    <!-- Dropdown Structure -->
-			    <ul id="dropdownPreguntasDesktop" class="dropdown-content">
-
-			      <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-			      <li><a href="/profesores/preguntas/laboratorio">Laboratorio</a></li>
-			      <li><a href="/profesores/preguntas/tutorial">Tutorial</a></li>
-			    </ul>
-			    <ul id="dropdownPreguntasMobile" class="dropdown-content">
-			      <li><a href="/profesores/preguntas/estimacion">Estimación</a></li>
-			      <li><a href="profesores/preguntas/laboratorio">Laboratorio</a></li>
-			      <li><a href="profesores/preguntas/tutorial">Tutorial</a></li>
-			    </ul>
-			    <div class="nav-wrapper">
-			      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-			      <ul class="right">
-			        <li><a href="/profesores">Inicio</a></li>
-			        <li><a href="/profesores/leccion">Leccion</a></li>
-			        <li><a href="/profesores/leccion/crear">Crear leccion</a></li>
-			        <li><a href="/profesores/grupos/">Grupos</a></li>
-			        <!--Dropdown button-->
-			        <li><a class="dropdown-button" href="#!" data-activates="dropdownPreguntasDesktop">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-			        <li>
-			            <i style="height: 64px; margin-right: 10px;" class="hide-on-small-only">
-			                <img src="/img/Salir.png" alt="" onclick="salir()"
-			                style="cursor: pointer; vertical-align: middle;">
-			            </i>
-			        </li>
-			      </ul>
-			      <ul class="side-nav" id="mobile-demo">
-			        <li><a href="/profesores">Home</a></li>
-			        <li><a href="/profesores/leccion">Leccion</a></li>
-			        <li><a href="/profesores/grupos">Grupos</a></li>
-			        <!--Dropdown button-->
-			        <li><a class="dropdown-button" data-activates="dropdownPreguntasMobile">Preguntas<i class="material-icons right">arrow_drop_down</i></a></li>
-			        <li>
-			          <i style="height: 64px; margin-right: 10px;">
-			              <img src="/img/Salir.png" alt="" onclick="salir()"
-			              style="cursor: pointer; vertical-align: middle;">
-			          </i>
-			        </li>
-			      </ul>
-			    </div>
-			  </nav>
-			</div>
-		</header>
+		<header id="navbar"></header>
 		<main>
-			<div class="container" id="pregunta">
+			<div class="container" id="pregunta" v-if="dataFinishedLoading">
 				<!--Ver pregunta-->
-				<div class="row" id="row-ver-pregunta" v-show="aux">
+				<section class="row" id="row-ver-pregunta" v-show="aux">
 	        <div class="col s12">
 	          <div class="card">
 	            <div class="card-content">
 	              <!--Nombre-->
-	              <div class="row row-ver" id="row-ver-nombre">
+	              <section class="row row-ver" id="row-ver-nombre">
 	              	<span class="card-title center-align" id="nombre">{{preguntaObtenida.nombre}}</span>
-	              </div>
+	              </section>
 	              <!--Creado por-->
-	              <div class="row row-ver" id="row-ver-creador">
-	              	<p class="center-align">Creada por: {{preguntaObtenida.nombreCreador}}</p>
-	              </div>
+	              <section class="row row-ver center-align" id="row-ver-creador">
+	              	<p><b>Creada por:</b></p>
+	              	<p>{{preguntaObtenida.creador.nombres}} {{preguntaObtenida.creador.apellidos}}</p>
+	              </section>
 	              <!--Descripcion-->
-	              <div class="row row-ver" id="row-ver-descripcion">
+	              <section class="row row-ver" id="row-ver-descripcion">
 	              	<label>Descripción</label>
 		              <div id="divDescripcion">
 		              	<p v-html="preguntaObtenida.descripcion"></p>	
 		              </div>
-								</div>
+								</section>
 								<!--Subpreguntas -->
-								<div class="row row-ver" id="row-ver-subpreguntas" v-if="preguntaObtenida.subpreguntas.length >0">
-									<label>Subpreguntas</label>
-									<ul>
-										<li v-for="subpregunta in preguntaObtenida.subpreguntas">
-												<div class="card-panel teal lighten-5">
-													<p> Subpregunta # {{subpregunta.orden}}</p>
-													<p>Contenido: {{subpregunta.contenido}}</p>
-													<p>Puntaje: {{subpregunta.puntaje}} </p>
-												</div>
-										</li>
+								<section class="row row-ver" id="row-ver-subpreguntas" v-if="tieneSubpreguntas">
+									<article v-for="(subpregunta, index) in preguntaObtenida.subpreguntas" class="article-subpregunta">
+										<label>Subpregunta #{{index+1}}</label>
+										<section class="section-subpregunta">
+											<p v-html="subpregunta.contenido" class="descripcion-subpregunta"></p>
+											<p class="pull right">{{subpregunta.puntaje}}pts.</p>
+										</section>
+									</article>
+								</section>
+							  <!-- Opcion multiple -->
+								<!--<div class="row row-ver" id="row-ver-opciones" v-if="preguntaObtenida.tipoPregunta=='opcion'">
+									<label>Opciones:</label>
+									<ul v-for="opcion in preguntaObtenida.opciones">
+										<div v-for="(value, key, index) in opcion">
+											<p>{{key}}: {{value}} </p>
+										</div>
 									</ul>
-								</div>
-
-				  <!-- Opcion multiple -->
-					<div class="row row-ver" id="row-ver-opciones" v-if="preguntaObtenida.tipoPregunta=='opcion'">
-						<label>Opciones:</label>
-						<ul v-for="opcion in preguntaObtenida.opciones">
-							<div v-for="(value, key, index) in opcion">
-								<p>{{key}}: {{value}} </p>
-							</div>
-						</ul>
-					</div>
+								</div>-->
 	              <!--Tipos-->
-	              <div class="row row-ver" id="row-ver-tipos">
+	              <section class="row row-ver" id="row-ver-tipos">
 	              	<div class="pull left">
 	              		<label>Tipo de pregunta:</label>
 	              		<p>{{preguntaObtenida.tipoPregunta}}</p>
@@ -127,98 +64,74 @@
 										<label>Tipo de lección: </label>
 										<p>{{preguntaObtenida.tipoLeccion}}</p>
 									</div>
-	              </div>
+	              </section>
 	              <!--Tiempo y puntaje-->
-	              <div class="row row-ver" id="row-tiempo-puntaje">
+	              <section class="row row-ver" id="row-tiempo-puntaje">
 	              	<div class="pull left">
 	              		<label>Tiempo estimado:</label>
 	              		<p>{{preguntaObtenida.tiempoEstimado}} minutos</p>
 	              	</div>
 									<div class="pull right">
-										<label>Puntaje: </label>
+										<label>Puntaje total: </label>
 										<p>{{preguntaObtenida.puntaje}} puntos</p>
 									</div>
-	              </div>
+	              </section>
 	              <!--Capitulo/laboratorio/tutorial-->
-	              <div class="row row-ver" id="row-ver-capitulo" v-if="preguntaObtenida.tipoLeccion=='estimacion'">
+	              <section class="row row-ver" id="row-ver-capitulo" v-if="preguntaObtenida.tipoLeccion=='estimacion'">
 	              	<label>Capítulo</label>
 	              	<p>{{preguntaObtenida.capitulo}}</p>
-	              </div>
+	              </section>
 	              <!--Laboratorio-->
-	              <div class="row row-ver" id="row-ver-laboratorio" v-if="preguntaObtenida.tipoLeccion=='laboratorio'">
+	              <section class="row row-ver" id="row-ver-laboratorio" v-if="preguntaObtenida.tipoLeccion=='laboratorio'">
 	              	<label>Laboratorio</label>
 	              	<p>{{preguntaObtenida.laboratorio}}</p>
-	              </div>
+	              </section>
 	              <!--Tutorial-->
-	              <div class="row row-ver" id="row-ver-tutorial" v-if="preguntaObtenida.tipoLeccion=='tutorial'">
+	              <section class="row row-ver" id="row-ver-tutorial" v-if="preguntaObtenida.tipoLeccion=='tutorial'">
 	              	<label>Tutorial</label>
 	              	<p>{{preguntaObtenida.tutorial}}</p>
-	              </div>
-	            	<div class="row row-ver" id="row-ver-btn">
+	              </section>
+	            	<section class="row row-ver" id="row-ver-btn">
 	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar" v-if="editable">Editar</a>
 	            		<a class="waves-effect waves-light btn"  href="#modalEliminar" v-if="eliminable">Eliminar</a>
-
-	            	</div>
+	            	</section>
 	            </div>
 	          </div>
 	        </div>
-	      </div>
+	      </section>
+	      <!-- Fin ver pregunta -->
 	      <!--Editar pregunta-->
-	      <div class="row" id="row-editar-pregunta" v-show="!aux">
+	      <section class="row" id="row-editar-pregunta" v-show="!aux">
 					<div class="col s12">
 						<div class="card">
 							<div class="card-content">
-								<div class="row row-editar">
-									<h1 class="center-align">Editar pregunta</h1>
-									<p class="center-align">Creada por: {{preguntaObtenida.nombreCreador}}</p>
-								</div>
-								<div class="row" id="row-editar-form">
+								<header class="row row-editar center-align">
+									<h1>Editar pregunta</h1>
+									<p><b>Creada por:</b></p>
+	              	<p>{{preguntaObtenida.creador.nombres}} {{preguntaObtenida.creador.apellidos}}</p>
+								</header>
+								<main class="row" id="row-editar-form">
 									<form class="col s12">
 										<!--Nombre-->
-										<div class="row row-editar" id="row-editar-nombre">
+										<section class="row row-editar" id="row-editar-nombre">
 											<div class="input-field col s12">
 												<input type="text" id="nombreEditar" v-model="preguntaEditar.nombre">
 												<label for="nombreEditar" class="lblEditar">Nombre</label>
 											</div>
-										</div>
+										</section>
 										<!--Descripcion-->
-										<div class="row row-editar" id="row-editar-descripcion">
+										<section class="row row-editar" id="row-editar-descripcion">
+											<label>Descripción</label>
 											<div class="input-field col s12">
 												<div id="firstEditor" class="myEditor"></div>
 											</div>
-										</div>
+										</section>
 										<!--Subpreguntas-->
-										<div class="row row-editar" id="row-editar-subpreguntas" v-if="preguntaObtenida.subpreguntas.length >0">
-											<label>Subpreguntas:</label>
-											<ul>
-												<li v-for="subpregunta in preguntaEditar.subpreguntas">
-													<div class="card-panel teal lighten-5" >
-															<p class="center-align">Subpregunta</p>
-															<label for="subpregunta.orden" class="lblEditar">Orden:</label>
-															<input type="number" id="subpregunta.orden" v-model="subpregunta.orden">
-															
-															<label for="subpregunta.contenido" class="lblEditar">Contenido:</label>
-															<input type="text" id="subpregunta.contenido" v-model="subpregunta.contenido">
-															
-															<label for="subpregunta.puntaje" class="lblEditar">Puntaje:</label>
-															<input type="number" id="subpregunta.puntaje" v-model="subpregunta.puntaje">
-													</div>
-												</li>
-											</ul>
-										</div>
-										<!-- Opcion multiple -->
-										<div class="row row-editar" id="row-editar-opcion" v-if="preguntaEditar.tipoPregunta=='opcion'">
-											<label>Opciones:</label>
-											<div v-for="opcion in preguntaEditar.opciones">
-												<div class="input-field col s10" v-for="(value, key, index) in opcion">
-													<input type="text" :id="value" v-model="value">
-												</div>
-											</div>
-										</div>
-										<!--File uploader-->
-										<!--Tipos de preguntas y de leccion-->
-										<div class="row row-editar" id="row-editar-tipos">
-											<div class="input-field col s6">
+										<section class="row row-editar" id="row-editar-subpreguntas" v-if="tieneSubpreguntas">
+										</section>
+										<!--Tipos-->
+										<section class="row row-editar" id="row-editar-tipos">
+											<article class="input-field col s6">
 												<select id="select-editar-tipo-pregunta" v-model="preguntaEditar.tipoPregunta">
 													<option value="" disabled selected></option>
 													<option value="opcion">Opcion multiple</option>
@@ -226,8 +139,8 @@
 													<option value="justificacion">Justificacion</option>
 												</select>
 												<label>Tipo de pregunta:</label>
-											</div>
-											<div class="input-field col s6">
+											</article>
+											<article class="input-field col s6">
 												<select id="select-editar-tipo-leccion" v-model="preguntaEditar.tipoLeccion">
 													<option value="" disabled selected></option>
 													<option value='estimacion'>Estimación</option>
@@ -235,33 +148,32 @@
 										      <option value='laboratorio'>Laboratorio</option>
 												</select>
 												<label>Tipo de leccion:</label>
-											</div>
-										</div>
-										
+											</article>
+										</section>
 										<!--Capitulo-->
-										<div class="row row-editar" id="row-editar-capitulo" v-show="preguntaEditar.tipoLeccion=='estimacion'">
+										<section class="row row-editar" id="row-editar-capitulo" v-show="preguntaEditar.tipoLeccion=='estimacion'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-capitulo" v-model="preguntaEditar.capitulo">
 												<label for="in-editar-capitulo" class="lblEditar">Capítulo</label>
 											</div>
-										</div>
+										</section>
 										<!--Tutorial-->
-										<div class="row row-editar" id="row-editar-tutorial" v-show="preguntaEditar.tipoLeccion=='tutorial'">
+										<section class="row row-editar" id="row-editar-tutorial" v-show="preguntaEditar.tipoLeccion=='tutorial'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-tutorial" v-model="preguntaEditar.tutorial">
 												<label for="in-editar-tutorial" class="lblEditar">Tutorial</label>
 											</div>
-										</div>
+										</section>
 										<!--Laboratorio-->
-										<div class="row row-editar" id="row-editar-laboratorio" v-show="preguntaEditar.tipoLeccion=='laboratorio'">
+										<section class="row row-editar" id="row-editar-laboratorio" v-show="preguntaEditar.tipoLeccion=='laboratorio'">
 											<div class="input-field col s12">
 												<input type="text" id="in-editar-laboratorio" v-model="preguntaEditar.laboratorio">
 												<label for="in-editar-laboratorio" class="lblEditar">Laboratorio</label>
 											</div>
-										</div>
+										</section>
 
 										<!--Tiempo y puntaje-->
-										<div class="row row-editar" id="row-editar-tiempo-puntaje">
+										<section class="row row-editar" id="row-editar-tiempo-puntaje">
 											<div class="input-field col s6">
 												<input type="number" id="in-editar-tiempo" v-model="preguntaEditar.tiempoEstimado">
 												<label for="in-editar-tiempo" class="lblEditar">Tiempo estimado</label>
@@ -270,20 +182,20 @@
 												<input type="number" id="in-editar-puntaje" v-model="preguntaEditar.puntaje">
 												<label for="in-editar-puntaje" class="lblEditar">Puntaje</label>
 											</div>
-										</div>
+										</section>
 										<!--Botones-->
-										<div class="buttons row">
+										<section class="buttons row">
 			            		<a class="waves-effect waves-light btn pull right" @click="actualizarPregunta">Aceptar</a>
 			            		<a class="waves-effect waves-light btn" @click="mostrarEditar">Cancelar</a>
-			            	</div>
+			            	</section>
 									</form>
-								</div>
-								
+								</main>
 							</div>
 						</div>
 					</div>
-	      </div>
-	       <!-- Modal Eliminar Structure -->
+	      </section>
+	      <!-- Fin editar pregunta -->
+	      <!-- Modal Eliminar Structure -->
 			  <div id="modalEliminar" class="modal">
 			    <div class="modal-content">
 			      <h4 class="center-align">Eliminar</h4>
@@ -294,21 +206,19 @@
 			      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat pull left">Cancelar</a>
 			    </div>
 			  </div>
-			</div>	
+			</div>
 		</main>
 		<footer>
-
 			<div id="myModal" class="modal">
-			    <div class="modal-content">
-			    </div>
-			 </div>
+		    <div class="modal-content"></div>
+			</div>
 			<script src="/materialnote/lib/jquery-2.1.4.js"></script>
 			<script src="/bower_components/vue/dist/vue.js"></script>
 			<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/materialnote/js/ckMaterializeOverrides.js"></script>
 			<script src="/materialnote/js/materialNote.js"></script>
-			<script src="/js/navbar.js"></script>
+			<script src="/partials/navbar.js"></script>
 			<script src="./verPreguntaScript.js"></script>
 		</footer>
 	</body>
