@@ -70,22 +70,23 @@ const csv = (req, res) => {
     workbook.created 	= new Date();
     workbook.modified = new Date();
     /* Por cada paralelo seleccionado */
+    console.log(paralelos)
+    console.log(capitulos)
     for (let i = 0; i < paralelos.length; i++) {
     	let paraleloActual 	= paralelos[i];
     	/* Creo el worksheet con el nombre del paralelo actual */
-    	let worksheet 			= workbook.addWorksheet('Paralelo ' + paraleloActual);
-    	worksheet.columns 	=	armarColumnas();
-
+      console.log(paraleloActual)
+    	var worksheet 			= workbook.addWorksheet('Paralelo ' + paraleloActual);
+    	worksheet.columns 	=	armarColumnas()
     	for (let j = 0; j < capitulos.length; j++) {
 				let capituloActual 	= capitulos[j];
 				let ejercicios 			= yield obtenerRegistrosDeCapituloDeParalelo(materia, paraleloActual, capituloActual);
-				let grupos 					= _.groupBy( ejercicios, ejercicio => return ejercicio.grupo );
-
+				let grupos          = _.groupBy( ejercicios, ejercicio => ejercicio.grupo );
 				for( let grupo in grupos ){
-					/* Por cada grupo, obtengo su calificación total ponderada del capítulo actual */
+					
 					let ejerciciosGrupo = grupos[grupo];
 					let calificacionCapituloP = obtenerCalificacionDeGrupo(ejerciciosGrupo, calificacionPonderadaMax);
-					/* Ahora tengo: materia, paralelo, capitulo, grupo y calificacionTotal */
+				
 					let fila = armarFila(materia, paraleloActual, capituloActual, grupo, calificacionCapituloP);
 					worksheet.addRow(fila);
 				}
@@ -165,11 +166,11 @@ function ponderarCalificacion(calificacionObtenida, calificacionMaxima, califica
 
 function armarColumnas(){
 	let columnas = [
-		{ header : 'Materia' , key : 'Materia' , width : 12 },
-		{ header : 'Paralelo', key : 'Paralelo', width : 12 },
-		{ header : 'Capítulo', key : 'Capítulo', width : 12 },
-		{ header : 'Grupo'   , key : 'Grupo'   , width : 12 },
-		{ header : 'Total'   , key : 'Total'   , width : 12 },
+		{ header : 'Materia' , key : 'materia' , width : 12 },
+		{ header : 'Paralelo', key : 'paralelo', width : 12 },
+		{ header : 'Capítulo', key : 'capitulo', width : 12 },
+		{ header : 'Grupo'   , key : 'grupo'   , width : 12 },
+		{ header : 'Total'   , key : 'total'   , width : 12 },
 	];
 	return columnas;
 }
