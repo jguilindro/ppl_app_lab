@@ -19,7 +19,7 @@ var practica = new Vue({
 	mounted: function(){
 		$('.button-collapse').sideNav();
 		$('.scrollspy').scrollSpy();
-		$(".dropdown-button").dropdown();
+		$('.dropdown-button').dropdown();
 		$('#modalEliminarPregunta').modal();
 		$('#modalNuevoTutorial').modal();
 		$('select').material_select();
@@ -169,17 +169,17 @@ var practica = new Vue({
 	}
 });
 
-$('body').on("click", '#btnTutorialNuevo', function(){
+$('body').on('click', '#btnTutorialNuevo', function(){
 	$('#modalNuevoTutorial').modal('open');
 })
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', function(event) {
   $.get({
-    url: "/../navbar/profesores",
+    url: '/../navbar/profesores',
     success: function(data) {
       document.getElementById('#navbar').innerHTML = data;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
+      $('.button-collapse').sideNav();
+      $('.dropdown-button').dropdown();
     }
   })
 });

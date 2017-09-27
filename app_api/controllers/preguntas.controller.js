@@ -34,7 +34,8 @@ const crearPregunta = (req, res) => {
     laboratorio: req.body.laboratorio,
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
-    descripcion: req.body.descripcion
+    descripcion: req.body.descripcion,
+    subpreguntas: req.body.subpreguntas,
   })
   pregunta.crearPregunta((err, pregunta) => {
     if (err) return respuesta.serverError(res);
@@ -52,7 +53,8 @@ const actualizarPregunta = (req, res) => {
     tutorial: req.body.tutorial,
     tiempoEstimado: req.body.tiempoEstimado,
     puntaje: req.body.puntaje,
-    descripcion: req.body.descripcion
+    descripcion: req.body.descripcion,
+    subpreguntas: req.body.subpreguntas
   }
   PreguntaModel.actualizarPregunta(req.params.id_pregunta, actualizar, (err, doc) => {
     if (!doc.nModified) return respuesta.mongoError(res, 'El paralelo no existe');

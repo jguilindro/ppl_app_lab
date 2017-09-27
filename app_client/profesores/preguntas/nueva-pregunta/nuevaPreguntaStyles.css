@@ -1,4 +1,4 @@
-body{
+fconbody{
 	background-color:   #d3dbdb;
 }
 
@@ -51,4 +51,21 @@ body{
 #cancelar{
 	background-color: #4a148c;
 	color: white;
+}
+
+.log ul .player-turn {
+	color: blue;
+	background-color: #e4e8ff;
+}
+
+.row-buttons{
+	padding-right: 5%;
+}
+
+.btn-floating{
+	margin-top: 4%;
+}
+
+.section-pt-btn{
+	padding-left: 2%;
 }

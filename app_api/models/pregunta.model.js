@@ -24,6 +24,7 @@ const PreguntaSchema = mongoose.Schema({
     enum: ['v_f','opcion', 'justificacion'],
     'default': 'justificacion'
   },
+  subpreguntas: [],
   capitulo: {
     type: String
   },
@@ -54,7 +55,9 @@ PreguntaSchema.statics.obtenerTodasPreguntas = function(callback) {
 }
 
 PreguntaSchema.statics.obtenerPregunta = function(id_pregunta, callback) {
-  this.findOne({_id: id_pregunta}, callback);
+  this.findOne({_id: id_pregunta})
+      .populate('creador', '_id nombres apellidos')
+      .exec(callback);
 }
 
 PreguntaSchema.methods.crearPregunta = function(callback) {
@@ -62,7 +65,7 @@ PreguntaSchema.methods.crearPregunta = function(callback) {
 }
 
 PreguntaSchema.statics.actualizarPregunta = function(id_pregunta, actualizar, callback) {
-  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, laboratorio: actualizar.laboratorio, tutorial: actualizar.tutorial, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.puntaje, descripcion: actualizar.descripcion}},callback);
+  this.update({_id: id_pregunta}, {$set: {nombre: actualizar.nombre, tipoLeccion: actualizar.tipoLeccion, tipoPregunta: actualizar.tipoPregunta, capitulo: actualizar.capitulo, laboratorio: actualizar.laboratorio, tutorial: actualizar.tutorial, tiempoEstimado: actualizar.tiempoEstimado, puntaje: actualizar.puntaje, descripcion: actualizar.descripcion, subpreguntas: actualizar.subpreguntas}},callback);
 }
 
 PreguntaSchema.statics.eliminarPregunta = function(id_pregunta, callback) {

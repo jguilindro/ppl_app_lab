@@ -59,6 +59,12 @@ const local = function() {
       console.log('development local')
       return require('../config/main').local //local
     }
+
+  } else if (os.hostname() === 'Oscar') {
+    console.log("Local")
+    if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'debug') {
+      return require('../config/main').local //local
+    }
     // else if (process.env.NODE_ENV == 'production') {
     //   console.log('production local')
     //   return require('../config/main').local_production
@@ -74,7 +80,13 @@ const local = function() {
     // }
   } else if (os.hostname() === 'srv01appPPL') {
       return require('../config/main').local
-  } else if (os.hostname() === 'DESKTOP-CIH4I1V') {
+
+  }
+ else if (os.hostname() === 'srv01appPPL') {
+  return require('../config/main').local
+
+}
+  else if (os.hostname() === 'DESKTOP-CIH4I1V') {
     if (process.env.NODE_ENV == 'development') {
       console.log('development local')
       return require('../config/main').local //local
