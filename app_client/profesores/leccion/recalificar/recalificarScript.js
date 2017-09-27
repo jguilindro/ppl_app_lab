@@ -11,15 +11,6 @@ var App = new Vue({
     $('.scrollspy').scrollSpy();
     $('.modal').modal();
     $('.tooltipped').tooltip({delay: 50});
-    //Navbar
-    $.get({
-      url: "/navbar/profesores",
-      success: function(data) {
-        document.getElementById('#navbar').innerHTML = data;
-        $(".button-collapse").sideNav();
-        $(".dropdown-button").dropdown();
-      }
-    });
 	},
 	data: {
 		leccion: {},

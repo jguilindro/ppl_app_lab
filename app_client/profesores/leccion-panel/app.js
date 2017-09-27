@@ -4,14 +4,6 @@ var App = new Vue({
     $('.modal').modal({
         dismissible: false
     });
-    $.get({
-      url: "/navbar/profesores",
-      success: function(data) {
-        document.getElementById('#navbar').innerHTML = data;
-        $(".button-collapse").sideNav();
-        $(".dropdown-button").dropdown();
-      }
-    })
   },
   created() {
     this.obtenerLeccion()

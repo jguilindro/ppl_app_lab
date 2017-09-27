@@ -282,14 +282,7 @@ var app = new Vue({
   updated() {
     listeners() // OJO listenrs paralelo
     selector()
-    $.get({
-      url: "/navbar/profesores",
-      success: function(data) {
-        document.getElementById('#navbar').innerHTML = data;
-        $(".button-collapse").sideNav();
-        $(".dropdown-button").dropdown();
-      }
-    })
+    
   }
 });
 app.profesorLogeado()

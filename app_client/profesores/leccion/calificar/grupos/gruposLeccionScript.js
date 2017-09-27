@@ -8,15 +8,6 @@ var app = new Vue({
     $('.button-collapse').sideNav();
     $(".dropdown-button").dropdown({ hover: false });
     $('select').material_select();
-    //Navbar
-    $.get({
-      url: "/navbar/profesores",
-      success: function(data) {
-        document.getElementById('#navbar').innerHTML = data;
-        $(".button-collapse").sideNav();
-        $(".dropdown-button").dropdown();
-      }
-    })
   },
   el: '#app',
   data: {

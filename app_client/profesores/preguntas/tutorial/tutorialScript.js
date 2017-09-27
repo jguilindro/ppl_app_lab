@@ -173,18 +173,6 @@ $('body').on('click', '#btnTutorialNuevo', function(){
 	$('#modalNuevoTutorial').modal('open');
 })
 
-document.addEventListener('DOMContentLoaded', function(event) {
-  $.get({
-    url: '/../navbar/profesores',
-    success: function(data) {
-      document.getElementById('#navbar').innerHTML = data;
-      $('.button-collapse').sideNav();
-      $('.dropdown-button').dropdown();
-    }
-  })
-});
-
-
 $('#select-materia').change(function(){
 	practica.tutorial.nombreMateria = $('#select-materia option:selected').text();
 	practica.tutorial.codigoMateria = $('#select-materia option:selected').val();

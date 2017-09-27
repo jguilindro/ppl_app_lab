@@ -268,9 +268,7 @@ $('#select-editar-tipo-leccion').change(function(){
 $('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
  	pregunta.$data.preguntaEditar.descripcion = contents;
   
-})
-
-
+});
 
 $('body').on('click','img', function(){
 	pregunta.mostrarModal($(this).attr('src'));

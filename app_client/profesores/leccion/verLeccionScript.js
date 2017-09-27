@@ -566,19 +566,6 @@ $('body').on("click", '#btnCapituloNuevo', function(){
 	$('#modalNuevoCapitulo').modal('open');
 })
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  $.get({
-    url: "/../navbar/profesores",
-    success: function(data) {
-      document.getElementById('#navbar').innerHTML = data;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
-    }
-  })
-});
-
-
-
 //Yo lo hice #khemas :v
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object

@@ -549,18 +549,6 @@ function ordenPreguntas(preguntas){
     App.leccion_nueva.preguntas.ordenPregunta.push(x);
   }
 }
-// document.getElementById('datePicker').valueAsDate = new Date();
-// document.getElementById('datePicker').setAttribute('min', "2017-04-09")
-document.addEventListener("DOMContentLoaded", function(event) {
-  $.get({
-    url: "/../navbar/profesores",
-    success: function(data) {
-      document.getElementById('#navbar').innerHTML = data;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
-    }
-  })
-});
 
 $('#div-select').change(function(){
   App.leccion_nueva.paralelo = $('#select-paralelos option:selected').val();

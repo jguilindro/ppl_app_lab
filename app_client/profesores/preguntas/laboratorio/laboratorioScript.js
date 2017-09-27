@@ -172,17 +172,6 @@ $('body').on("click", '#btnLabNuevo', function(){
 	$('#modalNuevoLab').modal('open');
 })
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  $.get({
-    url: "/../navbar/profesores",
-    success: function(data) {
-      document.getElementById('#navbar').innerHTML = data;
-      $(".button-collapse").sideNav();
-      $(".dropdown-button").dropdown();
-    }
-  })
-});
-
 $('#select-materia').change(function(){
 	laboratorio.laboratorio.nombreMateria = $('#select-materia option:selected').text();
 	laboratorio.laboratorio.codigoMateria = $('#select-materia option:selected').val();
