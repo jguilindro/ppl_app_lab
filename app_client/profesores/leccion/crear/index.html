@@ -19,7 +19,7 @@
     </header>
     <div id="app">
       <div id="pages">
-        <div class="row" >
+        <section class="row" id="section-tabs">
           <br>
           <div class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
@@ -28,138 +28,70 @@
               <li class="tab col s4 disabled" id = "t4"><a id="ta4" href="#test4">Resumen</a></li>
             </ul>
           </div>
-        </div>
+        </section>
         <!--        .::Paso 1, SETUP::.           -->
-        <div id="test1" class="col s12">
+        <section id="test1" class="col s12">
           <div class="page">
-            <div class="seccion-1 row container">
-             <h1 class="center-align flow-text">Crear una nueva lección</h1>
+            <main class="seccion-1 row container">
+              <h1 class="center-align flow-text">Crear una nueva lección</h1>
               <form>
-                <div class="row">
-                  <div class="input-field col s12">
+                <section class="row" id="row-nombre">
+                  <article class="input-field col s12">
                     <label for="nombre">Nombre</label>
                     <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
-                  </div>
-                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'peer'">
-                    <select id="subject">
-                      <option value="#" selected disabled>Escoger Materia...</option>
-                      <option value="FISG1002">Física 2</option>
-                      <option value="FISG1003">Física 3</option>
-                    </select>
-                    <label>Materia</label>
-                  </div>
-                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'peer'">
-                    <label class="active">Paralelo:</label>
-                  </div>
-
-                  <!-- profesor -->
-                  <div class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
+                  </article>
+                </section>
+                <section class="row" id="row-materia-paralelo">
+                  <article class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
                     <label>Materia: </label> <br> <p>{{leccion_nueva.nombreMateria}}</p>
-                  </div>
-                  <div class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
+                  </article>
+                  <article class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
                     <label>Paralelo: </label><br> <p>{{paraleloEscogido.nombre}}</p>
-                  </div>
-
-                </div>
-              <div class="row">
-                <div class="input-field col s6">
-                  <label for="fechaInicio" class="active">Fecha Inicio</label>
-                   <input id="datePicker" name="fecha" placeholder="fecha">
-                  <!-- <input v-model="leccion_nueva.fechaInicio" type="date" id="datePicker" name="fecha"> -->
-                </div>
-                <div class="input-field col s6" id="tipoLeccion">
-                  <label class="active">Tipo</label>
-                  <!-- <select id="select-tipo-leccion">
-                    <option value="" disabled selected></option>
-                    <option value="estimacion|laboratorio">Estimación|Laboratorio</option>
-                    <option value="tutorial">Tutorial</option>
-                  </select> -->
-                  <form action="#">
-                    <p>
-                      <input name="group1" v-model="tipoEscogido" type="radio" id="tests1" disabled="true"/>
-                      <!-- <label for="test1">Red</label> -->
-                    </p>
-                    <p>
-                      <input value="estimacion|laboratorio" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado1" checked/>
-                      <label for="seleccionado1">Estimación|Laboratorio</label>
-                    </p>
-                    <p>
-                      <input value="tutorial" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado2"  />
-                      <label for="seleccionado2">Tutorial</label>
-                    </p>
-                  </form>
-                </div>
-              </div>
+                  </article>
+                </section>
+                <section class="row" id="row-fecha-tipo">
+                  <article class="input-field col s6">
+                    <label for="fechaInicio" class="active">Fecha Inicio</label>
+                     <input id="datePicker" name="fecha" placeholder="fecha">
+                  </article>
+                  <article class="input-field col s6" id="tipoLeccion">
+                    <label class="active">Tipo</label>
+                    <form action="#">
+                      <p>
+                        <input name="group1" v-model="tipoEscogido" type="radio" id="tests1" disabled="true"/>
+                      </p>
+                      <p>
+                        <input value="estimacion|laboratorio" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado1" checked/>
+                        <label for="seleccionado1">Estimación|Laboratorio</label>
+                      </p>
+                      <p>
+                        <input value="tutorial" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado2"  />
+                        <label for="seleccionado2">Tutorial</label>
+                      </p>
+                    </form>
+                  </article>
+                </section>
               </form>
               <div class="row col s12">
                 <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">siguiente</button>
               </div>
-            </div>
+            </main>
           </div>
-        </div>
-
-<!-- sección 2: seleccionar anterioir
-    <div id="test2" class="col s12">
-          <div class="page">
-            <div class="strike">
-              <span>Escoger las preguntas</span>
-            </div>
-              <main>
-                <div class="container">
-                  <div class="row">
-                    <div class="col s12 m9 l10">
-                      <div v-for="capitulo in capitulosAMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
-                        <h5>{{capitulo.nombre}}</h5>
-                        <ul class="preguntas">
-                          <li v-for="pregunta in capitulo.preguntas" class="question">
-                          <div v-bind:id="'tooltip-' + pregunta._id"
-                                  v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
-                            <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                            <label v-bind:for="pregunta._id">
-                              {{pregunta.nombre}}
-                            </label>
-                            <label class="icono pull right">
-                              <p>{{pregunta.tiempoEstimado}} minutos</p>
-                            </label>
-                          </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div class="col hide-on-small-only m3 l2">
-                      <ul class="section table-of-contents">
-                        <li v-for="capitulo in capitulosAMostrar">
-                          <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
-                        </li>
-                        <li><a> <hr><br>Tiempo estimado<br>
-                                {{preguntas_escogidas.tiempoTotal}} Minutos
-                        </a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  </div>
-              </main>
-          </div>
-        </div>
--->
+        </section>
         <!--       Paso 2, SELECTION!      -->
         <div id="test2" class="col s12">
           <div class="page">
-            <div class="strike">
+            <header class="strike">
               <span>Escoger las preguntas</span>
-            </div>
+            </header>
             <main>
               <div class="tiempo" style="position: fixed">
                 <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{preguntas_escogidas.tiempoTotal}} Min</h4>
               </div>
-              <div class="container" id="capitulos">
+              <section class="container" id="capitulos">
                 <div class="row">
-                  <!-- <div class="col s1 m1s">
-                    {{preguntas_escogidas.tiempoTotal}}
-                  </div> -->
-                  <div class="col s7 m9 l10">
-                    <div v-for="capitulo in capitulosAMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
+                  <section class="col s7 m9 l10">
+                    <article v-for="capitulo in capitulosMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
                       <ul class="preguntas collapsible" data-collapsible="accordion">
                         <li>
                           <div class="collapsible-header" v-on:click="collapsibleClicked($event)">
@@ -179,39 +111,22 @@
                           </div>
                             </div>
                         </li>
-<!--
-                        <li v-for="pregunta in capitulo.preguntas" class="question">
-                          <div v-bind:id="'tooltip-' + pregunta._id"
-                               v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
-                            <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                            <label v-bind:for="pregunta._id">
-                              {{pregunta.nombre}}
-                            </label>
-                            <label class="icono pull right">
-                              <p>{{pregunta.tiempoEstimado}} minutos</p>
-                            </label>
-                          </div>
-                        </li>
--->
                       </ul>
-                    </div>
-                  </div>
-                  <div class="row col s10">
-                    <button type="button" v-on:click="avanzarPestania('test1','#t1')" id="btnats1" class="btn">atras</button>
-                    <button type="button" v-on:click="avanzarPestania('test4','#t4')" id="btnsgt2" class="btn pull right">siguiente</button>
-                  </div>
-                  <div class="col s4 hide-on-small-only m3 l2">
+                    </article>
+                  </section>
+                  <section class="col s4 hide-on-small-only m3 l2">
                     <ul class="section table-of-contents">
                       <li v-for="capitulo in capitulosAMostrar">
                         <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
                       </li>
-                      <!-- <li><a> <hr><br>Tiempo estimado<br>
-                        {{preguntas_escogidas.tiempoTotal}} Minutos
-                      </a></li> -->
                     </ul>
-                  </div>
+                  </section>
+                  <section class="row col s10">
+                    <button type="button" v-on:click="avanzarPestania('test1','#t1')" id="btnats1" class="btn">atras</button>
+                    <button type="button" v-on:click="avanzarPestania('test4','#t4')" id="btnsgt2" class="btn pull right">siguiente</button>
+                  </section>
                 </div>
-              </div>
+              </section>
             </main>
           </div>
         </div>

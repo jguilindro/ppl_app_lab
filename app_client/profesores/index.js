@@ -46,7 +46,7 @@ function descargarCSV(){
         var blob = new Blob([byteArray], {type: 'application/octet-stream'});
         url = window.URL.createObjectURL(blob);
         a.href = url;
-        a.download = 'hola' + '.xlsx';
+        a.download = 'rubrica' + '.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
       }

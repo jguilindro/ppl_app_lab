@@ -48,9 +48,9 @@ var app = new Vue({
     		//SUCCESS CALLBACK
     		self.capitulosObtenidos = response.body.datos;
     		$.each(self.capitulosObtenidos, function(index, capitulo){
-    			if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1002'){
+    			if( capitulo.codigoMateria=='FISG1002' ){
     				self.capitulosFisica2.push(capitulo);
-    			}else if(capitulo.tipo.toLowerCase()=='estimacion'&&capitulo.codigoMateria=='FISG1003'){
+    			}else if( capitulo.codigoMateria=='FISG1003' ){
     				self.capitulosFisica3.push(capitulo);
     			}
     		});

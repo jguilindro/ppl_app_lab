@@ -1,28 +1,10 @@
 var App = new Vue({
-  mounted: function(){
-    //Materialize initializer
-    $('ul.tabs').tabs();
-    $('.button-collapse').sideNav();
-    $(".dropdown-button").dropdown({ hover: false });
-    $('.scrollspy').scrollSpy();
-    $('#modalEliminarPregunta').modal();
-    $('#modalNuevoCapitulo').modal();
-    $('select').material_select();
-    $('.modal').modal();
-    $('.collapsible').collapsible({
-      onOpen: function(el) {
-        var self = this;
-        self.CollapsibleOpen = true
-      }
-    });
-    //Flujo
-    //this.getPreguntas();
-    this.getParalelos();
-    this.obtenerCapitulos();
-
-  },
   created: function() {
-    this.obtenerLogeado()
+    this.obtenerUsuario();
+    this.obtenerCapitulos(this);
+  },
+  mounted: function(){
+    this.inicializarMaterialize();
   },
   updated: function(){
     var self = this;
@@ -30,10 +12,90 @@ var App = new Vue({
   },
   el: '#app',
   methods: {
-    obtenerLogeado: function() {
+    inicializarMaterialize: function(){
+      $('ul.tabs').tabs();
+      $('.button-collapse').sideNav();
+      $(".dropdown-button").dropdown({ hover: false });
+      $('.scrollspy').scrollSpy();
+      $('.modal').modal();
+      $('select').material_select();
+      $('.modal').modal();
+      $('.collapsible').collapsible({
+        onOpen: function(el) {
+          var self = this;
+          self.CollapsibleOpen = true
+        }
+      });
+    },
+    obtenerUsuario: function() {
       this.$http.get('/api/session/usuario_conectado').then(response => {
         this.profesor = response.body.datos;
+      });
+    },
+    obtenerCapitulos: function(self){
+      var url = '/api/capitulos/'
+      self.$http.get(url).then(response => {
+        self.capitulosObtenidos = response.body.datos;
+        self.obtenerPreguntas(self);
+      }, response => {
+        console.log('Hubo un error al obtener los capítulos de la base de datos.');
+        console.log(response);
       })
+    },
+    obtenerPreguntas: function(self){
+      var url = '/api/preguntas/';
+      self.$http.get(url).then(response => {
+        self.preguntas = response.body.datos;
+        self.getParalelos();
+      }, response => {
+        console.log('Hubo un error al obtener las preguntas de la base de datos');
+      });
+    },
+    getParalelos: function(){
+      url = '/api/paralelos/profesores/mis_paralelos'
+      var self = this;
+      self.$http.get(url).then(response =>{
+        if( response.body.estado ) {
+          self.paralelos = response.body.datos;
+          if ( this.profesor.tipo == 'titular' ) {
+            var materia = self.paralelos[0].codigo;
+            App.leccion_nueva.codigoMateria = materia
+            //Filtrando para física 2
+            if( materia == "FISG1002" ){
+            App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo2);
+              App.leccion_nueva.nombreMateria = "Física 2"
+              self.paraleloEscogido.id = self.paralelos[0]._id
+              self.paraleloEscogido.nombre = self.paralelos[0].nombre
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+            }
+            //Filtrando para física 3
+            if( materia == "FISG1003" ){
+              App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3);
+              App.leccion_nueva.nombreMateria = "Física 3"
+              self.paraleloEscogido.id = self.paralelos[0]._id
+              self.paraleloEscogido.nombre = self.paralelos[0].nombre
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+            }
+
+            //AQUI DEBO FILTRAR
+            console.log('Materia', self.paralelos[0].codigo);
+            console.log('Tipo', self.tipoEscogido);
+            console.log('Preguntas obtenidas:', self.preguntas)
+            self.preguntasMostrar = self.filtrarPreguntasPorMateria(self.preguntas, self.paralelos[0].codigo);
+            self.preguntasMostrar = self.filtrarPreguntasPorTipoLeccion(self.preguntasMostrar, self.tipoEscogido);
+            console.log('Preguntas mostrar:', self.preguntasMostrar)
+            self.capitulosMostrar = self.filtrarCapitulosPorMateria(self.capitulosObtenidos, self.paralelos[0].codigo);
+            self.dividirPreguntasEnCapitulos(self, self.preguntasMostrar, self.capitulosMostrar);
+            //Eliminando y agregando label donde serán colocados los paralelos.
+            //console.log(self.capitulosMostrar)
+            //App.filtrarCapitulos(App.tipoEscogido);
+          }
+          //self.crearSelectParalelos();
+        }
+        }, response => {
+          //error callback
+          console.log("EEEEEERRRROOOOOOOOOOOOOR!")
+        });
     },
     toHTML: function (str){
       var entityMap = {
@@ -113,11 +175,11 @@ var App = new Vue({
       $(aTag).removeClass("disabled");
       $('ul.tabs').tabs();
       $('ul.tabs').tabs('select_tab', pestania);
-
-      
     },
     validarCamposVacios: function(){
       var self = this;
+      self.avanzarPestania("test2","#t2");
+      /*var self = this;
       this.sanitize('test1');
       var  nombre = self.leccion_nueva.nombre;
       console.log(nombre);
@@ -159,9 +221,7 @@ var App = new Vue({
       }else{
         self.avanzarPestania("test2","#t2");
 
-      }
-
-
+      }*/
     },
     showTooltip: function(preguntaID, descripcion, tiempo){
         var tooltipID = "#tooltip-" + preguntaID;
@@ -210,73 +270,6 @@ var App = new Vue({
       //error callback
       alert("ALGO SALIÓ MAL!" + response);
       console.log(response)
-      });
-
-
-    },
-    obtenerCapitulos: function(){
-
-      var self = this;
-      var url = '/api/capitulos/'
-      self.$http.get(url).then(response => {
-        //SUCCESS CALLBACK
-        self.capitulosObtenidos = response.body.datos;
-        //Separo por estimacion|tutorial|laboratorio
-        $.each(self.capitulosObtenidos, function(index, capitulo){
-          if(capitulo.tipo.toLowerCase()=='estimacion'){
-            self.capitulos.push(capitulo);
-          }else if(capitulo.tipo.toLowerCase()=='tutorial'){
-            self.tutoriales.push(capitulo);
-          }else if(capitulo.tipo.toLowerCase()=='laboratorio'){
-            self.laboratorios.push(capitulo);
-          }
-        });
-        self.obtenerPreguntas();
-      }, response => {
-        //ERROR CALLBACK
-        console.log('Hubo un error al obtener los capítulos de la base de datos.');
-        console.log(response);
-      })
-    },
-    obtenerPreguntas: function(){
-      var self = this;
-      var url = '/api/preguntas/';
-      self.$http.get(url).then(response => {
-        //SUCCESS CALLBACK
-        self.preguntas = response.body.datos;
-        //Divido las preguntas por tipo
-        $.each(self.preguntas, function(index, pregunta){
-          if(pregunta.tipoLeccion.toLowerCase()=='estimacion'){
-            self.preguntasEstimacion.push(pregunta);
-          }else if(pregunta.tipoLeccion.toLowerCase()=='tutorial'){
-            self.preguntasTutorial.push(pregunta);
-          }else if(pregunta.tipoLeccion.toLowerCase()=='laboratorio'){
-            self.preguntasLaboratorio.push(pregunta);
-          }
-        });
-        self.dividirPreguntasEnCapitulos();
-        self.dividirPreguntasEnLaboratorios();
-        self.dividirPreguntasEnTutoriales();
-        App.filtrarCapitulos('estimacion|laboratorio')
-        $.each(self.capitulos, function(index, capitulo){
-          capitulo.preguntas.sort(function(a, b){
-             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          });
-        });
-        $.each(self.tutoriales, function(index, capitulo){
-          capitulo.preguntas.sort(function(a, b){
-             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          });
-        });
-        $.each(self.laboratorios, function(index, capitulo){
-          capitulo.preguntas.sort(function(a, b){
-             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          });
-        });
-
-      }, response => {
-        //ERROR CALLBACK
-        console.log('Hubo un error al obtener las preguntas de la base de datos');
       });
     },
     collapsibleClicked: function(event){
@@ -358,41 +351,40 @@ var App = new Vue({
       capitulo.preguntas.push(tutorial);
       self.capitulos.push(capitulo);
     },
-    getParalelos: function(){
-      url = '/api/paralelos/profesores/mis_paralelos'
-      var self = this;
-      self.$http.get(url).then(response =>{
-        //successfull callback
-        if(response.body.estado) {
-          self.paralelos = response.body.datos
-          if (this.profesor.tipo == 'titular') {
-            var materia = self.paralelos[0].codigo
-            App.leccion_nueva.codigoMateria = materia
-            //Filtrando para física 2
-            if(materia == "FISG1002"){
-            App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo2);
-              App.leccion_nueva.nombreMateria = "Física 2"
-              self.paraleloEscogido.id = self.paralelos[0]._id
-              self.paraleloEscogido.nombre = self.paralelos[0].nombre
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
-            }
-            //Filtrando para física 3
-            if(materia == "FISG1003"){
-              App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3);
-              App.leccion_nueva.nombreMateria = "Física 3"
-              self.paraleloEscogido.id = self.paralelos[0]._id
-              self.paraleloEscogido.nombre = self.paralelos[0].nombre
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
-            }
-            //Eliminando y agregando label donde serán colocados los paralelos.
-            App.filtrarCapitulos(App.tipoEscogido);
-          }
-          //self.crearSelectParalelos();
-        }
-        }, response => {
-          //error callback
-          console.log("EEEEEERRRROOOOOOOOOOOOOR!")
+    filtrarPreguntasPorMateria: function(arrayPreguntas, codigoMateria){
+      return $.grep( arrayPreguntas, function(pregunta, index){
+        return pregunta.capitulo.codigoMateria === codigoMateria;
+      });
+    },
+    filtrarPreguntasPorTipoLeccion: function(arrayPreguntas, tipoLeccion){
+      if( tipoLeccion === 'tutorial'){
+        return $.grep( arrayPreguntas, function(pregunta, index){
+          return pregunta.tipoLeccion == tipoLeccion;
         });
+      }else{
+        return $.grep( arrayPreguntas, function(pregunta, index){
+          return ( pregunta.tipoLeccion == 'laboratorio' || pregunta.tipoLeccion == 'estimacion' );
+        });
+      }
+      
+    },
+    filtrarCapitulosPorMateria: function(arrayCapitulos, codigoMateria){
+      return $.grep( arrayCapitulos, function(capitulo, index){
+        return capitulo.codigoMateria === codigoMateria;
+      });
+    },
+    dividirPreguntasEnCapitulos: function(self, arrayPreguntas, arrayCapitulos){
+      $.each(self.capitulosMostrar, function(index, cap){
+          cap.preguntas = [];
+        });
+      $.each( arrayPreguntas, function(index, pregunta){
+        $.each( arrayCapitulos, function(j, capitulo){
+          if( pregunta.capitulo.nombre.toLowerCase() === capitulo.nombre.toLowerCase() ){
+            capitulo.preguntas.push(pregunta);
+            return false;
+          }
+        });
+      });
     },
     verModal: function(descripcion, tiempo){
       /*
@@ -422,38 +414,19 @@ var App = new Vue({
       $('#select-paralelos').material_select();
     },
     filtrarCapitulos: function (opcion){
-      if (opcion === 'estimacion|laboratorio') {
-        App.$data.tipoEscogido = $('#seleccionado1').val();
-        $valor = $('#seleccionado1');
-      } else {
-        App.$data.tipoEscogido = $('#seleccionado2').val();
-        $valor = $('#seleccionado2');
-      }
-      console.log(App.$data.tipoEscogido);
-      App.$data.tipoEscogido = $valor.val();
-      App.$data.leccion_nueva.tipo = App.$data.tipoEscogido;
-      //Sección de filtrar las preguntas por capítulos.
-      var materia = $("#subject").val()
-      if($valor.val()=='estimacion|laboratorio'){
-        App.$data.capitulosAMostrar = [];
-        App.$data.capitulosAMostrar = App.$data.capitulos.concat(App.$data.laboratorios);
-      }else if($valor.val()=='tutorial'){
-        App.$data.capitulosAMostrar = [];
-        App.$data.capitulosAMostrar = App.$data.tutoriales;
-      }
-
-      if(materia == "FISG1002"){
-        App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo2);
-      }
-      if(materia == "FISG1003"){
-        App.capitulosAMostrar = App.capitulosAMostrar.filter(filtrarCapitulo3);
-      }
-
+      let self = this;
+      self.preguntasMostrar = self.filtrarPreguntasPorMateria(self.preguntas, self.paralelos[0].codigo);
+      self.preguntasMostrar = self.filtrarPreguntasPorTipoLeccion(self.preguntasMostrar, self.tipoEscogido);
+      self.capitulosMostrar = self.filtrarCapitulosPorMateria(self.capitulosObtenidos, self.paralelos[0].codigo);
+      self.dividirPreguntasEnCapitulos(self, self.preguntasMostrar, self.capitulosMostrar);
+      //Eliminando y agregando label donde serán colocados los paralelos.
+      console.log(self.capitulosMostrar)
       //uncheck all checked checkbox, la función sirve... pero hay otros errores por arreglar.
       //unCheckPreguntas();
     }
   },
   data: {
+    capitulosMostrar: [],
     capitulosObtenidos: [],
     capitulos: [],
     tutoriales: [],
@@ -606,7 +579,7 @@ function filtrarCapitulo2(capitulo){
 function filtrarCapitulo3(capitulo){
   return capitulo.codigoMateria == "FISG1003";
 }
-// App.obtenerLogeado()
+// App.obtenerUsuario()
 
 
 $('#datePicker').pickadate({

@@ -25,7 +25,7 @@ var modal = {
   methods: {
     regresar(){
       console.log(1234);
-			window.location.href = '/profesores/preguntas/estimacion'
+			window.location.href = '/profesores/preguntas/banco'
 		},
     continuar(){
       console.log(1234);
@@ -43,12 +43,11 @@ new Vue({
 
 var app = new Vue({
   created(){
-    this.obtenerLogeado(this);
+    this.obtenerUsuario(this);
     this.obtenerCapitulos(this);
   },
   mounted() {
     this.inicializarMaterialize(this);
-    this.generarNavbar();
     this.inicializarEditor(this, '#firstEditor');
   },
 	el: '#preguntaNueva',
@@ -67,7 +66,7 @@ var app = new Vue({
 			capitulo       : '',		//Se llena solo si tipoLeccion=='leccion'
 			tutorial       : '',		//Se llena solo si tipoLeccion=='tutorial'
 			laboratorio    : '',	//Se llena solo si tipoLeccion=='Laboratorio'
-			puntaje        : 2,
+			puntaje        : 0,
       subpreguntas   : []
 		},
 		profesor          : {},
@@ -81,31 +80,18 @@ var app = new Vue({
     },
     nuevoCapitulo     : {
       nombre       : '',
-      tipo         : 'estimacion',
       nombreMateria: '',
       codigoMateria: ''
     },
-    nuevoTutorial     : {
-      nombre       : '',
-      tipo         : 'tutorial',
-      nombreMateria:'',
-      codigoMateria:''
-    },
-    nuevoLaboratorio  : {
-      nombre       : '',
-      tipo         : 'laboratorio',
-      nombreMateria: '',
-      codigoMateria: ''
-    }
   },
   components:{
     'modal-buttons': modal
   },
 	methods: {
-    obtenerLogeado: function(self) {
+    obtenerUsuario: function(self) {
       this.$http.get('/api/session/usuario_conectado').
       then(res => {
-        if (res.body.estado) {
+        if ( res.body.estado ) {
           self.profesor         = res.body.datos;
           self.pregunta.creador = self.profesor._id;
         }
@@ -115,7 +101,7 @@ var app = new Vue({
       var url = '/api/capitulos/';
       self.$http.get(url).then(response => {
         self.capitulosObtenidos = response.body.datos;
-        self.dividirCapitulosObtenidos(self);
+        self.crearSelectCapitulos(self, 'select-capitulos', self.capituloEscogido, 'div-select-capitulo', self.capitulosObtenidos, 'estimacion');
       }, response => {
         console.log(response)
       });
@@ -123,7 +109,6 @@ var app = new Vue({
     inicializarMaterialize: function(self){
       $('select').material_select();
       $('.modal').modal();
-
       $('#tipo-leccion').change( function(){
         var seleccion = $('#tipo-leccion').val();
         if( seleccion === 'tutorial' ){
@@ -157,59 +142,70 @@ var app = new Vue({
       }
       xhr.send(files[0]);
     },
-    generarNavbar: function(){
-      this.$http.get('/../navbar/profesores').then(response =>{
-        document.getElementById('#navbar').innerHTML = response.body;
-        $('.button-collapse').sideNav();
-        $('.dropdown-button').dropdown();
-      });
+    /*
+      @Descripción: función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
+      @Params: Requiere el estado, si está cargando algo o no.
+    */
+    loading: function(estado){
+      if ( estado ){
+        $('.note-editable').append('<div id="onLoad" class="preloader-wrapper big active"></div>');
+        $('#onLoad').append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
+        $('#load-2').append('<div id="load-3" class="circle-clipper left"></div>');
+        $('#load-3').append('<div id="load-4" class="circle"></div>');
+      }else{
+        $('#onLoad').remove();
+      }
     },
     /* Lo siento por el que tenga que modificar esto... */
     agregarSubpregunta: function(){
-      this.subTotales++;
+      let self = this;
+      self.subTotales++;
       //Div container subpregunta
-      var idContainer  = 'container-subpregunta-' + this.subTotales; 
+      var idContainer  = 'container-subpregunta-' + self.subTotales; 
       var divContainer = $('<div>').attr('id', idContainer);
       //Label de subpregunta
-      var labelSub      = $('<label>').html('Subpregunta #' + this.subTotales);
+      var labelSub      = $('<label>').html('Pregunta #' + self.subTotales);
       //Section que alojará al editor
-      var idSectionEditor = 'section-subpregunta-' + this.subTotales;
+      var idSectionEditor = 'section-subpregunta-' + self.subTotales;
       var sectionEditor   = $('<section>').addClass('input-field col s12')
                                           .attr('id', idSectionEditor);
       //Div del editor
-      var idEditor      = 'subpregunta-' + this.subTotales;
+      var idEditor      = 'subpregunta-' + self.subTotales;
       var divEditor     = $('<div>').attr('id', idEditor).addClass('myEditor');
 
       sectionEditor.append(divEditor);
       //Section puntaje-btns
       var sectionPtBtn = $('<section>').addClass('row section-pt-btn')
-                                          .attr('id', 'section-pt-btn-subpregunta-' + app.subTotales);
+                                          .attr('id', 'section-pt-btn-subpregunta-' + self.subTotales);
       //Div puntaje
-      var divPt    = $('<div>').addClass('input-field col s6')
-                                    .attr('id', 'div-pt-subpregunta-' + app.subTotales);
+      var divPt    = $('<div>').addClass('input-field col s6 div-pt')
+                                    .attr('id', 'div-pt-subpregunta-' + self.subTotales);
       var labelPt  = $('<label>').html('Puntaje');
-      var idInputPuntaje = 'input-pt-subpregunta' + app.subTotales;
+      var idInputPuntaje = 'input-pt-subpregunta' + self.subTotales;
       var inputPuntaje  = $('<input>').attr(
         {
           'type' : 'number', 
           'min'  : 0, 
           'id'   : idInputPuntaje
         });
+      inputPuntaje.change( function(){
+        self.obtenerPuntajeTotal();
+      });
       divPt.append(labelPt, inputPuntaje);                                    
       //Div de botón nueva subpregunta
       var divBtn    = $('<div>').addClass('row row-buttons')
-                                    .attr('id', 'div-btns-subpregunta-' + app.subTotales);
+                                    .attr('id', 'div-btns-subpregunta-' + self.subTotales);
       var add = $('<i>').addClass('material-icons').html('add');
       var crearBtn      = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right');
       crearBtn.append(add);
       crearBtn.click( function(){
-        app.agregarSubpregunta();
+        self.agregarSubpregunta();
       });
       var del = $('<i>').addClass('material-icons').html('delete');
       var eliminarBtn   = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right red');
       eliminarBtn.append(del)
       eliminarBtn.click( function(){
-        app.eliminarDiv('#' + idContainer);
+        self.eliminarDiv('#' + idContainer);
       });
       divBtn.append(crearBtn, eliminarBtn);
 
@@ -224,6 +220,7 @@ var app = new Vue({
     eliminarDiv: function(idDiv){
       app.subTotales--;
       $(idDiv).empty();
+      app.obtenerPuntajeTotal();
     },
 	  agregarOpcion: function () {
 	    if (!this.newOpcionText==''){
@@ -241,22 +238,6 @@ var app = new Vue({
     deleteSub(index){
       this.pregunta.opciones.splice(index,1);
     },
-    dividirCapitulosObtenidos: function(self){
-      $.each(self.capitulosObtenidos, function(index, capitulo){
-        if(capitulo.tipo.toLowerCase()=='estimacion'){
-          self.capitulos.push(capitulo);
-        }
-        if (capitulo.tipo.toLowerCase()=='tutorial') {
-          self.tutoriales.push(capitulo);
-        }
-        if(capitulo.tipo.toLowerCase()=='laboratorio'){
-          self.laboratorios.push(capitulo);
-        }
-      });
-      self.crearSelectCapitulos('select-capitulos', self.capituloEscogido, 'div-select-capitulo', self.capitulos, 'estimacion');
-      self.crearSelectCapitulos('select-tutorial', self.capituloEscogido, 'div-select-tutorial', self.tutoriales, 'tutorial');
-      self.crearSelectCapitulos('select-laboratorios', self.capituloEscogido, 'div-select-laboratorio', self.laboratorios, 'laboratorio');
-    },
     /*
       Parámetros:
         idSelect -> id del elemento select que se va a crear en esta función para contener a los grupos deseados. Ejemplo: select-capitulos
@@ -264,26 +245,16 @@ var app = new Vue({
         idDivSelect -> id del div que contendrá al elemento select que se va a crear
         capitulos -> Los capitulos que se van a mostrar en el select
     */
-    crearSelectCapitulos: function(idSelect, capituloEscogido, idDivSelect, capitulos, tipo){
+    crearSelectCapitulos: function(self, idSelect, capituloEscogido, idDivSelect, capitulos, tipo){
       //Todos los parametros de id vienen sin el #
-      var self = this;
-      var select = $('<select>').attr({'id': idSelect});
+      var select            = $('<select>').attr({'id': idSelect});
       var optionSelectedAux = '#' + idSelect + ' option:selected';
       select.change(function(){
-        if(tipo=='estimacion'){
-          self.pregunta.capitulo = $(optionSelectedAux).text();
-        }
-        if (tipo=='laboratorio') {
-          self.pregunta.laboratorio = $(optionSelectedAux).text();
-        }
-        if(tipo=='tutorial'){
-          self.pregunta.tutorial = $(optionSelectedAux).text();
-        }
-        
+        self.pregunta.capitulo = $(optionSelectedAux).val();
       });
       var idDivSelectAux = '#' + idDivSelect;
-      var divSelect = $(idDivSelectAux);
-      self.crearSelectOptions(select, capitulos, divSelect);
+      var divSelect      = $(idDivSelectAux);
+      self.crearSelectOptions(self, select, capitulos, divSelect);
       divSelect.append(select);
       select.material_select();
     },
@@ -293,12 +264,11 @@ var app = new Vue({
         capitulos -> los capitulos que se mostrarán como opciones dentro del select
         divSelect -> elemento div que contendrá al select
     */
-    crearSelectOptions: function(select, capitulos, divSelect){
-      var self = this;
-      var optionDisabled = $('<option>').val('').text('');
+    crearSelectOptions: function(self, select, capitulos, divSelect){
+      let optionDisabled = $('<option>').val('').text('');
       select.append(optionDisabled);
       $.each(capitulos, function(index, capitulo){
-        var option = $('<option>').val(capitulo._id).text(capitulo.nombre);
+        let option = $('<option>').val(capitulo._id).text(capitulo.nombre);
         select.append(option);
       });
       divSelect.append(select);
@@ -359,7 +329,7 @@ var app = new Vue({
           $('#div-select-capitulo').empty();
           var label = $('<label>').addClass('active').text('Capítulos');
           $('#div-select-capitulo').append(label)
-          self.crearSelectCapitulos('select-capitulos', self.capituloEscogido, 'div-select-capitulo', self.capitulos, 'estimacion');
+          self.crearSelectCapitulos(self, 'select-capitulos', self.capituloEscogido, 'div-select-capitulo', self.capitulos, 'estimacion');
           self.nuevoCapitulo.nombre = '';
         }, response => {
           console.log('Error al crear el capítulo');
@@ -367,64 +337,41 @@ var app = new Vue({
         });
 
     },
-    crearTutorial: function(){
-      var self = this;
-      var url = '/api/capitulos/';
-      console.log(self.nuevoTutorial)
-      
-      self.$http.post(url, self.nuevoTutorial).then(response => {
-        self.tutoriales.push(self.nuevoTutorial);
-        $('#div-select-tutorial').empty();
-        var label = $('<label>').addClass('active').text('Tutoriales');
-        $('#div-select-tutorial').append(label);
-        self.crearSelectCapitulos('select-tutorial', self.capituloEscogido, 'div-select-tutorial', self.tutoriales, 'tutorial');
-        self.nuevoTutorial.nombre = '';
-      }, response => {
-        console.log('Error al crear el tutorial');
-        console.log(response);
-      });
-    },
-    loading: function(estado){
-      //función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
-      //Requiere el estado, si está cargando algo o no.
-      if (estado){
-        $('.note-editable').append('<div id="onLoad" class="preloader-wrapper big active"></div>');
-        $('#onLoad').append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
-        $('#load-2').append('<div id="load-3" class="circle-clipper left"></div>');
-        $('#load-3').append('<div id="load-4" class="circle"></div>');
-      }else{
-        $('#onLoad').remove();
-      }
-    },
-    crearLaboratorio: function(){
-      var self = this;
-      var url = '/api/capitulos/';
-      console.log(self.nuevoLaboratorio)
-      
-      self.$http.post(url, self.nuevoLaboratorio).then(response => {
-        self.laboratorios.push(self.nuevoLaboratorio);
-        $('#div-select-laboratorio').empty();
-        var label = $('<label>').addClass('active').text('Laboratorios');
-        $('#div-select-laboratorio').append(label);
-        self.crearSelectCapitulos('select-laboratorios', self.capituloEscogido, 'div-select-laboratorio', self.laboratorios, 'laboratorio');
-        self.nuevoLaboratorio.nombre = '';
-      }, response => {
-        console.log('Error al crear el laboratorio');
-        console.log(response);
-      });
-    },
     cancelar: function(){
-      window.location.href = '/profesores/preguntas/estimacion'
+      window.location.href = '/profesores/preguntas/banco'
     },
 		regresar: function(){
       console.log(1234);
-			window.location.href = '/profesores/preguntas/estimacion'
+			window.location.href = '/profesores/preguntas/banco'
 		},
     continuar: function(){
       console.log(1234);
       //router.go('https://www.google.com.ec')
       //window.location.href = 'https://www.google.com.ec'
       window.location.href = '/profesores/preguntas/nueva-pregunta'
+    },
+    obtenerPuntajeTotal: function(){
+      app.pregunta.puntaje = 0;
+      var contador         = 1;
+      var idEditor         = '#subpregunta-';
+      var idInput          = '#input-pt-subpregunta';
+      var aux              = app.subTotales;
+      while( aux >= 0 ){
+        idEditor      = idEditor + contador;
+        idInput       = idInput + contador;
+        var divExiste = ( $(idEditor).length != 0 );
+        if( divExiste ){
+          var contenido         = $(idEditor).code();
+          var puntaje           = $(idInput).val();
+          if( contenido != '' ){
+            app.pregunta.puntaje += parseInt(puntaje);
+          }
+        }
+        contador++;
+        aux--;
+        idEditor = '#subpregunta-';
+        idInput  = '#input-pt-subpregunta';
+      }
     }
 	},
 });

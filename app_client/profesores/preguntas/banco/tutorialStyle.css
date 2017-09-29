@@ -1,0 +1,51 @@
+body{
+	background-color:   #d3dbdb;
+}
+.container{
+	background-color: rgba(255,255,255,0.8);
+	padding: 3%;
+}
+
+.section{
+	margin-bottom: 2%;
+	/*border: 1px solid;*/
+	padding: 2%;
+
+}
+
+.table-of-contents{
+	position: fixed !important;
+}
+
+.preguntas>li{
+	border-top: 1px solid;
+	padding: 2%;
+
+}
+
+.btn-small-new{
+	padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    margin-top: 5%;
+}
+
+.btn-editar, .btn-eliminar{
+	margin-left: 2%;
+	margin-right: 2%;
+}
+.question p{
+	padding: 0px;
+	margin: 0px;
+	color: black;
+}
+.question:hover{
+	background-color: rgba(192,192,192,0.3);
+}
+.descripcion{
+	font-size: 0.7em;
+}
+.capitulo h4{
+	font-weight: bold;
+}

@@ -70,33 +70,32 @@ const csv = (req, res) => {
     workbook.created 	= new Date();
     workbook.modified = new Date();
     /* Por cada paralelo seleccionado */
-    console.log(paralelos)
-    console.log(capitulos)
     for (let i = 0; i < paralelos.length; i++) {
     	let paraleloActual 	= paralelos[i];
     	/* Creo el worksheet con el nombre del paralelo actual */
-      console.log(paraleloActual)
     	var worksheet 			= workbook.addWorksheet('Paralelo ' + paraleloActual);
-    	worksheet.columns 	=	armarColumnas()
+    	worksheet.columns 	=	armarColumnas();
+    	/* Por cada capítulo */
     	for (let j = 0; j < capitulos.length; j++) {
 				let capituloActual 	= capitulos[j];
+				/* Obtengo la calificación de cada grupo del paralelo actual */
 				let ejercicios 			= yield obtenerRegistrosDeCapituloDeParalelo(materia, paraleloActual, capituloActual);
 				let grupos          = _.groupBy( ejercicios, ejercicio => ejercicio.grupo );
+				/* Por cada grupo obtengo su calificación */
 				for( let grupo in grupos ){
-					
-					let ejerciciosGrupo = grupos[grupo];
-					let calificacionCapituloP = obtenerCalificacionDeGrupo(ejerciciosGrupo, calificacionPonderadaMax);
-				
+					let ejercicioGrupo       = grupos[grupo];
+					let calificacionCapituloT = obtenerTotalCalificaciones( ejercicioGrupo[0].calificaciones );
+					let calificacionCapituloP = ponderarCalificacion(calificacionCapituloT, 22, 100).toFixed(2);
+					/* Añado el registro al documento */
 					let fila = armarFila(materia, paraleloActual, capituloActual, grupo, calificacionCapituloP);
 					worksheet.addRow(fila);
 				}
 			}
-    	
     }
     
     workbook.xlsx.write(unstream({}, function(data) {
       return respuesta.ok(res,data.toString('base64'))
-    }))
+    }));
 	})
 	.catch( fail => console.log(fail) );
 
@@ -109,7 +108,10 @@ module.exports = {
 	obtenerRegistrosDeCapituloDeGrupo,
 	csv
 }
-
+/*
+	@Autor: @edisonmora95
+	@Descripción: De todos los ejercicios de un grupo, se obtiene la calificación ponderada
+*/
 function obtenerCalificacionDeGrupo(ejerciciosGrupo, calificacionPonderadaMax){
 	let calificacionesDeEjercicio = [];
 	let calificacionMaxEjercicios = 0;
@@ -126,16 +128,16 @@ function obtenerCalificacionDeGrupo(ejerciciosGrupo, calificacionPonderadaMax){
 
 	return calificacionCapituloP;
 }
-
+/*
+	@Autor: @edisonmora95
+	@Descripcion: Obtiene de la base de datos los registros de todos los ejercicios del capítulo indicado del paralelo en la materia indicada.
+*/
 function obtenerRegistrosDeCapituloDeParalelo(idMateria, idParalelo, idCapitulo){
 	return new Promise( (resolve, reject) => {
 		RubricaModel.obtenerRegistrosDeCapituloDeParalelo(idMateria, idParalelo, idCapitulo, (err, registros) => {
 			if (err) {
 				return reject( new Error('No se pudo obtener el registro') );
 			}else{
-				//console.log('Materia:', idMateria)
-				//console.log('Paralelo:', idParalelo)
-				//console.log('Capítulo:', idCapitulo)
 				return resolve(registros);
 			}
 		});	

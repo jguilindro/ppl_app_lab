@@ -25,42 +25,38 @@ const obtenerPreguntasPorCreador = (req, res) => {
 
 const crearPregunta = (req, res) => {
   let pregunta = new PreguntaModel({
-    creador: req.body.creador,
-    nombre: req.body.nombre,
-    tipoLeccion: req.body.tipoLeccion,
-    tipoPregunta: req.body.tipoPregunta,
-    capitulo: req.body.capitulo,
-    tutorial: req.body.tutorial,
-    laboratorio: req.body.laboratorio,
+    creador       : req.body.creador,
+    nombre        : req.body.nombre,
+    tipoLeccion   : req.body.tipoLeccion,
+    tipoPregunta  : req.body.tipoPregunta,
+    capitulo      : req.body.capitulo,
     tiempoEstimado: req.body.tiempoEstimado,
-    puntaje: req.body.puntaje,
-    descripcion: req.body.descripcion,
-    subpreguntas: req.body.subpreguntas,
-  })
+    puntaje       : req.body.puntaje,
+    descripcion   : req.body.descripcion,
+    subpreguntas  : req.body.subpreguntas,
+  });
   pregunta.crearPregunta((err, pregunta) => {
     if (err) return respuesta.serverError(res);
     return respuesta.creado(res);
-  })
+  });
 }
 
 const actualizarPregunta = (req, res) => {
   let actualizar = {
-    nombre: req.body.nombre,
-    tipoLeccion: req.body.tipoLeccion,
-    tipoPregunta: req.body.tipoPregunta,
-    capitulo: req.body.capitulo,
-    laboratorio: req.body.laboratorio,
-    tutorial: req.body.tutorial,
+    nombre        : req.body.nombre,
+    tipoLeccion   : req.body.tipoLeccion,
+    tipoPregunta  : req.body.tipoPregunta,
+    capitulo      : req.body.capitulo,
     tiempoEstimado: req.body.tiempoEstimado,
-    puntaje: req.body.puntaje,
-    descripcion: req.body.descripcion,
-    subpreguntas: req.body.subpreguntas
-  }
+    puntaje       : req.body.puntaje,
+    descripcion   : req.body.descripcion,
+    subpreguntas  : req.body.subpreguntas
+  };
   PreguntaModel.actualizarPregunta(req.params.id_pregunta, actualizar, (err, doc) => {
     if (!doc.nModified) return respuesta.mongoError(res, 'El paralelo no existe');
     if (err) return respuesta.serverError(res);
     return respuesta.okActualizado(res);
-  })
+  });
 }
 
 const eliminarPregunta = (req, res) => {

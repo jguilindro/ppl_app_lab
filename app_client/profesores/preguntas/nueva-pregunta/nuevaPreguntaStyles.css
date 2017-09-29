@@ -1,4 +1,4 @@
-fconbody{
+body{
 	background-color:   #d3dbdb;
 }
 
@@ -68,4 +68,12 @@ fconbody{
 
 .section-pt-btn{
 	padding-left: 2%;
+}
+
+.note-toolbar{
+	position: static !important;
+}
+
+.div-pt{
+	margin-top: 3%
 }

@@ -26,7 +26,7 @@
         <section id="preguntas-section">
 	        <ul class="preguntas">
 	        	<li v-for="pregunta in preguntas">
-	        		<a v-bind:href="'/profesores/preguntas/' + pregunta.tipoLeccion + '/' + pregunta._id">
+	        		<a v-bind:href="'/profesores/preguntas/' + pregunta._id">
 	        			<p class="pregunta flow-text center-align pregunta-titulo">{{pregunta.nombre}}</p>
 				  			<p class="truncate descripcion" v-html="pregunta.descripcion"></p>
 				  		</a>

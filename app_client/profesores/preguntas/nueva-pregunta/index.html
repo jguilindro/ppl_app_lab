@@ -14,10 +14,41 @@
 		<header id="navbar"></header>
 		<main>
 			<div class="container" id="preguntaNueva">
-				<h1 class="center-align"><b>Nueva pregunta</b></h1>
+				<h1 class="center-align" v-if="pregunta.tipoLeccion!='tutorial'"><b>Nueva pregunta</b></h1>
+				<h1 class="center-align" v-if="pregunta.tipoLeccion=='tutorial'"><b>Nueva sección</b></h1>
 				<p class="center-align" id="created"><b>Creada por:</b> {{profesor.correo}}</p>
 				<div class="row" id="row-crear-pregunta">
 					<form class="col s12">
+						<!--Tipos de preguntas y de leccion-->
+						<section class="row" id="row-tipos">
+							<div class="input-field col s6">
+								<select id="tipo-pregunta">
+									<option value="" disabled selected></option>
+									<option value="justificacion">Justificación</option>
+									<option value="opcion" >Opción múltiple</option>
+									<option value="v_f">V/F</option>
+								</select>
+								<label>Tipo de pregunta:</label>
+							</div>
+							<div class="input-field col s6">
+								<select id="tipo-leccion">
+									<option value="" disabled selected></option>
+									<option value='estimacion'>Estimación</option>
+						      <option value='tutorial'>Tutorial</option>
+						      <option value='laboratorio'>Laboratorio</option>
+								</select>
+								<label>Tipo de leccion:</label>
+							</div>
+						</section>
+						<!--Capitulo-->
+						<section class="row" id="row-capitulo">
+							<div class="input-field col s9" id="div-select-capitulo">
+								<label class="active">Capítulos</label>
+							</div>
+							<div class="col s3">
+								<a class="waves-effect waves-light btn" href="#modalNuevoCapitulo">Nuevo capítulo</a>
+							</div>
+						</section>
 						<!--Titulo-->
 						<section class="row" id="row-nombre">
 							<div class="input-field col s12">
@@ -29,82 +60,12 @@
 						<section class="row" id="row-descripcion">
 							<label>Descripción</label>
 							<div class="input-field col s12">
-
 								<div id="firstEditor" class="myEditor"></div>
 							</div>
 						</section>
 						</div>
-						<!--Tipos de preguntas y de leccion-->
-						<section class="row" id="row-tipos">
-							<div class="input-field col s6">
-								<select id="tipo-pregunta">
-									<option value="" disabled selected>seleccione...</option>
-									<option value="opcion" >Opcion multiple</option>
-									<option value="v_f">V/F</option>
-									<option value="justificacion">Justificacion</option>
-								</select>
-								<label>Tipo de pregunta:</label>
-							</div>
-							<div class="input-field col s6">
-								<select id="tipo-leccion">
-									<option value="" disabled selected>seleccione...</option>
-									<option value='estimacion'>Estimación</option>
-						      <option value='tutorial'>Tutorial</option>
-						      <option value='laboratorio'>Laboratorio</option>
-								</select>
-								<label>Tipo de leccion:</label>
-							</div>
-						</section>
-						<!--Capitulo-->
-						<section class="row" id="row-capitulo" v-show="pregunta.tipoLeccion=='estimacion'">
-							<div class="input-field col s9" id="div-select-capitulo">
-								<label class="active">Capítulos</label>
-							</div>
-							<div class="col s3">
-								<a class="waves-effect waves-light btn" href="#modalNuevoCapitulo">Nuevo capítulo</a>
-							</div>
-						</section>
-						<!--Tutorial-->
-						<section class="row" id="row-tutorial" v-show="pregunta.tipoLeccion=='tutorial'">
-							<div class="input-field col s9" id="div-select-tutorial">
-								<label class="lblEditar active">Tutorial</label>
-							</div>
-							<div class="col s3">
-								<a class="waves-effect waves-light btn" href="#modalNuevoTutorial">Nuevo tutorial</a>
-							</div>
-						</section>
-						<!--Laboratorio-->
-						<section class="row" id="row-laboratorio" v-show="pregunta.tipoLeccion=='laboratorio'">
-							<div class="input-field col s9" id="div-select-laboratorio">
-								
-								<label class="lblEditar active">Laboratorio</label>
-							</div>
-							<div class="col s3">
-								<a class="waves-effect waves-light btn" href="#modalNuevoLaboratorio">Nuevo laboratorio</a>
-							</div>
-						</section>
 						<!--Subpregunta-->
 						<section class="row" id="row-sub" v-show="pregunta.tipoLeccion=='tutorial'">
-							<!--<div id="container-subpregunta-1">
-								<label>Subpregunta #1</label>
-								<section class="input-field col s12" id="section-subpregunta-1">
-									<div id="subpregunta-1" class="myEditor"></div>
-								</section>
-								<section class="row" id="tiempo-puntaje">
-									<div class="input-field col s6">
-										<input type="number" min="0" id="tiempo" v-model="pregunta.tiempoEstimado">
-										<label for="tiempo" class="lblEditar">Tiempo estimado</label>
-									</div>
-									<div class="input-field col s6">
-										<input type="number" min="0" id="puntaje" v-model="pregunta.puntaje">
-										<label for="puntaje" class="lblEditar">Puntaje</label>
-									</div>
-								</section>
-								<section class="buttons row">
-									<a class="waves-effect waves-light btn pull right" @click="eliminarDiv('#section-subpregunta-1')">Eliminar subpregunta</a>
-									<a class="waves-effect waves-light btn pull right" @click="agregarSubpregunta">Nueva subpregunta</a>
-								</section>
-							</div>-->
 						</section>
 						<!--Tiempo y puntaje-->
 						<section class="row" id="tiempo-puntaje">
@@ -124,9 +85,7 @@
           	</section>
 					</form>
 				</div>
-			
-
-				 <!-- Modal Structure -->
+				<!-- Modal Structure -->
 				<div id="app">
 					<div id="myModal" class="modal">
 						<div class="modal-content">
@@ -136,7 +95,6 @@
 						<modal></modal>
 					</div>
 				</div>
-
 			  <!-- Modal Nuevo Capitulo Structure -->
 			  <div id="modalNuevoCapitulo" class="modal">
 			    <div class="modal-content">
@@ -162,56 +120,6 @@
 			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
 			    </div>
 			  </div>
-				<!-- Modal Nuevo Tutorial Structure -->
-			  <div id="modalNuevoTutorial" class="modal">
-			    <div class="modal-content">
-			    	<h4 class="center-align">Nuevo tutorial</h4>
-			    	<p class="center-align">Tipo: Tutorial</p>
-			      <div class="row">
-			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreTutorial" id="nombreTutorial" v-model="nuevoTutorial.nombre">
-			      		<label for="nombreTutorial">Nombre del tutorial</label>
-			      	</div>
-			      	<div class="input-field col s12">
-			      		<select id="select-materia-tutorial">
-					    		<option value="" disabled selected>Seleccione la materia</option>
-						      <option value="FISG1002">Física 2</option>
-						      <option value="FISG1003">Física 3</option>
-					    	</select>
-			      	</div>
-			      	
-			      </div>
-			    </div>
-			    <div class="modal-footer">
-			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearTutorial()">Crear</a>
-			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-			    </div>
-			  </div>
-			  <!-- Modal Nuevo Laboratorio Structure -->
-			  <div id="modalNuevoLaboratorio" class="modal">
-			    <div class="modal-content">
-			    	<h4 class="center-align">Nuevo laboratorio</h4>
-			    	<p class="center-align">Tipo: Laboratorio</p>
-			      <div class="row">
-			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreLaboratorio" id="nombreLaboratorio" v-model="nuevoLaboratorio.nombre">
-			      		<label for="nombreLaboratorio">Nombre del laboratorio</label>
-			      	</div>
-			      	<div class="input-field col s12">
-			      		<select id="select-materia-laboratorio">
-					    		<option value="" disabled selected>Seleccione la materia</option>
-						      <option value="FISG1002">Física 2</option>
-						      <option value="FISG1003">Física 3</option>
-					    	</select>
-			      	</div>
-			      	
-			      </div>
-			    </div>
-			    <div class="modal-footer">
-			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearLaboratorio()">Crear</a>
-			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-			    </div>
-			  </div>
 			</div>	
 		</main>
 		<footer>
@@ -221,8 +129,8 @@
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/materialnote/js/ckMaterializeOverrides.js"></script>
 			<script src="/materialnote/js/materialNote.js"></script>
-			<script src="./nuevaPreguntaScript.js"></script>
 			<script src="/partials/navbar.js"></script>
+			<script src="./nuevaPreguntaScript.js"></script>
 		</footer>
 	</body>
 </html>

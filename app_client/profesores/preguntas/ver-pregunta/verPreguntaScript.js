@@ -36,7 +36,7 @@ var pregunta = new Vue({
       });
     },
 		obtenerPregunta: function(self){
-			var preguntaId = window.location.href.toString().split('/')[6];
+			var preguntaId = window.location.href.toString().split('/')[5];
 			var urlApi 		 = '/api/preguntas/' + preguntaId;
 			$.ajax({
 				type: 'GET',

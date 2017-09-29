@@ -163,17 +163,19 @@ app.use('/profesores',redirecion, authProfesor, procesarSession, middleProfesorC
 
 app.use('/profesores/grupos', redirecion,authProfesor , procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
 
-app.use('/profesores/preguntas/estimacion', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
+app.use('/profesores/preguntas/banco', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/banco')));
 
-app.use('/profesores/preguntas/estimacion/:id', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+//app.use('/profesores/preguntas/estimacion', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
 
-app.use('/profesores/preguntas/tutorial',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
+app.use('/profesores/preguntas/:id', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-app.use('/profesores/preguntas/tutorial/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+//app.use('/profesores/preguntas/tutorial',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
 
-app.use('/profesores/preguntas/laboratorio', redirecion,authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
+app.use('/profesores/preguntas/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-app.use('/profesores/preguntas/laboratorio/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
+//app.use('/profesores/preguntas/laboratorio', redirecion,authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
+
+app.use('/profesores/preguntas/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
 app.use('/profesores/preguntas/nueva-pregunta',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/nueva-pregunta')));
 

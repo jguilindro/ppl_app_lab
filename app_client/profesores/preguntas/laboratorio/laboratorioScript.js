@@ -43,9 +43,9 @@ var laboratorio = new Vue({
     	self.$http.get(url).then(response => {
     		self.laboratoriosObtenidos = response.body.datos;
     		$.each(self.laboratoriosObtenidos, function(index, laboratorio){
-    			if(laboratorio.tipo.toLowerCase()=='laboratorio'&&laboratorio.codigoMateria=='FISG1002'){
+    			if(laboratorio.codigoMateria=='FISG1002'){
     				self.laboratoriosFisica2.push(laboratorio);
-    			}else if(laboratorio.tipo.toLowerCase()=='laboratorio'&&laboratorio.codigoMateria=='FISG1003'){
+    			}else if(laboratorio.codigoMateria=='FISG1003'){
     				self.laboratoriosFisica3.push(laboratorio);
     			}
     		});
