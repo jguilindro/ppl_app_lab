@@ -19,10 +19,10 @@
 
 var socket = io('/tomando_leccion', {
     'reconnect': true,
+    'forceNew': true
     // 'connect timeout': 1000,
     // 'reconnection delay': 2000,
     // 'max reconnection attempts': 10000,
-    'forceNew':true
 })
 
 
@@ -492,10 +492,12 @@ var App = new Vue({
 App.obtenerLogeado()
 
 socket.on('tiempo restante', function(tiempo) {
+  console.log(tiempo)
   App.tiempo = tiempo
 })
 
 socket.on('terminado leccion', function(match) {
+  socket.disconnect() 
   App.responderTodas();
 })
 socket.on('leccion id', function(id_leccion) {
@@ -551,6 +553,7 @@ socket.on('connect_failed', function() {
 
 socket.on('disconnect', function() {
   clearInterval(interval)
+  //socket.disconnect()
   // document.getElementById('desconectado').classList.remove("borrar")
   // document.getElementById("conectado").classList.add("borrar");
   document.getElementById('conectado').classList.remove("green");

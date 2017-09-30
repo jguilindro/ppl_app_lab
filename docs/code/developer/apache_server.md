@@ -39,4 +39,4 @@ $ sudo service apache2 restart
 $ systemctl status apache2.service
 ```
 
-Para Centos hay que hacer la configuracion manial de a2enmod
+Para Centos hay que hacer la configuracion manual de a2enmod
