@@ -9,7 +9,7 @@ npm run dev
 | materias|id|Number|10|Primary key|Contiene el id de todas las materias|
 | materias|nombre|Varchar|20|Not null|Contiene el nombre de todas las materias|
 | materias|codigo|Varchar|10|Not null|Contiene el codigo de todas las materias|
-| materias|profesor_id|Number|10|Foreign key|Contiene el nombre de todos los profesores|
+| materias|profesor_id|Number|10|Foreign key|Contiene el nombre de todos los profesores que son coordinadores de materias|
 
 #paralelos
 
