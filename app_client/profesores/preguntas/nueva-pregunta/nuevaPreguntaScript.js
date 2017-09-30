@@ -115,6 +115,13 @@ var app = new Vue({
           self.agregarSubpregunta();
         }
       });
+      $('#select-materia').change(function(){
+        let materiaSeleccionada = $('#select-materia').val();
+        let capitulosMostrar    = $.grep(self.capitulosObtenidos, function(capitulo, index){
+          return capitulo.codigoMateria == materiaSeleccionada;
+        });
+        self.crearSelectCapitulos(self, 'select-capitulos', self.capituloEscogido, 'div-select-capitulo', capitulosMostrar, 'estimacion');
+      });
     },
     inicializarEditor: function(self, idEditor){
       $(idEditor).materialnote({
@@ -161,28 +168,27 @@ var app = new Vue({
       let self = this;
       self.subTotales++;
       //Div container subpregunta
-      var idContainer  = 'container-subpregunta-' + self.subTotales; 
-      var divContainer = $('<div>').attr('id', idContainer);
+      var idContainer     = 'container-subpregunta-' + self.subTotales; 
+      var divContainer    = $('<div>').attr('id', idContainer);
       //Label de subpregunta
-      var labelSub      = $('<label>').html('Pregunta #' + self.subTotales);
+      var labelSub        = $('<label>').html('Pregunta #' + self.subTotales);
       //Section que alojará al editor
       var idSectionEditor = 'section-subpregunta-' + self.subTotales;
       var sectionEditor   = $('<section>').addClass('input-field col s12')
                                           .attr('id', idSectionEditor);
       //Div del editor
-      var idEditor      = 'subpregunta-' + self.subTotales;
-      var divEditor     = $('<div>').attr('id', idEditor).addClass('myEditor');
-
+      var idEditor        = 'subpregunta-' + self.subTotales;
+      var divEditor       = $('<div>').attr('id', idEditor).addClass('myEditor');
       sectionEditor.append(divEditor);
-      //Section puntaje-btns
-      var sectionPtBtn = $('<section>').addClass('row section-pt-btn')
+      //Section puntaje-tiempo-btns
+      var sectionPtBtn    = $('<section>').addClass('row section-pt-btn')
                                           .attr('id', 'section-pt-btn-subpregunta-' + self.subTotales);
       //Div puntaje
-      var divPt    = $('<div>').addClass('input-field col s6 div-pt')
-                                    .attr('id', 'div-pt-subpregunta-' + self.subTotales);
-      var labelPt  = $('<label>').html('Puntaje');
-      var idInputPuntaje = 'input-pt-subpregunta' + self.subTotales;
-      var inputPuntaje  = $('<input>').attr(
+      var divPt           = $('<div>').addClass('input-field col s4 div-pt')
+                               .attr('id', 'div-pt-subpregunta-' + self.subTotales);
+      var labelPt         = $('<label>').html('Puntaje');
+      var idInputPuntaje  = 'input-pt-subpregunta' + self.subTotales;
+      var inputPuntaje    = $('<input>').attr(
         {
           'type' : 'number', 
           'min'  : 0, 
@@ -191,26 +197,40 @@ var app = new Vue({
       inputPuntaje.change( function(){
         self.obtenerPuntajeTotal();
       });
-      divPt.append(labelPt, inputPuntaje);                                    
+      divPt.append(labelPt, inputPuntaje); 
+      //Div tiempo
+      let divTiempo       = $('<div>').addClass('input-field col s4 div-pt')
+                                      .attr('id', 'div-tiempo-subpregunta-' + self.subTotales);
+      let labelTiempo     = $('<label>').html('Tiempo');  
+      var idInputTiempo   = 'input-tiempo-subpregunta' + self.subTotales;
+      var inputTiempo     = $('<input>').attr(
+        {
+          'type' : 'number', 
+          'min'  : 0, 
+          'id'   : idInputTiempo
+        });   
+      inputTiempo.change( function(){
+        self.obtenerTiempoTotal();
+      });            
+      divTiempo.append(labelTiempo, inputTiempo);           
       //Div de botón nueva subpregunta
-      var divBtn    = $('<div>').addClass('row row-buttons')
-                                    .attr('id', 'div-btns-subpregunta-' + self.subTotales);
-      var add = $('<i>').addClass('material-icons').html('add');
-      var crearBtn      = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right');
+      var divBtn          = $('<div>').addClass('row row-buttons')
+                                      .attr('id', 'div-btns-subpregunta-' + self.subTotales);
+      var add             = $('<i>').addClass('material-icons').html('add');
+      var crearBtn        = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right');
       crearBtn.append(add);
       crearBtn.click( function(){
         self.agregarSubpregunta();
       });
-      var del = $('<i>').addClass('material-icons').html('delete');
-      var eliminarBtn   = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right red');
+      var del             = $('<i>').addClass('material-icons').html('delete');
+      var eliminarBtn     = $('<a>').addClass('btn-floating waves-effect waves-light btn pull right red');
       eliminarBtn.append(del)
       eliminarBtn.click( function(){
         self.eliminarDiv('#' + idContainer);
       });
       divBtn.append(crearBtn, eliminarBtn);
 
-      sectionPtBtn.append(divPt, divBtn);
-
+      sectionPtBtn.append(divPt, divTiempo, divBtn);
 
       divContainer.append(labelSub, sectionEditor, sectionPtBtn);
       $('#row-sub').append(divContainer);
@@ -246,6 +266,8 @@ var app = new Vue({
         capitulos -> Los capitulos que se van a mostrar en el select
     */
     crearSelectCapitulos: function(self, idSelect, capituloEscogido, idDivSelect, capitulos, tipo){
+      $('#'+idDivSelect).empty();
+      let label             = $('<label>').html('Capítulos').addClass('active');
       //Todos los parametros de id vienen sin el #
       var select            = $('<select>').attr({'id': idSelect});
       var optionSelectedAux = '#' + idSelect + ' option:selected';
@@ -255,7 +277,7 @@ var app = new Vue({
       var idDivSelectAux = '#' + idDivSelect;
       var divSelect      = $(idDivSelectAux);
       self.crearSelectOptions(self, select, capitulos, divSelect);
-      divSelect.append(select);
+      divSelect.append(label, select);
       select.material_select();
     },
     /*
@@ -372,6 +394,29 @@ var app = new Vue({
         idEditor = '#subpregunta-';
         idInput  = '#input-pt-subpregunta';
       }
+    },
+    obtenerTiempoTotal: function(){
+      app.pregunta.tiempoEstimado = 0;
+      var contador         = 1;
+      var idEditor         = '#subpregunta-';
+      var idInput          = '#input-tiempo-subpregunta';
+      var aux              = app.subTotales;
+      while( aux >= 0 ){
+        idEditor      = idEditor + contador;
+        idInput       = idInput  + contador;
+        var divExiste = ( $(idEditor).length != 0 );
+        if( divExiste ){
+          var contenido        = $(idEditor).code();
+          var tiempoEstimado   = $(idInput).val();
+          if( contenido != '' ){
+            app.pregunta.tiempoEstimado += parseInt(tiempoEstimado);
+          }
+        }
+        contador++;
+        aux--;
+        idEditor = '#subpregunta-';
+        idInput  = '#input-tiempo-subpregunta';
+      }
     }
 	},
 });
@@ -389,18 +434,3 @@ $('#firstEditor').on('materialnote.change', function(we, contents, $editable) {
  	app.$data.pregunta.descripcion = contents;
 });
 
-
-$('#select-materia-estimacion').change(function(){
-  app.nuevoCapitulo.nombreMateria = $('#select-materia-estimacion option:selected').text();
-  app.nuevoCapitulo.codigoMateria = $('#select-materia-estimacion option:selected').val();
-});
-
-$('#select-materia-tutorial').change(function(){
-  app.nuevoTutorial.nombreMateria = $('#select-materia-tutorial option:selected').text();
-  app.nuevoTutorial.codigoMateria = $('#select-materia-tutorial option:selected').val();
-});
-
-$('#select-materia-laboratorio').change(function(){
-  app.nuevoLaboratorio.nombreMateria = $('#select-materia-laboratorio option:selected').text();
-  app.nuevoLaboratorio.codigoMateria = $('#select-materia-laboratorio option:selected').val();
-});

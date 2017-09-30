@@ -42,11 +42,17 @@
 						</section>
 						<!--Capitulo-->
 						<section class="row" id="row-capitulo">
-							<div class="input-field col s9" id="div-select-capitulo">
-								<label class="active">Capítulos</label>
+							<div class="input-field col s6" id="div-select-materia">
+								<label class="active">Materia</label>
+								<select id="select-materia">
+									<option value="" disabled selected></option>
+						      <option value='FISG1002'>Física 2</option>
+						      <option value='FISG1003'>Física 3</option>
+								</select>
+								
 							</div>
-							<div class="col s3">
-								<a class="waves-effect waves-light btn" href="#modalNuevoCapitulo">Nuevo capítulo</a>
+							<div class="input-field col s6" id="div-select-capitulo">
+								<label class="active">Capítulos</label>
 							</div>
 						</section>
 						<!--Titulo-->
@@ -95,31 +101,6 @@
 						<modal></modal>
 					</div>
 				</div>
-			  <!-- Modal Nuevo Capitulo Structure -->
-			  <div id="modalNuevoCapitulo" class="modal">
-			    <div class="modal-content">
-			    	<h4 class="center-align">Nuevo capítulo</h4>
-			    	<p class="center-align">Tipo: Estimación</p>
-			      <div class="row">
-			      	<div class="input-field col s12">
-			      		<input type="text" name="nombreCapitulo" id="nombreCapitulo" v-model="nuevoCapitulo.nombre">
-			      		<label for="nombreCapitulo">Nombre del capítulo</label>
-			      	</div>
-			      	<div class="input-field col s12">
-			      		<select id="select-materia-estimacion">
-					    		<option value="" disabled selected>Seleccione la materia</option>
-						      <option value="FISG1002">Física 2</option>
-						      <option value="FISG1003">Física 3</option>
-					    	</select>
-			      	</div>
-			      	
-			      </div>
-			    </div>
-			    <div class="modal-footer">
-			      <a href="#!" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat" @click="crearCapitulo()">Crear</a>
-			      <a href="#!" id="cancelar" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-			    </div>
-			  </div>
 			</div>	
 		</main>
 		<footer>
