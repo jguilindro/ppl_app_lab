@@ -298,3 +298,8 @@ function continuar() {
    document.getElementById('terminar-leccion').disabled = false
   leccion.emit('continuar leccion',  App.leccion._id)
 }
+
+leccion.on('respuesta para profesor', function(respuesta_estudiante) {
+  console.log('respuesta de estudiante')
+  console.log(respuesta_estudiante)
+})

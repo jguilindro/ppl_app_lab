@@ -198,6 +198,8 @@ var App = new Vue({
        */
        var self = this;
        var respuesta = self.crearRespuesta(pregunta);  //Se crea el objeto Respuesta que se enviará a la base de datos
+       var self = this;
+      
        var url = '/api/respuestas/';
        $.ajax({
          url: url,
@@ -238,7 +240,7 @@ var App = new Vue({
        var idSrcImage = '#source_image-' + pregunta._id;
        var urlImagen = $(idSrcImage).attr('aux');
 
-
+      
        var respuesta = {
          estudiante: self.estudiante._id,
          leccion: self.leccion._id,
@@ -251,6 +253,9 @@ var App = new Vue({
          calificacion: 0,
          imagenes: urlImagen
        }
+       var respuesta_realtime = respuesta
+       respuesta_realtime['pregunta'] = pregunta
+       socket.emit('respuesta estudiante', respuesta_realtime);
        console.log(respuesta)
        return respuesta;
      },
@@ -492,7 +497,7 @@ var App = new Vue({
 App.obtenerLogeado()
 
 socket.on('tiempo restante', function(tiempo) {
-  console.log(tiempo)
+  //console.log(tiempo)
   App.tiempo = tiempo
 })
 
