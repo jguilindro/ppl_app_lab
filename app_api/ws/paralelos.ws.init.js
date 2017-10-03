@@ -17,6 +17,7 @@ function inicial() {
             anio: para.anio,
             termino: para.termino
           })
+          //console.log(paralelo_nuevo)
           var creado = yield crearParalelo(paralelo_nuevo)
           if (!creado) {
             return reject(false)
@@ -34,7 +35,7 @@ function crearParalelo(paralelo_nuevo) {
   return new Promise((resolve, reject) => {
     paralelo_nuevo.crearParalelo((err, res) => {
       if (err) {
-        logger.error('error al crear paralelo', error)
+        logger.error('error al crear paralelo', err)
         return reject('error')
       }
       return resolve(true)

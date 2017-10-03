@@ -1,3 +1,6 @@
+/* Aqui se definen los archivos de entrada, cambiar los datos de las constantes */
+
+
 const soap = require('soap'),
 logger     = require('tracer').console(),
 co         = require('co'),
@@ -8,7 +11,7 @@ const ParaleloModel   = require('../models/paralelo.model');
 
 const url = 'https://ws.espol.edu.ec/saac/wsPPL.asmx?WSDL',
 ANIO      = '2017',
-TERMINO   = '1s',
+TERMINO   = '2s',
 PARALELOS = ['FISG1002', 'FISG1003'];
 
 var argumentosEstudiantes = {
@@ -118,7 +121,11 @@ const profesoresWS = function(callback) {
           let paralelo = $('PARALELO').text().trim()
           let codigomateria = $('CODIGOMATERIA').text().trim()
           let nombremateria = $('NOMBRE').text().trim()
-          let correo = nombres ? obtenerProfesorJsonPorNombres(nombres).correo : ''
+          let tmp_correo = obtenerProfesorJsonPorNombres(nombres)
+          let correo = ''
+          if (tmp_correo) {
+            correo = nombres ? obtenerProfesorJsonPorNombres(nombres).correo : ''
+          }
           // let correo = ''
           let anio = ANIO
           let termino = TERMINO.split('')[0]

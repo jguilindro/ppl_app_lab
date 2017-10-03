@@ -61,8 +61,7 @@ const ParaleloSchema = new mongoose.Schema({
   }],
   grupos: [{
     type: String,
-    ref: 'Grupo',
-    unique: true
+    ref: 'Grupo'
   }]
 }, {timestamps: true, versionKey: false, collection: 'paralelos'});
 
@@ -82,7 +81,7 @@ ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
 }
 
 ParaleloSchema.statics.obtenerParaleloWebService = function(paralelo, codigomateria, anio, termino, callback) {
-  this.findOne({$and: [{nombre: paralelo}, {codigo: codigomateria},{anio: anio},{termino: termino}]}, callback)
+  this.findOne({$and: [{nombre: paralelo}, {codigo: codigomateria}]}, callback)
   // this.find({}, callback)
   // this.findOne({codigo: codigomateria}, callback)
 }
