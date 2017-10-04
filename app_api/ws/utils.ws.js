@@ -12,7 +12,7 @@ const ParaleloModel   = require('../models/paralelo.model');
 const url = 'https://ws.espol.edu.ec/saac/wsPPL.asmx?WSDL',
 ANIO      = '2017',
 TERMINO   = '2s',
-PARALELOS = ['FISG1002', 'FISG1003'];
+PARALELOS = ['FISG1002', 'FISG1003', 'FISG2001'];
 
 var argumentosEstudiantes = {
   anio: ANIO, // 2017

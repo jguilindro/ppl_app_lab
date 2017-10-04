@@ -30,14 +30,14 @@ function inicial() {
           let profesor_existente = yield obtenerProfesorPorCorreo(correo)
           if (profesor_existente) {
             console.log(`El profesor ${profesor_existente['nombres']} ya existe`)
-            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
+            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
             let profesor_anadido = yield anadirProfesorAParalelo(paralelo._id, profesor_existente._id)
             if (!paralelo || !profesor_anadido) {
               logger.error('Error al completar operacion de profesor')
             }
           } else {
             let profesor_creado = yield crearProfesor(profesor_nuevo)
-            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
+            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
             let profesor_anadido = yield anadirProfesorAParalelo(paralelo._id, profesor_nuevo._id)
             if (!profesor_creado || !paralelo || !profesor_anadido) {
               logger.error('Error al completar operacion de profesor')
@@ -86,7 +86,7 @@ function inicial() {
         for (var i = 0; i < profesores_peers.length; i++) {
           let profe = profesores_peers[i]
           let profesor_encontrado = yield obtenerProfesorPorNombres(profe.nombres) // cambiarlo por correo
-          let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
+          let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
           let profesor_anadido = yield anadirPeerAParalelo(paralelo._id, profesor_encontrado._id)
           if (!profesor_encontrado || !paralelo || !profesor_anadido) {
             logger.error('Error al completar operacion de profesor peer anadido a paralelo')
@@ -135,9 +135,9 @@ function crearProfesor(profesor_nuevo) {
   })
 }
 
-function buscarParalelo(paralelo, codigomateria, anio, termino) {
+function buscarParalelo(paralelo, codigomateria) {
   return new Promise((resolve, reject) => {
-    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, anio, termino, (err, res) => {
+    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, (err, res) => {
       if (err) {
         logger.error('Error al tratar encontrar paralelo', err)
         return resolve(null)

@@ -2,16 +2,23 @@
 
 ssh -T manager@200.10.147.242 <<EOI
 cd mongodump/
-./backup.sh
-FOLDER=`cat tmp`
-echo $FOLDER
-echo `cat tmp`
+DATE=`date +%y-%m-%d_%H_%M_%S`
+echo $DATE
+EOI
+#FOLDER=`cat tmp` \
+#echo $FOLDER  
+#echo `cat tmp`
 #mongodump --db ppl --out $FOLDER 
 #sleep 2
 #echo "buscado"
 #echo $DATE
 #tar czf $DATE.tar.gz $DATE
-EOI
+# DATE=`date +%y-%m-%d_%H_%M_%S`
+# echo "Haciendo el backup"
+# FOLDER="/home/manager/mongodump/${DATE}"
+# echo $FOLDER
+# mongodump --db ppl -o $FOLDER
+#echo $DATE > tmp
 
 
 
