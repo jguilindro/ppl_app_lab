@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const dbURL = require('../config/main');
 // require('../config/main').mlab
-mongoose.connect(require('../utils/change_database').local());
+
+mongoose.connect(require('../utils/change_database').local(), { useMongoClient: true });
 
 const db = mongoose.connection;
 

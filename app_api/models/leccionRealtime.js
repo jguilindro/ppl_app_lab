@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+var moment = require('moment')
+var tz = require('moment-timezone')
 
 const LeccionRealtimeSchema = mongoose.Schema({
   _id: {
@@ -29,6 +31,13 @@ const LeccionRealtimeSchema = mongoose.Schema({
   corriendoTiempo: {
     type: Boolean,
     'default': false
+  },
+  pausada: {
+    type: Boolean,
+    'default': false
+  },
+  fechaPausada: {
+    type: Date
   }
 },{timestamps: true, versionKey: false, collection: 'leccionesRealtime'})
 
@@ -42,6 +51,17 @@ LeccionRealtimeSchema.statics.buscarLeccion = function(id_leccion, callback) {
 
 LeccionRealtimeSchema.statics.buscarLeccionPopulate = function(id_leccion, callback) {
   this.findOne({leccion: id_leccion}).populate({path: 'estudiantesDandoLeccion estudiantesDesconectados leccion profesor' }).exec(callback);
+}
+
+/* Leccion pausa y continuar*/
+LeccionRealtimeSchema.statics.pausar = function(id_leccion, callback) {
+  let fecha = moment();
+  let current_time_guayaquil = moment(fecha.tz('America/Guayaquil').format())
+  this.update({leccion: id_leccion}, {$set: {fechaPausada: current_time_guayaquil, pausada: true}}, callback)
+}
+
+LeccionRealtimeSchema.statics.continuar = function(id_leccion, callback) {
+  this.update({leccion: id_leccion}, {pausada: false}, callback)
 }
 
 /*solo anadir a los estuidantes mientras den la leccion*/

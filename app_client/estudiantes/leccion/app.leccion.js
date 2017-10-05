@@ -18,12 +18,21 @@
 // }
 
 var socket = io('/tomando_leccion', {
+<<<<<<< HEAD
   'reconnect': true,
   // 'connect timeout': 1000,
   // 'reconnection delay': 2000,
   // 'max reconnection attempts': 10000,
   'forceNew':true
 });
+=======
+    'reconnect': true,
+    'forceNew': true
+    // 'connect timeout': 1000,
+    // 'reconnection delay': 2000,
+    // 'max reconnection attempts': 10000,
+})
+>>>>>>> b006ab44ea4a097b825ebf94ffff29845eed0ad0
 
 
 let App = new Vue({
@@ -588,10 +597,12 @@ let App = new Vue({
 });
 
 socket.on('tiempo restante', function(tiempo) {
+  console.log(tiempo)
   App.tiempo = tiempo
 })
 
 socket.on('terminado leccion', function(match) {
+  socket.disconnect() 
   App.responderTodas();
 })
 socket.on('leccion id', function(id_leccion) {
@@ -647,6 +658,7 @@ socket.on('connect_failed', function() {
 
 socket.on('disconnect', function() {
   clearInterval(interval)
+  //socket.disconnect()
   // document.getElementById('desconectado').classList.remove("borrar")
   // document.getElementById("conectado").classList.add("borrar");
   document.getElementById('conectado').classList.remove("green");

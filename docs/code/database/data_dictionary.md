@@ -1,4 +1,6 @@
-# **Dictionario de Datos**
+# **Dictionario de Datos**cd D:\Github\ppl_app_lab 
+npm run dev 
+
 
 #materias
 
@@ -7,7 +9,7 @@
 | materias|id|Number|10|Primary key|Contiene el id de todas las materias|
 | materias|nombre|Varchar|20|Not null|Contiene el nombre de todas las materias|
 | materias|codigo|Varchar|10|Not null|Contiene el codigo de todas las materias|
-| materias|profesor_id|Number|10|Foreign key|Contiene el nombre de todos los profesores|
+| materias|profesor_id|Number|10|Foreign key|Contiene el nombre de todos los profesores que son coordinadores de materias|
 
 #paralelos
 
@@ -101,7 +103,7 @@
 | profesores|correo|Varchar|20|Not null|Contiene los correos de todos los profesores|
 | profesores|nombres|Varchar|20|Not null|Contiene el nombre de todos los profesores|
 | profesores|apellidos|Varchar|20|Not null|Contiene los apellidos de todos los profesores|
-| profesores|tipo|Number|1|Not null|"Contiene el grado de responsabilidad del profesor es decir: si es peer 1,2 o 3 y si es profesor 0"|
+
 
 #lecciones
 

@@ -162,6 +162,10 @@ LeccionSchema.statics.aumentarTiempo = function(id_leccion, tiempo, callback) {
   this.findOneAndUpdate({_id: id_leccion}, {$inc: {tiempoEstimado: tiempo}}, callback)
 }
 
+LeccionSchema.statics.setearTiempo = function(id_leccion, tiempo, callback) {
+  this.update({_id: id_leccion}, {$set:{fechaInicioTomada: tiempo}}, callback)
+}
+
 LeccionSchema.statics.calificar = function(id_leccion, callback){
   //Esta función solo le cambia el estado al registro de la lección a 'calificado'
   this.update({_id: id_leccion}, {estado: 'calificado'}, callback);

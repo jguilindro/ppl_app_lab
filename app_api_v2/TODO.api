@@ -1,0 +1,26 @@
+## Folder stucture y descripcion de lo que se guarda en cada carpeta
+
+## Code lintern y patrones de codigo
+
+## configuracion .yml
+
+## variables de entorno y que ENV se usaran, para CAS, produccio
+
+## Database
+* knexjs, config development and production
+* config inicial database script, permisos, tablas, dump, migration
+* webservice update
+* dump database script
+
+## Logger
+* winston
+
+## Testing (unit, integrated)
+* mocha, jest, apitest
+* apitest
+* sockettest
+* database test
+
+## AdminApi
+* cpu
+* estudiante, profesor, paralelos CRUD
