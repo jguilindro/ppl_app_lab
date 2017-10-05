@@ -16,14 +16,17 @@ function inicial() {
       co(function* () {
         for (var i = 0; i < cantidadEstudiantes; i++) {
           let estudiante = todos_estudiantes[i]
-          var paralelo = yield buscarParalelo(estudiante.paralelo, estudiante.codigomateria, estudiante.anio, estudiante.termino) // TODO: eficiente, buscar una vez los paralelos en un array
+          var paralelo = yield buscarParalelo(estudiante.paralelo, estudiante.codigomateria) // TODO: eficiente, buscar una vez los paralelos en un array
           let estudiante_nuevo = new EstudianteModel({
             nombres:  estudiante.nombres,
             apellidos: estudiante.apellidos,
             matricula: estudiante.matricula,
             correo: estudiante.correo,
           })
-          let estudiante_anadido = yield crearEstudianteYAnadirloAParalelo(paralelo._id,estudiante_nuevo)
+          let estudiante_tmp = yield obtenerEstudiantePorCorreo(estudiante_nuevo.correo)
+          if (!estudiante_tmp) {
+            let estudiante_anadido = yield crearEstudianteYAnadirloAParalelo(paralelo._id,estudiante_nuevo)
+          }
         }
         logger.info('terminado de crear todos los estudiantes')
         resolve(true)
@@ -33,9 +36,9 @@ function inicial() {
   })
 }
 
-function buscarParalelo(paralelo, codigomateria, anio, termino) {
+function buscarParalelo(paralelo, codigomateria) {
   return new Promise((resolve, reject) => {
-    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, anio, termino, (err, res) => {
+    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, (err, res) => {
       if (err) resolve(null)
       return resolve(res)
     })
@@ -50,6 +53,15 @@ function crearEstudianteYAnadirloAParalelo(id_paralelo, estudiante_nuevo) {
         if (err) logger.error('Error al anadir estudiante a paralelo', err)
         resolve(true)
       })
+    })
+  })
+}
+
+function obtenerEstudiantePorCorreo(estudiante) {
+  return new Promise((resolve, reject) => {
+    EstudianteModel.obtenerEstudiantePorCorreoNoPopulate(estudiante, (err, res) => {
+      if (err) logger.error('Error al crear encontrar', err)
+      resolve(res)
     })
   })
 }

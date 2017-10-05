@@ -17,10 +17,15 @@ function inicial() {
             anio: para.anio,
             termino: para.termino
           })
-          var creado = yield crearParalelo(paralelo_nuevo)
-          if (!creado) {
-            return reject(false)
-            logger.error('error al crear paralelo')
+          //console.log(paralelo_nuevo)
+          var paralelo_existe = yield obtenerParalelo(paralelo_nuevo)
+          if (!paralelo_existe) {
+            console.log(`Paralelo creado ${paralelo_nuevo.codigo} ${paralelo_nuevo.nombre}`)
+            var creado = yield crearParalelo(paralelo_nuevo)
+            if (!creado) {
+              return reject(false)
+              logger.error('error al crear paralelo')
+            }
           }
         }
         logger.info('terminado de crear todos los paralelos')
@@ -34,10 +39,22 @@ function crearParalelo(paralelo_nuevo) {
   return new Promise((resolve, reject) => {
     paralelo_nuevo.crearParalelo((err, res) => {
       if (err) {
-        logger.error('error al crear paralelo', error)
+        logger.error('error al crear paralelo', err)
         return reject('error')
       }
       return resolve(true)
+    })
+  })
+}
+
+function obtenerParalelo(paralelo_nuevo) {
+  return new Promise((resolve, reject) => {
+    ParaleloModel.obtenerParaleloWebService(paralelo_nuevo.nombre, paralelo_nuevo.codigo,(err, res) => {
+      if (err) {
+        logger.error('error al obtener el  paralelo', err)
+        return reject('error')
+      }
+      return resolve(res)
     })
   })
 }
