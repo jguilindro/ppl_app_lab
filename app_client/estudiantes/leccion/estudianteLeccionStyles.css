@@ -17,9 +17,27 @@ div.disabled {
 	font-weight: bold;
 }
 
-.row-pregunta, .row-instruccion{
+.row-pregunta, .row-instruccion, .row-terminar{
 	background-color: white;
 	opacity: 0.8;
+}
+
+.title-sub{
+  padding: 2%;
+}
+
+.header-instrucciones{
+  padding: 2%;
+}
+
+.instrucciones{
+  text-align: justify;
+  padding: 2%;
+}
+
+.row-subpregunta{
+  /*border: 1px ridge black;*/
+  padding: 2% !important;
 }
 
 #row-tabs{
@@ -206,4 +224,8 @@ img{
   h1 {
     font-size: 2em;
   }
+}
+
+#section-btn-terminar{
+  padding-bottom: 2%;
 }

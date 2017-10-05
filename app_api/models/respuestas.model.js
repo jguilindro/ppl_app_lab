@@ -49,11 +49,24 @@ const respuestasSchema = mongoose.Schema({
 	},
   imagenes:{
     type: String
-  }
+  },
+  subrespuestas: []
 }, {versionKey: false, timestamps: true, collection: 'respuestas'})
 
 respuestasSchema.methods.crearRespuesta = function(callback){
   this.save(callback);
+}
+
+respuestasSchema.statics.anadirSubrespuesta = function(id_leccion, id_pregunta, id_estudiante, arraySubrespuestas, callback){
+  this.update({
+    leccion   : id_leccion,
+    pregunta  : id_pregunta,
+    estudiante: id_estudiante
+  }, {
+    $set: {
+      subrespuestas : arraySubrespuestas
+    }
+  }, callback);
 }
 
 respuestasSchema.statics.obtenerRespuestasPorGrupoAPregunta = function(id_leccion, id_pregunta, id_grupo, callback){

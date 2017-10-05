@@ -1,24 +1,49 @@
 const RespuestaModel = require('../models/respuestas.model');
-var response = require('../utils/responses');
+var response  			 = require('../utils/responses');
+const co 		  			 = require('co');
+
 
 const crearRespuesta = (req, res) => {
+	//console.log(req.body)
+	let arraySubrespuestas = JSON.parse(req.body.arraySubrespuestas);
 	let resp = new RespuestaModel({
-		estudiante: req.body.estudiante,
-		leccion: req.body.leccion,
-		pregunta: req.body.pregunta,
-		paralelo: req.body.paralelo,
-		grupo: req.body.grupo,
-		contestado: req.body.contestado,
-		respuesta: req.body.respuesta,
-		imagenes: req.body.imagenes,
-		//fechaEmpezado: req.body.fechaEmpezado,
-		//fechaTerminado: req.body.fechaTerminado,
+		estudiante 	: req.body.estudiante,
+		leccion 		: req.body.leccion,
+		pregunta		: req.body.pregunta,
+		paralelo		: req.body.paralelo,
+		grupo 			: req.body.grupo,
+		contestado 	: req.body.contestado,
+		respuesta 	: req.body.respuesta,
+		imagenes 		: req.body.imagenes,
 		calificacion: 0,
-		feedback: ''
+		feedback 		: '',
+		subrespuestas : arraySubrespuestas
 	});
-	resp.crearRespuesta((err) => {
+	co(function* (){
+		let respuesta = yield  obtenerRespuestaDeEstudianteP(req.body.leccion, req.body.pregunta, req.body.estudiante);
+		console.log(respuesta)
+		if( respuesta == null ){
+			resp.crearRespuesta( err => {
+				if(err) return response.serverError(res);
+				return response.creado(res);
+			});
+		}else{
+			return response.serverError(res);	
+		}
+	}).catch( fail => {
+		return response.serverError(res);
+	});
+}
+
+const anadirSubrespuesta = (req, res) => {
+	const id_leccion 				 = req.body.leccion;
+	const id_pregunta				 = req.body.pregunta;
+	const id_estudiante 		 = req.body.estudiante;
+	const arraySubrespuestas = JSON.parse(req.body.subrespuestas);
+
+	RespuestaModel.anadirSubrespuesta(id_leccion, id_pregunta, id_estudiante, arraySubrespuestas, (err, doc) => {
 		if(err) return response.serverError(res);
-		return response.creado(res);
+		return response.okActualizado(res, doc);
 	});
 }
 
@@ -68,10 +93,21 @@ const calificarRespuestaGrupal = (req, res) => {
 
 module.exports = {
 	crearRespuesta,
+	anadirSubrespuesta,
 	obtenerRespuestasPorGrupoAPregunta,
 	obtenerRespuestaDeEstudiante,
 	actualizarRespuesta,
 	obtenerRespuestaPorId,
 	calificarRespuestaGrupal,
 	obtenerRespuestasPorGrupoAPreguntaGet
+}
+
+
+function obtenerRespuestaDeEstudianteP(idLeccion, idPregunta, idEstudiante){
+	return new Promise( (resolve, reject) => {
+		RespuestaModel.obtenerRespuestaDeEstudiante(idLeccion, idPregunta, idEstudiante, (err, doc) => {
+			if(err) return reject( new Error('No se pudo obtener el registro'));
+			return resolve(doc);
+		});
+	});
 }
