@@ -159,7 +159,7 @@ const anadirTiempo = (req, res) => {
 const leccionYaCalificada = (req, res) => {
   LeccionModel.obtenerLeccion(req.params.id_leccion, (err, leccion) => {
     if (err) return respuesta.serverError(res);
-    if (leccion.estado == 'pendiente' || leccion.estado == 'tomando') {
+    if (leccion.estado == 'pendiente' || leccion.estado == 'tomando' || leccion.estado == 'terminado') {
       return respuesta.ok(res, false);
     }
     CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, calificaciones) => {

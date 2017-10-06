@@ -187,7 +187,7 @@ var app = new Vue({
       var divPt           = $('<div>').addClass('input-field col s4 div-pt')
                                .attr('id', 'div-pt-subpregunta-' + self.subTotales);
       var labelPt         = $('<label>').html('Puntaje');
-      var idInputPuntaje  = 'input-pt-subpregunta' + self.subTotales;
+      var idInputPuntaje  = 'input-pt-subpregunta-' + self.subTotales;
       var inputPuntaje    = $('<input>').attr(
         {
           'type' : 'number', 
@@ -202,7 +202,7 @@ var app = new Vue({
       let divTiempo       = $('<div>').addClass('input-field col s4 div-pt')
                                       .attr('id', 'div-tiempo-subpregunta-' + self.subTotales);
       let labelTiempo     = $('<label>').html('Tiempo');  
-      var idInputTiempo   = 'input-tiempo-subpregunta' + self.subTotales;
+      var idInputTiempo   = 'input-tiempo-subpregunta-' + self.subTotales;
       var inputTiempo     = $('<input>').attr(
         {
           'type' : 'number', 
@@ -297,29 +297,34 @@ var app = new Vue({
     },
     vincularSubpreguntas: function(){
       app.pregunta.subpreguntas = [];
-      var contador = 1;
-      var idEditor = '#subpregunta-';
-      var idInput = '#input-pt-subpregunta';
+      var contador      = 1;
+      var idEditor      = '#subpregunta-';
+      var idInputPt     = '#input-pt-subpregunta-';
+      var idInputTiempo = '#input-tiempo-subpregunta-';
       var aux = app.subTotales;
       while( aux >= 0 ){
-        idEditor      = idEditor + contador;
-        idInput       = idInput + contador;
+        idEditor      = idEditor      + contador;
+        idInputPt     = idInputPt     + contador;
+        idInputTiempo = idInputTiempo + contador;
         var divExiste = ( $(idEditor).length != 0 );
         if( divExiste ){
-          var subpregunta       = {};
-          var contenido         = $(idEditor).code();
-          var puntaje           = $(idInput).val();
+          var subpregunta  = {};
+          var contenido    = $(idEditor).code();
+          var puntaje      = $(idInputPt).val();
+          var tiempo       = $(idInputTiempo).val();
           if( contenido != '' ){
             subpregunta.contenido = contenido;
             subpregunta.puntaje   = puntaje;
             subpregunta.orden     = contador;
+            subpregunta.tiempo    = tiempo;
             app.pregunta.subpreguntas.push(subpregunta);  
           }
         }
         contador++;
         aux--;
-        idEditor = '#subpregunta-';
-        idInput  = '#input-pt-subpregunta';
+        idEditor   = '#subpregunta-';
+        idInputPt  = '#input-pt-subpregunta-';
+        idInputPt  = '#input-pt-subpregunta-';
       }
     },
 		crearPregunta: function(){

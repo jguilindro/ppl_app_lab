@@ -152,9 +152,9 @@ EstudianteSchema.statics.anadirEstudianteLeccion = function(id_estudiante, id_le
 EstudianteSchema.statics.veficarPuedeDarLeccion = function(id_estudiante, callback) {
   this.findOne({_id:id_estudiante}, callback)
 }
-//
+//Indica que el estudiante está dando lección en este momento
 EstudianteSchema.statics.anadirLeccionYaComenzo = function(id_estudiante,callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: true}},callback)
+  this.update({ _id: id_estudiante }, { $set: { dandoLeccion: true } }, callback);
 }
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {

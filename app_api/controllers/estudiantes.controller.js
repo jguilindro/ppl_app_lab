@@ -160,85 +160,82 @@ const calificarLeccion = (req, res) => {
 }
 
 const leccionDatos = (req, res) => {
+  // Obtiene los datos del estudiante
   function buscarEstudiante(id_estudiante) {
     return new Promise((resolve, reject) => {
-      // obtendo datos estudiante
       EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
-        if (err) return reject(new Error('No se pudo obtener estudiante'))
-        return resolve(est)
-      })
-    })
+        if (err) return reject(new Error('No se pudo obtener estudiante'));
+        return resolve(est);
+      });
+    });
   }
-
+  // obtengo el grupo del estudiante
   function buscarGrupo(id_estudiante) {
     return new Promise((resolve, reject) => {
-      // obtengo el grupo del estudiante
       GrupoModel.obtenerGrupoDeEstudiante(id_estudiante, (err, grupo) => {
-        if (err) return reject(new Error('No se pudo obtener grupo estudiante'))
-        return resolve(grupo)
-      })
-    })
+        if (err) return reject(new Error('No se pudo obtener grupo estudiante'));
+        return resolve(grupo);
+      });
+    });
   }
-
+  // obtener el pralelo del estudiante
   function buscarParalelo(id_estudiante) {
     return new Promise((resolve, reject) => {
-      // obtener el pralelo del estudiante
       ParaleloModel.obtenerParaleloDeEstudiante(id_estudiante, (err, paralelo) => {
-        if (err) return reject(new Error('No se puedo obtener grupo estudiante'))
-        return resolve(paralelo)
-      })
-    })
+        if (err) return reject(new Error('No se puedo obtener grupo estudiante'));
+        return resolve(paralelo);
+      });
+    });
   }
-
+  // obtengo la leccion con las preguntas
   function obtenerLeccion(id_leccion) {
     return new Promise((resolve, reject) => {
-      // obtengo la leccion con las preguntas
       LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
-        if (err) return reject(new Error('No se puedo obtener Leccion'))
-        return resolve(leccion)
-      })
-    })
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
   }
-
+  //Obtengo las respuestas que ya ha enviado el estudiante
   function obtenerRespuestas(id_leccion, id_estudiante) {
     return new Promise((resolve, reject) => {
       RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
-        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'))
-        return resolve(respues)
-      })
-    })
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'));
+        return resolve(respues);
+      });
+    });
   }
-
+  //Añade al estudiante al registro de calificaciones
   function anadirParticipanteARegistro(id_leccion,id_grupo, id_estudiante) {
     return new Promise((resolve, reject) => {
       CalificacionModel.anadirParticipante(id_leccion,id_grupo, id_estudiante, (err, doc) => {
     		if(err) return reject(new Error('Error al anadir participante'));
-    		return resolve(true)
+    		return resolve(true);
     	});
-    })
+    });
   }
-
+  //Indica a la base que el estudiante está tomando una lección en este momento
   function anadirLeccionYaComenzo(id_estudiante) {
     return new Promise((resolve, reject) => {
       EstudianteModel.anadirLeccionYaComenzo(id_estudiante, (err, res) => {
-        if (err) return reject(new Error('Erro al anadir leccion ya comenzo'))
-        if (res) return resolve(true)
-        return resolve(false)
-      })
-    })
+        if (err) return reject(new Error('Erro al anadir leccion ya comenzo'));
+        if (res) return resolve(true);
+        return resolve(false);
+      });
+    });
   }
 
   co(function* () {
-    var id_estudiante = req.session._id
-    var leccionYaComenzo = anadirLeccionYaComenzo(id_estudiante)
-    var estudiante = yield buscarEstudiante(id_estudiante)
-    var grupo = yield buscarGrupo(id_estudiante)
-    var paralelo = yield buscarParalelo(id_estudiante)
-    var leccion = yield obtenerLeccion(estudiante.leccion)
-    var respuestas = yield obtenerRespuestas(estudiante.leccion, id_estudiante)
-    var anadido = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante)
+    const id_estudiante  = req.session._id;
+    let leccionYaComenzo = anadirLeccionYaComenzo(id_estudiante);
+    let estudiante       = yield buscarEstudiante(id_estudiante);
+    let grupo            = yield buscarGrupo(id_estudiante);
+    let paralelo         = yield buscarParalelo(id_estudiante);
+    let leccion          = yield obtenerLeccion(estudiante.leccion);
+    let respuestas       = yield obtenerRespuestas(estudiante.leccion, id_estudiante);
+    let anadido          = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante);
     respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, anadidoARegisto: anadido})
-  })
+  });
 
 }
 

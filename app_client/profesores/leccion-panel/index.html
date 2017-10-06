@@ -111,12 +111,18 @@
       <div id="test2" class="col s12">
         <label>Respuestas</label>
         <br>
-        <div id="row_respuestas">
-          <article v-for="(res, index) in respuestas" class="article">
-						<p>{{res.respuesta}}</p>
-            <p>{{res.grupo}}</p>
-            <p>{{res.estudiante}}</p>
-					</article>
+        <div id="row_respuestas" v-for="(res, index) in respuestas">
+          <div class="card-panel">
+            <p>{{res.grupoNombre}}</p>
+            <p>{{res.estudianteNombre}} {{res.estudianteApellido}}</p>
+            <p>{{res.preguntaNombre}}</p> 
+            <p>{{res.arraySubrespuestas.respuesta}}</p> 
+            <div v-for="(sub, index) in res.arraySubrespuestas">
+                <p>{{sub.ordenPregunta}}</p>
+                <p>{{sub.respuesta}}</p>
+            </div>
+            <p>{{res.arraySubrespuestas}}</p>
+          </div>
         </div>
       </div>
   

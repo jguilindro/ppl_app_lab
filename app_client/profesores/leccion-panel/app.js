@@ -49,6 +49,9 @@ var App = new Vue({
     bloquearEstudiante(id_estudiante) {
       console.log(id_estudiante);
     },
+    obtenerRespuestas(){
+
+    },
     tomarLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
       var id_paralelo = window.location.href.toString().split('/')[7]
@@ -302,7 +305,6 @@ function continuar() {
 
 leccion.on('respuesta para profesor', function(respuesta_estudiante) {
   App.respuestas.push(respuesta_estudiante)
-  console.log('prueba:'+ App.respuesta.respuesta)
   console.log(App.respuestas)
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
