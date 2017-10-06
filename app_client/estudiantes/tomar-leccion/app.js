@@ -56,7 +56,7 @@ var app = new Vue({
               return
             } else {
               if (!res.codigoLeccion) {
-                Materialize.toast('El código de la lección no es valido', 4000)
+                Materialize.toast('El código de la lección no es válido', 4000)
                 return
               }
             }
@@ -135,6 +135,7 @@ socket.on('connect', function() {
 })
 
 socket.on('disconnect', function() {
+  socket.disconnect() 
   document.getElementById('desconectado').classList.remove("borrar")
   document.getElementById("conectado").classList.add("borrar");
   console.log('desconectado');

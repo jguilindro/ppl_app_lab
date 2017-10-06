@@ -1,7 +1,19 @@
-var os = require('os');
-if (os.hostname() === 'srv01appPPL') {
-  require('dotenv').load()
+/* SERVER MODES
+  production .- usado en el servidor
+  production:test .- usado para pruebas locales del CAS
+  development .- usado para desarrollo local
+  debug .- usado para debug con visual studio code
+  heroku .- usado para HEROKU
+  testing .- usado para los test automaticos
+*/
+
+if (process.env.NODE_ENV == 'production') {
+  require('dotenv').config()
 }
+
+var spawn = require('child_process').spawn;
+//var usage = require('usage');
+
 const express     = require('express');
 path              = require('path');
 favicon           = require('serve-favicon');
@@ -11,74 +23,100 @@ cors              = require('cors');
 bodyParser        = require('body-parser'),
 session           = require('express-session'),
 MongoStore        = require('connect-mongo')(session),
-CASAuthentication = require('cas-authentication'),
+compression = require('compression'),
+CASAuthentication = require('cas-authentication'), //https://github.com/kylepixel/cas-authentication
+// at /home/manager/ppl-assessment/node_modules/cas-authentication/index.js:79:41
+//     at Parser.<anonymous> (/home/manager/ppl-assessment/node_modules/xml2js/lib/xml2js.js:489:18)
+//     at CASAuthentication._validate (/home/manager/ppl-assessment/node_modules/cas-authentication/index.js:67:13)
+// at CASAuthentication.<anonymous> (/home/manager/ppl-assessment/node_modules/cas-authentication/index.js:345:18)
 MongoClient  = require('mongodb').MongoClient,
 URL         = require('./app_api/utils/change_database').local();
+var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
+var URL_HEROKU = 'https://ppl-realtime.herokuapp.com/'
+var SERVICE_URL = ''
+//https://gist.github.com/bag-man/5570809
+// var os = require('os')
+// function cpuAverage(){
+
+//   //Initialise sum of idle and time of cores and fetch CPU info
+//   var totalIdle = 0, totalTick = 0;
+//   var cpus = os.cpus();
+
+//   //Loop through CPU cores
+//   for(var i = 0, len = cpus.length; i < len; i++) {
+
+//     //Select CPU core
+//     var cpu = cpus[i];
+
+//     //Total up the time in the cores tick
+//     for(type in cpu.times) {
+//       totalTick += cpu.times[type];
+//    }     
+
+//     //Total up the idle time of the core
+//     totalIdle += cpu.times.idle;
+//   }
+
+//   //Return the average Idle and Tick times
+//   return {idle: totalIdle / cpus.length,  total: totalTick / cpus.length};
+// }
+// function CPULoad(avgTime, callback) {
+//   this.samples = [];
+//   this.samples[1] = cpuAverage();
+//   this.refresh = setInterval(() => {
+//     this.samples[0] = this.samples[1];
+//     this.samples[1] = cpuAverage();
+//     var totalDiff = this.samples[1].total - this.samples[0].total;
+//     var idleDiff = this.samples[1].idle - this.samples[0].idle;
+//     callback(1 - idleDiff / totalDiff);
+//   }, avgTime);
+// }
+
+// // load average for the past 1000 milliseconds
+// var load = CPULoad(1000, (load) => console.log((100*load).toFixed(1)));
 
 // base de datos mongoose
 require('./app_api/models/db')
-// sync db y ws
+
+// sync db y web service
 require('./app_api/ws').update()
 
 var app = express();
-
 var server = require('http').Server(app);
 var debug = require('debug')('espol-ppl:server');
 var port = normalizePort('8000')
-// CAS URLS
-if (process.env.MODO == 'debug') {
-  process.env.NODE_ENV = 'debug'
-}
-console.log(process.env.NODE_ENV)
-if (process.env.NODE_ENV == 'development') {
+
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' || process.env.NODE_ENV == 'production') {
   var URL_CAS_LOCALHOST = 'http://localhost:8000'
 } else if (process.env.NODE_ENV == 'debug') {
   var URL_CAS_LOCALHOST = 'http://localhost:7000'
   port = normalizePort('7000')
-} else {
+} else if (process.env.NODE_ENV == 'heroku') {
   port = normalizePort(process.env.PORT || '8000');
 }
-var URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
-var URL_HEROKU = 'https://ppl-realtime.herokuapp.com/'
-var SERVICE_URL = ''
 
 app.set('port', port);
 server.listen(port);
-// var io = require("socket.io").listen(server)
-var io = require('socket.io')(server, {'pingInterval': 3000, 'pingTimeout': 12000});
-app.use(function(req, res, next){
-  res.io = io;
-  next();
-});
+
+var io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000});
+// app.use(function(req, res, next){
+//   res.io = io;
+//   next();
+// });
 
 // variables de entorno
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-test' ||process.env.NODE_ENV == 'debug') {
+if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' ||process.env.NODE_ENV == 'debug' ) {
   app.use(morgan('dev'));
   SERVICE_URL = URL_CAS_LOCALHOST
-  /*
-  const webpack = require('webpack')
-  const path = require('path')
-  const webpackDevMiddleware = require('webpack-dev-middleware')
-  const webpackHotMiddleware = require('webpack-hot-middleware')
-  const WebpackConfig = require('./webpack.config')
-  const compiler = webpack(WebpackConfig)
-  app.use(webpackDevMiddleware(compiler, {
-    publicPath: '/__build__/',
-    stats: {
-      colors: true,
-      chunks: false
-    }
-  }))
-  app.use(webpackHotMiddleware(compiler))
-  */
-} else if (os.hostname() === 'srv01appPPL' || process.env.NODE_ENV == 'production') {
+} else if ( process.env.NODE_ENV == 'production' ) {
   SERVICE_URL = URL_ESPOL_SERVER
   app.use(morgan('tiny'))
-} else if (process.env.NODE_ENV == 'testing') {
+} else if (process.env.NODE_ENV == 'heroku') {
   SERVICE_URL = URL_HEROKU
   app.use(morgan('tiny'))
 }
 
+app.use(compression()); //use compression 
 app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -91,7 +129,7 @@ app.use(session({
 	saveUninitialized: true,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 12 * 60 * 60 // = 14 days. Default
+      ttl: 12 * 60 * 60
     })
 }));
 
@@ -125,7 +163,6 @@ function redirecion(req, res , next) {
   }
 }
 
-
 // Control de rutas(para que estudiantes no puedan ingresar a profesor ruta)
 var procesarSession = require('./app_api/config/auth.cas.config').session
 var procesarSessionEstudiante = require('./app_api/config/auth.cas.config').sessionEstudiante
@@ -144,8 +181,8 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug') {
   var redirecion = function(req, res, next) {
     next()
   }
-} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production-test' || os.hostname() === 'srv01appPPL' || process.env.NODE_ENV == 'testing') {
-  app.get( '/', cas.bounce, function(req, res, next) {
+} else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production:test' ||  process.env.NODE_ENV == 'heroku' ) {
+  app.get( '/', cas.bounce, function(req, res, next) { // FIXME: para que sirve?
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
   var authProfesor = cas.block;
@@ -158,7 +195,9 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug') {
 
 require('./app_api/realtime/realtime')(io)
 
-//vistas
+/*
+  Profesores
+ */
 app.use('/profesores',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores')));
 
 app.use('/profesores/grupos', redirecion,authProfesor , procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/grupos')));
@@ -206,15 +245,24 @@ app.use('/profesores/rubrica/',redirecion,authProfesor, procesarSession, middleP
 /*
  Estudiantes
  */
-const { estudianteDandoLeccion, estudiantePuedeDarLeccion } = require('./app_api/middlewares/estudiante.middlewares')
+app.use('/app_client/estudiantes/dist',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/dist')));
+app.get('/estudiantes/single_page', function (req, res) {
+  res.sendFile( path.resolve(__dirname + '/app_client/estudiantes/index.html') );
+});
 
-app.use('/estudiantes/single_page',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/dist')));
+// router.get('/*', function(req, res) { res.sendFile(rootPath + 'public/index.html', { user: req.user }); });
 
-app.use('/estudiantes/',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/perfil')));
+app.get('/estudiantes', function (req, res) {
+ res.sendFile( path.resolve(__dirname + '/app_client/estudiantes/perfil/index.html') );
+});
+app.use('/app_client/estudiantes/perfil',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, '/app_client/estudiantes/perfil')));
 
 app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/ver-leccion')));
 
-app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/app_client/estudiantes/tomar-leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, '/app_client/estudiantes/tomar-leccion')));
+
+
+app.get('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
@@ -222,29 +270,27 @@ app.use('/estudiantes/tomar-leccion',redirecion,  authEstudiante, procesarSessio
       if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
         res.redirect('/estudiantes/leccion')
       } else {
-        next()
+        res.sendFile( path.resolve(__dirname + '/app_client/estudiantes/tomar-leccion/index.html') );
       }
     })
   })
-} , express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
+});
 
-app.use('/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
+app.use('/app_client/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, express.static(path.join(__dirname, '/app_client/estudiantes/leccion')));
+
+app.get('/estudiantes/leccion',redirecion, authEstudiante, procesarSession, middleEstudianteControl, function(req, res, next) {
   var EstudianteModel = require('./app_api/models/estudiante.model')
   var ParaleloModel = require('./app_api/models/paralelo.model')
   EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
     ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
       if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
-        next()
+        res.sendFile( path.resolve(__dirname + '/app_client/estudiantes/leccion/index.html') );
       } else {
         res.redirect('/estudiantes/tomar-leccion')
       }
     })
   })
 },express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
-
-// app.use('/estudiantes/tomar-leccion' , procesarSession, middleEstudianteControl, estudiantePuedeDarLeccion,express.static(path.join(__dirname, 'app_client/estudiantes/tomar-leccion')));
-//
-// app.use('/estudiantes/leccion', authEstudiante, procesarSession, estudianteDandoLeccion, middleEstudianteControl, express.static(path.join(__dirname, 'app_client/estudiantes/leccion'))); // otro middleware que no pueda ingresar si no esta dando leccion
 
 // otros
 app.use('/otros', function(req, res, next) {
@@ -275,8 +321,10 @@ app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'app_client/pr
 app.use('/docs/api' ,express.static(path.join(__dirname, 'docs/api')))
 app.use('/docs/code' ,express.static(path.join(__dirname, 'docs/code/_book')))
 
+/*
+  API
+ */
 var authApi = require('./app_api/config/auth.api')
-// app_api OJO aqui esta expuesta
 app.use('/api/profesores', require('./app_api/routes/profesores.router'));
 app.use('/api/estudiantes', require('./app_api/routes/estudiantes.router'));
 app.use('/api/grupos', require('./app_api/routes/grupos.router'));
@@ -288,55 +336,41 @@ app.use('/api/capitulos', authApi.profesor, require('./app_api/routes/capitulo.r
 app.use('/api/calificaciones', authApi.estudiante, require('./app_api/routes/calificacion.router'));
 app.use('/api/rubrica', authApi.profesor, require('./app_api/routes/rubrica.router'));
 
-// catch 404 and forward to error handler
+
+// CONFIGS FILES
 app.use(function(req, res, next) {
   var err = new Error('Url o metodo no valido');
   err.status = 404;
   next(err);
 });
-
-// error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+  // set locals, only providing error in development  <= OJO PRODUCTION LOGGER
   var mensaje = err.message;
   var error = req.app.get('env') === 'development' ? err : {};
-  // render the error page
   res.status(err.status || 500);
   res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
 });
-
-// module.exports = {app: app, server: server};
-
-// var app = require('../app').app;
 var debug = require('debug')('espol-ppl:server');
-// var http = require('http');
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
   if (isNaN(port)) {
-    // named pipe
     return val;
   }
   if (port >= 0) {
-    // port number
     return port;
   }
   return false;
 }
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
-
   var bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
-
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -350,7 +384,6 @@ function onError(error) {
       throw error;
   }
 }
-
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'

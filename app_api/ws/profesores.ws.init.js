@@ -7,6 +7,9 @@ wesService          = require('./utils.ws');
 
 // TODO: verificar que el profesor_titular ya esta en otro curso
 
+/*
+  anade crear el profesor y lo anade al paralelo
+*/
 function inicial() {
   return new Promise((resolve, reject) => {
     wesService.profesoresWS(function(profesores_titulares, profesores_peers) {
@@ -23,11 +26,22 @@ function inicial() {
             tipo,
             correo
           })
-          let profesor_creado = yield crearProfesor(profesor_nuevo)
-          let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
-          let profesor_anadido = yield anadirProfesorAParalelo(paralelo._id, profesor_nuevo._id)
-          if (!profesor_creado || !paralelo || !profesor_anadido) {
-            logger.error('Error al completar operacion de profesor')
+          
+          let profesor_existente = yield obtenerProfesorPorCorreo(correo)
+          if (profesor_existente) {
+            console.log(`El profesor ${profesor_existente['nombres']} ya existe`)
+            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
+            let profesor_anadido = yield anadirProfesorAParalelo(paralelo._id, profesor_existente._id)
+            if (!paralelo || !profesor_anadido) {
+              logger.error('Error al completar operacion de profesor')
+            }
+          } else {
+            let profesor_creado = yield crearProfesor(profesor_nuevo)
+            let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
+            let profesor_anadido = yield anadirProfesorAParalelo(paralelo._id, profesor_nuevo._id)
+            if (!profesor_creado || !paralelo || !profesor_anadido) {
+              logger.error('Error al completar operacion de profesor')
+            }
           }
         }
         logger.info('terminado anadir profesores titulares')
@@ -56,18 +70,23 @@ function inicial() {
               tipo,
               correo
             })
-            let profesor_creado = yield crearProfesor(profesor_nuevo)
-            if (!profesor_creado) {
-              logger.error('Error al completar operacion de profesor peer')
+            let profesor_existente = yield obtenerProfesorPorCorreo(correo)
+            if (profesor_existente) {
+              console.log(`El profesor peer ${profesor_existente['nombres']} ya existe`)
+            } else {
+              let profesor_creado = yield crearProfesor(profesor_nuevo)
+              if (!profesor_creado) {
+                logger.error('Error al completar operacion de profesor peer')
+              }
             }
         }
-        logger.info('terminado anadir profesores peers')
+        logger.info('terminado anadir profesores peers a paralelo')
 
         /*ANADIENDO PEERS A PARALELO*/
         for (var i = 0; i < profesores_peers.length; i++) {
           let profe = profesores_peers[i]
           let profesor_encontrado = yield obtenerProfesorPorNombres(profe.nombres) // cambiarlo por correo
-          let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria, profe.anio, profe.termino)
+          let paralelo = yield buscarParalelo(profe.paralelo, profe.codigomateria)
           let profesor_anadido = yield anadirPeerAParalelo(paralelo._id, profesor_encontrado._id)
           if (!profesor_encontrado || !paralelo || !profesor_anadido) {
             logger.error('Error al completar operacion de profesor peer anadido a paralelo')
@@ -116,9 +135,9 @@ function crearProfesor(profesor_nuevo) {
   })
 }
 
-function buscarParalelo(paralelo, codigomateria, anio, termino) {
+function buscarParalelo(paralelo, codigomateria) {
   return new Promise((resolve, reject) => {
-    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, anio, termino, (err, res) => {
+    ParaleloModel.obtenerParaleloWebService(paralelo, codigomateria, (err, res) => {
       if (err) {
         logger.error('Error al tratar encontrar paralelo', err)
         return resolve(null)

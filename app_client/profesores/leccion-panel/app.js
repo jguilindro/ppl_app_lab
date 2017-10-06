@@ -12,7 +12,13 @@ var App = new Vue({
   methods: {
     obtenerLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
-      this.$http.get(`/api/lecciones/${id_leccion}`).then(res => this.leccion = res.body.datos)
+      
+      this.$http.get(`/api/lecciones/${id_leccion}`).then(function(res) {
+        this.leccion = res.body.datos
+        if (this.leccion.leccionYaComenzo) {
+        document.getElementById('pausar-leccion').disabled = false
+        }
+      })
     },
     obtenerParalelo() {
       var id_paralelo = window.location.href.toString().split('/')[7]
@@ -53,6 +59,7 @@ var App = new Vue({
               this.$http.post(`/api/paralelos/${id_paralelo}/leccion_ya_comenzo`).then(res => {
                 if (res.body.estado) {
                   comenzar()
+                  document.getElementById('pausar-leccion').disabled = false
                   document.getElementById('leccion-no-dar').disabled = true
                   document.getElementById('comenzar-leccion').disabled = true
                   document.getElementById('terminar-leccion').disabled = false
@@ -81,11 +88,12 @@ var App = new Vue({
 
 
 document.getElementById('terminar-leccion').disabled = true
-
+document.getElementById('pausar-leccion').disabled = true
 
 var leccion = io('/tomando_leccion');
 // var socket = io({transports: ['websocket']});
 leccion.on('tiempo restante', function(tiempo) {
+  //console.log(tiempo)
   // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true
   document.getElementById('terminar-leccion').disabled = false
@@ -111,6 +119,10 @@ leccion.on('terminado leccion', function(match) {
 })
 
 leccion.on('leccion datos', function(leccion) {
+  if (leccion.pausada) {
+    document.getElementById('pausar-leccion').disabled = true
+    document.getElementById('continuar-leccion').disabled = false
+  }
   App.dataEstudiantes = leccion.estudiantesDandoLeccion
   App.estudiantes_conectados = []
   var equals = function(x,y){
@@ -138,21 +150,23 @@ leccion.on('leccion datos', function(leccion) {
       App.grupos[grupo_index].estudiantes_conectados.push(App.estudiantes_conectados[i])
     }
   }
-  for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
-    $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
-    $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
-    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
-    $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
-    $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
-  }
-  for (var i = 0; i < App.estudiantes_conectados.length; i++) {
-    $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
-    $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
-    if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
-      $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+  if (App.paralelo.estudiantes) {
+    for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
+      $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
+      $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
+      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
+      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
+      $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
     }
-    if (App.estudiantes_conectados[i].dandoLeccion) {
-       $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
+    for (var i = 0; i < App.estudiantes_conectados.length; i++) {
+      $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
+      $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
+      if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
+        $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+      }
+      if (App.estudiantes_conectados[i].dandoLeccion) {
+         $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
+      }
     }
   }
 })
@@ -197,6 +211,7 @@ leccion.on('connect', function() {
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {
+      console.log(data);
       leccion.emit('usuario', data.datos)
     }
   })
@@ -264,7 +279,22 @@ function terminarPrueba() {
     }
   })
 }
-
+document.getElementById('continuar-leccion').disabled = true
 leccion.on('get_message', function(mensaje) {
   console.log(mensaje);
 })
+
+
+function pausar() {
+  document.getElementById('pausar-leccion').disabled = true
+  document.getElementById('continuar-leccion').disabled = false
+  document.getElementById('terminar-leccion').disabled = true
+  leccion.emit('pausar leccion', {leccion: App.leccion._id, paralelo: App.paralelo._id})
+}
+
+function continuar() {
+  document.getElementById('pausar-leccion').disabled = false
+  document.getElementById('continuar-leccion').disabled = true
+   document.getElementById('terminar-leccion').disabled = false
+  leccion.emit('continuar leccion',  App.leccion._id)
+}
