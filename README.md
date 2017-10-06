@@ -1,12 +1,24 @@
 # Peer Proyect Learning ESPOL WEB APP
 
-### Tools
-- Mongodb
-- Nodejs
-- Expressjs
-- Vuejs
-- Apache
-- WebSockets
+## Correr la app en produccion
+
+```sh
+> git pull
+```
+
+```sh
+> npm install
+```
+
+```sh
+export NODE_ENV=production
+```
+
+Ir a la carpta ppl-assessment
+
+```sh
+> forever start -o out.log -e err.log app.js
+```
 
 # Instalacion y setup Development
 
