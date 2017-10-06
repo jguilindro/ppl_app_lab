@@ -62,19 +62,27 @@ var App = new Vue({
             App.leccion_nueva.codigoMateria = materia
             //Filtrando para física 2
             if( materia == "FISG1002" ){
-            App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo2);
-              App.leccion_nueva.nombreMateria = "Física 2"
-              self.paraleloEscogido.id = self.paralelos[0]._id
-              self.paraleloEscogido.nombre = self.paralelos[0].nombre
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+              App.paralelo_filtrado            = App.paralelos.filter(filtrarParalelo2);
+              App.leccion_nueva.nombreMateria  = "Física 2";
+              self.paraleloEscogido.id         = self.paralelos[0]._id;
+              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
             }
             //Filtrando para física 3
             if( materia == "FISG1003" ){
-              App.paralelo_filtrado = App.paralelos.filter(filtrarParalelo3);
-              App.leccion_nueva.nombreMateria = "Física 3"
-              self.paraleloEscogido.id = self.paralelos[0]._id
-              self.paraleloEscogido.nombre = self.paralelos[0].nombre
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre
+              App.paralelo_filtrado            = App.paralelos.filter(filtrarParalelo3);
+              App.leccion_nueva.nombreMateria  = "Física 3";
+              self.paraleloEscogido.id         = self.paralelos[0]._id;
+              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
+            }
+            //Filtrando para física conceptual
+            if( materia == "FISG2001" ){
+              App.paralelo_filtrado            = App.paralelos.filter(filtrarParaleloConceptual);
+              App.leccion_nueva.nombreMateria  = "Física Conceptual";
+              self.paraleloEscogido.id         = self.paralelos[0]._id;
+              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
+              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
             }
 
             //AQUI DEBO FILTRAR
@@ -567,10 +575,13 @@ function unCheckPreguntas(){
   $('input:checkbox').prop('checked',false);
 }
 function filtrarParalelo2(paralelos){
-  return paralelos.codigo == "FISG1002"
+  return paralelos.codigo == "FISG1002";
 }
 function filtrarParalelo3(paralelos){
-  return paralelos.codigo == "FISG1003"
+  return paralelos.codigo == "FISG1003";
+}
+function filtrarParaleloConceptual(paralelos){
+  return paralelos.codigo == "FISG2001";
 }
 
 function filtrarCapitulo2(capitulo){
