@@ -5,6 +5,7 @@
   debug .- usado para debug con visual studio code
   heroku .- usado para HEROKU
   testing .- usado para los test automaticos
+  testprofesores.- usado para las reuniones de ppl
 */
 
 if (process.env.NODE_ENV == 'production') {
@@ -86,7 +87,7 @@ var server = require('http').Server(app);
 var debug = require('debug')('espol-ppl:server');
 var port = normalizePort('8000')
 
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' || process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' || process.env.NODE_ENV == 'production' || process.env.NODE_ENV === 'testprofesores') {
   var URL_CAS_LOCALHOST = 'http://localhost:8000'
 } else if (process.env.NODE_ENV == 'debug') {
   var URL_CAS_LOCALHOST = 'http://localhost:7000'
@@ -105,7 +106,7 @@ var io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120
 // });
 
 // variables de entorno
-if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' ||process.env.NODE_ENV == 'debug' ) {
+if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' ||process.env.NODE_ENV == 'debug' || process.env.NODE_ENV === 'testprofesores' ) {
   app.use(morgan('dev'));
   SERVICE_URL = URL_CAS_LOCALHOST
 } else if ( process.env.NODE_ENV == 'production' ) {
@@ -171,7 +172,7 @@ var middleProfesorControl = require('./app_api/config/auth.cas.config').middlewa
 
 
 // variables de entorno de middlewares
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug' || process.env.NODE_ENV === 'testprofesores') {
   app.use('/', express.static(path.join(__dirname, 'app_client/login')));
   app.use('/api/session', require('./app_api/routes/login.router'));
   var { authProfesor, authEstudiante, authApiProfesor, authApiEstudiante } = require('./app_api/config/auth.config')
