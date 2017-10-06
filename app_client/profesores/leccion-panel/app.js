@@ -82,7 +82,8 @@ var App = new Vue({
     paralelo: {},
     tiempo: '',
     dataEstudiantes: '',
-    mas_tiempo: 0
+    mas_tiempo: 0,
+    respuestas: [],
   },
 })
 
@@ -300,6 +301,9 @@ function continuar() {
 }
 
 leccion.on('respuesta para profesor', function(respuesta_estudiante) {
+  App.respuestas.push(respuesta_estudiante)
+  console.log('prueba:'+ App.respuesta.respuesta)
+  console.log(App.respuestas)
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
 })

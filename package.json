@@ -29,7 +29,7 @@
     "postdev": "npm-run-all --parallel watchify mon sync docs",
     "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
     "parcel": "browserify  -e app_client/estudiantes/src/main.js -p [ parcelify -o app_client/estudiantes/dist/build.css] -o public/bower_components/tmp",
-    "mon": " NODE_ENV=development env-cmd .env nodemon app.js --config nodemon.json",
+    "mon": "  env-cmd .env nodemon app.js --config nodemon.json",
     "premon": "cross-env NODE_ENV=development",
     "prestart": "npm run parcel && npm run env:development",
     "js:production": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build-component.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c drop_console=true,warnings=false -m > app_client/estudiantes/dist/build.js",
