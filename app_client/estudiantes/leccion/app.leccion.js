@@ -449,6 +449,70 @@ let App = new Vue({
       socket.emit('respuesta estudiante', respuesta_realtime);
       return respuesta;
     },
+    crearSocket: function(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
+      let respuesta_realtime = {
+        estudianteId       : estudiante._id,
+        estudianteNombre   : estudiante.nombres,
+        estudianteApellido : estudiante.apellidos,
+        grupoId            : grupo._id,
+        grupoNombre        : grupo.nombre,
+        leccion            : idLeccion,
+        paralelo           : idParalelo,
+        pregunta           : pregunta._id,
+        preguntaNombre     : pregunta.nombre, 
+        respuesta          : respuesta,
+        feedback           : '',
+        calificacion       : 0,
+        imagenes           : urlImagen,
+        arraySubrespuestas : arraySubrespuestas
+      };
+      return respuesta_realtime;
+    },
+    /*
+      Dada la pregunta ingresada como parámetro, obtiene todas las subrespuestas ingresadas por el estudiante y las añade a un array con el orden de la pregunta a la que pertenece
+    */
+    armarArraySubrespuestas: function(pregunta){
+      let arraySubrespuestas = [];
+      for (let i = 0; i < pregunta.subpreguntas.length; i++) {
+        let subActual    = pregunta.subpreguntas[i];
+        let idTextarea   = '#textarea-sub-' + pregunta.orden + '-' + subActual.orden;
+        let respuesta    = $(idTextarea).val();
+        let subrespuesta = {
+          respuesta    : respuesta,
+          ordenPregunta: subActual.orden,
+          feedback     : '',
+          calificacion : 0,
+          imagen       : ''
+        };
+        arraySubrespuestas.push(subrespuesta);
+      }
+      return arraySubrespuestas;
+    },
+    bloquearBtnRespuesta: function(pregunta){
+      const btnId = '#btn-responder-' + pregunta._id;
+      $(btnId).attr("disabled", true);
+    },
+    bloquearTextAreaRespondida: function(pregunta){
+      const textAreaId = "#textarea-" + pregunta._id;
+      $(textAreaId).attr("disabled", true);
+    },
+    bloquearEditor: function(pregunta){
+      //TODO
+    },
+    /*
+      Esta función verifica si el estudiante ha respondido todas las preguntas de la lección
+    */
+    verificarTodasRespondidas: function(self, arrayPreguntas){
+      let todasRespondidas = true;
+      $.each(arrayPreguntas, function(index, pregunta){
+        if( !pregunta.respondida ){
+          console.log('La pregunta:', pregunta.nombre, ' no ha sido respondida')
+          todasRespondidas = false;
+          return false;
+        }
+      });
+      return todasRespondidas;
+    },
     /*
       Función del modal. Si el estudiante escoge la opción de corregir respuestas
     */
