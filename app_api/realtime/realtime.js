@@ -297,6 +297,10 @@ function realtime(io) {
       })
     })
 
+    socket.on('respuesta estudiante', function(data) {
+      leccion.in(data.paralelo).emit('respuesta para profesor', data)
+    })
+
     // terminar leccion
     socket.on('parar leccion', function(data) {
       co(function *() {

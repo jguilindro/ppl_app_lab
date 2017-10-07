@@ -1,207 +1,105 @@
-// var socket = io({transports: ['websocket']});
-// if (window.location.href.toString().split('/')[2] === "ppl-assessment.espol.edu.ec") {
-//   var socket = io('ws://ppl-assessment.espol.edu.ec:8000/tomando_leccion', {
-//     reconnect: true,
-//     // 'connect timeout': 1000,
-//     // 'reconnection delay': 2000,
-//     // 'max reconnection attempts': 10000,
-//     // 'force new connection':true
-//   })
-// } else {
-//   var socket = io('ws://localhost:8000/tomando_leccion', {
-//     reconnect: true,
-//     'connect timeout': 1000,
-//     'reconnection delay': 2000,
-//     'max reconnection attempts': 10000,
-//     'force new connection':true
-//   })
-// }
 
 var socket = io('/tomando_leccion', {
-<<<<<<< HEAD
   'reconnect': true,
-  // 'connect timeout': 1000,
-  // 'reconnection delay': 2000,
-  // 'max reconnection attempts': 10000,
-  'forceNew':true
+  'forceNew': true
 });
-=======
-    'reconnect': true,
-    'forceNew': true
-    // 'connect timeout': 1000,
-    // 'reconnection delay': 2000,
-    // 'max reconnection attempts': 10000,
-})
->>>>>>> b006ab44ea4a097b825ebf94ffff29845eed0ad0
 
 
 let App = new Vue({
   created: function(){
-    this.obtenerUsuario(this, '/api/estudiantes/leccion/datos_leccion');
+    let self = this;
+    /*
+      Al iniciar la ventana se obtienen los datos de la lección
+      Luego se añaden las respuestas que el estudiante ya ha enviado (en caso de que haya recargado la página)
+    */
+    $.when( self.obtenerUsuario() ).then( function(){
+      self.anadirRespuestas(self, self.respuestas, self.preguntas);
+      self.desbloquearTabs();
+    });
   },
   mounted: function(){
     this.inicializarMaterialize();
   },
   el: '#app',
   methods: {
+    //////////////////////////////////////////////////////
+    //MODIFICACIONES AL DOM
+    //////////////////////////////////////////////////////
     inicializarMaterialize: function(){
       $('ul.tabs').tabs();
       $('.modal').modal();
       $('.tooltipped').tooltip({delay: 50});
     },
-    habilitarPrimeraPregunta: function(arrayPreguntas){
-      for (var i = 0; i < arrayPreguntas.length; i++) {
-        let preguntaActual = arrayPreguntas[i];
-        if( preguntaActual.orden == 1 ){
-          let id = '#tab-' + preguntaActual._id;
-          $(id).removeClass('disabled');
-        }
-      }
-    },
-    obtenerUsuario: function(self, urlApi){
-      $.when($.get({
-        url: urlApi,
-        success: function(res) {
-          if( res.estado ) {
-            //Primero se verifica si el paralelo del estudiante está tomando lección
-            if ( !res.datos.paralelo.dandoLeccion ) {
-              window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
-            }
-            self.estudiante          = res.datos.estudiante;
-            self.idLeccion           = res.datos.estudiante.leccion;
-            self.leccion             = res.datos.leccion;
-            self.estudiante.grupo    = res.datos.grupo._id;
-            self.estudiante.paralelo = res.datos.paralelo._id;
-            self.preguntas           = self.armarArrayPreguntas(res.datos.leccion.preguntas);
-            self.respuestas          = res.datos.respuestas
-            socket.emit('usuario', self.estudiante);
-          }
-        }
-      })).then(function() {
-        self.anadirRespuestas(self, self.respuestas, self.preguntas);
-        //self.habilitarPrimeraPregunta(self.preguntas);
-        $('#tab-1').removeClass('disabled');
-        console.log('leccion.preguntas:', self.leccion.preguntas);
-        console.log('preguntas:', self.preguntas);
-      });
-    },
     /*
-      Devuelve el array de preguntas que se va a mostrar al usuario
-      Cada pregunta tendrá la información completa de la pregunta y un boolean indicando si tiene subpreguntas
+      Asigna los valores obtenidos de la base de datos al objeto Vue que controla el DOM
     */
-    armarArrayPreguntas: function(preguntasObtenidas){
-      let arrayPreguntas = [];
-      for (let i = 0; i < preguntasObtenidas.length; i++) {
-        let preguntaActual               = preguntasObtenidas[i].pregunta;
-        preguntaActual.orden             = preguntasObtenidas[i].ordenPregunta;
-        preguntaActual.tieneSubpreguntas = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
-        arrayPreguntas.push(preguntaActual);
-      }
-      return arrayPreguntas;
+    asignarValoresObtenidos: function(res){
+      App.estudiante          = res.datos.estudiante;
+      App.idLeccion           = res.datos.estudiante.leccion;
+      App.leccion             = res.datos.leccion;
+      App.estudiante.grupo    = res.datos.grupo._id;
+      App.grupo               = res.datos.grupo;
+      App.estudiante.paralelo = res.datos.paralelo._id;
+      App.preguntas           = App.armarArrayPreguntas(res.datos.leccion.preguntas);
+      App.respuestas          = res.datos.respuestas;
     },
-    /*
-      Se recorre el array de respuestas obtenidas de la base de datos
-      Se ingresan las respuestas que el estudiante ha escrito a los textareas correspondientes
-      Se marca la pregunta como respondida
-      Se bloquean los textareas y botones de las preguntas respondidas
-      Se revisa si todas las preguntas han sido respondidas
-    */
-    anadirRespuestas: function(self, arrayRespuestas, arrayPreguntas) {
-      arrayRespuestas.forEach(function(res) {
-        //Se añade la respuesta al textarea correspondiente
-        let idTextarea = '#textarea-' + res.pregunta;
-        $(idTextarea).val(res.respuesta);
-        arrayPreguntas.forEach(function(pregunta){
-          //Se marca la pregunta como respondida
-          if( res.pregunta === pregunta._id ){
-            if( res.subrespuestas.length > 0 && App.leccion.tipo === 'tutorial' ){
-              //Se arman las subrespuestas
-              self.anadirSubrespuestas(self, res.subrespuestas, pregunta);
-            }else{
-              pregunta.respuesta  = res.respuesta;
-              pregunta.respondida = true;
-              self.bloquearTextAreaRespondida(pregunta);
-              self.bloquearBtnRespuesta(pregunta);
-            }
-            
-          }
-        });
-      });
-      // Se revisa si todas las preguntas han sido respondidas
-      const todasRespondidas = self.verificarTodasRespondidas(self, self.preguntas);
-      if( todasRespondidas && App.leccion.tipo != 'tutorial' ){
-        $('#modalRevisarRespuestas').modal('open');
-      }
-    },
-    anadirSubrespuestas: function(self, arraySubrespuestas, pregunta){
-      arraySubrespuestas.forEach( function(subRes){
-        pregunta.subpreguntas.forEach( function(subPreg){
-          if( subRes.ordenPregunta == subPreg.orden ){
-            let textareaId = '#textarea-sub-'      + pregunta.orden + '-' + subRes.ordenPregunta;
-            let btnId      = '#btn-responder-sub-' + pregunta.orden + '-' + subRes.ordenPregunta;
-            if( subRes.respuesta != '' && subRes.respuesta != null ){
-              $(textareaId).val(subRes.respuesta);
-              $(textareaId).attr("disabled", true);
-              $(btnId).attr("disabled", true);
-              subPreg.respondida = true;
-              pregunta.respondida = true;
-            }
-          }
-        });
-      });
-      if( App.verificarSubpreguntasDePregunta(pregunta) ){
-        console.log('Se han respondido a todas las subpreguntas de la sección actual')
-        let cont            = pregunta.orden;
-        cont++;
-        $('#tab-' + cont).removeClass('disabled')  
+    desbloquearTabs: function(){
+      //Si la lección no es un tutorial entonces las preguntas no tienen que estar bloqueadas
+      if( App.leccion.tipo != 'tutorial' ){
+        $("#ul-tabs>li").removeClass("disabled");
       }else{
-        console.log('Aún no responde a todas las preguntas de la sección actual.')
+        $('#tab-1').removeClass('disabled');    //Se desbloquea la primera sección para que el estudiante la responda  
       }
     },
     /*
       Función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
       Requiere el estado, si está cargando algo o no.
     */
-    loading: function(estado){
-      if (estado){
-        $(".note-editable").append('<div class="preloader-wrapper big active onLoad"></div>');
-        $(".onLoad").append('<div class="spinner-layer spinner-blue-only load-2"></div>');
-        $(".load-2").append('<div class="circle-clipper left load-3"></div>');
-        $(".load-3").append('<div id="load-4" class="circle"></div>');
+    loading: function(estado, idBtn){
+      if(estado){
+        $(idBtn).empty();
+        $(idBtn).append('<div class="preloader-wrapper small active onLoad"></div>');
+        $('.onLoad').append('<div class="spinner-layer spinner-blue-only load-2"></div>');
+        $('.load-2').append('<div class="circle-clipper left load-3"></div>');
+        $('.load-3').append('<div id="load-4" class="circle"></div>');
       }else{
-        $("#onLoad").remove();
-        $("div").remove(".onLoad");
+        $(idBtn).empty();
+        $(idBtn).html('Responder')
       }
     },
-    //////////////////////////////////////////
-    //Eventos
-    //////////////////////////////////////////
-    /*
-      Función ejecutada al dar click en btn responder de cada pregunta.
-      Hay 3 posibles casos cuando el estudiante quiere responder:
-        * Primera vez que el estudiante responde la pregunta y no puede corregir todavía.
-        * La pregunta ya fue respondida y puede corregirla.
-        * Aún no tiene habilitado para corregir y quiere corregir la respuesta enviada.
-    */
-    responder: function(pregunta, event){
-      let self           = this;
-      const idEstudiante = self.estudiante._id;
-      const idLeccion    = self.leccion._id;
-      const idParalelo   = self.estudiante.paralelo;
-      const idGrupo      = self.estudiante.grupo;
-      //Apenas da click en el botón se bloquea el textarea y el botón
-      self.bloquearBtnRespuesta(pregunta);
-      self.bloquearTextAreaRespondida(pregunta);
-      //self.bloquearEditor(pregunta);
-      if( !pregunta.respondida ){       //Caso normal, responde por primera vez a la pregunta indicada
-        self.enviarRespuesta(self, pregunta, idEstudiante, idLeccion, idParalelo, idGrupo);
-      }else{                            //Si ya ha enviado una respuesta a la pregunta indicada
-        if( self.corregirHabilitado ){  //Si ya puede corregir las respuestas
-          self.corregirRespuesta(self, pregunta, idLeccion, idEstudiante);
-        }else{                         //Si no puede corregir las respuestas
-          $('#modalCorregirRespuesta').modal('open');
+    bloquearBtnRespuesta: function(pregunta){
+      const btnId = '#btn-responder-' + pregunta._id;
+      $(btnId).attr("disabled", true);
+    },
+    bloquearTextAreaRespondida: function(pregunta){
+      const textAreaId = "#textarea-" + pregunta._id;
+      $(textAreaId).attr("disabled", true);
+    },
+    bloquearEditor: function(pregunta){
+      //TODO
+    },
+    mostrarModal: function(imageUrl){
+      $("#modal_Img .modal-content").empty();
+      $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
+      $('#modal_Img').modal('open');
+    },
+    //////////////////////////////////////////////////////
+    //LLAMADAS A LA API
+    //////////////////////////////////////////////////////
+    obtenerUsuario: function(){
+      $.get({
+        url    : '/api/estudiantes/leccion/datos_leccion',
+        success: function(res) {
+          if( res.estado ) {
+            //Primero se verifica si el paralelo del estudiante está tomando lección
+            if ( !res.datos.paralelo.dandoLeccion ) {
+              window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
+            }
+            App.asignarValoresObtenidos(res);
+            socket.emit('usuario', App.estudiante);
+          }
         }
-      }
+      });
     },
     /*
       Función que se ejecutará para enviar una respuesta por primera vez
@@ -233,6 +131,292 @@ let App = new Vue({
       });
     },
     /*
+      Esta función hace la llamada a la api para corregir la respuesta.
+    */
+    enviarCorreccion: function(idRespuesta, pregunta){
+      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
+      //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
+      const urlPut            = "/api/respuestas/" + idRespuesta;
+      const idTextarea        = '#textarea-' + pregunta._id;
+      const respuestaTextarea = $(idTextarea).val();
+      const resp              = {respuesta: respuestaTextarea}
+      //var resp = {respuesta: respuestaEditor}
+      $.ajax({
+        url    : urlPut,
+        method : 'PUT',
+        data   : resp,
+        success: function(response) {
+          Materialize.toast('¡Su respuesta ha sido corregida!', 6000, 'rounded');
+        },
+        error  : function(response) {
+          console.log(response);
+          Materialize.toast('Hubo un error al tratar de corregir su respuesta.', 1000, 'rounded red');
+        }
+      });
+    },
+    enviarSubrespuestas: function(respuesta, sub, pregunta){
+      const idBtn = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      $.ajax({
+        url: '/api/respuestas/',
+        type: 'PUT',
+        data: respuesta,
+        success: function(res){
+          sub.respondida = true;
+          Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
+          //Se debe verificar si se han respondido a todas las preguntas de la sección
+          if( App.verificarPreguntasSeccion(pregunta) ){
+            console.log('Se han respondido a todas las subpreguntas de la sección actual')
+            //Se desbloquea la siguiente sección
+            let cont = pregunta.orden;
+            cont++;
+            $('#tab-' + cont).removeClass('disabled');  
+          }else{
+            console.log('Aún no responde a todas las preguntas de la sección actual.')
+          }
+          App.loading(false, idBtn);
+        },
+        error: function(err){
+          App.loading(false, idBtn);
+        }
+      });
+    },
+    enviarRespuestaSeccion: function(respuesta, sub, pregunta){
+      const idBtn = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      $.ajax({
+        url    : '/api/respuestas/',
+        type   : 'POST',
+        data   : respuesta,
+        success: function(res){
+          //Una vez creado el registro correctamente, se debe marcar la subpregunta como respondida
+          sub.respondida      = true;
+          pregunta.respondida = true;
+          Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
+          //Se debe verificar si se han respondido a todas las preguntas de la sección
+          if( App.verificarPreguntasSeccion(pregunta) ){
+            console.log('Se han respondido a todas las subpreguntas de la sección actual')
+            //Se desbloquea la siguiente sección
+            let cont = pregunta.orden;
+            cont++;
+            $('#tab-' + cont).removeClass('disabled');  
+          }else{
+            console.log('Aún no responde a todas las preguntas de la sección actual.')
+          }
+          App.loading(false, idBtn);
+        },
+        error  : function(err){
+          //Si no se pudo enviar la respuesta, se avisa al estudiante y se desbloquea el textarea y el botón
+          Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded');
+          console.log(err);
+          $('#textarea-sub-'      + pregunta.orden + '-' + sub.orden).attr("disabled", false);
+          $('#btn-responder-sub-' + pregunta.orden + '-' + sub.orden).attr("disabled", false);
+          sub.respondida      = false;
+          pregunta.respondida = false;
+          App.loading(false, idBtn);
+        }
+      });
+    },
+    //////////////////////////////////////////////////////
+    //HELPERS
+    //////////////////////////////////////////////////////
+    /*
+      Devuelve el array de preguntas que se va a mostrar al usuario
+      Cada pregunta tendrá la información completa de la pregunta y un boolean indicando si tiene subpreguntas
+    */
+    armarArrayPreguntas: function(preguntasObtenidas){
+      let arrayPreguntas = [];
+      for( let i = 0; i < preguntasObtenidas.length; i++ ) {
+        let preguntaActual               = preguntasObtenidas[i].pregunta;
+        preguntaActual.orden             = preguntasObtenidas[i].ordenPregunta;
+        preguntaActual.tieneSubpreguntas = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
+        arrayPreguntas.push(preguntaActual);
+      }
+      return arrayPreguntas;
+    },
+    /*
+      Se recorre el array de respuestas obtenidas de la base de datos
+      Se ingresan las respuestas que el estudiante ha escrito a los textareas correspondientes
+      Se marca la pregunta correspondiente como respondida
+      Se bloquean los textareas y botones de las preguntas respondidas
+      Se revisa si todas las preguntas han sido respondidas
+    */
+    anadirRespuestas: function(self, arrayRespuestas, arrayPreguntas) {
+      arrayRespuestas.forEach(function(res) {
+        //Se añade la respuesta al textarea correspondiente
+        let idTextarea = '#textarea-' + res.pregunta;
+        $(idTextarea).val(res.respuesta);
+        arrayPreguntas.forEach(function(pregunta){
+          //Se marca la pregunta correspondiente como respondida
+          if( res.pregunta === pregunta._id ){
+            if( res.subrespuestas.length > 0 && App.leccion.tipo === 'tutorial' ){
+              //Se arman las subrespuestas
+              self.anadirSubrespuestas(self, res.subrespuestas, pregunta);
+            }else{
+              pregunta.respuesta  = res.respuesta;
+              pregunta.respondida = true;
+              self.bloquearTextAreaRespondida(pregunta);
+              self.bloquearBtnRespuesta(pregunta);
+            }
+          }
+        });
+      });
+      // Se revisa si todas las preguntas han sido respondidas
+      const todasRespondidas = self.verificarTodasRespondidas(self, self.preguntas);
+      if( todasRespondidas && App.leccion.tipo != 'tutorial' ){
+        $('#modalRevisarRespuestas').modal('open');
+      }
+    },
+    /*
+      Se añaden las respuestas a las preguntas de la sección que el estudiante ya haya enviado previamente
+      Se busca la pregunta correspondiente comparando el orden de la respuesta con el orden de la pregunta
+      Como al responder una pregunta en tutorial, se crea el array de todas las subrespuestas, se hacer una verificación
+       para solo añadir la respuesta que sea diferente de vacío
+    */
+    anadirSubrespuestas: function(self, arraySubrespuestas, pregunta){
+      arraySubrespuestas.forEach( function(subRes){
+        pregunta.subpreguntas.forEach( function(subPreg){
+          if( subRes.ordenPregunta == subPreg.orden ){
+            let textareaId = '#textarea-sub-'      + pregunta.orden + '-' + subRes.ordenPregunta;
+            let btnId      = '#btn-responder-sub-' + pregunta.orden + '-' + subRes.ordenPregunta;
+            //Solo añado la respuesta si no está vacía
+            if( subRes.respuesta != '' && subRes.respuesta != null ){
+              $(textareaId).val(subRes.respuesta);
+              $(textareaId).attr("disabled", true);
+              $(btnId).attr("disabled", true);
+              subPreg.respondida = true;
+              pregunta.respondida = true;
+            }
+          }
+        });
+      });
+      if( App.verificarPreguntasSeccion(pregunta) ){
+        console.log('Se han respondido a todas las subpreguntas de la sección actual')
+        let cont            = pregunta.orden;
+        cont++;
+        $('#tab-' + cont).removeClass('disabled')  
+      }else{
+        console.log('Aún no responde a todas las preguntas de la sección actual.')
+      }
+    },
+    crearSocket: function(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
+      let respuesta_realtime = {
+        estudianteId       : estudiante._id,
+        estudianteNombre   : estudiante.nombres,
+        estudianteApellido : estudiante.apellidos,
+        grupoId            : grupo._id,
+        grupoNombre        : grupo.nombre,
+        leccion            : idLeccion,
+        paralelo           : idParalelo,
+        pregunta           : pregunta,
+        respuesta          : respuesta,
+        feedback           : '',
+        calificacion       : 0,
+        imagenes           : urlImagen,
+        arraySubrespuestas : arraySubrespuestas
+      };
+      return respuesta_realtime;
+    },
+    /*
+      Dada la pregunta ingresada como parámetro, obtiene todas las subrespuestas ingresadas por el estudiante y las añade a un array con el orden de la pregunta a la que pertenece
+    */
+    armarArraySubrespuestas: function(pregunta){
+      let arraySubrespuestas = [];
+      for (let i = 0; i < pregunta.subpreguntas.length; i++) {
+        let subActual    = pregunta.subpreguntas[i];
+        let idTextarea   = '#textarea-sub-' + pregunta.orden + '-' + subActual.orden;
+        let respuesta    = $(idTextarea).val();
+        let subrespuesta = {
+          respuesta    : respuesta,
+          ordenPregunta: subActual.orden,
+          feedback     : '',
+          calificacion : 0,
+          imagen       : ''
+        };
+        arraySubrespuestas.push(subrespuesta);
+      }
+      return arraySubrespuestas;
+    },
+    /*
+      Esta función verifica si el estudiante ha respondido todas las preguntas de la lección
+    */
+    verificarTodasRespondidas: function(self, arrayPreguntas){
+      let todasRespondidas = true;
+      $.each(arrayPreguntas, function(index, pregunta){
+        if( !pregunta.respondida ){
+          console.log('La pregunta:', pregunta.nombre, ' no ha sido respondida')
+          todasRespondidas = false;
+          return false;
+        }
+      });
+      return todasRespondidas;
+    },
+    /*
+      Retorna true si todas las preguntas de la sección fueron respondidas
+    */
+    verificarPreguntasSeccion: function(seccion){
+      let flag = true;
+      for (var i = 0; i < seccion.subpreguntas.length; i++) {
+        let subActual = seccion.subpreguntas[i];
+        if( !subActual.respondida ){
+          flag = false;
+          return false;
+        }
+      }
+      return flag;
+    },
+    //////////////////////////////////////////
+    //Eventos
+    //////////////////////////////////////////
+    /*
+      Función ejecutada al dar click en btn responder de cada pregunta.
+      Hay 3 posibles casos cuando el estudiante quiere responder:
+        * Primera vez que el estudiante responde la pregunta y no puede corregir todavía.
+        * La pregunta ya fue respondida y puede corregirla.
+        * Aún no tiene habilitado para corregir y quiere corregir la respuesta enviada.
+    */
+    responder: function(pregunta, event){
+      let self           = this;
+      const idEstudiante = self.estudiante._id;
+      const idLeccion    = self.leccion._id;
+      const idParalelo   = self.estudiante.paralelo;
+      const idGrupo      = self.estudiante.grupo;
+      //Apenas da click en el botón se bloquea el textarea y el botón
+      self.bloquearBtnRespuesta(pregunta);
+      self.bloquearTextAreaRespondida(pregunta);
+      //self.bloquearEditor(pregunta);
+      if( !pregunta.respondida ){       //Caso normal, responde por primera vez a la pregunta indicada
+        self.enviarRespuesta(self, pregunta, idEstudiante, idLeccion, idParalelo, idGrupo);
+      }else{                            //Si ya ha enviado una respuesta a la pregunta indicada
+        if( self.corregirHabilitado ){  //Si ya puede corregir las respuestas
+          self.corregirRespuesta(self, pregunta, idLeccion, idEstudiante);
+        }else{                         //Si no puede corregir las respuestas
+          $('#modalCorregirRespuesta').modal('open');
+       }
+     }
+    },
+    /*
+      @Descripción: Esta función sube la imagen comprimida a imgur y devuelve la url.
+      @Autor: @jguilindro
+      @FechaModificación: 19-07-2017 @jguilindro
+    */
+    subirImagen: function(imagenSrc, pregunta){
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/image', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function () {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          App.loading(false);
+          var url = JSON.parse(xhr.responseText)
+          Materialize.toast('Imagen subida exitosamente', 5000, 'rounded');
+           var idSrcImage = '#source_image-' + pregunta;
+           $(idSrcImage).attr('aux', url.data.link);
+           var result_image = document.getElementById('result_image-'+pregunta);
+           $('#result_image-'+pregunta).attr('src', url.data.link);
+           var image_width=$(result_image).width(), image_height=$(result_image).height();
+        }
+      }
+    },
+    /*
       @Descripción: Esta función crea el objeto Respuesta que se enviará a la base de datos.
       @Autor: @edisonmora95
       @FechaModificación: 
@@ -245,10 +429,10 @@ let App = new Vue({
       const respuestaTextarea = $(idTextarea).val();
       const idSrcImage        = '#source_image-' + idPregunta;
       const urlImagen         = $(idSrcImage).attr('aux');
-      /* Armo el array de subrespuestas */
+      // Armo el array de subrespuestas
       let arraySubrespuestas  = App.armarArraySubrespuestas(pregunta); //Si la pregunta no tiene subpreguntas, esto queda vacío
       arraySubrespuestas      = JSON.stringify(arraySubrespuestas);
-      const respuesta   = {
+      const respuesta         = {
         estudiante         : idEstudiante,
         leccion            : idLeccion,
         pregunta           : idPregunta,
@@ -261,8 +445,28 @@ let App = new Vue({
         imagenes           : urlImagen,
         arraySubrespuestas : arraySubrespuestas
       };
-      console.log('La respuesta a enviarse es:', respuesta);
+      let respuesta_realtime = App.crearSocket(App.estudiante, App.grupo, idLeccion, idParalelo, pregunta, respuestaTextarea, urlImagen, arraySubrespuestas);
+      socket.emit('respuesta estudiante', respuesta_realtime);
       return respuesta;
+    },
+    crearSocket: function(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
+      let respuesta_realtime = {
+        estudianteId       : estudiante._id,
+        estudianteNombre   : estudiante.nombres,
+        estudianteApellido : estudiante.apellidos,
+        grupoId            : grupo._id,
+        grupoNombre        : grupo.nombre,
+        leccion            : idLeccion,
+        paralelo           : idParalelo,
+        pregunta           : pregunta._id,
+        preguntaNombre     : pregunta.nombre, 
+        respuesta          : respuesta,
+        feedback           : '',
+        calificacion       : 0,
+        imagenes           : urlImagen,
+        arraySubrespuestas : arraySubrespuestas
+      };
+      return respuesta_realtime;
     },
     /*
       Dada la pregunta ingresada como parámetro, obtiene todas las subrespuestas ingresadas por el estudiante y las añade a un array con el orden de la pregunta a la que pertenece
@@ -313,12 +517,11 @@ let App = new Vue({
       Función del modal. Si el estudiante escoge la opción de corregir respuestas
     */
     revisarLeccion: function(){
-      var self                = this;
-      self.corregirHabilitado = true; //Se habilita la opción de corregir las respuestas enviadas.
-      $.each(self.preguntas, function(index, pregunta){
+      App.corregirHabilitado = true; //Se habilita la opción de corregir las respuestas enviadas.
+      $.each(App.preguntas, function(index, pregunta){
         //Se vuelven a habilidar los botones y las textareas de todas las preguntas para poder corregir
-        self.desbloquearBtnRespuesta(pregunta);
-        self.desbloquearTextAreaRespondida(pregunta);
+        App.desbloquearBtnRespuesta(pregunta);
+        App.desbloquearTextAreaRespondida(pregunta);
       });
     },
     desbloquearTextAreaRespondida: function(pregunta){
@@ -351,45 +554,15 @@ let App = new Vue({
       });
     },
     /*
-      Esta función hace la llamada a la api para corregir la respuesta.
-    */
-    enviarCorreccion: function(idRespuesta, pregunta){
-      //var idEditor = '#editor-' + pregunta._id; //Obtengo el id del editor en el que se encuantra la respuesta que se desea enviar.
-      //var respuestaEditor = $(idEditor).code() //Obtengo la respuesta escrita
-      const urlPut            = "/api/respuestas/" + idRespuesta;
-      const idTextarea        = '#textarea-' + pregunta._id;
-      const respuestaTextarea = $(idTextarea).val();
-      const resp              = {respuesta: respuestaTextarea}
-      //var resp = {respuesta: respuestaEditor}
-      $.ajax({
-        url    : urlPut,
-        method : 'PUT',
-        data   : resp,
-        success: function(response) {
-          Materialize.toast('¡Su respuesta ha sido corregida!', 6000, 'rounded');
-        },
-        error  : function(response) {
-          console.log(response);
-          Materialize.toast('Hubo un error al tratar de corregir su respuesta.', 1000, 'rounded red');
-        }
-      });
-    },
-    /*
       Esta función se ejecuta cuando el tiempo se ha terminado, automáticamente se envían todas las respuestas.
     */
     responderTodas: function(){
-      var self = this;
-      $.each(self.preguntas, function(index, pregunta){
+      $.each(App.preguntas, function(index, pregunta){
         if( !pregunta.respondida ){
-          self.responder(pregunta);
+          App.responder(pregunta);
         }
       });
       window.location.href = "/estudiantes";
-    },
-    mostrarModal: function(imageUrl){
-      $("#modal_Img .modal-content").empty();
-      $("<img>",{'src': imageUrl, 'class' : 'center-block' }).appendTo("#modal_Img .modal-content")
-      $('#modal_Img').modal('open');
     },
     /*
       @Descripción: Esta función obtiene la imagen subida por el usuario
@@ -481,10 +654,13 @@ let App = new Vue({
       const idLeccion    = App.leccion._id;
       const idParalelo   = App.estudiante.paralelo;
       const idGrupo      = App.estudiante.grupo;
-      console.log('Se va a bloquear la pregunta:', pregunta.orden, '-', sub.orden)
       //Primero bloqueo enseguida el textarea y el botón de la respuesta enviada
-      $('#textarea-sub-'      + pregunta.orden + '-' + sub.orden).attr("disabled", true);
-      $('#btn-responder-sub-' + pregunta.orden + '-' + sub.orden).attr("disabled", true);
+      const idTextarea = '#textarea-sub-'      + pregunta.orden + '-' + sub.orden;
+      const idBtn      = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      $(idTextarea).attr("disabled", true);
+      $(idBtn).attr("disabled", true);
+      //Se añade el loading
+      App.loading(true, idBtn);
       //Se crea el objeto Respuesta que se enviará a la base de datos
       const respuesta    = App.crearRespuesta(pregunta._id, idEstudiante, idLeccion, idParalelo, idGrupo, pregunta);  
       //Verifico si la pregunta(sección) ya ha sido respondida anteriormente
@@ -498,97 +674,28 @@ let App = new Vue({
           estudiante    : App.estudiante._id,
           subrespuestas : respuesta.arraySubrespuestas
         };
-        $.ajax({
-          url: '/api/respuestas/',
-          type: 'PUT',
-          data: obj,
-          success: function(res){
-
-          },
-          error: function(err){
-
-          }
-        });
-        sub.respondida = true;
-        Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
-        //Se debe verificar si se han respondido a todas las preguntas de la sección
-        if( App.verificarSubpreguntasDePregunta(pregunta) ){
-          console.log('Se han respondido a todas las subpreguntas de la sección actual')
-          //Se marca la sección (pregunta) como respondida para que pueda avanzar
-          //Se desbloquea la siguiente sección
-          let cont            = pregunta.orden;
-          cont++;
-          $('#tab-' + cont).removeClass('disabled')  
-        }else{
-          console.log('Aún no responde a todas las preguntas de la sección actual.')
-        }
-
+        App.enviarSubrespuestas(obj, sub, pregunta); //ESTO ES AJAX
       }else{
         console.log('Esta es la primera pregunta que responde de la sección');
         //Se debe crear el registro en la colección de Respuestas
-        $.ajax({
-          url    : '/api/respuestas/',
-          type   : 'POST',
-          data   : respuesta,
-          success: function(res){
-            //Una vez creado el registro correctamente, se debe marcar la subpregunta como respondida
-            sub.respondida      = true;
-            pregunta.respondida = true;
-            Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
-            //Se debe verificar si se han respondido a todas las preguntas de la sección
-            if( App.verificarSubpreguntasDePregunta(pregunta) ){
-              console.log('Se han respondido a todas las subpreguntas de la sección actual')
-              //Se desbloquea la siguiente sección
-              let cont = pregunta.orden;
-              cont++;
-              $('#tab-' + cont).removeClass('disabled');  
-            }else{
-              console.log('Aún no responde a todas las preguntas de la sección actual.')
-            }
-          },
-          error  : function(err){
-            //Si no se pudo enviar la respuesta, se avisa al estudiante y se desbloquea el textarea y el botón
-            Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded');
-            console.log(err);
-            $('#textarea-sub-'      + pregunta.orden + '-' + sub.orden).attr("disabled", false);
-            $('#btn-responder-sub-' + pregunta.orden + '-' + sub.orden).attr("disabled", false);
-            sub.respondida      = false;
-            pregunta.respondida = false;
-          }
-        }); 
-       
+         App.enviarRespuestaSeccion(respuesta, sub, pregunta); //AJAX
       }
-      //console.log('pregunta:', pregunta)
-      //console.log('sub:', sub)
-    },
-    verificarSubpreguntasDePregunta: function(pregunta){
-      console.log('Pregunta a verificar: ', pregunta)
-      let flag = true;
-      for (var i = 0; i < pregunta.subpreguntas.length; i++) {
-        let subActual = pregunta.subpreguntas[i];
-        if( !subActual.respondida ){
-          console.log(subActual)
-          flag = false;
-          return false;
-        }
-      }
-      return flag;
     }
    },
   data: {
-    tiempo: '',
-    leccion: {},
-    preguntas: [],
+    tiempo    : '',
+    leccion   : {},
+    preguntas : [],
     estudiante: {},
-    respuesta: {
-      respuesta: '',
-      feedback: '',
-      calificacion: 0,
+    respuesta : {
+      respuesta     : '',
+      feedback      : '',
+      calificacion  : 0,
       fechaRespuesta: '',
-      grupo: '',
-      pregunta: '',
-      leccion: '',
-      imagenes: ''
+      grupo         : '',
+      pregunta      : '',
+      leccion       : '',
+      imagenes      : ''
     },
     respuestas: [],
     corregirHabilitado: false,
@@ -597,46 +704,34 @@ let App = new Vue({
 });
 
 socket.on('tiempo restante', function(tiempo) {
-  console.log(tiempo)
   App.tiempo = tiempo
 })
 
 socket.on('terminado leccion', function(match) {
   socket.disconnect() 
   App.responderTodas();
-})
+});
+
 socket.on('leccion id', function(id_leccion) {
-  //App.obtenerLeccion(id_leccion)
-  //App.leccionId = id_leccion;
-})
+});
+
 socket.on('desconectarlo', function(dato) {
   Materialize.toast('hubo un error llamar', 15000)
-})
+});
 
 Offline.options = {
   checkOnLoad: true,
-  requests: true,
-}
-
+  requests   : true,
+};
 
 Offline.on('down', function(data) {
-  // mostrar mensaje que esta desconectado
-  //  Materialize.toast('No esta conectado a internet', 6000)
-})
+});
 
 Offline.on('up', function(data) {
-  // pedir el tiempo
-  // socket.emit('tengo internet', App.estudiante);
-})
+});
 
 var interval;
 socket.on('connect', function() {
-  // interval = setInterval(function () {
-  //   socket.emit('conectados', App.estudiante)
-  // }, 5000);
-  // document.getElementById('desconectado').classList.add("borrar");
-  // document.getElementById('conectado').classList.remove("borrar");
-  // App.obtenerParaleloDeEstudiante()
   document.getElementById('conectado').classList.remove("red");
   document.getElementById('conectado').classList.add("green");
   $.get({
@@ -644,8 +739,8 @@ socket.on('connect', function() {
     success: function(data) {
       socket.emit('reconectar estudiante', data.datos)
     }
-  })
-})
+  });
+});
 
 socket.on('connect_failed', function() {
   $.get({
@@ -653,58 +748,18 @@ socket.on('connect_failed', function() {
     success: function(data) {
       socket.emit('reconectar estudiante', data.datos)
     }
-  })
-})
+  });
+});
 
 socket.on('disconnect', function() {
   clearInterval(interval)
-  //socket.disconnect()
-  // document.getElementById('desconectado').classList.remove("borrar")
-  // document.getElementById("conectado").classList.add("borrar");
   document.getElementById('conectado').classList.remove("green");
   document.getElementById('conectado').classList.add("red");
   console.log('desconectado');
-})
+});
 
 supportsWebSockets = 'WebSocket' in window || 'MozWebSocket' in window;
 if (!supportsWebSockets) {
   Materialize.toast('No Soportado', 6000)
 }
-
-
-/*
-  crearEditor: function(pregunta){
-       //console.log('Entrando a la funcion crearEditor')
-       var self = this;
-       $.each(self.preguntas, function(index, pregunta){
-         var idEditor = '#editor-' + pregunta._id;
-         $(idEditor).materialnote({
-           height: "25vh",
-           toolbar: [
-             // [groupName, [list of button]]
-             ['style', ['bold', 'italic', 'underline']],
-             ['para', ['ul', 'ol']],
-             ['Insert', ['picture']]
-           ],
-           onImageUpload: function(files, editor, $editable) {
-             var clientId = "300fdfe500b1718";
-             var xhr = new XMLHttpRequest();
-             xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-             xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-             App.loading(true);
-             xhr.onreadystatechange = function () {
-               if (xhr.status === 200 && xhr.readyState === 4) {
-                 App.loading(false);
-                 var url = JSON.parse(xhr.responseText)
-                 $(idEditor).materialnote('editor.insertImage', url.data.link);
-               }
-             }
-             xhr.send(files[0]);
-           }
-         });
-         $(".note-editor").find("button").attr("type", "button");
-       });
-
-     },
-*/
 

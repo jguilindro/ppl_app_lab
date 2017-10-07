@@ -49,6 +49,9 @@ var App = new Vue({
     bloquearEstudiante(id_estudiante) {
       console.log(id_estudiante);
     },
+    obtenerRespuestas(){
+
+    },
     tomarLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
       var id_paralelo = window.location.href.toString().split('/')[7]
@@ -82,7 +85,8 @@ var App = new Vue({
     paralelo: {},
     tiempo: '',
     dataEstudiantes: '',
-    mas_tiempo: 0
+    mas_tiempo: 0,
+    respuestas: [],
   },
 })
 
@@ -298,3 +302,10 @@ function continuar() {
    document.getElementById('terminar-leccion').disabled = false
   leccion.emit('continuar leccion',  App.leccion._id)
 }
+
+leccion.on('respuesta para profesor', function(respuesta_estudiante) {
+  App.respuestas.push(respuesta_estudiante)
+  console.log(App.respuestas)
+  console.log('respuesta de estudiante')
+  console.log(respuesta_estudiante)
+})

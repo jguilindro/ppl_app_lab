@@ -1,8 +1,8 @@
-// const mongoose = require('mongoose');
-// const URL_LOCAL = require('../config/main').local
-// // const URL_MLAB = require('../config/main').mlab
-// mongoose.connect("mongodb://localhost/ppl", { useMongoClient: true })
-// const db = mongoose.connection;
+/*const mongoose = require('mongoose');
+const URL_LOCAL = require('../config/main').local
+// const URL_MLAB = require('../config/main').mlab
+mongoose.connect("mongodb://localhost/ppl", { useMongoClient: true })
+const db = mongoose.connection;
 
 // db.on('error', function(err) {
 //   console.log(`error ${err}`);
@@ -11,6 +11,9 @@
 // db.on('connected', function() {
 //   console.log(`base de datos local para upload`);
 // })
+db.on('connected', function() {
+  console.log(`base de datos local para upload`);
+})*/
 
 var co = require('co')
 var CronJob = require('cron').CronJob;

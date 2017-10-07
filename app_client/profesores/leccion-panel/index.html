@@ -29,72 +29,104 @@
            <a href="/profesores/leccion" class="modal-action modal-close waves-effect waves-green btn-flat">SALIR</a>
          </div>
        </div>
-      <div class="botones">
+      
+      <section class="row" id="section-tabs">
+          <br>
+          <div class="col s12">
+              <ul class="tabs" id="tabs-swipe-demo">
+                <li class="tab col s6" id="t1"><a id = "ta1" class="active" href="#test1">Leccion</a></li>
+                <li class="tab col s6 " id="t2"><a id= "ta2"href="#test2">Respuestas</a></li>
+              </ul>
+          </div>
+      </section>
+
+      <div id="test1" class="col s12">
+        <div class="botones">
         <!-- <button class="btn" type="button" id="leccion-no-dar" onclick="terminarLeccionDevelopment()">Cancelar lección</button> -->
 
         <br>
-        <div class="row">
-          <div class="col s4">
-            <button class="btn boton"  id='comenzar-leccion'type="button">comenzar lección</button>
+          <div class="row">
+            <div class="col s4">
+              <button class="btn boton"  id='comenzar-leccion'type="button">comenzar lección</button>
+            </div>
+            <div class="col s4">
+              <button class="btn boton red" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+            </div>
+            <div class="col s1">
+              <!-- <input type="number" v-model="mas_tiempo" min="0" name="" value=""> -->
+            </div>
+            <div class="col s1">
+              <input type="number" v-model="mas_tiempo" id="input-tiempo"min="0" name="" value="">
+            </div>
+            <div class="col s2">
+              <button class="btn boton blue" id="anadir-tiempo" onclick="mas()">añadir</button>
+            </div>
+            <!-- <div>
+              <button class="btn" onclick="terminarPrueba()">prua terminar</button>
+            </div> -->
           </div>
-          <div class="col s4">
-            <button class="btn boton red" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+          <div class="row">
+            <div class="col s6">
+              <button class="btn boton blue" id="pausar-leccion" onclick="pausar()">Pausar</button>
+            </div>
+            <div class="col s6">
+              <button class="btn boton blue" id="continuar-leccion" onclick="continuar()">Continuar</button>
+            </div>
           </div>
-          <div class="col s1">
-            <!-- <input type="number" v-model="mas_tiempo" min="0" name="" value=""> -->
-          </div>
-          <div class="col s1">
-            <input type="number" v-model="mas_tiempo" id="input-tiempo"min="0" name="" value="">
-          </div>
-          <div class="col s2">
-            <button class="btn boton blue" id="anadir-tiempo" onclick="mas()">añadir</button>
-          </div>
-          <!-- <div>
-            <button class="btn" onclick="terminarPrueba()">prua terminar</button>
-          </div> -->
         </div>
-        <div class="row">
-          <div class="col s6">
-            <button class="btn boton blue" id="pausar-leccion" onclick="pausar()">Pausar</button>
-          </div>
-          <div class="col s6">
-            <button class="btn boton blue" id="continuar-leccion" onclick="continuar()">Continuar</button>
+        <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
+        <!-- <p>{{grupos}}</p> -->
+        <!-- <p>{{paralelo}}</p> -->
+        <h4>Tiempo: {{tiempo}} </h4>
+        <span class="center-align">
+          <h3>Código</h3>
+          <h3 class="code">{{leccion.codigo}}</h3>
+        </span>
+        <!-- <div v-for="estudiante in estudiantes_conectados">
+	      <p>{{estudiante.nombres}}</p>
+        </div> -->  
+        <div class="estudiantes row">
+          <div v-for="(grupo, index) in paralelo.grupos">
+            <div v-if="index%2 == 0" class = "divisor"></div>
+              <div class="col s6 grupin estudiantes" v-if="grupo.estudiantes.length != 0">
+                <div class="group-name center-align">{{grupo.nombre}}  <i class="fa fa-group fa-lg" style="float: right;">{{obtenerConectados(grupo._id)}}/{{grupo.estudiantes.length}}</i></div>
+                <div v-for="estudiante in grupo.estudiantes">
+                  <div class="" style="float: left">
+                    <div class="switch">
+                      <label>
+                        <!-- <input type="checkbox" v-on:change="bloquearEstudiante(estudiante._id)">
+                        <span class="lever"></span> -->
+                      </label>
+                    </div>
+                  </div>
+                  <div class="student left-align "> <div class="offline" v-bind:id="estudiante._id"></div>    {{estudiante.nombres}} {{estudiante.apellidos}}
+                    <span v-bind:id="'esperando-' + estudiante._id" style="float: right;" class=""></span>
+                  </div>
+                </div>
+              </div>
           </div>
         </div>
       </div>
-	    <p v-show="false" class="center-align">Estudiantes conectados: {{estudiantes_conectados}}</p> <!--por alguna razon si no lo pongo no muesta los estudiantes-->
-	    <!-- <p>{{grupos}}</p> -->
-	    <!-- <p>{{paralelo}}</p> -->
-	    <h4>Tiempo: {{tiempo}} </h4>
-	    <span class="center-align">
-	    	<h3>Código</h3>
-		    <h3 class="code">{{leccion.codigo}}</h3>
-	    </span>
-	    <!-- <div v-for="estudiante in estudiantes_conectados">
-	      <p>{{estudiante.nombres}}</p>
-	    </div> -->
-	    <div class="estudiantes row">
-	    	<div v-for="(grupo, index) in paralelo.grupos">
-		      <div v-if="index%2 == 0" class = "divisor"></div>
-            <div class="col s6 grupin estudiantes" v-if="grupo.estudiantes.length != 0">
-              <div class="group-name center-align">{{grupo.nombre}}  <i class="fa fa-group fa-lg" style="float: right;">{{obtenerConectados(grupo._id)}}/{{grupo.estudiantes.length}}</i></div>
-              <div v-for="estudiante in grupo.estudiantes">
-                <div class="" style="float: left">
-                  <div class="switch">
-                    <label>
-                      <!-- <input type="checkbox" v-on:change="bloquearEstudiante(estudiante._id)">
-                      <span class="lever"></span> -->
-                    </label>
-                  </div>
-                </div>
-                <div class="student left-align "> <div class="offline" v-bind:id="estudiante._id"></div>    {{estudiante.nombres}} {{estudiante.apellidos}}
-                  <span v-bind:id="'esperando-' + estudiante._id" style="float: right;" class=""></span>
-                </div>
-              </div>
+      
+      <div id="test2" class="col s12">
+        <label>Respuestas</label>
+        <br>
+        <div id="row_respuestas" v-for="(res, index) in respuestas">
+          <div class="card-panel">
+            <p>{{res.grupoNombre}}</p>
+            <p>{{res.estudianteNombre}} {{res.estudianteApellido}}</p>
+            <p>{{res.preguntaNombre}}</p> 
+            <p>{{res.arraySubrespuestas.respuesta}}</p> 
+            <div v-for="(sub, index) in res.arraySubrespuestas">
+                <p>{{sub.ordenPregunta}}</p>
+                <p>{{sub.respuesta}}</p>
             </div>
-		    </div>
-	    </div>
-
+            <p>{{res.arraySubrespuestas}}</p>
+          </div>
+        </div>
+      </div>
+  
+  	  </div>
   	</div>
   </div>
   <script src="/bower_components/offline/offline.min.js"></script>
