@@ -3,6 +3,8 @@ const local = function() {
     return require('../config/main').local //local
   } else if (process.env.NODE_ENV == 'production') {
     return require('../config/main').local //local
+  } else if (process.env.NODE_ENV === 'testprofesores') {
+    return "mongodb://localhost/ppltestprofesores"
   }
 }
 

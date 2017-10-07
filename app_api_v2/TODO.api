@@ -1,3 +1,9 @@
+## mockups exactos de los profesores y estudiantes
+
+## peticiones get y post que cumplan lo que se muestra en la vista y no mandar datos que no se usen, perfomance del playload
+
+## documentacion
+
 ## Folder stucture y descripcion de lo que se guarda en cada carpeta
 
 ## Code lintern y patrones de codigo
@@ -12,14 +18,21 @@
 * webservice update
 * dump database script
 
-## Logger
+## validaciones api
+
+## Logger production, errors, debug
 * winston
+https://github.com/winstonjs/winston
 
 ## Testing (unit, integrated)
 * mocha, jest, apitest
 * apitest
 * sockettest
 * database test
+
+# validaciones
+* permisos por cada actor
+* 
 
 ## AdminApi
 * cpu

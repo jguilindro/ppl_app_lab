@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
-const URL_LOCAL = require('../config/main').local
-// const URL_MLAB = require('../config/main').mlab
-mongoose.connect("mongodb://localhost/ppl", { useMongoClient: true })
-const db = mongoose.connection;
+// const mongoose = require('mongoose');
+// const URL_LOCAL = require('../config/main').local
+// // const URL_MLAB = require('../config/main').mlab
+// mongoose.connect("mongodb://localhost/ppl", { useMongoClient: true })
+// const db = mongoose.connection;
 
-db.on('error', function(err) {
-  console.log(`error ${err}`);
-})
+// db.on('error', function(err) {
+//   console.log(`error ${err}`);
+// })
 
-db.on('connected', function() {
-  console.log(`base de datos local para upload`);
-})
+// db.on('connected', function() {
+//   console.log(`base de datos local para upload`);
+// })
 
 var co = require('co')
 var CronJob = require('cron').CronJob;
@@ -22,13 +22,13 @@ var logger        = require('tracer').colorConsole({
 module.exports = {
   init: function() {
     // Primero se crean los paralelos, los estudiantes son anadidos al paralelo ,luego los profesores son anadidos al paralelo correspondiente
-    var paralelos = require('./paralelos.ws.init')
-    var estudiantes = require('./estudiantes.ws.init')
-    var profesores = require('./profesores.ws.init')
+    // var paralelos = require('./paralelos.ws.init')
+    // var estudiantes = require('./estudiantes.ws.init')
+    // var profesores = require('./profesores.ws.init')
     co(function* () {
-      var p = yield paralelos()
-      var e = yield estudiantes()
-      var pro = yield profesores()
+      // var p = yield paralelos()
+      // var e = yield estudiantes()
+      // var pro = yield profesores()
     }).catch(fail => {
       console.log(fail);
     })
