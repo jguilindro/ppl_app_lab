@@ -1,6 +1,6 @@
 dbName = "ppl";
-conn = new Mongo();
-db 	 = conn.getDB(dbName);
+conn 	 = new Mongo();
+db 	 	 = conn.getDB(dbName);
 
 db.capitulos.drop();
 /* Física 2 */
@@ -213,5 +213,106 @@ db.capitulos.insert({
 	codigoMateria: "FISG1003",
 	nombreMateria: "Fisica 3",
 	tipo 				 : "estimacion",
+	preguntas 	 : []
+});
+/* Física Conceptual */ 
+db.capitulos.insert({
+	_id 				 : '22',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 11. La naturaleza atomica de la materia",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '23',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 6. Cantidad de movimiento",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '24',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 7. Energia",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '25',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 16. Transferencia de calor",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '26',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 20. Sonido",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '27',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 26. Propiedades de la luz",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '28',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 27. Color",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '29',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 28. Reflexion y refraccion",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '30',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 33. El nucleo atomico y la radiactividad",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
+	preguntas 	 : []
+});
+db.capitulos.insert({
+	_id 				 : '31',
+	createdAt    : new Date(),
+	updatedAt    : new Date(),
+	nombre 			 : "Capitulo 35. Teoria de la relatividad espacial",
+	codigoMateria: "FISG2001",
+	nombreMateria: "Fisica Conceptual",
+	tipo 				 : "",
 	preguntas 	 : []
 });
