@@ -25,6 +25,7 @@
     "production": "npm install && npm run parcel && npm run js:production",
     "production:up": "cross-env NODE_ENV=production env-cmd .env node app.js",
     "predev": "npm install",
+    "testprofesores": "cross-env NODE_ENV=testprofesores env-cmd .env node app.js",
     "dev": "npm run parcel",
     "postdev": "npm-run-all --parallel watchify mon sync docs",
     "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
