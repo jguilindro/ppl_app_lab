@@ -81,24 +81,26 @@
                     <main>
                       <textarea :id="'textarea-sub-' + pregunta.orden + '-' + sub.orden" class="materialize-textarea">
                       </textarea>
-                      <section style="margin: 3% 0;">
-                        <label>Subir una imagen</label>
-                        <br/>
-                        <input id="archivo" type='file' @change="getImage(sub.orden,$event)"/>
+                      <footer style="margin: 3% 0;" class="row">
+                        <article class="col s6">
+                          <label>Subir una imagen</label>
+                          <br/>
+                          <input :id="'fi-'+ pregunta.orden + '-' + sub.orden" type='file' @change="getImageSub(pregunta, sub, $event)"/>  
+                        </article>
+                        <article class="col s6">
+                          <button href="." class="waves-effect waves-light btn pull right" @click="responderSub(pregunta, sub)" :id="'btn-responder-sub-' + pregunta.orden + '-' + sub.orden">Responder</button>
+                        </article>
+                      </footer>
+                      <section>
+                        <img hidden :id="'source_image-'+ pregunta.orden + '-' + sub.orden" src="#"/>
                       </section>
                       <section>
-                        <img hidden :id="'source_image-'+ sub.orden" src="#" alt="your image" />
+                        <img hidden :id="'result_image-'+ pregunta.orden + '-' + sub.orden" src="#"/>
                       </section>
                       <section>
-                        <img hidden :id="'result_image-'+ sub.orden" src="#" alt="your image" />
-                      </section>
-                      <section>
-                        <img hidden :id="'loading-'+ sub.orden" src="/img/loading.gif" />
+                        <img hidden :id="'loading-'+ pregunta.orden + '-' + sub.orden" src="/img/loading.gif" />
                       </section>
                     </main>
-                    <footer class="row" id="botones">
-                      <button href="." class="waves-effect waves-light btn pull right" @click="responderSub(pregunta, sub)" :id="'btn-responder-sub-' + pregunta.orden + '-' + sub.orden">Responder</button>
-                    </footer>
                   </article>
                 </section>
               </main>

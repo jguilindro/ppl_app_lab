@@ -4,7 +4,6 @@ var socket = io('/tomando_leccion', {
   'forceNew': true
 });
 
-
 let App = new Vue({
   created: function(){
     let self = this;
@@ -12,9 +11,22 @@ let App = new Vue({
       Al iniciar la ventana se obtienen los datos de la lección
       Luego se añaden las respuestas que el estudiante ya ha enviado (en caso de que haya recargado la página)
     */
-    $.when( self.obtenerUsuario() ).then( function(){
-      self.anadirRespuestas(self, self.respuestas, self.preguntas);
-      self.desbloquearTabs();
+    $.when( $.ajax( self.obtenerDatosLeccion() ) ).then( function(){
+      while( true ){
+        console.log('dataFinishedLoading:', App.dataFinishedLoading);
+        if( self.dataFinishedLoading ){
+          self.anadirRespuestas(self.respuestas, self.preguntas);
+          self.desbloquearTabs();
+          const todasRespondidas     = App.verificarTodasRespondidas(self, self.preguntas);
+          const noEsTutorial         = (App.leccion.tipo != 'tutorial');
+          const noEsFisicaConceptual = (App.leccion.codigoMateria != 'FISG2001'); 
+          if( todasRespondidas &&  noEsTutorial && noEsFisicaConceptual ){
+            $('#modalRevisarRespuestas').modal('open');
+          }
+          return;
+        }
+      }
+      
     });
   },
   mounted: function(){
@@ -34,6 +46,7 @@ let App = new Vue({
       Asigna los valores obtenidos de la base de datos al objeto Vue que controla el DOM
     */
     asignarValoresObtenidos: function(res){
+      let self = this;
       App.estudiante          = res.datos.estudiante;
       App.idLeccion           = res.datos.estudiante.leccion;
       App.leccion             = res.datos.leccion;
@@ -86,18 +99,21 @@ let App = new Vue({
     //////////////////////////////////////////////////////
     //LLAMADAS A LA API
     //////////////////////////////////////////////////////
-    obtenerUsuario: function(){
+    /*
+      Obtengo toda la información de la lección
+    */
+    obtenerDatosLeccion: function(){
+      let self = this;
       $.get({
         url    : '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
-          if( res.estado ) {
-            //Primero se verifica si el paralelo del estudiante está tomando lección
-            if ( !res.datos.paralelo.dandoLeccion ) {
-              window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
-            }
-            App.asignarValoresObtenidos(res);
-            socket.emit('usuario', App.estudiante);
+          //Primero se verifica si el paralelo del estudiante está tomando lección
+          if ( !res.datos.paralelo.dandoLeccion ) {
+            window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
           }
+          App.asignarValoresObtenidos(res);
+          socket.emit('usuario', App.estudiante);
+          App.dataFinishedLoading = true;
         }
       });
     },
@@ -161,22 +177,29 @@ let App = new Vue({
         type: 'PUT',
         data: respuesta,
         success: function(res){
-          sub.respondida = true;
+          sub.respondida      = true;
+          pregunta.respondida = true;
+          App.loading(false, idBtn);
           Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
           //Se debe verificar si se han respondido a todas las preguntas de la sección
           if( App.verificarPreguntasSeccion(pregunta) ){
-            console.log('Se han respondido a todas las subpreguntas de la sección actual')
             //Se desbloquea la siguiente sección
             let cont = pregunta.orden;
             cont++;
             $('#tab-' + cont).removeClass('disabled');  
-          }else{
-            console.log('Aún no responde a todas las preguntas de la sección actual.')
           }
-          App.loading(false, idBtn);
         },
         error: function(err){
+          Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded');
+          sub.respondida      = false;
+          pregunta.respondida = false;
           App.loading(false, idBtn);
+          const idTextarea   = '#textarea-sub-'      + pregunta.orden + '-' + sub.orden;
+          const idBtn        = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+          const idFileInput  = '#fi-'                + pregunta.orden + '-' + sub.orden;
+          $(idTextarea).attr("disabled", false);
+          $(idBtn).attr("disabled", false);
+          $(idFileInput).attr('disabled',false);
         }
       });
     },
@@ -190,30 +213,54 @@ let App = new Vue({
           //Una vez creado el registro correctamente, se debe marcar la subpregunta como respondida
           sub.respondida      = true;
           pregunta.respondida = true;
+          App.loading(false, idBtn);
           Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
           //Se debe verificar si se han respondido a todas las preguntas de la sección
           if( App.verificarPreguntasSeccion(pregunta) ){
-            console.log('Se han respondido a todas las subpreguntas de la sección actual')
             //Se desbloquea la siguiente sección
             let cont = pregunta.orden;
             cont++;
             $('#tab-' + cont).removeClass('disabled');  
-          }else{
-            console.log('Aún no responde a todas las preguntas de la sección actual.')
           }
           App.loading(false, idBtn);
         },
         error  : function(err){
           //Si no se pudo enviar la respuesta, se avisa al estudiante y se desbloquea el textarea y el botón
           Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded');
-          console.log(err);
-          $('#textarea-sub-'      + pregunta.orden + '-' + sub.orden).attr("disabled", false);
-          $('#btn-responder-sub-' + pregunta.orden + '-' + sub.orden).attr("disabled", false);
           sub.respondida      = false;
           pregunta.respondida = false;
           App.loading(false, idBtn);
+          const idTextarea   = '#textarea-sub-'      + pregunta.orden + '-' + sub.orden;
+          const idBtn        = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+          const idFileInput  = '#fi-'                + pregunta.orden + '-' + sub.orden;
+          $(idTextarea).attr("disabled", false);
+          $(idBtn).attr("disabled", false);
+          $(idFileInput).attr('disabled',false);
         }
       });
+    },
+    /*
+      @Descripción: Esta función sube la imagen comprimida a imgur y devuelve la url.
+      @Autor: @jguilindro
+      @FechaModificación: 19-07-2017 @jguilindro
+    */
+    subirImagen: function(imagenSrc, pregunta){
+      var clientId = "300fdfe500b1718";
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/image', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function () {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          App.loading(false);
+          var url = JSON.parse(xhr.responseText)
+          Materialize.toast('Imagen subida exitosamente', 5000, 'rounded');
+           var idSrcImage = '#source_image-' + pregunta;
+           $(idSrcImage).attr('aux', url.data.link);
+           var result_image = document.getElementById('result_image-'+pregunta);
+           $('#result_image-'+pregunta).attr('src', url.data.link);
+           var image_width=$(result_image).width(), image_height=$(result_image).height();
+        }
+      }
     },
     //////////////////////////////////////////////////////
     //HELPERS
@@ -239,31 +286,25 @@ let App = new Vue({
       Se bloquean los textareas y botones de las preguntas respondidas
       Se revisa si todas las preguntas han sido respondidas
     */
-    anadirRespuestas: function(self, arrayRespuestas, arrayPreguntas) {
+    anadirRespuestas: function(arrayRespuestas, arrayPreguntas) {
       arrayRespuestas.forEach(function(res) {
-        //Se añade la respuesta al textarea correspondiente
-        let idTextarea = '#textarea-' + res.pregunta;
-        $(idTextarea).val(res.respuesta);
-        arrayPreguntas.forEach(function(pregunta){
-          //Se marca la pregunta correspondiente como respondida
-          if( res.pregunta === pregunta._id ){
-            if( res.subrespuestas.length > 0 && App.leccion.tipo === 'tutorial' ){
-              //Se arman las subrespuestas
-              self.anadirSubrespuestas(self, res.subrespuestas, pregunta);
-            }else{
-              pregunta.respuesta  = res.respuesta;
-              pregunta.respondida = true;
-              self.bloquearTextAreaRespondida(pregunta);
-              self.bloquearBtnRespuesta(pregunta);
-            }
+        let pregunta    = $.grep(arrayPreguntas, function(p){ return p._id == res.pregunta; })[0]; //Encuentro la pregunta a la que pertenece la respuesta
+        const esSeccion = (res.subrespuestas.length > 0 && App.leccion.tipo === 'tutorial');
+        if( esSeccion ){
+          App.anadirSubrespuestas(res.subrespuestas, pregunta);
+          if( App.verificarPreguntasSeccion(pregunta) ){
+            let cont = pregunta.orden;
+            cont++;
+            $('#tab-' + cont).removeClass('disabled');  
           }
-        });
+        }else{
+          $('#textarea-' + res.pregunta).val(res.respuesta);
+          pregunta.respuesta  = res.respuesta;
+          pregunta.respondida = true;
+          self.bloquearTextAreaRespondida(pregunta);
+          self.bloquearBtnRespuesta(pregunta);
+        }
       });
-      // Se revisa si todas las preguntas han sido respondidas
-      const todasRespondidas = self.verificarTodasRespondidas(self, self.preguntas);
-      if( todasRespondidas && App.leccion.tipo != 'tutorial' ){
-        $('#modalRevisarRespuestas').modal('open');
-      }
     },
     /*
       Se añaden las respuestas a las preguntas de la sección que el estudiante ya haya enviado previamente
@@ -271,31 +312,33 @@ let App = new Vue({
       Como al responder una pregunta en tutorial, se crea el array de todas las subrespuestas, se hacer una verificación
        para solo añadir la respuesta que sea diferente de vacío
     */
-    anadirSubrespuestas: function(self, arraySubrespuestas, pregunta){
+    anadirSubrespuestas: function(arraySubrespuestas, pregunta){
       arraySubrespuestas.forEach( function(subRes){
-        pregunta.subpreguntas.forEach( function(subPreg){
-          if( subRes.ordenPregunta == subPreg.orden ){
-            let textareaId = '#textarea-sub-'      + pregunta.orden + '-' + subRes.ordenPregunta;
-            let btnId      = '#btn-responder-sub-' + pregunta.orden + '-' + subRes.ordenPregunta;
-            //Solo añado la respuesta si no está vacía
-            if( subRes.respuesta != '' && subRes.respuesta != null ){
-              $(textareaId).val(subRes.respuesta);
-              $(textareaId).attr("disabled", true);
-              $(btnId).attr("disabled", true);
-              subPreg.respondida = true;
-              pregunta.respondida = true;
-            }
-          }
-        });
+        let subpregunta = $.grep(pregunta.subpreguntas, function(sp){ return sp.orden == subRes.ordenPregunta; })[0];
+        let textareaId  = '#textarea-sub-'      + pregunta.orden + '-' + subpregunta.orden;
+        let btnId       = '#btn-responder-sub-' + pregunta.orden + '-' + subpregunta.orden;
+        let resultImg   = '#result_image-'      + pregunta.orden + '-' + subRes.ordenPregunta;
+        let fileInputId = '#fi-'                + pregunta.orden + '-' + subRes.ordenPregunta;
+        if( subRes.respuesta != '' && subRes.respuesta != null ){
+          App.asignarDatosRespuesta(textareaId, btnId, resultImg, fileInputId, subRes.respuesta, subRes.imagen);
+          subpregunta.respondida = true;
+          pregunta.respondida = true;
+        }
       });
-      if( App.verificarPreguntasSeccion(pregunta) ){
-        console.log('Se han respondido a todas las subpreguntas de la sección actual')
-        let cont            = pregunta.orden;
-        cont++;
-        $('#tab-' + cont).removeClass('disabled')  
-      }else{
-        console.log('Aún no responde a todas las preguntas de la sección actual.')
-      }
+    },
+    asignarDatosRespuesta: function(idTextarea, idbtn, idImgSrc, idFI, respuesta, imagen){
+      $(idTextarea).val(respuesta);
+      $(idTextarea).attr("disabled", true);
+      $(idbtn).attr("disabled", true);
+      $(idImgSrc)[0].src = imagen;
+      $(idImgSrc).css({
+                    'width' : '150px',
+                    'height' : '150px'
+                  })
+                  .addClass('materialboxed')
+                  .materialbox()
+                  .show();
+      $(idFI).attr('disabled','disabled');
     },
     crearSocket: function(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
       let respuesta_realtime = {
@@ -394,29 +437,6 @@ let App = new Vue({
      }
     },
     /*
-      @Descripción: Esta función sube la imagen comprimida a imgur y devuelve la url.
-      @Autor: @jguilindro
-      @FechaModificación: 19-07-2017 @jguilindro
-    */
-    subirImagen: function(imagenSrc, pregunta){
-      var clientId = "300fdfe500b1718";
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.imgur.com/3/image', true);
-      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      xhr.onreadystatechange = function () {
-        if (xhr.status === 200 && xhr.readyState === 4) {
-          App.loading(false);
-          var url = JSON.parse(xhr.responseText)
-          Materialize.toast('Imagen subida exitosamente', 5000, 'rounded');
-           var idSrcImage = '#source_image-' + pregunta;
-           $(idSrcImage).attr('aux', url.data.link);
-           var result_image = document.getElementById('result_image-'+pregunta);
-           $('#result_image-'+pregunta).attr('src', url.data.link);
-           var image_width=$(result_image).width(), image_height=$(result_image).height();
-        }
-      }
-    },
-    /*
       @Descripción: Esta función crea el objeto Respuesta que se enviará a la base de datos.
       @Autor: @edisonmora95
       @FechaModificación: 
@@ -477,12 +497,14 @@ let App = new Vue({
         let subActual    = pregunta.subpreguntas[i];
         let idTextarea   = '#textarea-sub-' + pregunta.orden + '-' + subActual.orden;
         let respuesta    = $(idTextarea).val();
+        let idImgSrc     = '#result_image-' + pregunta.orden + '-' + subActual.orden;
+        let imagen       = $(idImgSrc)[0].src;
         let subrespuesta = {
           respuesta    : respuesta,
           ordenPregunta: subActual.orden,
           feedback     : '',
           calificacion : 0,
-          imagen       : ''
+          imagen       : imagen
         };
         arraySubrespuestas.push(subrespuesta);
       }
@@ -563,6 +585,74 @@ let App = new Vue({
         }
       });
       window.location.href = "/estudiantes";
+    },
+    getImageSub: function(pregunta, sub, event){
+      //Primero hay que bloquear el botón de responder subpregunta
+      let idBtn = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      $(idBtn).attr('disabled', true);
+      //Hay que mostrar el gif de loading
+      const idLoading = '#loading-' + pregunta.orden + '-' + sub.orden;
+      $(idLoading).show();
+      //Obtengo la imagen ingresada
+      let input = event.target;
+      let idSrcImage = '#source_image-' + pregunta.orden + '-' + sub.orden;
+      if( input.files && input.files[0] ){
+        let reader = new FileReader();
+        reader.onload = function(e){
+          $(idSrcImage).attr('src', e.target.result).hide();
+          App.comprimirSub(pregunta, sub);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+    comprimirSub: function(pregunta, sub){
+      var output_format = "jpg";
+      var source_image  = document.getElementById('source_image-'+pregunta.orden+'-'+sub.orden);
+      var result_image  = document.getElementById('result_image-'+pregunta.orden+'-'+sub.orden);
+      var quality       = 15;
+      const idResultImg = '#result_image-'+pregunta.orden+'-'+sub.orden;
+
+      $('#source_image-'+pregunta.orden+'-'+sub.orden).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
+        result_image.src = jic.compress(source_image,quality,output_format).src;
+        $(idResultImg).css({
+                        'width' : '150px',
+                        'height' : '150px'
+                      })
+                      .addClass('materialboxed')
+                      .materialbox()
+                      .hide();
+      });
+      
+      $('#result_image-'+pregunta.orden+'-'+sub.orden).ready(function(){
+        App.subirImagenSub((result_image.src).substring(23), pregunta, sub);//Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
+      });
+    },
+    subirImagenSub: function(imagenSrc, pregunta, sub){
+      let idBtn    = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      let clientId = "300fdfe500b1718";
+      let xhr      = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.imgur.com/3/image', true);
+      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
+      xhr.onreadystatechange = function(){
+        if (xhr.status === 200 && xhr.readyState === 4) {
+          $(idBtn).attr('disabled', false);
+          let url = JSON.parse(xhr.responseText);
+          Materialize.toast('Imagen subida exitosamente', 3000, 'rounded');
+
+          var result_image  = document.getElementById('result_image-'+pregunta.orden+'-'+sub.orden);
+          const idResultImg = '#result_image-'+pregunta.orden+'-'+sub.orden;
+          result_image.src  = url.data.link;
+          $(idResultImg).show();
+
+          const idLoading = '#loading-' + pregunta.orden + '-' + sub.orden;
+          $(idLoading).hide();
+
+        }
+        if (xhr.status === 400){
+          Materialize.toast('<span style="color: red">Hubo un error al subir la imagen. Intentelo de nuevo.</span>', 5000, 'rounded');
+        }
+      }
+      xhr.send(imagenSrc);//Envia la imagen
     },
     /*
       @Descripción: Esta función obtiene la imagen subida por el usuario
@@ -655,18 +745,18 @@ let App = new Vue({
       const idParalelo   = App.estudiante.paralelo;
       const idGrupo      = App.estudiante.grupo;
       //Primero bloqueo enseguida el textarea y el botón de la respuesta enviada
-      const idTextarea = '#textarea-sub-'      + pregunta.orden + '-' + sub.orden;
-      const idBtn      = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      const idTextarea   = '#textarea-sub-'      + pregunta.orden + '-' + sub.orden;
+      const idBtn        = '#btn-responder-sub-' + pregunta.orden + '-' + sub.orden;
+      const idFileInput  = '#fi-'                + pregunta.orden + '-' + sub.orden;
       $(idTextarea).attr("disabled", true);
       $(idBtn).attr("disabled", true);
+      $(idFileInput).attr('disabled','disabled');
       //Se añade el loading
       App.loading(true, idBtn);
       //Se crea el objeto Respuesta que se enviará a la base de datos
       const respuesta    = App.crearRespuesta(pregunta._id, idEstudiante, idLeccion, idParalelo, idGrupo, pregunta);  
       //Verifico si la pregunta(sección) ya ha sido respondida anteriormente
       if( pregunta.respondida ){
-        //Tal vez debería verificar si no ha respondido previamente a esta subpregunta
-        console.log('Ya ha respondido a una pregunta dentro de esta sección');
         //Se debe actualizar el registro de la colección de Respuestas
         const obj = {
           leccion       : App.leccion._id,
@@ -676,7 +766,6 @@ let App = new Vue({
         };
         App.enviarSubrespuestas(obj, sub, pregunta); //ESTO ES AJAX
       }else{
-        console.log('Esta es la primera pregunta que responde de la sección');
         //Se debe crear el registro en la colección de Respuestas
          App.enviarRespuestaSeccion(respuesta, sub, pregunta); //AJAX
       }
@@ -699,7 +788,8 @@ let App = new Vue({
     },
     respuestas: [],
     corregirHabilitado: false,
-    flag: false
+    flag: false,
+    dataFinishedLoading : false
   }
 });
 
@@ -708,8 +798,16 @@ socket.on('tiempo restante', function(tiempo) {
 })
 
 socket.on('terminado leccion', function(match) {
-  socket.disconnect() 
-  App.responderTodas();
+  socket.disconnect();
+  const noEsTutorial       = ( App.leccion.tipo != 'tutorial' );
+  const esFisicaConceptual = ( App.leccion.codigoMateria == 'FISG2001' ); 
+  if( esFisicaConceptual ){
+    App.responderTodas();  
+  }else{
+    if( noEsTutorial ){
+      App.responderTodas();
+    }
+  }
 });
 
 socket.on('leccion id', function(id_leccion) {
