@@ -324,7 +324,7 @@ let App = new Vue({
       Asigno la respuesta al textarea correspondiente y la imagen al div
       Bloqueo el textarea, botón de respuesta y file input
     */
-    asignarDatosRespuesta: function(idTextarea, idbtn, idImgSrc, idFI, respuesta, imagen){
+    asignarDatosRespuesta: function(idTextarea, idBtn, idImgSrc, idFI, respuesta, imagen){
       const hayImagen = (imagen != undefined || imagen != null);
       if( hayImagen )  {
         $(idImgSrc)[0].src = imagen;
@@ -338,7 +338,7 @@ let App = new Vue({
     },
     bloquearRespuesta : function(idTextarea, idBtn, idFI){
       $(idTextarea).attr("disabled", true);
-      $(idbtn).attr("disabled", true);
+      $(idBtn).attr("disabled", true);
       $(idFI).attr('disabled','disabled');
     },
     desbloquearRespuesta : function(idTextarea, idBtn, idFI){
