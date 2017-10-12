@@ -1,19 +1,16 @@
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const URL_LOCAL = require('../config/main').local
-// const URL_MLAB = require('../config/main').mlab
+// // const URL_MLAB = require('../config/main').mlab
 mongoose.connect("mongodb://localhost/ppl", { useMongoClient: true })
 const db = mongoose.connection;
 
-// db.on('error', function(err) {
-//   console.log(`error ${err}`);
-// })
+db.on('error', function(err) {
+  console.log(`error ${err}`);
+})
 
-// db.on('connected', function() {
-//   console.log(`base de datos local para upload`);
-// })
 db.on('connected', function() {
   console.log(`base de datos local para upload`);
-})*/
+})
 
 var co = require('co')
 var CronJob = require('cron').CronJob;
@@ -21,6 +18,11 @@ var colors = require('colors');
 var logger        = require('tracer').colorConsole({
   filters : [colors.underline, colors.yellow]
 });
+var estudiantes = require('./update/estudiantes.ws.update')
+co(function* () {
+  var e = yield estudiantes
+  logger.info('actualizada db')
+})
 
 module.exports = {
   init: function() {
@@ -53,14 +55,14 @@ module.exports = {
       //   var e = yield estudiantes()
       //   logger.info('actualizada db')
       // })
-      var estudiantes = require('./update/estudiantes.ws.update')
-      new CronJob('* 30 * * * *', function() {
+      //var estudiantes = require('./update/estudiantes.ws.update')
+      // new CronJob('00 59 23 * * 1-7', function() {
         var estudiantes = require('./update/estudiantes.ws.update')
         co(function* () {
           var e = yield estudiantes
           logger.info('actualizada db')
         })
-      }, null, true, 'America/Guayaquil');
+      // }, null, true, 'America/Guayaquil');
     }
     if (process.env.NODE_ENV == 'development') {
       // var estudiantes = require('./update/estudiantes.ws.update')
@@ -77,8 +79,8 @@ module.exports = {
       //     logger.info('actualizada db')
       //   })
       // }, null, true, 'America/Guayaquil');
-      var estudiantes = require('./update/estudiantes.ws.update')
-      new CronJob('00 41 23 * * 1-7', function() {
+      //var estudiantes = require('./update/estudiantes.ws.update')
+      new CronJob('* 30 * * * 1-7', function() {
         var estudiantes = require('./update/estudiantes.ws.update')
         co(function* () {
           var e = yield estudiantes
