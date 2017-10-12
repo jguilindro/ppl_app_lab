@@ -111,17 +111,37 @@
       <div id="test2" class="col s12">
         <label>Respuestas</label>
         <br>
-        <div id="row_respuestas" v-for="(res, index) in respuestas">
-          <div class="card-panel">
-            <p>{{res.grupoNombre}}</p>
-            <p>{{res.estudianteNombre}} {{res.estudianteApellido}}</p>
-            <p>{{res.preguntaNombre}}</p> 
-            <p>{{res.arraySubrespuestas.respuesta}}</p> 
-            <div v-for="(sub, index) in res.arraySubrespuestas">
-                <p>{{sub.ordenPregunta}}</p>
-                <p>{{sub.respuesta}}</p>
+        <div id="row row_respuestas" v-for="(res, index) in respuestas">
+          <div class="card-panel col s12 m12 l6">
+            <div class="card-content">
+              <p><i class="material-icons cyan-text text-darken-2">group</i>{{res.grupoNombre}}</p>
+              <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.estudianteNombre}} {{res.estudianteApellido}}</p>
+              <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.preguntaNombre}}</p>
+            </div>  
+            <div v-if= "res.arraySubrespuestas.length > 0">
+              <ul id="projects-collection" class="collection">
+                <li class="collection-item avatar">
+                  <i class="material-icons circle light-blue darken-2">question_answer</i>
+                  <span class="collection-header">Respuestas</span>
+                  <p>A Subrespuestas</p>
+                </li>
+                <li class="collection-item" v-for="(sub, index) in res.arraySubrespuestas" v-if="sub.respuesta">
+                  <div class="row">
+                    <div class="col s8">
+                      <p class="collections-title indigo-text text-darken-4">Subrespuesta  {{sub.ordenPregunta}}</p>
+                      <p class="collections-content">{{sub.respuesta}}</p>
+                    </div>
+                    <div class="col s4">
+                      <img class="materialboxed" :data-caption="sub.respuesta" width="250" :src="sub.imagen">
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
-            <p>{{res.arraySubrespuestas}}</p>
+            <div v-else>
+              <label> Respuesta: </label>
+              <p>{{res.respuesta}}</p>
+            </div>
           </div>
         </div>
       </div>

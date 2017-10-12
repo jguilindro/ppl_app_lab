@@ -439,7 +439,8 @@ let App = new Vue({
       const urlImagen         = $(idSrcImage).attr('aux');
       // Armo el array de subrespuestas
       let arraySubrespuestas  = App.armarArraySubrespuestas(pregunta); //Si la pregunta no tiene subpreguntas, esto queda vacío
-      arraySubrespuestas      = JSON.stringify(arraySubrespuestas);
+      var arraySubrespuestas2 = JSON.stringify(arraySubrespuestas);
+      //arraySubrespuestas      = JSON.stringify(arraySubrespuestas);
       const respuesta         = {
         estudiante         : idEstudiante,
         leccion            : idLeccion,
@@ -451,7 +452,7 @@ let App = new Vue({
         feedback           : '',
         calificacion       : 0,
         imagenes           : urlImagen,
-        arraySubrespuestas : arraySubrespuestas
+        arraySubrespuestas : arraySubrespuestas2
       };
       let respuesta_realtime = App.crearSocket(App.estudiante, App.grupo, idLeccion, idParalelo, pregunta, respuestaTextarea, urlImagen, arraySubrespuestas);
       socket.emit('respuesta estudiante', respuesta_realtime);

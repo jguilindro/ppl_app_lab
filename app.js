@@ -80,7 +80,7 @@ var SERVICE_URL = ''
 require('./app_api/models/db')
 
 // sync db y web service
-require('./app_api/ws').update()
+//require('./app_api/ws').update()
 
 var app = express();
 var server = require('http').Server(app);

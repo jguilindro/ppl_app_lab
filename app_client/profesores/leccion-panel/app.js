@@ -4,6 +4,7 @@ var App = new Vue({
     $('.modal').modal({
         dismissible: false
     });
+    $('.materialboxed').materialbox();
   },
   created() {
     this.obtenerLeccion()
@@ -304,8 +305,13 @@ function continuar() {
 }
 
 leccion.on('respuesta para profesor', function(respuesta_estudiante) {
-  App.respuestas.push(respuesta_estudiante)
-  console.log(App.respuestas)
+  App.respuestas.push(respuesta_estudiante);
+  App.respuestas.reverse();
+  console.log(App.respuestas);
+  
+  Materialize.toast('¡ '+ respuesta_estudiante.estudianteNombre+ respuesta_estudiante.estudianteApellido + 
+    ' A respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
+
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
 })
