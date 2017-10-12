@@ -21,13 +21,13 @@
       <div id="pages">
         <section class="row" id="section-tabs">
           <br>
-          <div class="col s12">
+          <main class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
               <li class="tab col s4" id="t1"><a id = "ta1" class="active" href="#test1">Preparar</a></li>
               <li class="tab col s4 disabled" id="t2"><a id= "ta2"href="#test2">Seleccionar</a></li>
               <li class="tab col s4 disabled" id = "t4"><a id="ta4" href="#test4">Resumen</a></li>
             </ul>
-          </div>
+          </main>
         </section>
         <!--        .::Paso 1, SETUP::.           -->
         <section id="test1" class="col s12">
@@ -72,14 +72,14 @@
                   </article>
                 </section>
               </form>
-              <div class="row col s12">
-                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">siguiente</button>
-              </div>
+              <footer class="row col s12">
+                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">Siguiente</button>
+              </footer>
             </main>
           </div>
         </section>
         <!--       Paso 2, SELECTION!      -->
-        <div id="test2" class="col s12">
+        <section id="test2" class="col s12">
           <div class="page">
             <header class="strike">
               <span>Escoger las preguntas</span>
@@ -129,75 +129,72 @@
               </section>
             </main>
           </div>
-        </div>
+        </section>
         <!--     Paso 3, OVERVIEW       -->
-          <div id="test4" class="col s12">
-            <div class="page">
-            <div class="strike">
+        <section id="test4" class="col s12">
+          <div class="page">
+            <header class="strike">
               <span>Resumen</span>
-            </div>
-            <div class="container" id="overview">
-            <p class="flow-text"><span class="title">Nombre:                </span> {{leccion_nueva.nombre}}</p>
-            <p class="flow-text"><span class="title">Materia:               </span> {{leccion_nueva.nombreMateria}}</p>
-            <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{preguntas_escogidas.tiempoTotal}} minutos</p>
-            <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion_nueva.tipo}}</p>
-            <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion_nueva.fechaInicio}}</p>
-            <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion_nueva.puntaje}}</p>
-            <p class="flow-text"><span class="title">Paralelo:              </span> {{paraleloEscogido.nombre}}</p>
+            </header>
+            <section class="container" id="overview">
+              <p class="flow-text"><span class="title">Nombre:                </span> {{leccion_nueva.nombre}}</p>
+              <p class="flow-text"><span class="title">Materia:               </span> {{leccion_nueva.nombreMateria}}</p>
+              <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{preguntas_escogidas.tiempoTotal}} minutos</p>
+              <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion_nueva.tipo}}</p>
+              <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion_nueva.fechaInicio}}</p>
+              <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion_nueva.puntaje}}</p>
+              <p class="flow-text"><span class="title">Paralelo:              </span> {{paraleloEscogido.nombre}}</p>
+            </section>
             <!-- Preguntas Seleccionadas-->
-            <div class="preguntas-selected">
+            <section class="preguntas-selected container">
   	            <ul class="preguntas collection">
   	              <h2 class="flow-text center-align">Preguntas escogidas</h2>
-  	              <div>
+  	              <main>
   	                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
   	                <li v-for="pregunta in preguntas_escogidas.preguntas" class="collection-item">
-  	                  <input type="checkbox" name = "" v-bind:id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
-  	                    <label v-bind:for="pregunta._id" class="maxWidth">
-                          <span class="title">{{pregunta.capitulo}}</span>
-                          <span class="title">{{pregunta.laboratorio}}</span>
-                          <span class="title">{{pregunta.tutorial}}</span>
-                            <p class="collection-item truncate">
-                              <span class="badge flow-text">{{pregunta.tiempoEstimado}} minutos</span>
-                              {{pregunta.nombre}}
-                            </p>
+  	                  <input type="checkbox" name = "" :id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
+  	                    <label :for="pregunta._id" class="maxWidth">
+                          <span class="title">{{pregunta.capitulo.nombre}}</span>
+                          <p class="collection-item truncate">
+                            <span class="badge flow-text">{{pregunta.tiempoEstimado}} minutos</span>
+                            {{pregunta.nombre}}
+                          </p>
   	                    </label>
   	                </li>
-  	              </div>
+  	              </main>
   	            </ul>
                 <button type="button col s6" v-on:click="avanzarPestania('test2','#t2')" id="btnats1" class="btn ">atras</button>
   	            <button type="button" v-on:click="crearLeccion()" class="btn pull right">Enviar</button>
-            </div>
-
-            </div>
+            </section>
           </div>
+        </section>
+      </div>
+      <!-- Modal Structure -->
+  	  <div id="myModal" class="modal">
+  	    <div class="modal-content">
+  	      <p class="center-align">Lección creada correctamente</p>
+  	    </div>
+  	    <div class="modal-footer">
+  	      <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+  	    </div>
+  	  </div>
+      <!-- Modal pregunta -->
+      <div id="modalDesc" class="modal">
+        <div class="modal-content">
         </div>
-
-        <!-- Modal Structure -->
-    	  <div id="myModal" class="modal">
-    	    <div class="modal-content">
-    	      <p class="center-align">Lección creada correctamente</p>
-    	    </div>
-    	    <div class="modal-footer">
-    	      <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-    	    </div>
-    	  </div>
-        <!-- Modal pregunta -->
-        <div id="modalDesc" class="modal">
-          <div class="modal-content">
-          </div>
-          <div class="modal-footer">
-            <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-          </div>
+        <div class="modal-footer">
+          <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
         </div>
-        <!-- Modal validacion -->
-        <div id="modalVal" class="modal">
-          <div class="modal-content">
-            <p class="center-align">Ha olvidado llenar un campo</p>
-          </div>
-          <div class="modal-footer">
-            <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-          </div>
+      </div>
+      <!-- Modal validacion -->
+      <div id="modalVal" class="modal">
+        <div class="modal-content">
+          <p class="center-align">Ha olvidado llenar un campo</p>
         </div>
+        <div class="modal-footer">
+          <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+        </div>
+      </div>
       </div>
     </div>
     <footer>
