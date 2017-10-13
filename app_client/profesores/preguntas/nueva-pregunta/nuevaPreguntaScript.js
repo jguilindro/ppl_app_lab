@@ -137,11 +137,11 @@ var app = new Vue({
       var xhr      = new XMLHttpRequest();
       xhr.open('POST', 'https://api.imgur.com/3/upload', true);
       xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      app.loading(true);
+      //app.loading(true);
       xhr.onreadystatechange = function () {
         if (xhr.status === 200 && xhr.readyState === 4) {
           console.log('subido');
-          app.loading(false);
+          //app.loading(false);
           var url = JSON.parse(xhr.responseText)
           console.log(url.data.link);
           $(idEditor).materialnote('editor.insertImage', url.data.link);
