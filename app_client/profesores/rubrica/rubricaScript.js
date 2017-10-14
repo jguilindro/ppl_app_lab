@@ -56,6 +56,8 @@ let arrayCalificaciones = [
 	[],				//calificacionE13
 	[],				//calificacionE14
 	[],				//calificacionE15
+	[],				//calificacionE16
+	[]				//calificacionE17
 ];
 
 let rubricaApp = new Vue({
@@ -105,7 +107,6 @@ let rubricaApp = new Vue({
   				if(res.estado){
   					const noHayRegistros = (res.datos.length === 0);
   					if(noHayRegistros){
-  						console.log('No hay registros en la base de datos.');
   						//Si no hay registros en la base de datos entonces todo se inicializa en 0
   					}else{
   						//Si hay registros, hay que llenar los arrays de calificaciones con las calificaciones obtenidas
@@ -176,17 +177,14 @@ let rubricaApp = new Vue({
 				arrayCalificaciones -> array que contiene las calificaciones de todos los 15 ejercicios
 		*/
 		mostrarCalificacionesEjercicioSeleccionado: function(self, numEjercicio, arrayCalificaciones, idsInput){
-			//console.log('Inicializando calificaciones del ejercicio: ' + numEjercicio)
 			//Primero selecciono el ejercicio que se quiere mostrar del array de calificaciones
 			let calificacionesEjercicio = arrayCalificaciones[numEjercicio];	//Array que contiene las calificaciones de los input del ejercicio seleccionado
-			//console.log(calificacionesEjercicio)
 			if(calificacionesEjercicio.length > 0){
 				//Luego inicializo todos los inputs con los valores indicados en el array seleccionado
 				for(let i = 0; i < calificacionesEjercicio.length; i++) {
 					let idInput = '#' + calificacionesEjercicio[i].regla;
 					$(idInput).val(calificacionesEjercicio[i].calificacion);
 				}
-				
 				let calificacionNoPonderada = self.sumarCalificaciones(idsInput);
 	    	self.rubrica.calificacion = self.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
 			}else{
@@ -265,10 +263,12 @@ let rubricaApp = new Vue({
 		//Eventos
 		//////////////////////////////////////
 		calificar: function(){
+			//Bloquear btn
+			$('#btn-calificar').attr("disabled", true);
 			let self = this;
 			let calificacionNoPonderada = this.sumarCalificaciones(idsInput);
-			self.rubrica.calificacion = this.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
-			let ejercicioSeleccionado = self.rubrica.ejercicio;
+			self.rubrica.calificacion 	= this.ponderarCalificacion(calificacionNoPonderada).toFixed(2);
+			let ejercicioSeleccionado 	= self.rubrica.ejercicio;
 			$.each(idsInput, function(index, id){
 				let regla 				= id.split("#")[1];
 				let calificacion 	= $(id).val();
@@ -281,11 +281,9 @@ let rubricaApp = new Vue({
 					regla 				: regla,
 					calificacion 	: calificacion
 				};
-				
 				arrayCalificaciones[ejercicioSeleccionado-1][index] = obj;
 			});
 			self.rubrica.calificaciones = arrayCalificaciones[ejercicioSeleccionado-1];
-
 			var rubrica = {
 				materia 	: self.rubrica.materia,
 				paralelo 	: self.rubrica.paralelo,
@@ -296,9 +294,8 @@ let rubricaApp = new Vue({
 			};
 			rubrica 						= JSON.stringify(rubrica);
 			var calificaciones 	= JSON.stringify(self.rubrica.calificaciones);
-
 			var obj = {
-				rubrica : rubrica,
+				rubrica 			 : rubrica,
 				calificaciones : calificaciones
 			};
 			self.llamadaApi(obj);
@@ -309,15 +306,13 @@ let rubricaApp = new Vue({
 				url: '/api/rubrica/',
 				data: data,
 				success: function(res){
-					console.log('Exito')
-					console.log(res)
 					if(res.estado){
 						$('#modalCalificacionExitosa').modal('open');
 					}
 					//Actualizar los valores el array
 				},
 				error: function(err){
-					console.log('Error')
+					$('#btn-calificar').attr("disabled", false);
 					console.log(err)
 				}
 			});
