@@ -241,6 +241,7 @@ var app = new Vue({
       app.subTotales--;
       $(idDiv).empty();
       app.obtenerPuntajeTotal();
+      app.obtenerTiempoTotal();
     },
 	  agregarOpcion: function () {
 	    if (!this.newOpcionText==''){
@@ -368,24 +369,20 @@ var app = new Vue({
       window.location.href = '/profesores/preguntas/banco'
     },
 		regresar: function(){
-      console.log(1234);
 			window.location.href = '/profesores/preguntas/banco'
 		},
     continuar: function(){
-      console.log(1234);
-      //router.go('https://www.google.com.ec')
-      //window.location.href = 'https://www.google.com.ec'
       window.location.href = '/profesores/preguntas/nueva-pregunta'
     },
     obtenerPuntajeTotal: function(){
       app.pregunta.puntaje = 0;
       var contador         = 1;
       var idEditor         = '#subpregunta-';
-      var idInput          = '#input-pt-subpregunta';
+      var idInput          = '#input-pt-subpregunta-';
       var aux              = app.subTotales;
       while( aux >= 0 ){
         idEditor      = idEditor + contador;
-        idInput       = idInput + contador;
+        idInput       = idInput  + contador;
         var divExiste = ( $(idEditor).length != 0 );
         if( divExiste ){
           var contenido         = $(idEditor).code();
@@ -397,14 +394,14 @@ var app = new Vue({
         contador++;
         aux--;
         idEditor = '#subpregunta-';
-        idInput  = '#input-pt-subpregunta';
+        idInput  = '#input-pt-subpregunta-';
       }
     },
     obtenerTiempoTotal: function(){
       app.pregunta.tiempoEstimado = 0;
       var contador         = 1;
       var idEditor         = '#subpregunta-';
-      var idInput          = '#input-tiempo-subpregunta';
+      var idInput          = '#input-tiempo-subpregunta-';
       var aux              = app.subTotales;
       while( aux >= 0 ){
         idEditor      = idEditor + contador;
@@ -420,7 +417,7 @@ var app = new Vue({
         contador++;
         aux--;
         idEditor = '#subpregunta-';
-        idInput  = '#input-tiempo-subpregunta';
+        idInput  = '#input-tiempo-subpregunta-';
       }
     }
 	},
