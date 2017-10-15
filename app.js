@@ -125,12 +125,14 @@ app.use(cookieParser());
 
 app.use(session({
 	secret: require('./app_api/config/main').secret,  // <= en un .env
-	resave: true,
+	resave: false,
+  saveUninitialized: false,
   expire: 1 * 24 * 60 * 60 ,
 	saveUninitialized: true,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 12 * 60 * 60
+      ttl: 1 * 24 * 60 * 60
+      autoRemove: 'disabled'
     })
 }));
 
