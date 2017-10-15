@@ -24,71 +24,71 @@ co(function* () {
   logger.info('actualizada db')
 })
 
-module.exports = {
-  init: function() {
-    // Primero se crean los paralelos, los estudiantes son anadidos al paralelo ,luego los profesores son anadidos al paralelo correspondiente
-    // var paralelos = require('./paralelos.ws.init')
-    // var estudiantes = require('./estudiantes.ws.init')
-    // var profesores = require('./profesores.ws.init')
-    co(function* () {
-      // var p = yield paralelos()
-      // var e = yield estudiantes()
-      // var pro = yield profesores()
-    }).catch(fail => {
-      console.log(fail);
-    })
-  },
-  paralelos_nuevo_semestre() {
+// module.exports = {
+//   init: function() {
+//     // Primero se crean los paralelos, los estudiantes son anadidos al paralelo ,luego los profesores son anadidos al paralelo correspondiente
+//     // var paralelos = require('./paralelos.ws.init')
+//     // var estudiantes = require('./estudiantes.ws.init')
+//     // var profesores = require('./profesores.ws.init')
+//     co(function* () {
+//       // var p = yield paralelos()
+//       // var e = yield estudiantes()
+//       // var pro = yield profesores()
+//     }).catch(fail => {
+//       console.log(fail);
+//     })
+//   },
+//   paralelos_nuevo_semestre() {
 
-  },
-  update: function() {
-    if (process.env.NODE_ENV == 'production') {
-      // var estudiantes = require('./update/estudiantes.ws.update')
-      // co(function* () {
-      //   var estudiantes = require('./update/estudiantes.ws.update')
-      //   var e = yield estudiantes
-      //   logger.info('actualizada db')
-      // })
-      // var estudiantes = require('./update/estudiantes.ws.update')
-      // co(function* () {
-      //   var estudiantes = require('./update/estudiantes.ws.update')
-      //   var e = yield estudiantes()
-      //   logger.info('actualizada db')
-      // })
-      //var estudiantes = require('./update/estudiantes.ws.update')
-      // new CronJob('00 59 23 * * 1-7', function() {
-        var estudiantes = require('./update/estudiantes.ws.update')
-        co(function* () {
-          var e = yield estudiantes
-          logger.info('actualizada db')
-        })
-      // }, null, true, 'America/Guayaquil');
-    }
-    if (process.env.NODE_ENV == 'development') {
-      // var estudiantes = require('./update/estudiantes.ws.update')
-      // co(function* () {
-      //   var estudiantes = require('./update/estudiantes.ws.update')
-      //   var e = yield estudiantes
-      //   logger.info('actualizada db')
-      // })
-      // new CronJob('* * * * * *', function() {
-      //   var estudiantes = require('./update/estudiantes.ws.update')
-      //   co(function* () {
-      //     var estudiantes = require('./update/estudiantes.ws.update')
-      //     var e = yield estudiantes
-      //     logger.info('actualizada db')
-      //   })
-      // }, null, true, 'America/Guayaquil');
-      //var estudiantes = require('./update/estudiantes.ws.update')
-      new CronJob('* 30 * * * 1-7', function() {
-        var estudiantes = require('./update/estudiantes.ws.update')
-        co(function* () {
-          var e = yield estudiantes
-          logger.info('actualizada db')
-        })
-      }, null, true, 'America/Guayaquil');
-    }
-    // require(./update/paralelos.ws.update)
-    // require('./update/profesores.ws.update')
-  }
-}
+//   },
+//   update: function() {
+//     if (process.env.NODE_ENV == 'production') {
+//       // var estudiantes = require('./update/estudiantes.ws.update')
+//       // co(function* () {
+//       //   var estudiantes = require('./update/estudiantes.ws.update')
+//       //   var e = yield estudiantes
+//       //   logger.info('actualizada db')
+//       // })
+//       // var estudiantes = require('./update/estudiantes.ws.update')
+//       // co(function* () {
+//       //   var estudiantes = require('./update/estudiantes.ws.update')
+//       //   var e = yield estudiantes()
+//       //   logger.info('actualizada db')
+//       // })
+//       //var estudiantes = require('./update/estudiantes.ws.update')
+//       // new CronJob('00 59 23 * * 1-7', function() {
+//         var estudiantes = require('./update/estudiantes.ws.update')
+//         co(function* () {
+//           var e = yield estudiantes
+//           logger.info('actualizada db')
+//         })
+//       // }, null, true, 'America/Guayaquil');
+//     }
+//     if (process.env.NODE_ENV == 'development') {
+//       // var estudiantes = require('./update/estudiantes.ws.update')
+//       // co(function* () {
+//       //   var estudiantes = require('./update/estudiantes.ws.update')
+//       //   var e = yield estudiantes
+//       //   logger.info('actualizada db')
+//       // })
+//       // new CronJob('* * * * * *', function() {
+//       //   var estudiantes = require('./update/estudiantes.ws.update')
+//       //   co(function* () {
+//       //     var estudiantes = require('./update/estudiantes.ws.update')
+//       //     var e = yield estudiantes
+//       //     logger.info('actualizada db')
+//       //   })
+//       // }, null, true, 'America/Guayaquil');
+//       //var estudiantes = require('./update/estudiantes.ws.update')
+//       new CronJob('* 30 * * * 1-7', function() {
+//         var estudiantes = require('./update/estudiantes.ws.update')
+//         co(function* () {
+//           var e = yield estudiantes
+//           logger.info('actualizada db')
+//         })
+//       }, null, true, 'America/Guayaquil');
+//     }
+//     // require(./update/paralelos.ws.update)
+//     // require('./update/profesores.ws.update')
+//   }
+// }

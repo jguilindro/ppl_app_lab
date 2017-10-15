@@ -49,7 +49,6 @@ GrupoSchema.statics.eliminarEstudiante = function(id_grupo, id_estudiante, callb
 }
 
 GrupoSchema.statics.eliminarEstudianteDeGrupos = function(id_estudiante, callback) {
-  console.log(id_estudiante);
   this.update({},{$pull: {estudiantes: id_estudiante}}, { multi: true }, callback)
 }
 
