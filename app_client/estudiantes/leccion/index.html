@@ -68,13 +68,13 @@
                   <header class="center-align">
                     <h5 class="title-sub"><b>Pregunta #{{j+1}}</b></h5>
                   </header>
-                  <article class="col s6" :id="'article-subpregunta-' + j">
+                  <article class="col s12 l6" :id="'article-subpregunta-' + j">
                     <label><h6><b>Descripción: </b></h6></label>
                     <p v-html="sub.contenido"></p>
-                    <label><h6 class="pull right"><b>Tiempo estimado: </b>{{sub.tiempoEstimado}} minutos</h6></label>
+                    <!--<label><h6 class="pull right"><b>Tiempo estimado: </b>{{sub.tiempoEstimado}} minutos</h6></label>-->
                   </article>
                   <!-- RESPUESTA -->
-                  <article class="col s6" :id="'article-respuesta-' + j">
+                  <article class="col s12 l6" :id="'article-respuesta-' + j">
                     <header>
                       <label><h6><b>Respuesta: </b></h6></label>
                     </header>
@@ -82,12 +82,12 @@
                       <textarea :id="'textarea-sub-' + pregunta.orden + '-' + sub.orden" class="materialize-textarea">
                       </textarea>
                       <footer style="margin: 3% 0;" class="row">
-                        <article class="col s6">
+                        <article class="col s12">
                           <label>Subir una imagen</label>
                           <br/>
                           <input :id="'fi-'+ pregunta.orden + '-' + sub.orden" type='file' @change="getImageSub(pregunta, sub, $event)"/>  
                         </article>
-                        <article class="col s6">
+                        <article class="col s12">
                           <button href="." class="waves-effect waves-light btn pull right" @click="responderSub(pregunta, sub)" :id="'btn-responder-sub-' + pregunta.orden + '-' + sub.orden">Responder</button>
                         </article>
                       </footer>
@@ -95,7 +95,7 @@
                         <img hidden :id="'source_image-'+ pregunta.orden + '-' + sub.orden" src="#"/>
                       </section>
                       <section>
-                        <img hidden :id="'result_image-'+ pregunta.orden + '-' + sub.orden" src="#"/>
+                        <img hidden :id="'result_image-'+ pregunta.orden + '-' + sub.orden" src=""/>
                       </section>
                       <section>
                         <img hidden :id="'loading-'+ pregunta.orden + '-' + sub.orden" src="/img/loading.gif" />
@@ -113,13 +113,13 @@
                   <section style="margin: 3% 0;">
                     <label>Subir una imagen</label>
                     <br />
-                    <input id="archivo" type='file' @change="getImage(pregunta._id,$event)"/>
+                    <input :id="'fi-' + pregunta._id" type='file' @change="getImage(pregunta._id,$event)"/>
                   </section>
                   <section>
-                    <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#" alt="your image" />
+                    <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#"/>
                   </section>
                   <section>
-                    <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" alt="your image" />
+                    <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" />
                   </section>
                   <section>
                     <img hidden v-bind:id="'loading-'+ pregunta._id" src="/img/loading.gif" />

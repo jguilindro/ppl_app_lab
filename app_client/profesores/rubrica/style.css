@@ -38,3 +38,12 @@ div.image img, p.fifthy-left{
   margin-right: 0 !important;
   
 }
+
+.sub-article .center-align{
+  margin-top: 1%;
+  margin-bottom: 2%;
+}
+
+.sub-article .input-field{
+  margin-top: 0;
+}
