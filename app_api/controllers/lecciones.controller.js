@@ -3,6 +3,7 @@ const ParaleloModel = require('../models/paralelo.model');
 const EstudianteModel = require('../models/estudiante.model');
 const CalificacionModel = require('../models/calificacion.model');
 const PreguntaModel = require('../models/pregunta.model');
+const RespuestaModel = require('../models/respuestas.model');
 var respuesta = require('../utils/responses');
 var co = require('co')
 
@@ -180,6 +181,45 @@ const terminarLeccion = (req, res, next) => {
   res.send('asd')
 }
 
+const leccionDatos = (req, res) => {
+  // Obtiene los datos del estudiante
+  function buscarEstudiante(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
+        if (err) return reject(new Error('No se pudo obtener estudiante'));
+        return resolve(est);
+      });
+    });
+  }
+  // obtengo la leccion con las preguntas
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
+  }
+  //Obtengo las respuestas que ya ha enviado el estudiante
+  function obtenerRespuestas(id_leccion, id_estudiante) {
+    return new Promise((resolve, reject) => {
+      RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'));
+        return resolve(respues);
+      });
+    });
+  }
+
+  co(function* () {
+    const id_estudiante  = req.params.id_estudiante;
+    const id_leccion     = req.params.id_leccion;
+    let estudiante       = yield buscarEstudiante(id_estudiante);
+    let leccion          = yield obtenerLeccion(id_leccion);
+    let respuestas       = yield obtenerRespuestas(id_leccion, id_estudiante);
+    respuesta.ok(res, {estudiante: estudiante, leccion: leccion, respuestas: respuestas})
+  });
+};
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -188,6 +228,7 @@ module.exports = {
   eliminarLeccion,
   leccionYaCalificada,
   obtenerLeccionRecalificar,
+  leccionDatos,
   // realtime
   tomarLeccion,
   anadirTiempo,

@@ -91,6 +91,22 @@ const calificarRespuestaGrupal = (req, res) => {
 	});
 }
 
+const calificarSub = (req, res) => {
+	const id_leccion 				 = req.params.id_leccion;
+	const id_pregunta 			 = req.params.id_pregunta;
+	const id_grupo 					 = req.params.id_grupo;
+	const orden_pregunta 		 = req.body.ordenPregunta;
+	const calificacion_nueva = req.body.calificacionNueva;
+	const feedback_nuevo 		 = req.body.feedbackNuevo;
+
+	RespuestaModel.calificarSub(id_leccion, id_pregunta, id_grupo, orden_pregunta, calificacion_nueva, feedback_nuevo, (err, doc) => {
+		if (!doc.nModified) return response.mongoError(res, 'La respuesta no existe');
+		if(err) return response.serverError(res);
+		return response.okActualizado(res);
+	});
+
+};
+
 module.exports = {
 	crearRespuesta,
 	anadirSubrespuesta,
@@ -99,7 +115,8 @@ module.exports = {
 	actualizarRespuesta,
 	obtenerRespuestaPorId,
 	calificarRespuestaGrupal,
-	obtenerRespuestasPorGrupoAPreguntaGet
+	obtenerRespuestasPorGrupoAPreguntaGet,
+	calificarSub
 }
 
 
