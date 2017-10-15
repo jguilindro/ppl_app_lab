@@ -58,6 +58,7 @@ var app = new Vue({
     },
     seleccionGrupo: function(registro){
       app.grupoSeleccionado = registro;
+
       console.log(app.grupoSeleccionado);
     },
     seleccionEstudiante: function(estudiante){
@@ -66,7 +67,7 @@ var app = new Vue({
     },
     calificarRedireccion: function(){
       if ( app.estudianteSeleccionado ){
-        window.location.href = '/profesores/leccion/calificar/'+app.idLeccion+'/'+app.estudianteSeleccionado._id+'/'+app.grupoSeleccionado._id;
+        window.location.href = '/profesores/leccion/calificar/'+app.idLeccion+'/'+app.estudianteSeleccionado._id+'/'+app.grupoSeleccionado.grupo._id;
       }else{
         Materialize.toast('Seleccione un estudiante primero!', 3000, 'rounded red');
       }

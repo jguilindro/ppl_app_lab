@@ -104,6 +104,7 @@ let App = new Vue({
       $.get({
         url    : '/api/estudiantes/leccion/datos_leccion',
         success: function(res) {
+          console.log(res)
           //Primero se verifica si el paralelo del estudiante está tomando lección
           if ( !res.datos.paralelo.dandoLeccion ) {
             window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
@@ -763,6 +764,7 @@ socket.on('terminado leccion', function(match) {
       App.responderTodas();
     }
   }
+  window.location.href = '/estudiantes/';
 });
 
 socket.on('leccion id', function(id_leccion) {

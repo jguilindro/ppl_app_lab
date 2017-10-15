@@ -1,5 +1,6 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
+const GrupoModel = require('../models/grupo.model');
 const EstudianteModel = require('../models/estudiante.model');
 const CalificacionModel = require('../models/calificacion.model');
 const PreguntaModel = require('../models/pregunta.model');
@@ -47,30 +48,76 @@ const crearLeccion = (req, res) => {
       })
     })
   }
+
+  function obtenerParaleloPorId(id_paralelo){
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParalelo(id_paralelo, (err, doc) =>{
+        if (err) return reject(err);
+        return resolve(doc);
+      });
+    });
+  }
+
+  function crearLeccionP(leccion){
+    return new Promise((resolve, reject) => {
+      leccion.crearLeccion((err, doc) => {
+        if (err) return reject(err);
+        return resolve(leccion);
+      });
+    });
+  }
+
+  function crearRegistroCalificacion(registro){
+    return new Promise((resolve, reject) => {
+      registro.crearRegistro((err, doc) => {
+        if (err) return reject(err);
+        return resolve(doc);
+      });
+    }); 
+  }
+
   let leccion = new LeccionModel({
-    creador: req.session._id,
-    nombre: req.body.nombre,
+    creador       : req.session._id,
+    nombre        : req.body.nombre,
     tiempoEstimado: req.body.tiempoEstimado,
-    puntaje: parseInt(req.body.puntaje),
-    tipo: req.body.tipo,
-    fechaInicio: req.body.fechaInicio,
-    preguntas: req.body.preguntas,
-    paralelo: req.body.paralelo,
+    puntaje       : parseInt(req.body.puntaje),
+    tipo          : req.body.tipo,
+    fechaInicio   : req.body.fechaInicio,
+    preguntas     : req.body.preguntas,
+    paralelo      : req.body.paralelo,
     nombreParalelo: req.body.nombreParalelo,
-    nombreMateria: req.body.nombreMateria,
-    codigoMateria: req.body.codigoMateria
-  })
+    nombreMateria : req.body.nombreMateria,
+    codigoMateria : req.body.codigoMateria
+  });
+
   co(function*() {
+    //Primero registro las preguntas que se han usado en esta lección
     for (var i = 0; i < leccion.preguntas.length; i++) {
       var c = yield anadirPregunta(leccion.preguntas[i].pregunta, leccion._id)
     }
-  })
-  leccion.crearLeccion((err, doc) => {
-    if (err) {
-      console.log(err);
-      return respuesta.serverError(res);
+    //Creo la lección
+    let leccionCreada = yield crearLeccionP(leccion);
+    let paralelo      = yield obtenerParaleloPorId(req.body.paralelo);
+    let grupos        = paralelo.grupos;
+    //Creo los registros en Calificaciones
+    for (var j = 0; j < grupos.length; j++) {
+      let grupoActual = grupos[j];
+      let registro = new CalificacionModel({
+        leccion       : leccionCreada._id,
+        calificacion  : 0,
+        calificada    : false,
+        leccionTomada : false,
+        grupo         : grupoActual._id,
+        nombreGrupo   : grupoActual.nombre,
+        paralelo      : leccionCreada.paralelo,
+        nombreParalelo: paralelo.nombre
+      });
+      console.log('registro:', registro)
+      yield crearRegistroCalificacion(registro);
     }
-    return respuesta.creado(res, leccion);
+    return respuesta.creado(res, leccionCreada);
+  }).catch( fail => {
+    return respuesta.serverError(res);
   })
 }
 
