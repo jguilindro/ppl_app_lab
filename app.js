@@ -131,7 +131,7 @@ app.use(session({
 	saveUninitialized: true,
   store: new MongoStore({
       url: require('./app_api/utils/change_database').local(),
-      ttl: 1 * 24 * 60 * 60
+      ttl: 1 * 24 * 60 * 60,
       autoRemove: 'disabled'
     })
 }));

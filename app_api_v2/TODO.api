@@ -27,7 +27,6 @@ https://github.com/winstonjs/winston
 ## Testing (unit, integrated)
 * mocha, jest, apitest
 * apitest
-* sockettest
 * database test
 
 # validaciones
