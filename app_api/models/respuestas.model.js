@@ -50,7 +50,14 @@ const respuestasSchema = mongoose.Schema({
   imagenes:{
     type: String
   },
-  subrespuestas: []
+  subrespuestas: [{
+    respuesta     : { type : String },
+    ordenPregunta : { type : Number },
+    feedback      : { type : String },
+    calificacion  : { type : Number },
+    imagen        : { type : String },
+    calificada    : { type : Boolean }
+  }]
 }, {versionKey: false, timestamps: true, collection: 'respuestas'})
 
 respuestasSchema.methods.crearRespuesta = function(callback){
@@ -102,6 +109,21 @@ respuestasSchema.statics.calificarRespuestaGrupal = function(id_leccion, id_preg
   //Actualiza el valor de la calificación de todas las respuestas encontradas (todas las respuestas del grupo) a valor de la nueva calificación
   //Actualiza el valor del feedback
   this.update({leccion: id_leccion, pregunta: id_pregunta, grupo: id_grupo}, {$set: {calificacion: calificacion_nueva, feedback: feedback_nuevo}}, { multi: true }, callback);
+}
+
+respuestasSchema.statics.calificarSub = function(id_leccion, id_pregunta, id_grupo, orden_pregunta, calificacion_nueva, feedback_nuevo, callback){
+  this.update({
+    leccion  : id_leccion,
+    pregunta : id_pregunta,
+    grupo    : id_grupo,
+    "subrespuestas.ordenPregunta" : orden_pregunta
+  }, {
+    $set: {
+      "subrespuestas.$.calificacion" : calificacion_nueva,
+      "subrespuestas.$.feedback"     : feedback_nuevo,
+      "subrespuestas.$.calificada"   : true,
+    }
+  }, { multi : true}, callback);
 }
 
 module.exports = mongoose.model('Respuesta', respuestasSchema);

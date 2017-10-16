@@ -1,94 +1,183 @@
-var App = new Vue({
+let App = new Vue({
 	created: function(){
-		this.getLeccion();
-		this.getEstudiante();
+		this.leccionId 		= window.location.href.toString().split('/')[6];
+		this.grupo   			= window.location.href.toString().split('/')[8];
+		this.estudianteId = window.location.href.toString().split('/')[7];
+		this.grupoId   		= window.location.href.toString().split('/')[8];
+		this.obtenerDatosLeccion(this);
 	},
   mounted: function(){
-  	//Inicializadores de materialize
-    $('.button-collapse').sideNav();
-    $(".dropdown-button").dropdown({ hover: false });
-    $('.scrollspy').scrollSpy();
-    $('.modal').modal();
-    $('.tooltipped').tooltip({delay: 50});
+    this.inicializarMaterialize();
   },
   el: '#app',
   data: {
-  	leccionId: '',
-    leccion: {},
-		preguntas: [],
+  	leccionId : '',
+  	grupoId 	: '',
+    leccion   : {},
+		preguntas : [],
 		respuestas: [],
 		estudiante: {
-			nombres: '',
+			nombres	 : '',
 			apellidos: '',
-			correo: '',
-			grupo:  ''
+			correo 	 : '',
+			grupo 	 :  ''
 		},
-		feedback: [],
-		calificacionTotal: 0.00,		//Va a ser la suma de las calificaciones (sobre 2) de las preguntas, sobre el puntaje de la lección
+		feedback 	: [],
+		calificacionTotal		 : 0.00,		//Va a ser la suma de las calificaciones (sobre 2) de las preguntas, sobre el puntaje de la lección
 		calificacionPonderada: 0.00	//Va a ser la calificación ponderada, sobre 100
   },
   methods: {
-		getLeccion: function(){
-			//carga la lección que se quiere va a calificar con cada pregunta
-			var self = this;
-			self.leccionId = window.location.href.toString().split('/')[6];
-			var obtenerLeccionURL = '/api/lecciones/'+ self.leccionId;
-			$.get({
-				url: obtenerLeccionURL,
+  	inicializarMaterialize: function(){
+  		$('.button-collapse').sideNav();
+	    $(".dropdown-button").dropdown({ hover: false });
+	    $('.scrollspy').scrollSpy();
+	    $('.modal').modal();
+	    $('.tooltipped').tooltip({delay: 50});
+  	},
+  	//////////////////////////////////////////////////////
+    //LLAMADAS A LA API
+    //////////////////////////////////////////////////////
+  	obtenerDatosLeccion : function(self){
+  		$.get({
+  			url : '/api/lecciones/datos/' + self.estudianteId + '/' + self.leccionId,
+  			success : function(res){
+  				self.leccion 		= res.datos.leccion;
+  				self.estudiante = res.datos.estudiante;
+  				self.respuestas = res.datos.respuestas;
+  				self.preguntas  = self.armarArrayPreguntas(res.datos.leccion.preguntas, self.respuestas);
+  			},
+  			error: function(err){
+  				console.log(err)
+  			}
+  		});
+  	},
+  	calificarSubRespuesta: function(data, pregunta, sub){
+  		var urlApi = '/api/respuestas/calificar/sub/' + App.leccionId + '/pregunta/' + pregunta._id + '/grupo/' + App.grupo;
+  		$.ajax({
+  			url  : urlApi,
+  			type : 'PUT',
+  			data : data,
+  			success: function(res){
+  				console.log(res)
+  				Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
+  			},
+  			error: function(err){
+  				Materialize.toast('Error al enviar su calificación. Intente de nuevo!', 3000, 'rounded red');
+  				sub.calificada = false;
+  				//App.desbloquearCalificacion(pregunta, sub);
+  				console.log(err)
+  			}
+  		});
+  	},
+  	//Esta funcion va a actualizar los registros de la colección de calificaciones con la nueva calificación
+  	enviarCalificacion: function(){
+			var urlApi = '/api/calificaciones/calificar/' + App.leccionId + '/' + App.grupo;
+			$.ajax({
+				method: 'PUT',
+				url 	: urlApi,
+				data 	: {
+					calificacion: App.calificacionPonderada,
+					estudiante  : App.estudianteId
+				},
 				success: function(res){
-					self.leccion = res.datos
-					self.obtenerPreguntas();
-					self.grupo = window.location.href.toString().split('/')[8]
+					$('#myModal').modal('open');
+				},
+				error: function(err){
+					console.log(err)
+					$('#modalErrorLeccion').modal('open');	
 				}
-			});
+			})
 		},
-		obtenerPreguntas: function(){
-			//Busca la información completa de cada pregunta de la lección y la guarda en el array preguntas
-			var self = this;
-			$.each(self.leccion.preguntas, function(index, pregunta){
-				var preguntaId = pregunta.pregunta;
-				var urlApiPreguntas = '/api/preguntas/' + preguntaId;
-				$.get({
-					url: urlApiPreguntas,
-					success: function(res){
-						self.preguntas.push(res.datos);
-					}
-				});
-				self.getRespuesta(preguntaId);
-			});
-			self.preguntas.sort(function(p1, p2){
-				return ( (p1.ordenPregunta < p2.ordenPregunta) ? -1 : ( (p1.ordenPregunta > p2.ordenPregunta) ? 1 : 0) );
-			});
-		},
-		getRespuesta: function(preguntaId){
-			//Obtiene la respuesta del estudiante a cada pregunta
-			var self = this;
-			var estudianteId = window.location.href.toString().split('/')[7];
-			var obtenerRespuestaURL = '/api/respuestas/buscar/leccion/'+ self.leccionId + '/pregunta/'+preguntaId+ '/estudiante/'+estudianteId;
-			$.get({
-				url: obtenerRespuestaURL,
-				success: function(res){
-					if(res.estado&&res.datos!=null){
-						self.respuestas.push(res.datos)
-					}
-				}
-			});
+  	//////////////////////////////////////////////////////
+    //HELPERS
+    //////////////////////////////////////////////////////
+    /*
+      Devuelve el array de preguntas que se va a mostrar al usuario
+      Cada pregunta tendrá la información completa de la pregunta y un boolean indicando si tiene subpreguntas
+    */
+    armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas){
+      let arrayPreguntas = [];
+      for( let i = 0; i < preguntasObtenidas.length; i++ ) {
+        let preguntaActual               = preguntasObtenidas[i].pregunta;
+        let respuestaActual 						 = $.grep(respuestasObtenidas, function(respuesta, i){
+        	return preguntaActual._id == respuesta.pregunta;
+        })[0];
+        preguntaActual.orden             = preguntasObtenidas[i].ordenPregunta;
+        preguntaActual.subpreguntas 		 = App.armarArraySubpreguntas(preguntaActual, respuestaActual);
+        preguntaActual.tieneSubpreguntas = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
+        arrayPreguntas.push(preguntaActual);
+      }
+      return arrayPreguntas;
+    },
+    armarArraySubpreguntas: function(pregunta, respuesta){
+    	let array = [];
+    	for (var i = 0; i < pregunta.subpreguntas.length; i++) {
+    		let subActual    = pregunta.subpreguntas[i];
+    		let subResActual = $.grep(respuesta.subrespuestas, function(res, i){
+    			return subActual.orden == res.ordenPregunta;
+    		})[0];
 
+    		subActual.respuesta 	 = subResActual.respuesta;
+    		subActual.calificacion = subResActual.calificacion;
+    		subActual.feedback 		 = subResActual.feedback;
+    		subActual.calificada   = subResActual.calificada;
+    		if(subResActual.imagen.indexOf('imgur') > 0){
+    			subActual.imagen 		 = subResActual.imagen;	
+    		}else{
+    			subActual.imagen 		 = '';
+    		}
+ 
+    		let calPonderada 					= App.ponderarCalificacion(2, subActual.calificacion, subActual.puntaje);
+    		App.calificacionTotal 		= App.calificacionTotal + calPonderada;
+    		App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+
+    		array.push(subActual);
+    	}
+    	return array;
+    },
+    /*
+			puntajeMax 			-> ponderacion
+			puntajeObtenido -> x
+
+			x = puntajeObtenido * ponderacion / puntajeMax
+		*/
+		ponderarCalificacion: function(puntajeMax, puntajeObtenido, ponderacion){
+			return ( (puntajeObtenido * ponderacion) / puntajeMax );
 		},
-		getEstudiante: function(){
-			var estudianteId = window.location.href.toString().split('/')[7];
-			var obtenerEstudianteURL = '/api/estudiantes/' + estudianteId;
-			this.$http.get(obtenerEstudianteURL).then(res => {
-				//console.log("Estudiante get: ");
-				//console.log(res.body.datos);
-				App.estudiante.nombres=res.body.datos.nombres;
-				App.estudiante.apellidos=res.body.datos.apellidos;
-				App.estudiante.correo=res.body.datos.correo;
-				App.estudiante.grupo=res.body.datos.grupo;
-				//console.log(App.estudiante);
-			});
+    //////////////////////////////////////////////////////
+    //MODIFICACIONES DOM
+    //////////////////////////////////////////////////////
+    bloquearCalificacion: function(pregunta, sub){
+    	const idInput 	 = '#calificacion-' + pregunta.orden + '-' + sub.orden;
+			const idTextarea = '#fb-'  					+ pregunta.orden + '-' + sub.orden;
+			const idBtn			 = '#btn-' 					+ pregunta.orden + '-' + sub.orden;
+			$(idInput).attr('disabled', true);
+			$(idTextarea).attr('disabled', true);
+			$(idBtn).attr('disabled', true);
+    },
+    desbloquearCalificacion: function(pregunta, sub){
+    	const idInput 	 = '#calificacion-' + pregunta.orden + '-' + sub.orden;
+			const idTextarea = '#fb-'  					+ pregunta.orden + '-' + sub.orden;
+			const idBtn			 = '#btn-' 					+ pregunta.orden + '-' + sub.orden;
+			$(idInput).attr('disabled', false);
+			$(idTextarea).attr('disabled', false);
+			$(idBtn).attr('disabled', false);
+    },
+		bloquearTextArea: function(preguntaId){
+			var textareaId = '#feedback-' + preguntaId;
+			$(textareaId).attr('disabled', true);
 		},
-		//Eventos
+		bloquearBtnResponder: function(preguntaId){
+			var btnId = '#btn-' + preguntaId;
+			$(btnId).attr('disabled', true);
+		},
+		bloquearInput: function(preguntaId){
+			var inputId = '#calificacion-' + preguntaId;
+			$(inputId).attr('disabled', true);
+		},
+		//////////////////////////////////////////////////////
+    //EVENTOS
+    //////////////////////////////////////////////////////
 		calificar: function(pregunta){
 			var self = this;
 
@@ -145,48 +234,30 @@ var App = new Vue({
 				}
 			})
 		},
-		bloquearTextArea: function(preguntaId){
-			var self = this;
-			var textareaId = '#feedback-' + preguntaId;
-			$(textareaId).attr('disabled', true);
-		},
-		bloquearBtnResponder: function(preguntaId){
-			var self = this;
-			var btnId = '#btn-' + preguntaId;
-			$(btnId).attr('disabled', true);
-		},
-		bloquearInput: function(preguntaId){
-			var self = this;
-			var inputId = '#calificacion-' + preguntaId;
-			$(inputId).attr('disabled', true);
-		},
-		enviarCalificacion: function(){
-			//Esta funcion va a actualizar los registros de la colección de calificaciones con la nueva calificación
-			var self = this;
-			var estudianteId = window.location.href.toString().split('/')[7];
-			console.log('El id del estudiante es: ' + estudianteId);
-			var urlApi = '/api/calificaciones/calificar/' + self.leccionId + '/' + self.grupo;
-			console.log('Se va a enviar un requerimiento a la url: ' + urlApi + ' con la calificacion: ' + self.calificacionPonderada);
-			$.ajax({
-				method: 'PUT',
-				url: urlApi,
-				data: {
-					calificacion: self.calificacionPonderada,
-					estudiante: estudianteId
-				},
-				success: function(res){
-					console.log(res)
-					if(res.estado){
-						$('#myModal').modal('open');
-					}else{
-						$('#modalErrorLeccion').modal('open');
-					}
-				}
-			})
+		calificarSub: function(pregunta, sub){
+			const idInput 	 = '#calificacion-' + pregunta.orden + '-' + sub.orden;
+			const idTextarea = '#fb-'  					+ pregunta.orden + '-' + sub.orden;
+
+			//App.bloquearCalificacion(pregunta, sub);
+
+			sub.calificacion = $(idInput).val();
+			sub.calificada   = true;
+
+			let calificacion 					= $(idInput).val();
+			let calPonderada 					= App.ponderarCalificacion(2, calificacion, sub.puntaje);
+
+			App.calificacionTotal 		= App.calificacionTotal + calPonderada;
+			App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+
+			let data = {
+				ordenPregunta 		: sub.orden,
+				calificacionNueva : calificacion,
+				feedbackNuevo 		: $(idTextarea).val()
+			};
+			App.calificarSubRespuesta(data, pregunta, sub);	//AJAX
 		},
 		regresar: function(){
-			var leccionId = window.location.href.toString().split('/')[6];
-			window.location.href = '/profesores/leccion/calificar/grupos/' + leccionId
+			window.location.href = '/profesores/leccion/calificar/grupos/' + App.leccionId;
 		}
   }
 });

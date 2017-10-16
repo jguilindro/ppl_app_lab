@@ -10,6 +10,7 @@ router.get('/buscar/:id_leccion/:id_pregunta/:id_grupo', RespuestaController.obt
 router.get('/buscar/leccion/:id_leccion/pregunta/:id_pregunta/estudiante/:id_estudiante', RespuestaController.obtenerRespuestaDeEstudiante);
 router.put('/calificar/leccion/:id_leccion/pregunta/:id_pregunta/grupo/:id_grupo', RespuestaController.calificarRespuestaGrupal);
 
+router.put('/calificar/sub/:id_leccion/pregunta/:id_pregunta/grupo/:id_grupo', RespuestaController.calificarSub);
 router.put('', RespuestaController.anadirSubrespuesta);
 
 module.exports = router;
