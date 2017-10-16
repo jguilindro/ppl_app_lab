@@ -1,74 +1,100 @@
-var EstudianteModel = require('../models/estudiante.model');
-ProfesorModel       = require('../models/profesor.model');
-respuesta           = require('../utils/responses');
-var app = require('express')
-function login(req, res) {
+// Por facilidad que hicieron llamadas a la base de datos desde aqui y no desde el modelo
+// solo en este caso se uso
+
+var db = require('../db/db')
+var responses = require('../utils/responses')
+
+function login(req, res, next) {
+  const correo = `${req.body.cas_user.toLowerCase()}@espol.edu.ec`
+
   let estudiante = new Promise(( resolve, reject ) => {
-    EstudianteModel.obtenerEstudiantePorCorreo(req.body.correo, ( err, estudiante ) => {
-      if ( err ) return reject('error');
-      if ( !estudiante ) return resolve(false);
-      req.session.privilegios = 'estudiante';
-      req.session.correo = req.body.correo;
-      req.session._id = estudiante._id;
-      req.session.login = true;
-      return resolve(true);
+    db.select().from('estudiantes').where({correo: correo}).first('correo', 'nombres', 'apellidos').then(function(estudiante, err) {
+      if (err) {
+        return reject(err)
+      }
+      if (estudiante) {
+        req.session.correo = correo
+        req.session.privilegios = 'estudiante'
+        req.session.save(function(err) {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(estudiante) 
+        })
+      } else {
+        return resolve(false)
+      }
     })
   })
 
   let profesor = new Promise(( resolve, reject ) => {
-    ProfesorModel.obtenerProfesorPorCorreo(req.body.correo, ( err, profesor ) => {
-      if ( err ) return reject('error');
-      if ( !profesor ) return resolve(false);
-      req.session.privilegios = 'profesor';
-      req.session.correo = req.body.correo;
-      req.session._id = profesor._id
-      req.session.login = true;
-      return resolve(true);
+    db.select().from('profesores').where({correo: correo}).first('correo', 'nombres', 'apellidos').then(function(profesor, err) {
+      if (err) {
+        return reject(err)
+      }
+      if (profesor) {
+        req.session.correo = correo
+        req.session.privilegios = 'profesor'
+        req.session.save(function(err) {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(profesor) 
+        })
+      } else {
+        return resolve(false)
+      }
     })
   })
 
-  Promise.all([estudiante, profesor]).then(values => {
+  let admin = new Promise(( resolve, reject ) => {
+    db.select().from('admin').where({correo: correo}).first('correo', 'nombres', 'apellidos').then(function(admin, err) {
+      if (err) {
+        return reject(err)
+        
+      }
+      if (admin) {
+        req.session.correo = correo
+        req.session.privilegios = 'admin'
+        req.session.save(function(err) {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(admin) 
+        })
+      } else {
+        return resolve(false)
+      }
+    })
+  })
+
+  Promise.all([estudiante, profesor, admin]).then(values => {
     if ( values[0] ) {
-      return res.redirect('/estudiantes');
+      return responses.ok(res,values[0])
     }
     if ( values[1] ) {
-      return res.redirect('/profesores');
+      return responses.ok(res,values[1])
     }
-    return res.redirect('/');
+    if ( values[2] ) {
+      return responses.ok(res,values[2])
+    }
+    return responses.noAutorizado(res)
   }, reason => {
-    res.redirect('/');
+    return responses.serverError(res)
   })
 }
 
-function logout( req, res ) {
+function logout(req, res) {
   req.session.destroy(function( err ) {
-		if ( err ) {
-			console.log(err);
-		}
-    res.redirect('/');
-	})
-}
-
-function obtenerUsuarioLoggeado(req, res) {
-  if ( req.session.privilegios == 'profesor' ) {
-    ProfesorModel.obtenerProfesorPorCorreo(req.session.correo, (err, profesor) => {
-      if ( err ) return res.json({errorMensaje: 'error'});
-      if ( !profesor ) return res.json({errorMensaje: 'profesor no encontrado'});
-      return respuesta.ok(res, profesor);
-    })
-  } else if ( req.session.privilegios == 'estudiante' ) {
-    EstudianteModel.obtenerEstudiantePorCorreo(req.session.correo, (err, estudiante) => {
-      if ( err ) return res.json({errorMensaje: 'error'});
-      if ( !estudiante ) return res.json({errorMensaje: 'profesor no encontrado'});
-      return respuesta.ok(res, estudiante);
-    })
-  } else {
-    return respuesta.noAutorizado(res);
-  }
+    if ( err ) {
+      res.send(false)
+    } else {
+      res.send(true)
+    }
+  })
 }
 
 module.exports = {
   login,
-  logout,
-  obtenerUsuarioLoggeado,
+  logout
 }

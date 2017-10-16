@@ -1,54 +1,17 @@
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise
+var db = require('../db/db')
+var logger = require('winston')
 
-const ProfesorSchema = mongoose.Schema({
-  _id: {
-    type: String,
-    unique: true,
-    'default': require('shortid').generate
-  },
-  correo: {
-    type: String
-  },
-  nombres: {
-    type: String
-  },
-  apellidos: {
-    type: String
-  },
-  tipo: {
-    type: String,
-    enum: ['titular', 'peer']
-  },
-  nivelPeer: [{
-    paralelo: {
-      ref: 'Paralelo',
-      type: String
-    },
-    nivel: {
-      type: Number
-    }
-  }]
-},{timestamps: true, versionKey: false, collection: 'profesores'});
-
-ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
-  this.model('Profesor').find({}, callback);
+const obtenerTodosProfesores = function() {
+  return new Promise((resolve, reject) => {
+    db.select().from('profesores').then(function(profesores, err) {
+      if (err) {
+        reject(err)
+      }
+      resolve(profesores)
+    })
+  })
 }
 
-ProfesorSchema.statics.obtenerProfesorPorCorreo = function(correo_profesor, callback) {
-  this.findOne({correo: correo_profesor}, callback)
+module.exports = {
+  obtenerTodosProfesores
 }
-
-ProfesorSchema.statics.obtenerProfesor = function(id_profesor, callback) {
-  this.findOne({_id: id_profesor}, callback)
-}
-
-ProfesorSchema.statics.obtenerProfesorPorNombres = function(nombres_profesor, callback) {
-  this.findOne({nombres: nombres_profesor}, callback)
-}
-
-ProfesorSchema.methods.crearProfesor = function(callback) {
-  this.save(callback);
-}
-
-module.exports = mongoose.model('Profesor', ProfesorSchema)

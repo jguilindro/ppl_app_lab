@@ -1,71 +1,71 @@
 function malRequest(res) {
   return res.status(400).json({
     estado: false,
-    errorCodigo: 400,
-    errorMensaje: "Request mal enviado"
+    error_codigo: 400,
+    error_mensaje: "Request mal enviado"
   })
 }
 
 function noAutorizado (res) {
   return res.status(401).json({
     estado: false,
-    errorCodigo: 401,
-    errorMensaje: "No autorizado"
+    error_codigo: 401,
+    error_mensaje: "No autorizado"
   })
 }
 
 function soloAdministrador (res) {
   return res.status(401).json({
     estado: false,
-    errorCodigo: 403,
-    errorMensaje: "Solo para administadores"
+    error_codigo: 403,
+    error_mensaje: "Solo para administadores"
   })
 }
 
 function urlNoValido (res) {
   return res.status(404).json({
     estado: false,
-    errorCodigo: 404,
-    errorMensaje: "Url o metodo no valido"
+    error_codigo: 404,
+    error_mensaje: "Url o metodo no valido"
   })
 }
 
 function urlMetodoInvalido (res) {
   return res.status(405).json({
     estado: false,
-    errorCodigo: 405,
-    errorMensaje: "Url invalida"
+    error_codigo: 405,
+    error_mensaje: "Url invalida"
   })
 }
 
 function noJson (res) {
   res.status(406).json({
     estado: false,
-    errorCodigo: 406,
-    errorMensaje: "No es un json"
+    error_codigo: 406,
+    error_mensaje: "No es un json"
   })
 }
 
 function serverError (res) {
   return res.status(500).json({
     estado: false,
-    errorCodigo: 500,
+    error_codigo: 500,
     errorMensaje: "Servidor error"
   })
 }
 function servicioNoDisponible (res) {
   res.status(503).json({
     estado: false,
-    errorCodigo: 503,
-    errorMensaje: "Servicio no capacitado"
+    error_codigo: 503,
+    error_mensaje: "Servicio no capacitado"
   })
 }
 
 function mongoError (res, error) {
   res.status(500).json({
     estado: false,
-    errorCodigo: 503,
-    errorMensaje: error
+    error_codigo: 503,
+    error_mensaje: error
   })
 }
 
