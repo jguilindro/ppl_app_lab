@@ -17,118 +17,119 @@
   <body>
     <header id="navbar">
     </header>
-    <div id="app">
+    <main id="app">
       <div id="pages">
         <section class="row" id="section-tabs">
           <br>
           <main class="col s12">
             <ul class="tabs" id="tabs-swipe-demo">
               <li class="tab col s4" id="t1"><a id = "ta1" class="active" href="#test1">Preparar</a></li>
-              <li class="tab col s4 disabled" id="t2"><a id= "ta2"href="#test2">Seleccionar</a></li>
-              <li class="tab col s4 disabled" id = "t4"><a id="ta4" href="#test4">Resumen</a></li>
+              <li class="tab col s4" id="t2"><a id= "ta2"href="#test2">Seleccionar</a></li>
+              <li class="tab col s4" id = "t4"><a id="ta4" href="#test4">Resumen</a></li>
             </ul>
           </main>
         </section>
         <!--        .::Paso 1, SETUP::.           -->
-        <section id="test1" class="col s12">
-          <div class="page">
-            <main class="seccion-1 row container">
-              <h1 class="center-align flow-text">Crear una nueva lección</h1>
-              <form>
-                <section class="row" id="row-nombre">
-                  <article class="input-field col s12">
-                    <label for="nombre">Nombre</label>
-                    <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
-                  </article>
-                </section>
-                <section class="row" id="row-materia-paralelo">
-                  <article class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
-                    <label>Materia: </label> <br> <p>{{leccion_nueva.nombreMateria}}</p>
-                  </article>
-                  <article class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
-                    <label>Paralelo: </label><br> <p>{{paraleloEscogido.nombre}}</p>
-                  </article>
-                </section>
-                <section class="row" id="row-fecha-tipo">
-                  <article class="input-field col s6">
-                    <label for="fechaInicio" class="active">Fecha Inicio</label>
-                     <input id="datePicker" name="fecha" placeholder="fecha">
-                  </article>
-                  <article class="input-field col s6" id="tipoLeccion">
-                    <label class="active">Tipo</label>
-                    <form action="#">
-                      <p>
-                        <input name="group1" v-model="tipoEscogido" type="radio" id="tests1" disabled="true"/>
-                      </p>
-                      <p>
-                        <input value="estimacion|laboratorio" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado1" checked/>
-                        <label for="seleccionado1">Estimación|Laboratorio</label>
-                      </p>
-                      <p>
-                        <input value="tutorial" v-model="tipoEscogido" class="with-gap" name="group1" type="radio" id="seleccionado2"  />
-                        <label for="seleccionado2">Tutorial</label>
-                      </p>
-                    </form>
-                  </article>
-                </section>
-              </form>
-              <footer class="row col s12">
-                <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">Siguiente</button>
-              </footer>
-            </main>
-          </div>
+        <section id="test1" class="col s12 page">
+          <main class="seccion-1 row container">
+            <header class="strike">
+              <h1 class="center-align flow-text">Crear una nueva lección</h1>  
+            </header>
+            <form>
+              <section class="row" id="row-nombre">
+                <article class="input-field col s12">
+                  <label for="nombre">Nombre</label>
+                  <input v-model="leccion_nueva.nombre" class="form-control " type="text" name="nombre" id="lblNombre" placeholder="nombre de leccion">
+                </article>
+              </section>
+              <section class="row" id="row-materia-paralelo">
+                <article class="input-field col s6" id="materias" v-show="profesor.tipo == 'titular'">
+                  <label>Materia: </label> <br>
+                  <select id="select-materia" name="select-materia">
+                    <option value="" disabled="true" selected="true"></option>
+                    <option value="FISG1002">Física 2</option>
+                    <option value="FISG1003">Física 3</option>
+                    <option value="FISG2001">Física Conceptual</option>
+                  </select>
+                </article>
+                <article class="input-field col s6" id="div-select" v-show="profesor.tipo == 'titular'">
+                  <label>Paralelo: </label><br>
+                  <select id="select-paralelo" name="select-paralelo" disabled="true">
+                    <option value="" disabled="true" selected="true"></option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </article>
+              </section>
+              <section class="row" id="row-fecha-tipo">
+                <article class="input-field col s6">
+                  <label for="fechaInicio" class="active">Fecha Inicio</label>
+                   <input id="datePicker" name="fecha" placeholder="fecha">
+                </article>
+                <article class="input-field col s6" id="tipoLeccion">
+                  <label>Tipo de lección: </label> <br>
+                  <select id="select-tipo-leccion" name="select-tipo-leccion" disabled="true">
+                    <option value="" disabled="true" selected="true"></option>
+                    <option value="estimacion|laboratorio">Estimación|Laboratorio</option>
+                    <option value="tutorial">Tutorial</option>
+                  </select>
+                </article>
+              </section>
+            </form>
+            <footer class="row col s12">
+              <button type="button" v-on:click="validarCamposVacios()" id="btnsgt1" class="btn pull right">Siguiente</button>
+            </footer>
+          </main>
         </section>
         <!--       Paso 2, SELECTION!      -->
-        <section id="test2" class="col s12">
-          <div class="page">
-            <header class="strike">
-              <span>Escoger las preguntas</span>
-            </header>
-            <main>
-              <div class="tiempo" style="position: fixed">
-                <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{preguntas_escogidas.tiempoTotal}} Min</h4>
-              </div>
-              <section class="container" id="capitulos">
-                <div class="row">
-                  <section class="col s7 m9 l10">
-                    <article v-for="capitulo in capitulosMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
-                      <ul class="preguntas collapsible" data-collapsible="accordion">
-                        <li>
-                          <div class="collapsible-header" v-on:click="collapsibleClicked($event)">
-                                                                      <span><h6>({{capitulo.nombreMateria}})</h6></span>
-                                                                      <h5>{{capitulo.nombre}}</h5>
-                          </div>
-                          <div class="collapsible-body question" v-for="pregunta in capitulo.preguntas">
-                            <div v-bind:id="'tooltip-' + pregunta._id"
-                               v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
-                            <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
-                            <label v-bind:for="pregunta._id">
-                              {{pregunta.nombre}}
-                            </label>
-                            <label class="icono pull right">
-                              <p>{{pregunta.tiempoEstimado}} minutos</p>
-                            </label>
-                          </div>
-                            </div>
-                        </li>
-                      </ul>
-                    </article>
-                  </section>
-                  <section class="col s4 hide-on-small-only m3 l2">
-                    <ul class="section table-of-contents">
-                      <li v-for="capitulo in capitulosAMostrar">
-                        <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
-                      </li>
-                    </ul>
-                  </section>
-                  <section class="row col s10">
-                    <button type="button" v-on:click="avanzarPestania('test1','#t1')" id="btnats1" class="btn">atras</button>
-                    <button type="button" v-on:click="avanzarPestania('test4','#t4')" id="btnsgt2" class="btn pull right">siguiente</button>
-                  </section>
-                </div>
+        <section id="test2" class="col s12 page">
+          <header class="strike">
+            <span>Escoger las preguntas</span>
+          </header>
+          <main>
+            <div class="tiempo" style="position: fixed">
+              <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{preguntas_escogidas.tiempoTotal}} Min</h4>
+            </div>
+            <section class="container row" id="capitulos">
+              <section class="col s7 m9 l10">
+                <article v-for="capitulo in capitulosMostrar" class="capitulo scrollspy section" v-bind:id="capitulo._id">
+                  <ul class="preguntas collapsible" data-collapsible="accordion">
+                    <li>
+                      <div class="collapsible-header" v-on:click="collapsibleClicked($event)">
+                                                                  <span><h6>({{capitulo.nombreMateria}})</h6></span>
+                                                                  <h5>{{capitulo.nombre}}</h5>
+                      </div>
+                      <div class="collapsible-body question" v-for="pregunta in capitulo.preguntas">
+                        <div :id="'tooltip-' + pregunta._id" v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
+                        <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
+                        <label v-bind:for="pregunta._id">
+                          {{pregunta.nombre}}
+                        </label>
+                        <label class="icono pull right">
+                          <p>{{pregunta.tiempoEstimado}} minutos</p>
+                        </label>
+                      </div>
+                        </div>
+                    </li>
+                  </ul>
+                </article>
               </section>
-            </main>
-          </div>
+              <section class="col s4 hide-on-small-only m3 l2">
+                <ul class="section table-of-contents">
+                  <li v-for="capitulo in capitulosAMostrar">
+                    <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
+                  </li>
+                </ul>
+              </section>
+              <section class="row col s10">
+                <button type="button" v-on:click="avanzarPestania('test1','#t1')" id="btnats1" class="btn">atras</button>
+                <button type="button" v-on:click="avanzarPestania('test4','#t4')" id="btnsgt2" class="btn pull right">siguiente</button>
+              </section>
+            </section>
+          </main>
         </section>
         <!--     Paso 3, OVERVIEW       -->
         <section id="test4" class="col s12">
@@ -170,33 +171,32 @@
         </section>
       </div>
       <!-- Modal Structure -->
-  	  <div id="myModal" class="modal">
-  	    <div class="modal-content">
+  	  <section id="myModal" class="modal">
+  	    <main class="modal-content">
   	      <p class="center-align">Lección creada correctamente</p>
-  	    </div>
-  	    <div class="modal-footer">
+  	    </main>
+  	    <footer class="modal-footer">
   	      <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-  	    </div>
-  	  </div>
+  	    </footer>
+  	  </section>
       <!-- Modal pregunta -->
-      <div id="modalDesc" class="modal">
-        <div class="modal-content">
-        </div>
-        <div class="modal-footer">
+      <section id="modalDesc" class="modal">
+        <main class="modal-content">
+        </main>
+        <footer class="modal-footer">
           <a id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-        </div>
-      </div>
+        </footer>
+      </section>
       <!-- Modal validacion -->
-      <div id="modalVal" class="modal">
-        <div class="modal-content">
+      <section id="modalVal" class="modal">
+        <main class="modal-content">
           <p class="center-align">Ha olvidado llenar un campo</p>
-        </div>
-        <div class="modal-footer">
+        </main>
+        <footer class="modal-footer">
           <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-        </div>
-      </div>
-      </div>
-    </div>
+        </footer>
+      </section>
+    </main>
     <footer>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>

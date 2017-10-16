@@ -1,21 +1,12 @@
 var app = new Vue({
 	created: function(){
-		self.anioActual = new Date().getFullYear();
-		this.obtenerLogeado();
+		this.anioActual = new Date().getFullYear();
+		this.obtenerUsuario();
 	},
 	mounted: function(){
-		//Inicializadores de Materialize
-		$('.button-collapse').sideNav();
-		$(".dropdown-button").dropdown({ hover: false });
-		$('.scrollspy').scrollSpy();
-		$('#modalEliminarLeccion').modal();
-		$('.modal').modal();
-
-		//Funciones de flujo de la aplicación
-		this.getLecciones();
-
+		this.inicializarMaterialize();		
 	},
-	el: '#preguntas',
+	el: '#lecciones',
 	data: {
 		lecciones: [],
 		profesor: {},
@@ -29,53 +20,82 @@ var app = new Vue({
 		nombreLecciones: [],
 		profesorConectado: '',
 		anioActual: '',
-		//
 		paraleloId: '',
 		calificaciones: []
 	},
 	methods: {
-		obtenerLogeado: function() {
-			/*
-				Modificada: 26-05-2017 @edisonmora95
-			*/
-			var self = this;
+		inicializarMaterialize: function(){
+			$('.button-collapse').sideNav();
+			$(".dropdown-button").dropdown({ hover: false });
+			$('.scrollspy').scrollSpy();
+			$('#modalEliminarLeccion').modal();
+			$('.modal').modal();
+		},
+		/*
+			Modificada: 26-05-2017 @edisonmora95
+		*/
+		obtenerUsuario: function() {
       $.get({
       	url: '/api/session/usuario_conectado',
       	success: function(res){
-      		self.profesor = res.datos;
-      		self.misParalelos();
+      		app.profesor = res.datos;
+      		app.obtenerTodosParalelos();
       	}
       });
     },
-    misParalelos: function() {
-    	var self = this;
+    obtenerTodosParalelos: function(){
     	$.get({
-    		url: '/api/paralelos/profesores/mis_paralelos',
+    		url: '/api/paralelos/',
     		success: function(res){
-    			self.paralelos = res.datos;
+    			app.paralelos = app.filtrarParalelos(res.datos);
+    			console.log('Mis paralelos:', app.paralelos)
+    			app.getLecciones();
+    		},
+    		error: function(err){
+    			console.log(res)
     		}
     	});
-
     },
+    filtrarParalelos(arrayParalelos){
+    	let misParalelos = [];
+    	for (var i = 0; i < arrayParalelos.length; i++) {
+    		let paraleloActual = arrayParalelos[i];
+    		const esProfesor = ( paraleloActual.profesor == app.profesor._id );
+    		const esPeer 		 = isInArray(app.profesor._id, paraleloActual.peers);
+    		if( esProfesor || esPeer ){
+    			misParalelos.push(paraleloActual._id);
+    		}
+    	}
+    	return misParalelos;
+    },
+    /*
+			Modificada: 19-05-2017 @edisonmora95
+  	*/
     getLecciones: function(){
-    	/*
-				Modificada: 19-05-2017 @edisonmora95
-    	*/
-			var self = this;
-			self.$http.get('/api/lecciones').then(response => {
-				var leccionesObtenidas = response.body.datos;
-				if(self.profesor.tipo === 'titular'){
-					self.filtrarLecciones(leccionesObtenidas);
-				}else if(self.profesor.tipo === 'peer'){
-					self.filtrarLeccionesPeer(leccionesObtenidas);
+			$.get({
+				url: '/api/lecciones/',
+				success : function(res){
+					app.lecciones = app.filtrarLecciones(res.datos);
+					app.lecciones.sort(app.sortPorUpdate);
+					console.log('lecciones:', app.lecciones)
+				},
+				error: function(err){
+					console.log(err)
 				}
-
-			}, response => {
-				//error callback
-				console.log(response)
-			})
-
+			});
 		},
+		filtrarLecciones: function(arrayLecciones){
+			console.log('todas las lecciones:', arrayLecciones)
+			let misLecciones = [];
+			for (var i = 0; i < arrayLecciones.length; i++) {
+				let leccionActual = arrayLecciones[i];
+				const esDeMiParalelo = isInArray( leccionActual.paralelo, app.paralelos );
+				if( esDeMiParalelo ){
+					misLecciones.push(leccionActual);
+				}
+			}
+			return misLecciones;
+    },
 		filtrarLeccionesPeer: function(arrayLecciones){
 			/*
 				@Autor: 19-05-2017 @edisonmora95
@@ -122,7 +142,6 @@ var app = new Vue({
 				console.log(response)
 			});
 		},
-
 		crearModalEliminarLeccion: function(id, nombre){
 			var self = this;
 			var leccionId = id;
@@ -152,28 +171,6 @@ var app = new Vue({
 			$('#modalEliminarLeccionFooter').append(btnEliminar, btnCancelar)
 			$('#modalEliminarLeccion').modal('open');
 		},
-
-
-    filtrarLecciones: function(arrayLecciones){
-    	var self = this;
-    	$.each(arrayLecciones, function(index, leccion){
-    		if(leccion.creador==self.profesor._id){
-          $.get({
-            url: `/api/lecciones/${leccion._id}/calificada`,
-            success: function(res) {
-              if (res.datos) {
-                leccion.estado = 'calificada'
-              }
-              self.lecciones.push(leccion);
-            }
-          })
-    		}
-    	})
-    	// self.lecciones = self.lecciones.sort(self.sortPorUpdate);
-      self.lecciones = self.lecciones.sort(self.sortPorEstado);
-      // self.lecciones = self.lecciones.sort(self.sortPorEstado);
-      console.log(self.lecciones);
-    },
     sortPorUpdate: function(a, b){
     	return (a.updatedAt < b.updatedAt) ? 1: -1;
     },
@@ -639,4 +636,8 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     link.click();
     document.body.removeChild(link);
     $('#modalGenerarCsv').modal('close');
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
 }

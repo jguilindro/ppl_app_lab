@@ -21,4 +21,6 @@ router.get('/recalificar/:id_leccion', LeccionController.obtenerLeccionRecalific
 
 router.post('/terminar_leccion', LeccionController.terminarLeccion);
 
+router.get('/datos/:id_estudiante/:id_leccion', LeccionController.leccionDatos);
+
 module.exports = router;

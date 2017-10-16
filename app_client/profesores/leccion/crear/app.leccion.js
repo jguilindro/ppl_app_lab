@@ -2,6 +2,8 @@ var App = new Vue({
   created: function() {
     this.obtenerUsuario();
     this.obtenerCapitulos(this);
+    this.obtenerPreguntas(this);
+    this.obtenerParalelos();
   },
   mounted: function(){
     this.inicializarMaterialize();
@@ -26,17 +28,80 @@ var App = new Vue({
           self.CollapsibleOpen = true
         }
       });
+      
+      $('#select-materia').change( function(){
+        $('#select-paralelo').attr('disabled', false);
+        $('#select-paralelo').material_select();
+        const nombreMateria  = $('#select-materia option:selected').text();
+        App.leccion_nueva.nombreMateria = nombreMateria;
+        App.leccion_nueva.codigoMateria = $('#select-materia').val();
+      });
+
+      $('#select-paralelo').change( function(){
+        $('#select-tipo-leccion').attr('disabled', false);
+        $('#select-tipo-leccion').material_select();
+
+        const materiaSel           = $('#select-materia').val();
+        const nombreMateria        = $('#select-materia option:selected').text();
+        const paraleloSel          = $('#select-paralelo').val();
+        App.leccion_nueva.paralelo = App.obtenerIdParalelo(materiaSel, paraleloSel, App.paralelos);
+        if( App.leccion_nueva.paralelo == null ){
+          const mensaje = 'La materia ' + nombreMateria + ' no tiene paralelo #' + paraleloSel;
+          Materialize.toast(mensaje, 5000, 'rounded red');
+        }
+        App.leccion_nueva.nombreParalelo = $('#select-paralelo option:selected').text();
+        App.paraleloEscogido.nombre      = $('#select-paralelo option:selected').text();
+
+
+
+
+
+        const paralelo = $.grep(App.paralelos, function(par, i){
+          return par._id == App.leccion_nueva.paralelo;
+        });
+        console.log('el paralelo escogido es:', paralelo)
+      });
+      //Cuando el tipo de lección es seleccionado, se tienen que filtrar las preguntas a mostrar de los capitulo a mostrar
+      $('#select-tipo-leccion').change( function(){
+        App.leccion_nueva.tipo = $('#select-tipo-leccion').val();
+        App.anadirPreguntasACapitulos(App.capitulosObtenidos, App.preguntas);
+        App.capitulosMostrar = [];
+        const materiaSel     = $('#select-materia').val();
+        App.capitulosMostrar = $.grep(App.capitulosObtenidos, function(capitulo, i){
+          return capitulo.codigoMateria == materiaSel;
+        });
+        const tipoSel = $('#select-tipo-leccion').val();
+        for (var i = 0; i < App.capitulosMostrar.length; i++) {
+          let capituloActual = App.capitulosMostrar[i];
+          capituloActual.preguntas = App.filtrarPreguntasPorTipoLeccion(capituloActual.preguntas, tipoSel);
+        }
+      });
     },
+    //////////////////////////////////////////////
+    //Llamadas api
+    //////////////////////////////////////////////
     obtenerUsuario: function() {
       this.$http.get('/api/session/usuario_conectado').then(response => {
         this.profesor = response.body.datos;
+      });
+    },
+    obtenerParalelos: function(){
+      $.get({
+        url: '/api/paralelos/',
+        success: function(res){
+          App.paralelos = res.datos;
+          console.log('paralelos:', App.paralelos);
+        },
+        error: function(err){
+          Materialize.toast('No se pudieron obtener los paralelos. Recargue la página', 3000, 'rounded red');
+          console.log(err);
+        }
       });
     },
     obtenerCapitulos: function(self){
       var url = '/api/capitulos/'
       self.$http.get(url).then(response => {
         self.capitulosObtenidos = response.body.datos;
-        self.obtenerPreguntas(self);
       }, response => {
         console.log('Hubo un error al obtener los capítulos de la base de datos.');
         console.log(response);
@@ -46,65 +111,40 @@ var App = new Vue({
       var url = '/api/preguntas/';
       self.$http.get(url).then(response => {
         self.preguntas = response.body.datos;
-        self.getParalelos();
       }, response => {
         console.log('Hubo un error al obtener las preguntas de la base de datos');
       });
     },
-    getParalelos: function(){
-      url = '/api/paralelos/profesores/mis_paralelos'
-      var self = this;
-      self.$http.get(url).then(response =>{
-        if( response.body.estado ) {
-          self.paralelos = response.body.datos;
-          if ( this.profesor.tipo == 'titular' ) {
-            var materia = self.paralelos[0].codigo;
-            App.leccion_nueva.codigoMateria = materia
-            //Filtrando para física 2
-            if( materia == "FISG1002" ){
-              App.paralelo_filtrado            = App.paralelos.filter(filtrarParalelo2);
-              App.leccion_nueva.nombreMateria  = "Física 2";
-              self.paraleloEscogido.id         = self.paralelos[0]._id;
-              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
-            }
-            //Filtrando para física 3
-            if( materia == "FISG1003" ){
-              App.paralelo_filtrado            = App.paralelos.filter(filtrarParalelo3);
-              App.leccion_nueva.nombreMateria  = "Física 3";
-              self.paraleloEscogido.id         = self.paralelos[0]._id;
-              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
-            }
-            //Filtrando para física conceptual
-            if( materia == "FISG2001" ){
-              App.paralelo_filtrado            = App.paralelos.filter(filtrarParaleloConceptual);
-              App.leccion_nueva.nombreMateria  = "Física Conceptual";
-              self.paraleloEscogido.id         = self.paralelos[0]._id;
-              self.paraleloEscogido.nombre     = self.paralelos[0].nombre;
-              App.leccion_nueva.nombreParalelo = self.paralelos[0].nombre;
-            }
-
-            //AQUI DEBO FILTRAR
-            console.log('Materia', self.paralelos[0].codigo);
-            console.log('Tipo', self.tipoEscogido);
-            console.log('Preguntas obtenidas:', self.preguntas)
-            self.preguntasMostrar = self.filtrarPreguntasPorMateria(self.preguntas, self.paralelos[0].codigo);
-            self.preguntasMostrar = self.filtrarPreguntasPorTipoLeccion(self.preguntasMostrar, self.tipoEscogido);
-            console.log('Preguntas mostrar:', self.preguntasMostrar)
-            self.capitulosMostrar = self.filtrarCapitulosPorMateria(self.capitulosObtenidos, self.paralelos[0].codigo);
-            self.dividirPreguntasEnCapitulos(self, self.preguntasMostrar, self.capitulosMostrar);
-            //Eliminando y agregando label donde serán colocados los paralelos.
-            //console.log(self.capitulosMostrar)
-            //App.filtrarCapitulos(App.tipoEscogido);
-          }
-          //self.crearSelectParalelos();
-        }
-        }, response => {
-          //error callback
-          console.log("EEEEEERRRROOOOOOOOOOOOOR!")
-        });
+    ///////////////////////////////////////////////
+    //HELPERS
+    ///////////////////////////////////////////////
+    anadirPreguntasACapitulos: function(arrayCapitulos, arrayPreguntas){
+      for (var i = 0; i < arrayCapitulos.length; i++) {
+        let capituloActual       = arrayCapitulos[i];
+        capituloActual.preguntas = App.obtenerPreguntasDeCapitulo(capituloActual, arrayPreguntas);
+      }
     },
+    obtenerPreguntasDeCapitulo: function(capitulo, arrayPreguntas){
+      let preguntas = [];
+      for (var i = 0; i < arrayPreguntas.length; i++) {
+        let preguntaActual = arrayPreguntas[i];
+        if( preguntaActual.capitulo._id == capitulo._id ){
+          preguntas.push(preguntaActual);
+        }
+      }
+      return preguntas;
+    },
+    obtenerIdParalelo: function(codigoMateria, nombreParalelo, arrayParalelos){
+      for (var i = 0; i < arrayParalelos.length; i++) {
+        let paraleloActual = arrayParalelos[i];
+        if( paraleloActual.codigo == codigoMateria && paraleloActual.nombre == nombreParalelo ){
+          return paraleloActual._id;
+        }
+      }
+    },
+    /*
+      Primero obtengo los paralelos del usuario conectado
+    */
     toHTML: function (str){
       var entityMap = {
       '&': '&amp;',
@@ -121,8 +161,8 @@ var App = new Vue({
         });
     },
     /*
-    *Sanitizes all the text fields in a container
-    *container: Is the container in which the text fields are contained :v
+      *Sanitizes all the text fields in a container
+      *container: Is the container in which the text fields are contained :v
     */
     sanitize: function (container){
       var self = this;
@@ -138,28 +178,24 @@ var App = new Vue({
     crearRegistroCalificacion: function(leccionId){
       var self = this;
       var grupos = [];
-      //Busco los grupos del paralelo seleccionado para la leccion
-      $.each(self.paralelo_filtrado, function(index, paralelo){
-        if(paralelo._id == self.paraleloEscogido.id){
-          grupos = paralelo.grupos;
-          return false;
-        }
+      const paralelo = $.grep(self.paralelos, function(par, i){
+        return par._id == self.leccion_nueva.paralelo;
       });
+      console.log('el paralelo escogido es:', paralelo)
+      grupos = paralelo.grupos;
       var url = '/api/calificaciones/'
       $.each(grupos, function(index, grupo){
         var registro = {
-          leccion: leccionId,
-          calificacion: 0,
-          calificada: false,
-          leccionTomada: false,
-          grupo: grupo._id,
-          paralelo: self.paraleloEscogido.id,
-          nombreParalelo: self.paraleloEscogido.nombre
-        }
-        //registro.grupo = grupo._id;
+          leccion       : leccionId,
+          calificacion  : 0,
+          calificada    : false,
+          leccionTomada : false,
+          grupo         : grupo,
+          paralelo      : App.leccion_nueva.paralelo,
+          nombreParalelo: App.paraleloEscogido.nombre
+        };
         self.$http.post(url, registro).then(response => {
         }, response => {
-
         });
       });
     },
@@ -252,33 +288,33 @@ var App = new Vue({
           .tooltipster('open');
       },
     crearLeccion() {
-      var crearLeccionURL = '/api/lecciones/'
+      var crearLeccionURL = '/api/lecciones/';
       var self = this;
-      self.leccion_nueva.paralelo = self.paraleloEscogido.id;
-      self.leccion_nueva.tipo = self.tipoEscogido;
+
       this.$http.post(crearLeccionURL, self.leccion_nueva).then(response => {
-      //success callback
-      $('#myModal').modal('open');
-      console.log(response)
-      self.crearRegistroCalificacion(response.body.datos._id)
-      /**
-      *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
-      *Al apretar cualquier parte del body, reenviará al menú de lecciones,
-      **/
-      $("body").click(function(){
-        window.location.replace("/profesores/leccion");
-      });
-      $(document).keyup(function(e) {
-           if (e.keyCode == 27) { // escape key maps to keycode `27`
-              window.location.replace("/profesores/leccion");
-          }
-      });
-      //-------Fin de cerrar Modal-------------
+        //success callback
+        $('#myModal').modal('open');
+        console.log(response)
+        //self.crearRegistroCalificacion(response.body.datos._id)
+        /**
+        *Not the best way, but a way. Una vez se haya creado la pregunta, se agregará un evento click al body
+        *Al apretar cualquier parte del body, reenviará al menú de lecciones,
+        **/
+        $("body").click(function(){
+          window.location.replace("/profesores/leccion");
+        });
+        $(document).keyup(function(e) {
+             if (e.keyCode == 27) { // escape key maps to keycode `27`
+                window.location.replace("/profesores/leccion");
+            }
+        });
+        //-------Fin de cerrar Modal-------------
       }, response => {
-      //error callback
-      alert("ALGO SALIÓ MAL!" + response);
-      console.log(response)
+        //error callback
+        alert("ALGO SALIÓ MAL!" + response);
+        console.log(response)
       });
+      
     },
     collapsibleClicked: function(event){
       var self = this;
@@ -293,71 +329,6 @@ var App = new Vue({
         });
         self.DOMupdated = false;
       }
-    },
-    dividirPreguntasEnCapitulos: function(){
-      var self = this;
-      $.each(self.preguntasEstimacion, function(index, pregunta){
-        $.each(self.capitulos, function(j, capitulo){
-          if(pregunta.capitulo.toLowerCase()==capitulo.nombre.toLowerCase()){
-            capitulo.preguntas.push(pregunta);
-            return false;
-          }
-        });
-      });
-    },
-    dividirPreguntasEnLaboratorios: function(){
-      var self = this;
-      $.each(self.preguntasLaboratorio, function(index, pregunta){
-        $.each(self.laboratorios, function(j, laboratorio){
-          if(pregunta.laboratorio.toLowerCase()==laboratorio.nombre.toLowerCase()){
-            laboratorio.preguntas.push(pregunta);
-            return false;
-          }
-        });
-      });
-    },
-    dividirPreguntasEnTutoriales: function(){
-      var self = this;
-      $.each(self.preguntasTutorial, function(index, pregunta){
-        $.each(self.tutoriales, function(j, tutorial){
-          if(pregunta.tutorial.toLowerCase()==tutorial.nombre.toLowerCase()){
-            tutorial.preguntas.push(pregunta);
-            return false;
-          }
-        });
-      });
-    },
-    crearCapitulo: function(pregunta){
-      var self = this;
-      var nombreCapitulo = pregunta.capitulo;
-      var idCapitulo = nombreCapitulo.toLowerCase();
-      idCapitulo = idCapitulo.split(":")[0];
-      idCapitulo - idCapitulo.replace(/\s+/g, '');
-      var hrefCapitulo = '#' + idCapitulo;
-      var capitulo = {
-        nombre: nombreCapitulo,
-        id:  idCapitulo,
-        href: hrefCapitulo,
-        preguntas: []
-      }
-      capitulo.preguntas.push(pregunta);
-      self.capitulos.push(capitulo);
-    },
-    crearTutorial: function(tutorial){
-      var self = this;
-      var nombreCapitulo = tutorial.capitulo;
-      var idCapitulo = nombreCapitulo.toLowerCase();
-      idCapitulo = idCapitulo.split(":")[0];
-      idCapitulo - idCapitulo.replace(/\s+/g, '');
-      var hrefCapitulo = '#' + idCapitulo;
-      var capitulo = {
-        nombre: nombreCapitulo,
-        id:  idCapitulo,
-        href: hrefCapitulo,
-        preguntas: []
-      }
-      capitulo.preguntas.push(tutorial);
-      self.capitulos.push(capitulo);
     },
     filtrarPreguntasPorMateria: function(arrayPreguntas, codigoMateria){
       return $.grep( arrayPreguntas, function(pregunta, index){
@@ -431,7 +402,10 @@ var App = new Vue({
       console.log(self.capitulosMostrar)
       //uncheck all checked checkbox, la función sirve... pero hay otros errores por arreglar.
       //unCheckPreguntas();
-    }
+    },
+    ////////////////////////////////////////////////
+    //MODIFICACIONES DOM
+    ////////////////////////////////////////////////
   },
   data: {
     capitulosMostrar: [],
@@ -530,15 +504,6 @@ function ordenPreguntas(preguntas){
     App.leccion_nueva.preguntas.ordenPregunta.push(x);
   }
 }
-
-$('#div-select').change(function(){
-  App.leccion_nueva.paralelo = $('#select-paralelos option:selected').val();
-  App.leccion_nueva.nombreParalelo = $('#select-paralelos option:selected').text();
-});
-
-$('#select-tipo-leccion').change(function(){
-  filtrarCapitulos();
-});
 
 $('#seleccionado1').change(function(){
   App.filtrarCapitulos('estimacion|laboratorio');

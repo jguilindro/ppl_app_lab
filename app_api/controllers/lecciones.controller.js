@@ -1,8 +1,10 @@
 const LeccionModel = require('../models/leccion.model');
 const ParaleloModel = require('../models/paralelo.model');
+const GrupoModel = require('../models/grupo.model');
 const EstudianteModel = require('../models/estudiante.model');
 const CalificacionModel = require('../models/calificacion.model');
 const PreguntaModel = require('../models/pregunta.model');
+const RespuestaModel = require('../models/respuestas.model');
 var respuesta = require('../utils/responses');
 var co = require('co')
 
@@ -46,30 +48,76 @@ const crearLeccion = (req, res) => {
       })
     })
   }
+
+  function obtenerParaleloPorId(id_paralelo){
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParalelo(id_paralelo, (err, doc) =>{
+        if (err) return reject(err);
+        return resolve(doc);
+      });
+    });
+  }
+
+  function crearLeccionP(leccion){
+    return new Promise((resolve, reject) => {
+      leccion.crearLeccion((err, doc) => {
+        if (err) return reject(err);
+        return resolve(leccion);
+      });
+    });
+  }
+
+  function crearRegistroCalificacion(registro){
+    return new Promise((resolve, reject) => {
+      registro.crearRegistro((err, doc) => {
+        if (err) return reject(err);
+        return resolve(doc);
+      });
+    }); 
+  }
+
   let leccion = new LeccionModel({
-    creador: req.session._id,
-    nombre: req.body.nombre,
+    creador       : req.session._id,
+    nombre        : req.body.nombre,
     tiempoEstimado: req.body.tiempoEstimado,
-    puntaje: parseInt(req.body.puntaje),
-    tipo: req.body.tipo,
-    fechaInicio: req.body.fechaInicio,
-    preguntas: req.body.preguntas,
-    paralelo: req.body.paralelo,
+    puntaje       : parseInt(req.body.puntaje),
+    tipo          : req.body.tipo,
+    fechaInicio   : req.body.fechaInicio,
+    preguntas     : req.body.preguntas,
+    paralelo      : req.body.paralelo,
     nombreParalelo: req.body.nombreParalelo,
-    nombreMateria: req.body.nombreMateria,
-    codigoMateria: req.body.codigoMateria
-  })
+    nombreMateria : req.body.nombreMateria,
+    codigoMateria : req.body.codigoMateria
+  });
+
   co(function*() {
+    //Primero registro las preguntas que se han usado en esta lección
     for (var i = 0; i < leccion.preguntas.length; i++) {
       var c = yield anadirPregunta(leccion.preguntas[i].pregunta, leccion._id)
     }
-  })
-  leccion.crearLeccion((err, doc) => {
-    if (err) {
-      console.log(err);
-      return respuesta.serverError(res);
+    //Creo la lección
+    let leccionCreada = yield crearLeccionP(leccion);
+    let paralelo      = yield obtenerParaleloPorId(req.body.paralelo);
+    let grupos        = paralelo.grupos;
+    //Creo los registros en Calificaciones
+    for (var j = 0; j < grupos.length; j++) {
+      let grupoActual = grupos[j];
+      let registro = new CalificacionModel({
+        leccion       : leccionCreada._id,
+        calificacion  : 0,
+        calificada    : false,
+        leccionTomada : false,
+        grupo         : grupoActual._id,
+        nombreGrupo   : grupoActual.nombre,
+        paralelo      : leccionCreada.paralelo,
+        nombreParalelo: paralelo.nombre
+      });
+      console.log('registro:', registro)
+      yield crearRegistroCalificacion(registro);
     }
-    return respuesta.creado(res, leccion);
+    return respuesta.creado(res, leccionCreada);
+  }).catch( fail => {
+    return respuesta.serverError(res);
   })
 }
 
@@ -180,6 +228,45 @@ const terminarLeccion = (req, res, next) => {
   res.send('asd')
 }
 
+const leccionDatos = (req, res) => {
+  // Obtiene los datos del estudiante
+  function buscarEstudiante(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
+        if (err) return reject(new Error('No se pudo obtener estudiante'));
+        return resolve(est);
+      });
+    });
+  }
+  // obtengo la leccion con las preguntas
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
+  }
+  //Obtengo las respuestas que ya ha enviado el estudiante
+  function obtenerRespuestas(id_leccion, id_estudiante) {
+    return new Promise((resolve, reject) => {
+      RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'));
+        return resolve(respues);
+      });
+    });
+  }
+
+  co(function* () {
+    const id_estudiante  = req.params.id_estudiante;
+    const id_leccion     = req.params.id_leccion;
+    let estudiante       = yield buscarEstudiante(id_estudiante);
+    let leccion          = yield obtenerLeccion(id_leccion);
+    let respuestas       = yield obtenerRespuestas(id_leccion, id_estudiante);
+    respuesta.ok(res, {estudiante: estudiante, leccion: leccion, respuestas: respuestas})
+  });
+};
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -188,6 +275,7 @@ module.exports = {
   eliminarLeccion,
   leccionYaCalificada,
   obtenerLeccionRecalificar,
+  leccionDatos,
   // realtime
   tomarLeccion,
   anadirTiempo,

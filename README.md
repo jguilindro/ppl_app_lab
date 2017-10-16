@@ -25,6 +25,13 @@ Ir a la carpta ppl-assessment
 ## Primero ejecutar
 npm install
 
+## Base de datos
+mongod.exe --dbpath <path> --port <port>
+
+mongorestore.exe --db <path>
+
+## Correr la aplicación 
+
 ### Development mode
 npm run dev
 
