@@ -8,16 +8,11 @@
     "api:server": "cross-env NODE_ENV=development env-cmd .env nodemon app_api/server.api.js --config nodemon.json",
     "client:server": "cross-env NODE_ENV=development env-cmd .env node app_client/server.client.js",
     "client:server:test": "cross-env NODE_ENV=production:test env-cmd .env node app_client/server.client.js",
+    "docs:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
     "npm-scripts-info": "npm-scripts-info"
   },
   "scripts-info": {
     "api:server": "correr el api",
-    "migrate": "migrate knex, ejemplo: A=nombre_migracion npm run migrate",
-    "seed": "seed knex, ejemplo: A=nombre_seed npm run seed",
-    "migrate:rollback": "rollback knex",
-    "migrate:latest": "latest knex",
-    "seed:run": "run seed knex",
-    "info": "documentacion",
     "start": "ver todos los comandos"
   },
   "dependencies": {
