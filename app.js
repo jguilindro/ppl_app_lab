@@ -336,7 +336,16 @@ app.use('/api/respuestas', authApi.estudiante, require('./app_api/routes/respues
 app.use('/api/capitulos', authApi.profesor, require('./app_api/routes/capitulo.router'));
 app.use('/api/calificaciones', authApi.estudiante, require('./app_api/routes/calificacion.router'));
 app.use('/api/rubrica', authApi.profesor, require('./app_api/routes/rubrica.router'));
-
+app.get('/logout', function(req, res) {
+  req.session.destroy(function(err) {
+    if (err) {
+      console.error('error al salir')
+      res.send(false)
+    } else {
+      res.send(true)
+    }
+  })
+})
 
 // CONFIGS FILES
 app.use(function(req, res, next) {

@@ -37,12 +37,16 @@ clientes_conectados = -1
 //   console.log(clientes_conectados)
 //   loggerCPU()
 // }, 1000)
+function prueba() {
+  setInterval(function() {
+    console.log('sads')
+  },1000 ) 
+}
 function realtime(io) {
   // inter.ref()
   // setInterval(function() {
   //   clientes_conectados = io.engine.clientsCount
   // }, 1000)
-  
   var leccion = io.of('/tomando_leccion');
   leccion.on('connection', function(socket) {
     // var clients[socket.id] = socket;
@@ -54,8 +58,6 @@ function realtime(io) {
       console.log('profesor realtime');
       co(function *() {
         const HORA_LOCAL = moment();
-        
-        
         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
         const profesor = yield obtenerProfesor(socket.user)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
@@ -88,34 +90,40 @@ function realtime(io) {
           console.log(`fecha inicio ${INICIO_LECCION.format('YY/MM/DD hh:mm:ss')}`);
           const TIEMPO_MAXIMO = INICIO_LECCION.add(LECCION_TOMANDO.tiempoEstimado, 'm');
           console.log(`tiempo maximo ${TIEMPO_MAXIMO.format('YY/MM/DD hh:mm:ss')}`);
-
-           var hec = yield cleanIntervals(intervals, socket.leccion._id)
+           var hec = yield cleanIntervals(intervals, socket.leccion._id, true)
           if (boton) {
             var c = yield corriendoTiempo(socket.leccion._id, true);
             leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
           }
           //loggerCPU()
           socket.interval = setInterval(function() {
-            let tiempo_temp = TIEMPO_MAXIMO
-            let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
-            //duration = -1
-            let duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
-            if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
-              console.log('terminado leccion1')
-              clearInterval(socket.interval);
+              let tiempo_temp = TIEMPO_MAXIMO
+              let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
+              //duration = -1
+              let duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss");
+              if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
+                clearInterval(socket.interval);
+                leccionTerminada(PARALELO, PARALELO.leccion)
+                leccion.in(PARALELO._id).emit('terminado leccion', true)
+                leccion.in(PARALELO._id).emit('tiempo restante', 'leccion terminada')
+              } else {
+                leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
+              }
+              delete tiempo_rest
+              delete tiempo_temp
+              delete duration
+            }, 1000)
+          var termo = parseInt(moment.duration(TIEMPO_MAXIMO.diff(CURRENT_TIME_GUAYAQUIL), 'seconds').format("ss"), 10)
+          var intervalTiempo = setTimeout(function() {
+            cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
               leccionTerminada(PARALELO, PARALELO.leccion)
               leccion.in(PARALELO._id).emit('terminado leccion', true)
-              leccion.in(PARALELO._id).emit('tiempo restante', 'leccion terminada')
-            } else {
-              leccion.in(PARALELO._id).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
-            }
-            delete tiempo_rest
-            delete tiempo_temp
-            delete duration
-          }, 1000)
+              console.log('leccion terminada por setTimeout')
+            })
+          },termo)
            socket.interval.ref()
             var leccion_id = socket.leccion._id
-            intervals.push({leccion_id: leccion_id, interval: socket.interval})
+            intervals.push({leccion_id: leccion_id, interval: socket.interval, intervalTiempo: intervalTiempo})
         }
           
        
@@ -279,7 +287,7 @@ function realtime(io) {
       co(function *() {
         var pausada = yield pausarLeccion(datos['leccion'])
         if (pausada) {
-          cleanIntervals(intervals, datos['leccion'])
+          cleanIntervals(intervals, datos['leccion'], true)
           leccion.in(datos['paralelo']).emit('tiempo restante', 'Lección pausada')
           console.log('leccion pausada', datos['leccion'])
         }
@@ -308,7 +316,7 @@ function realtime(io) {
         // TODO: verificar que sea un profesor
         const profesor = yield obtenerProfesor(socket.user)
         const PARALELO = yield obtenerParaleloProfesorPromise(profesor)
-        var intervals_done = yield cleanIntervals(intervals, socket.leccion._id)
+        var intervals_done = yield cleanIntervals(intervals, socket.leccion._id, true)
         // var limpiado = yield cleanIntervals(intervals, socket.leccion._id)
         var lecciones_terminadas = yield leccionTerminada(PARALELO, PARALELO.leccion)
         if (profesor &&  PARALELO && lecciones_terminadas && intervals_done) {
@@ -351,12 +359,15 @@ function aumentarTiempo(id_leccion, tiempo) {
 
 }
 
-function cleanIntervals(todos_intervals, id_leccion) {
+function cleanIntervals(todos_intervals, id_leccion, todo) {
   return new Promise((resolve, reject) => {
     intervals = intervals.filter(inicial => { // intervals es variable global
       if (inicial.leccion_id != id_leccion) {
         return inicial
       } else {
+        if (todo) {
+           clearTimeout(inicial.intervalTiempo)
+        }
         clearInterval(inicial.interval)
       }
     })
