@@ -2,7 +2,7 @@
   production .- usado en el servidor
   development .- usado para desarrollo local
   testing .- usado para los test automaticos
-  production:test .- test cas
+  cas .- test cas
 */
 
 // Librerias usadas

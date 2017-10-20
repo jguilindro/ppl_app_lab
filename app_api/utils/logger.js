@@ -3,6 +3,10 @@
 // logger development
 // http://thisdavej.com/using-winston-a-versatile-logging-library-for-node-js/
 // https://github.com/winstonjs/winston
+// Features completar:
+// Logger para cpu, admin, para leer los datos de la pc
+// Separar cada logger por archivo y que no se combinen
+
 
 var winston = require('winston')
 const { createLogger, format, transports } = require('winston');
@@ -20,15 +24,16 @@ const logger = winston.createLogger({
     myFormat
   ),
   transports: [
+  
     error_file,
-    info_file
+    /*info_file*/
   ],
   exceptionHandlers: [
     new transports.File({ filename: 'exceptions.log' })
   ]
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'testing') {
   logger.add(new winston.transports.Console({
     format: combine(
     timestamp(),

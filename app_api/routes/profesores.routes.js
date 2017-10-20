@@ -1,6 +1,13 @@
-var router = require('express').Router();
-const ProfesorController = require('../controllers/profesores.controller')
+//http://some.api.com/posts/comments?fields=name,image.
+let ProfesorController = require('../controllers/profesores.controller')
 
-router.get('/', ProfesorController.obtenerTodosProfesores);
-
-module.exports = router;
+module.exports = (app) => {
+  const profesorController = new ProfesorController()
+  app.route('/profesores')
+    .get((req, res) => {
+      profesorController.obtenerTodosProfesores().then(function(respuesta) {
+        res.status(respuesta.codigo_estado)
+        res.json(respuesta.datos)
+      })
+    })
+}

@@ -1,61 +1,14 @@
-# Peer Proyect Learning ESPOL WEB APP
+# Importante
+* Existe un nuevo .env con diferente formato. Pedirlo si se quiere usar
+* Todavia no esta el script de crear las bases de datos automaticamente
+* Definir el uso de los rollbacks knexjs
+* Se usara el logger winston para todo, incluso los console.log
+* Usar promises para todo y seguir el formato especificado para que sea testeable el api
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+https://github.com/tj/co
+* Usar el archivo responses.js para retornar los json de respuetas y de errores, si falta uno. Crearlos de acuerdo al archivo
+* Documentar el api, se usara apidocs para esto
 
-## Correr la app en produccion
 
-```sh
-> git pull
-```
-
-```sh
-> npm install
-```
-
-```sh
-export NODE_ENV=production
-```
-
-Ir a la carpta ppl-assessment
-
-```sh
-> forever start -o out.log -e err.log app.js
-```
-
-# Instalacion y setup Development
-
-## Primero ejecutar
-npm install
-
-### Development mode
-npm run dev
-
-### Producction mode
-npm run production
-
-# Api Documentacion
-https://joelerll95.gitbooks.io/ppl_aplicacion/content/
-
-# Comunicacion
-* Apper https://appear.in/ppl_app_lab
-* Discord https://discord.gg/Sjkhd6D
-
-<!-- ## Heroku
-
-heroku features:enable http-session-affinity -->
-
-## TODO
-
-* Docker
-* Testing api
-* Selenium testing
-* Front testing
-* Socketio Testing
-
-## Documentacion TODO
-
-* Documentacion API
-* Diagrama de base de datos
-* Diagrama de navegacion pagina
-* Documentacion webSockets
-* Documentacion Inicializar proyecto
-* Fake server api para documentacion (automatico)
-*
+# Setup Server
+export $(cat .env | xargs)

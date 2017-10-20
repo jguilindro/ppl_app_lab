@@ -1,3 +1,4 @@
+//https://github.com/adaltas/node-http-status/blob/master/src/index.litcoffee
 function malRequest(res) {
   return res.status(400).json({
     estado: false,
@@ -77,9 +78,6 @@ function noOKMensaje (res, datos) {
   return res.status(200).json({estado: false, datos: datos});
 }
 
-function ok (res, datos) {
-  return res.status(200).json({estado: true, datos: datos});
-}
 
 function okEliminado (res) {
   return res.status(200).json({estado: true});
@@ -101,23 +99,37 @@ function creado (res, datos) {
   return res.status(201).json({estado: true, datos: datos});
 }
 
+
+const ERROR_SERVIDOR = {datos: {estado: false, datos: "Error en el servidor"}, codigo_estado: 500}
+
+const NO_AUTORIZADO = {datos: {estado: false, datos: "No autorizado"}, codigo_estado: 401}
+
+let ok = (datos) => {
+  return {estado: true, datos: datos, codigo_estado: 200}
+}
+
+
 module.exports = {
-    malRequest,
-    noAutorizado,
-    soloAdministrador,
-    urlNoValido,
-    urlMetodoInvalido,
-    noJson,
-    serverError,
-    servicioNoDisponible,
-    mongoError,
-    okEliminado,
-    okAnadido,
-    okActualizado,
-    // validos
-    ok,
-    creado,
-    noOKMensaje,
-    // no validos
-    noOK
-  }
+  ERROR_SERVIDOR,
+  ok
+}
+// module.exports = {
+//     malRequest,
+//     noAutorizado,
+//     soloAdministrador,
+//     urlNoValido,
+//     urlMetodoInvalido,
+//     noJson,
+//     serverError,
+//     servicioNoDisponible,
+//     mongoError,
+//     okEliminado,
+//     okAnadido,
+//     okActualizado,
+//     // validos
+//     ok,
+//     creado,
+//     noOKMensaje,
+//     // no validos
+//     noOK
+//   }

@@ -13,8 +13,8 @@
     "restart": ""
   },
   "watch": [
-    "app_api_v2/server.api.js",
-    "app_api_v2/**"
+    "app.js",
+    "app_api/**"
   ],
   "env": {
     "NODE_ENV": "development"

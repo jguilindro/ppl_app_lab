@@ -1,17 +1,22 @@
-var co = require('co')
-var logger = require('../utils/logger')
+// Aqui se haran las validaciones de los request
+// usar la libreria joi para las validaciones, https://github.com/hapijs/joi
 
-var ProfesorModel = require('../models/profesor.model')
+var { 
+  obtenerTodosProfesores 
+  } = require('../models/profesor.model')
 
-const obtenerTodosProfesores = (req, res, next) => {
-  co(function* () {
-    var profesores = yield ProfesorModel.obtenerTodosProfesores()
-    logger.info('Hello again distributed logs');
-    logger.error('Helllll')
-    res.send(profesores)
-  })
+class ProfesoresController { 
+  constructor(params) {
+    this.params = params
+  }
+
+  obtenerTodosProfesores() {
+    return obtenerTodosProfesores()
+      .then(res => {
+        return responses.ok(res)
+      })
+      .catch(error => { return responses.ERROR_SERVIDOR })
+  }
 }
 
-module.exports = {
-  obtenerTodosProfesores
-}
+module.exports = ProfesoresController

@@ -40,7 +40,7 @@ module.exports = {
       host : process.env.DATABASE_HOST,
       user : process.env.DATABASE_USER,
       password : process.env.DATABASE_PASSWORD,
-      database : process.env.DATABASE_TESTING_DATABASE
+      database : process.env.DATABASE_DEVELOPMENT_DATABASE
     },
     migrations: {
       directory: __dirname + '/migrations',

@@ -4,16 +4,21 @@
   "private": true,
   "scripts": {
     "start": "npm run npm-scripts-info",
-    "dev": "npm-run-all --parallel api:server client:server",
+    "dev": "npm-run-all --parallel server",
+    "debug:node": "cross-env NODE_ENV=debug env-cmd .env node --expose-gc --inspect=9222 app.js",
+    "server": "cross-env NODE_ENV=development env-cmd .env nodemon server.js --config nodemon.json",
+    "server:test": "cross-env NODE_ENV=testing PORT=8001 env-cmd .env nodemon server.js --config nodemon.json",
     "api:server": "cross-env NODE_ENV=development env-cmd .env nodemon app_api/server.api.js --config nodemon.json",
     "client:server": "cross-env NODE_ENV=development env-cmd .env node app_client/server.client.js",
     "client:server:test": "cross-env NODE_ENV=production:test env-cmd .env node app_client/server.client.js",
     "docs:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
-    "npm-scripts-info": "npm-scripts-info"
-  },
-  "scripts-info": {
-    "api:server": "correr el api",
-    "start": "ver todos los comandos"
+    "migrate:rollback": "cross-env NODE_ENV=development env-cmd .env  knex migrate:rollback --knexfile  app_api/db/development/knexfile.js",
+    "migrate:latest": "cross-env NODE_ENV=development env-cmd .env  knex migrate:latest --knexfile  app_api/db/development/knexfile.js",
+    "seed:run": "cross-env NODE_ENV=development env-cmd .env  knex seed:run --knexfile  app_api_v2/db/development/knexfile.js",
+    "npm-scripts-info": "npm-scripts-info",
+    "test": "npm run test:integration",
+    "test:integration": "cross-env NODE_ENV=testing env-cmd .env mocha --opts app_api/test/integration/mocha.opts app_api/test/integration/**/*.js",
+    "mocha": "mocha"
   },
   "dependencies": {
     "body-parser": "~1.16.0",
@@ -31,10 +36,17 @@
     "winston": "^3.0.0-rc0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
     "cross-env": "^2.0.0",
     "env-cmd": "^7.0.0",
+    "faker": "^4.1.0",
+    "leakage": "^0.3.0",
+    "mocha": "^4.0.1",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.1.1",
-    "npm-scripts-info": "^0.3.6"
+    "npm-scripts-info": "^0.3.6",
+    "sinon": "^4.0.1"
   }
 }
