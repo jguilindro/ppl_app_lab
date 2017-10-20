@@ -20,7 +20,6 @@ app_client/estudiantes/dist/build-webpack.js
 .postcssrc.js
 .eslintrc
 package.backup.json
-server.js
 karma.conf.js
 gulpfile.js
 webpack.config.js
