@@ -5,7 +5,6 @@
 
 // feathersjs, actoinhero, thinkjs, sails, loopback,
 
-// const request = require('superagent')
 describe('Profesores', () => {
     before((done) => {
       app.listen(app.get('port'))
