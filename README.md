@@ -1,8 +1,5 @@
 [![Build Status](https://travis-ci.org/joelerll/ppl_app_lab.svg?branch=develop_v2)](https://travis-ci.org/joelerll/ppl_app_lab)
 
-# Testing
-https://travis-ci.org/joelerll/ppl_app_lab
-
 # Importante
 * Existe un nuevo .env con diferente formato. Pedirlo si se quiere usar
 * Todavia no esta el script de crear las bases de datos automaticamente
