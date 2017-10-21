@@ -12,3 +12,4 @@ https://github.com/tj/co
 
 # Setup Server
 export $(cat .env | xargs)
+[Travis]: https://travis-ci.org/joelerll/ppl_app_lab.svg?branch=develop_v2 "Travis"
