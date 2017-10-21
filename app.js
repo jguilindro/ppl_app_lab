@@ -23,11 +23,11 @@ app.use(cors())
 app.use(cookieParser());
 
 // conectarse a mongodb
-MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+if (process.env.NODE_ENV !== 'testing') { 
+  MongoClient.connect(process.env.MONGO_URL, function(err, db) {
   if (err) {
     console.error('error al conectarse mongodb cliente')
-  }
-  if (process.env.NODE_ENV !== 'testing' && !err) {
+  } else {
     app.use(session({
       secret: process.env.SECRET,
       resave: false,
@@ -41,6 +41,7 @@ MongoClient.connect(process.env.MONGO_URL, function(err, db) {
     console.info("conectado a mongodb cliente");
   }
 })
+}
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
    app.use(morgan('tiny'))
