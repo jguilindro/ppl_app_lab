@@ -16,7 +16,9 @@
     "migrate:latest:testing": "cross-env NODE_ENV=testing env-cmd .env  knex migrate:latest --knexfile  app_api/db/knexfile.js",
     "seed:run": "cross-env NODE_ENV=development env-cmd .env  knex seed:run --knexfile  app_api/db/knexfile.js",
     "seed:run:testing": "cross-env NODE_ENV=testing env-cmd .env knex seed:run --knexfile  app_api/db/knexfile.js",
-    "pretest": "cross-env NODE_ENV=testing env-cmd .env node scripts/testing/setup_testing_database_mysql.js",
+    "predevelopment": "cross-env NODE_ENV=development env-cmd .env node scripts/database/setup_database_mysql.js",
+    "development": "npm-run-all migrate:latest seed:run",
+    "pretest": "cross-env NODE_ENV=testing env-cmd .env node scripts/database/setup_database_mysql.js",
     "test": "npm-run-all migrate:latest:testing seed:run:testing test:integration",
     "test:integration": "cross-env NODE_ENV=testing env-cmd .env ava app_api/test/integration/**/*.test.js --verbose --color ",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
@@ -37,6 +39,17 @@
     "failWithoutAssertions": false,
     "tap": false,
     "powerAssert": false
+  },
+   "scripts-info": {
+    "start": "Ver informacion de los scripts",
+    "development": "Crea la base de datos development (borra la existente)",
+    "dev": "Empieza la aplicacion",
+    "debug:node": "Habilita el modo debug para chrome",
+    "cas": "Para realizar pruebas del cas",
+    "test": "Corre los test automaticos",
+    "docs": "Genera la documentacion, /docs/api y /docs/code",
+    "migrate:latest": "Correr las migraciones en development",
+    "seed:run": "Corre los seed en development"
   },
   "dependencies": {
     "body-parser": "~1.16.0",

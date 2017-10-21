@@ -5,7 +5,7 @@ module.exports = {
       host : process.env.DATABASE_HOST,
       user : process.env.DATABASE_USER,
       password : process.env.DATABASE_PASSWORD,
-      database : process.env.DATABASE_DEVELOPMENT_DATABASE
+      database : `ppl_${process.env.NODE_ENV}`
     },
     migrations: {
       directory: __dirname + '/migrations',
@@ -18,10 +18,10 @@ module.exports = {
   production: {
     client: 'mysql',
     connection: {
-      host : process.env.DATABASE_PRODUCTION_HOST,
-      user : process.env.DATABASE_PRODUCTION_USER,
-      password : process.env.DATABASE_PRODUCTION_PASSWORD,
-      database : process.env.DATABASE_PRODUCTION_DATABASE
+      host : process.env.DATABASE_HOST,
+      user : process.env.DATABASE_USER,
+      password : process.env.DATABASE_PASSWORD,
+      database : `ppl_${process.env.NODE_ENV}`
     },
     migrations: {
       directory: __dirname + '/migrations'
@@ -40,7 +40,7 @@ module.exports = {
       host : process.env.DATABASE_HOST,
       user : process.env.DATABASE_USER,
       password : process.env.DATABASE_PASSWORD,
-      database : process.env.DATABASE_TESTING_DATABASE
+      database : `ppl_${process.env.NODE_ENV}`
     },
     migrations: {
       directory: __dirname + '/migrations',

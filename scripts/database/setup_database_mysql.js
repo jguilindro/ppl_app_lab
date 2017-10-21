@@ -17,10 +17,10 @@ connection.connect(function(err) {
     process.exit(1)
     return;
   }
-   knex.raw('DROP DATABASE IF EXISTS ppl_testing')
+   knex.raw(`DROP DATABASE IF EXISTS ${config.connection.database}`)
   .then(function() {
-     knex.raw('CREATE DATABASE ppl_testing').then(function() {
-      console.log(chalk.green('Creada base de datos ppl_testing'))
+     knex.raw(`CREATE DATABASE ${config.connection.database}`).then(function() {
+      console.log(chalk.green(`Creada base de datos ${config.connection.database}`))
       process.exit(0)
      })
    })

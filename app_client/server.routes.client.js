@@ -24,8 +24,8 @@ module.exports = function (app) {
 
   if (process.env.NODE_ENV === 'development') {
     app.use('/', express.static(path.join(__dirname, 'varios/login')));
-  } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production:test') {
-    if (process.env.NODE_ENV === 'production:test') {
+  } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'cas') {
+    if (process.env.NODE_ENV === 'cas') {
     }
     app.get('/', cas.bounce, function(req, res) {
       // buscar es usuario en la base de datos, determinar si es admin, profesor, estudiante

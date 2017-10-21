@@ -1,9 +1,3 @@
-// Por facilidad que hicieron llamadas a la base de datos desde aqui y no desde el modelo
-// solo en este caso se uso
-
-var db = require('../db/db')
-var responses = require('../utils/responses')
-
 function login(req, res, next) {
   const correo = `${req.body.cas_user.toLowerCase()}@espol.edu.ec`
 

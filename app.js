@@ -14,6 +14,7 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var MongoStore = require('connect-mongo')(session) // guardar sessiones en mongo
 var MongoClient = require('mongodb').MongoClient
+var chalk = require('chalk')
 
 var app = express()
 var port = normalizePort(process.env.PORT || 8000)
@@ -26,7 +27,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'testing') { 
   MongoClient.connect(process.env.MONGO_URL, function(err, db) {
   if (err) {
-    console.error('error al conectarse mongodb cliente')
+    console.error(chalk.red('error al conectarse mongodb cliente'))
   } else {
     app.use(session({
       secret: process.env.SECRET,
@@ -38,7 +39,7 @@ if (process.env.NODE_ENV !== 'testing') {
           ttl: 1 * 24 * 60 * 60
         })
     }));
-    console.info("conectado a mongodb cliente");
+    console.info(chalk.green("conectado a mongodb cliente"))
   }
 })
 }
