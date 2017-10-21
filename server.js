@@ -8,18 +8,7 @@
 // NO SIDE EFFECTS
 
 var app = require('./app')
-var MongoClient = require('mongodb').MongoClient
 var server = require('http').Server(app)
-
-// conectarse a mongodb
-MongoClient.connect(process.env.MONGO_URL, function(err, db) {
-  if (err) {
-    console.error('error al conectado a mongodb cliente')
-  }
-  if (process.env.NODE_ENV !== 'testing') {
-    console.info("conectado a mongodb cliente");
-  }
-})
 
 server.on('error', onError)
 server.on('listening', onListening)

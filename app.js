@@ -13,6 +13,7 @@ var morgan = require('morgan') // logging
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var MongoStore = require('connect-mongo')(session) // guardar sessiones en mongo
+var MongoClient = require('mongodb').MongoClient
 
 var app = express()
 var port = normalizePort(process.env.PORT || 8000)
@@ -21,19 +22,28 @@ app.set('port', port)
 app.use(cors())
 app.use(cookieParser());
 
-if (process.env.NODE_ENV !== 'testing') {
-  app.use(session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-    expire: 1 * 24 * 60 * 60 ,
-    store: new MongoStore({
-        url: process.env.MONGO_URL,
-        ttl: 1 * 24 * 60 * 60
-      })
-  }));
-} else if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
-   app.use(morgan('combined'))
+// conectarse a mongodb
+MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+  if (err) {
+    console.error('error al conectarse mongodb cliente')
+  }
+  if (process.env.NODE_ENV !== 'testing' && !err) {
+    app.use(session({
+      secret: process.env.SECRET,
+      resave: false,
+      saveUninitialized: false,
+      expire: 1 * 24 * 60 * 60 ,
+      store: new MongoStore({
+          url: process.env.MONGO_URL,
+          ttl: 1 * 24 * 60 * 60
+        })
+    }));
+    console.info("conectado a mongodb cliente");
+  }
+})
+
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
+   app.use(morgan('tiny'))
 }
 
 // cliente app

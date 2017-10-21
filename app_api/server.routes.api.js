@@ -2,8 +2,8 @@
 
 // instanciacion de variables globales
 global.logger = require('./utils/logger')
-global.db = require('./db/db')
 global.responses = require('./utils/responses')
+global.db = require('./db/db')
 
 module.exports = function (app) {
   require('./routes/profesores.routes')(app) // Profesores

@@ -1,8 +1,6 @@
 node_modules/
-public/bower_components
 npm-debug.log
-app_api/ws/update/*.json
-scripts/tmp
+public/bower_components
 .idea/
 .env
 *.png
@@ -12,20 +10,8 @@ env.txt
 *.log*
 
 ## ignorar builds
-app_client/estudiantes/dist/*.css
-app_client/estudiantes/dist/*.js
-app_client/estudiantes/dist/build-webpack.js
 
 ## webpack files
-.postcssrc.js
-.eslintrc
-package.backup.json
-karma.conf.js
-gulpfile.js
-webpack.config.js
-data/db/*.bson
-data/db/*.json
-data/db/*
 .env_debug
 docs/api/*
 docs/code/_book/
