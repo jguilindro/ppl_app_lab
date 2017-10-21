@@ -1,6 +1,5 @@
 var mysql      = require('mysql')
 var enviroment = process.env.NODE_ENV
-var exec = require('shelljs').exec
 var config = require('./knexfile.js')[enviroment]
 var connection = mysql.createConnection({
   host     : config.connection.host,

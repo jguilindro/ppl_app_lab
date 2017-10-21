@@ -1,0 +1,12 @@
+{
+  "name": "apidoc-ppl",
+  "version": "0.3.0",
+  "description": "Documentacion Api Ppl",
+  "title": "Documentacion Api Ppl",
+  "url" : "",
+  "sampleUrl": "",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  }
+}

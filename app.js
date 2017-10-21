@@ -46,6 +46,10 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
    app.use(morgan('tiny'))
 }
 
+//documentacion
+app.use('/docs/code',express.static(path.join(__dirname, './docs/code/_book')))
+app.use('/docs/api',express.static(path.join(__dirname, './docs/api')))
+
 // cliente app
 var client = express()
 require('./app_client/server.routes.client.js')(client)
@@ -98,18 +102,3 @@ function normalizePort(val) {
 }
 
 module.exports = app
-
-
-// // Log all requests
-// app.use(function(req, res, next) {
-//     var ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
-//     logger.log('request', req.method, req.url, ip);
-//     next();
-// });
-
-// latencia tiempo, ip, url, metodo, browser
-// cpu, heap size, 
-// ver heroku dashboard panel
-// dashboard importantes cosas
-
-// manejo correcto de mongo db
