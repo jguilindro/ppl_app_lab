@@ -1,6 +1,6 @@
 var mysql      = require('mysql')
 var enviroment = process.env.NODE_ENV
-var config = require('../../app_api/db/knexfile.js')[enviroment]
+var config = require('../../databases/relational/knexfile.js')[enviroment]
 const chalk = require('chalk');
 var connection = mysql.createConnection({
   host     : config.connection.host,

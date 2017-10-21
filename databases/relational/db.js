@@ -12,11 +12,12 @@ var connection = mysql.createConnection({
 if (process.env.NODE_ENV !== 'testing') {
   connection.connect(function(err) {
     if (err) {
-      console.error(chalk.red('Error conexión MYSQL'))
+      console.error(chalk.red(`Error conexión ${config.client.toUpperCase()}`))
       console.log(err)
       process.exit(1)
     }
-    console.log(chalk.green('Conectado a MYSQL'))
+    console.log(chalk.green(`Conectado a ${config.client.toUpperCase()}`))
   })
 }
-module.exports = require('knex')(config)
+var knex = require('knex')(config)
+module.exports = knex

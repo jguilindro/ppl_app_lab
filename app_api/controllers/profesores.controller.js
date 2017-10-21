@@ -15,7 +15,9 @@ class ProfesoresController {
       .then(res => {
         return responses.ok(res)
       })
-      .catch(error => { return responses.ERROR_SERVIDOR })
+      .catch(error => { 
+        return responses.ERROR_SERVIDOR
+       })
   }
 }
 
