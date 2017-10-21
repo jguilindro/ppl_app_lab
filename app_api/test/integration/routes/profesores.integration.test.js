@@ -1,27 +1,17 @@
-// yarn add mocha chai fakerjs request chai-http sinonjs nock leakage
-//https://github.com/thinkjs/thinkjs/blob/master/test/case/application.js
-//https://github.com/actionhero/actionhero/blob/master/test/servers/web.js
-// https://github.com/waldemarnt/testable-nodejs-api
+var app = require('../../../../app')
+var request = require('supertest')
+var sinon = require('sinon')
+var assert = require('assert')
+var test = require('ava').test
 
-// feathersjs, actoinhero, thinkjs, sails, loopback,
+test.before(t => {
+  app.listen(app.get('port'))
+  t.pass()
+})
 
-describe('Profesores', () => {
-    before((done) => {
-      app.listen(app.get('port'))
-      done()
-    });
-    after(function () {
-      process.exit(0)
-    });
-    describe('/GET profesores', () => {
-        it('este debera retornar todos los profesores', (done) => {
-              chai.request(app)
-              .get('/api/profesores')
-              .end((err, res) => {
-                res.should.have.status(200)
-                res.body.should.be.a('array')
-                done();
-              });
-        });
-    });
+test('/GET ObtenerTodosProfesores', async t => {
+  const res = await request(app).get('/api/profesores')
+  t.is(res.status, 200)
+  t.true(Array.isArray(res.body))
+  t.pass();
 })

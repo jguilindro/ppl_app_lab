@@ -17,8 +17,17 @@
     "seed:run": "cross-env NODE_ENV=development env-cmd .env  knex seed:run --knexfile  app_api_v2/db/development/knexfile.js",
     "npm-scripts-info": "npm-scripts-info",
     "test": "npm run test:integration",
-    "test:integration": "cross-env NODE_ENV=testing env-cmd .env mocha --opts app_api/test/integration/mocha.opts app_api/test/integration/**/*.js",
-    "mocha": "mocha"
+    "test:integration": "cross-env NODE_ENV=testing env-cmd .env ava app_api/test/integration/**/*.test.js --verbose --color "
+  },
+  "ava": {
+    "source": [
+      "app_api/*.{js,jsx}"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "tap": false,
+    "powerAssert": false
   },
   "dependencies": {
     "body-parser": "~1.16.0",
@@ -37,16 +46,15 @@
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
-    "chai": "^4.1.2",
-    "chai-http": "^3.0.0",
+    "ava": "^0.22.0",
     "cross-env": "^2.0.0",
     "env-cmd": "^7.0.0",
     "faker": "^4.1.0",
     "leakage": "^0.3.0",
-    "mocha": "^4.0.1",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.1.1",
     "npm-scripts-info": "^0.3.6",
-    "sinon": "^4.0.1"
+    "sinon": "^4.0.1",
+    "supertest": "^3.0.0"
   }
 }

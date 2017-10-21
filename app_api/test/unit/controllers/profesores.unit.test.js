@@ -1,1 +1,0 @@
-// [ ] como hacer drop a la base de datos llamando a la instancia de knex

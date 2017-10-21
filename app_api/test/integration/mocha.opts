@@ -1,3 +1,0 @@
---require ./app_api/test/integration/helpers.js
---reporter spec
---slow 5000

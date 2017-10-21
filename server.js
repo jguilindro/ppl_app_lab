@@ -1,3 +1,12 @@
+// CLEAN ARCHITECTURE
+// BASE DE DATOS INDEPENDIENTE DEL CODIGO
+// NO DEPENDER DE LIBRERIAS
+// INDEPENDEN OF UI
+// TESTEABLE
+
+// CLEAN CODE
+// NO SIDE EFFECTS
+
 var app = require('./app')
 var MongoClient = require('mongodb').MongoClient
 var server = require('http').Server(app)

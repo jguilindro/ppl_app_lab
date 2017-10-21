@@ -88,3 +88,18 @@ function normalizePort(val) {
 }
 
 module.exports = app
+
+
+// // Log all requests
+// app.use(function(req, res, next) {
+//     var ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
+//     logger.log('request', req.method, req.url, ip);
+//     next();
+// });
+
+// latencia tiempo, ip, url, metodo, browser
+// cpu, heap size, 
+// ver heroku dashboard panel
+// dashboard importantes cosas
+
+// manejo correcto de mongo db
