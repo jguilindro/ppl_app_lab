@@ -11,7 +11,7 @@ test.before(t => {
 
 test('/GET ObtenerTodosProfesores', async t => {
   const res = await request(app).get('/api/profesores')
-  t.is(res.status, 200)
+  t.is(res.status, 500)
   t.true(Array.isArray(res.body))
   t.pass();
 })
