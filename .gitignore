@@ -11,8 +11,8 @@ env.txt
 
 ## ignorar builds
 coverage/
-reports/
 !coverage/.gitkeep
+reports/
 !reports/.gitkeep
 .nyc_output
 build.js*
