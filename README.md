@@ -11,6 +11,14 @@ https://github.com/tj/co
 * Usar el archivo responses.js para retornar los json de respuetas y de errores, si falta uno. Crearlos de acuerdo al archivo
 * Documentar el api, se usara apidocs para esto
 
+# Testing
+
+#Unit api, server
+ava (cambiar por mocha)
+
+# E2E testing front
+cypress
+./node_modules/.bin/cypress open
 
 # Setup Server
 export $(cat .env | xargs)

@@ -23,9 +23,6 @@ module.exports = function (app) {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    
-    app.use('/profesores', express.static(path.join(__dirname, 'profesores/dist')))
-    app.use('/estudiantes', express.static(path.join(__dirname, 'estudiantes/dist')))
     app.use('/', express.static(path.join(__dirname, 'varios/login')));
   } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'cas') {
     if (process.env.NODE_ENV === 'cas') {
@@ -44,7 +41,8 @@ module.exports = function (app) {
   }
 
   
- 
+  app.use('/profesores', express.static(path.join(__dirname, 'profesores/dist')))
+  app.use('/estudiantes', express.static(path.join(__dirname, 'estudiantes/dist')))
   // app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes/dist')));
   // app.use('/admin', express.static(path.join(__dirname, 'app_client/admin/dist')));
   // app.use('/no_autorizado', express.static(path.join(__dirname, 'app_client/varios/no_autorizado')));
