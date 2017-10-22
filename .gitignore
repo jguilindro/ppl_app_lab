@@ -10,6 +10,9 @@ env.txt
 *.log*
 
 ## ignorar builds
+build.js*
+dist/
+!dist/index.html
 
 ## webpack files
 .env_debug
@@ -19,6 +22,7 @@ package-lock.json
 hacer
 apache2/
 yarn-error*
+tmp*
 npm-error*
 npm.error*
 *.log
