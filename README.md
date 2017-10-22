@@ -18,7 +18,7 @@ ava (cambiar por mocha)
 
 # E2E testing front
 cypress
-./node_modules/.bin/cypress open
+cypress run --project ./src/clients/foo
 
 # Setup Server
 export $(cat .env | xargs)

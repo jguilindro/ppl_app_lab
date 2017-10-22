@@ -17,6 +17,9 @@ before_install:
 install:
   - "yarn install"
 
+# script:
+#   - cypress run --record
+
 # services:
 #   - redis-server
 # services:

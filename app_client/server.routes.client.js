@@ -43,6 +43,7 @@ module.exports = function (app) {
   
   app.use('/profesores', express.static(path.join(__dirname, 'profesores/dist')))
   app.use('/estudiantes', express.static(path.join(__dirname, 'estudiantes/dist')))
+  
   // app.use('/estudiantes', express.static(path.join(__dirname, 'app_client/estudiantes/dist')));
   // app.use('/admin', express.static(path.join(__dirname, 'app_client/admin/dist')));
   // app.use('/no_autorizado', express.static(path.join(__dirname, 'app_client/varios/no_autorizado')));

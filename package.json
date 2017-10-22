@@ -21,7 +21,8 @@
     "development": "npm-run-all migrate:latest seed:run",
     "pretest": "cross-env NODE_ENV=testing env-cmd .env node scripts/database/setup_database_mysql.js",
     "test": "npm-run-all migrate:latest:testing seed:run:testing test:integration",
-    "test:integration": "cross-env NODE_ENV=testing env-cmd .env ava app_api/test/integration/**/*.test.js --verbose --color ",
+    "test:integration": "yarn cross-env NODE_ENV=testing env-cmd .env  mocha --opts app_api/test/integration/mocha.opts app_api/test/**/**/*.test.js --exit",
+    "test:integration:watch": "yarn cross-env NODE_ENV=testing env-cmd .env  mocha --opts app_api/test/integration/mocha.opts app_api/test/**/**/*.test.js --watch --recursive",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
     "docs:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
     "predocs:code": "gitbook install ./docs/code",
@@ -40,17 +41,8 @@
     "postproduction": "npm-run-all minify:profesores minify:estudiantes",
     "js:production:profesores": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/profesores/dist/build-component.css ] -e app_client/profesores/src/main.js | uglifyjs -c drop_console=true,warnings=false -m > app_client/profesores/dist/build.js",
     "js:production:estudiantes": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build-component.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c drop_console=true,warnings=false -m > app_client/estudiantes/dist/build.js",
-    "browserify": "browserify"
-  },
-  "ava": {
-    "source": [
-      "app_api/*.{js,jsx}"
-    ],
-    "concurrency": 5,
-    "failFast": true,
-    "failWithoutAssertions": false,
-    "tap": false,
-    "powerAssert": false
+    "browserify": "browserify",
+    "cypress": "./node_modules/.bin/cypress open --project ./app_client"
   },
   "scripts-info": {
     "start": "Ver informacion de los scripts",
@@ -93,7 +85,6 @@
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
-    "ava": "^0.22.0",
     "axios": "^0.17.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.0.0",
@@ -104,6 +95,7 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.13",
     "browserify-hmr": "^0.3.5",
+    "chai": "^4.1.2",
     "chalk": "^2.2.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
@@ -119,6 +111,8 @@
     "gitbook-cli": "^2.3.2",
     "leakage": "^0.3.0",
     "minifier": "^0.8.1",
+    "mocha": "^4.0.1",
+    "mochawesome": "^2.3.1",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.1.1",
     "npm-scripts-info": "^0.3.6",
@@ -128,6 +122,7 @@
     "sinon": "^4.0.1",
     "socket.io-client": "^2.0.3",
     "supertest": "^3.0.0",
+    "testdouble": "^3.2.6",
     "uglify-es": "^3.1.5",
     "vue": "^2.5.2",
     "vue-material": "^0.7.5",

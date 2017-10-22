@@ -11,4 +11,9 @@ test:
 docs:
 	yarn docs
 
+test-docs:
+	yarn test:integration REPORTER=doc \
+		| cat docs/head.html - docs/tail.html \
+		> docs/test.html
+
 .PHONY: mongo install

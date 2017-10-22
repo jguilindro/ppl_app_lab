@@ -13,7 +13,7 @@ env.txt
 build.js*
 dist/
 !dist/index.html
-
+*.mp4
 ## webpack files
 .env_debug
 docs/api/*
