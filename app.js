@@ -53,6 +53,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
 app.use('/docs/code',express.static(path.join(__dirname, './docs/code/_book')))
 app.use('/docs/api',express.static(path.join(__dirname, './docs/api')))
 app.use('/reports', express.static(path.join(__dirname, './app_client/varios/reports')))
+app.use('/coverage', express.static(path.join(__dirname, './app_client/varios/coverage')))
 
 // cliente app
 var client = express()

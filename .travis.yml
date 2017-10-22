@@ -17,6 +17,8 @@ before_install:
 install:
   - "yarn install"
 
+# after_success: yarn coverage
+
 # script:
 #   - cypress run --record
 

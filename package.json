@@ -21,7 +21,7 @@
     "development": "npm-run-all migrate:latest seed:run",
     "pretest": "cross-env NODE_ENV=testing env-cmd .env node scripts/database/setup_database_mysql.js",
     "test": "npm-run-all migrate:latest:testing seed:run:testing test:integration",
-    "test:integration": "yarn cross-env NODE_ENV=testing env-cmd .env  mocha --opts app_api/test/integration/mocha.opts app_api/test/**/**/*.test.js --exit",
+    "test:integration": "yarn cross-env NODE_ENV=testing env-cmd .env nyc --reporter=html mocha --opts app_api/test/integration/mocha.opts app_api/test/integration/**/*.test.js --exit",
     "test:integration:watch": "yarn cross-env NODE_ENV=testing env-cmd .env  mocha --opts app_api/test/integration/mocha.opts app_api/test/**/**/*.test.js --watch --recursive",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
     "docs:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
@@ -68,6 +68,12 @@
   "style": [
     "./node_modules/vue-material/dist/vue-material.css"
   ],
+  "nyc": {
+    "report-dir": "./app_client/varios/coverage",
+    "exclude": [
+      "app_api/test/**/**/*.test.js"
+    ]
+  },
   "dependencies": {
     "body-parser": "~1.16.0",
     "cas-authentication": "^0.0.8",
@@ -109,6 +115,7 @@
     "eslint-plugin-standard": "^2.0.0",
     "faker": "^4.1.0",
     "gitbook-cli": "^2.3.2",
+    "istanbul": "^0.4.5",
     "leakage": "^0.3.0",
     "minifier": "^0.8.1",
     "mocha": "^4.0.1",
@@ -116,6 +123,7 @@
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.1.1",
     "npm-scripts-info": "^0.3.6",
+    "nyc": "^11.2.1",
     "offline-js": "^0.7.19",
     "parcelify": "^2.2.0",
     "proxyquireify": "^3.0.1",

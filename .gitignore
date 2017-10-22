@@ -10,6 +10,11 @@ env.txt
 *.log*
 
 ## ignorar builds
+coverage/
+reports/
+!coverage/.gitkeep
+!reports/.gitkeep
+.nyc_output
 build.js*
 dist/
 !dist/index.html
