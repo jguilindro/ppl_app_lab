@@ -139,8 +139,15 @@
               </ul>
             </div>
             <div v-else>
-              <label> Respuesta: </label>
-              <p>{{res.respuesta}}</p>
+              <label> Respuesta: </label> 
+              <div class="row">
+                <div class="col s8">
+                  <p>{{res.respuesta}}</p>    
+                </div>
+                <div class="col s4">
+                  <img class="materialboxed" :data-caption="res.respuesta" width="250" :src="res.imagenes">
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -309,8 +309,8 @@ leccion.on('respuesta para profesor', function(respuesta_estudiante) {
   App.respuestas.reverse();
   console.log(App.respuestas);
   
-  Materialize.toast('¡ '+ respuesta_estudiante.estudianteNombre+ respuesta_estudiante.estudianteApellido + 
-    ' A respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
+  Materialize.toast('¡ El '+ respuesta_estudiante.grupoNombre + 
+    ' Ha respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
 
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
