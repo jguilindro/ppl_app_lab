@@ -14,9 +14,9 @@ var app = new Vue({
 		todasLecciones: [],
 		leccionesId: [],
 	 	gruposParaleloId: [],
-		 paralelosDatos: [],
+		paralelosDatos: [],
 	 	nombreParalelo: [],
-		 nombreMateria: [],
+		nombreMateria: [],
 		nombreLecciones: [],
 		profesorConectado: '',
 		anioActual: '',
@@ -48,7 +48,6 @@ var app = new Vue({
     		url: '/api/paralelos/',
     		success: function(res){
     			app.paralelos = app.filtrarParalelos(res.datos);
-    			console.log('Mis paralelos:', app.paralelos)
     			app.getLecciones();
     		},
     		error: function(err){
@@ -61,12 +60,20 @@ var app = new Vue({
     	for (var i = 0; i < arrayParalelos.length; i++) {
     		let paraleloActual = arrayParalelos[i];
     		const esProfesor = ( paraleloActual.profesor == app.profesor._id );
-    		const esPeer 		 = isInArray(app.profesor._id, paraleloActual.peers);
-    		if( esProfesor || esPeer ){
+    		const esPeer1		 = app.esPeer1(app.profesor, paraleloActual._id);
+    		if( esProfesor || esPeer1 ){
     			misParalelos.push(paraleloActual._id);
     		}
     	}
     	return misParalelos;
+    },
+    esPeer1(peer, idParalelo){
+    	for (var i = 0; i < peer.nivelPeer.length; i++) {
+    		let actual = peer.nivelPeer[i];
+    		if( actual.paralelo == idParalelo && actual.nivel == 1 ){
+    			return true;
+    		}
+    	}
     },
     /*
 			Modificada: 19-05-2017 @edisonmora95
@@ -77,7 +84,6 @@ var app = new Vue({
 				success : function(res){
 					app.lecciones = app.filtrarLecciones(res.datos);
 					app.lecciones.sort(app.sortPorUpdate);
-					console.log('lecciones:', app.lecciones)
 				},
 				error: function(err){
 					console.log(err)
@@ -85,7 +91,6 @@ var app = new Vue({
 			});
 		},
 		filtrarLecciones: function(arrayLecciones){
-			console.log('todas las lecciones:', arrayLecciones)
 			let misLecciones = [];
 			for (var i = 0; i < arrayLecciones.length; i++) {
 				let leccionActual = arrayLecciones[i];
@@ -96,41 +101,6 @@ var app = new Vue({
 			}
 			return misLecciones;
     },
-		filtrarLeccionesPeer: function(arrayLecciones){
-			/*
-				@Autor: 19-05-2017 @edisonmora95
-				@Descripción:	Cuando un peer está loggeado, las lecciones que se deben mostrar son todas las de sus paralelos.
-			*/
-			var self = this;
-      var permiso = self.profesor.nivelPeer.some(nivel => {
-        return nivel.nivel === 1
-      })
-      if (permiso) {
-        self.profesor.nivelPeer.forEach(nivel => {
-          if (nivel.nivel === 1) {
-            self.lecciones = arrayLecciones.filter(leccion => {
-              if (leccion.paralelo == nivel.paralelo && leccion.estado != 'pendiente') {
-                $.get({
-                  url: `/api/lecciones/${leccion._id}/calificada`,
-                  success: function(res) {
-                    if (res.datos) {
-                      leccion.estado = 'calificada'
-                    }
-                  }
-                })
-                return leccion
-              }
-            })
-          }
-        })
-        self.lecciones = self.lecciones.sort(self.sortPorUpdate);
-        self.lecciones = self.lecciones.sort(self.sortPorEstado);
-      }
-		},
-		nuevaPregunta: function(){
-			window.location.href = '/profesores/leccion/crear'
-
-		},
 		eliminarLeccion: function(id){
 			var self = this;
 			var url = '/api/lecciones/' + id;
