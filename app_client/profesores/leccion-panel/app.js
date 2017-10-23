@@ -182,9 +182,15 @@ function comenzar() {
 }
 document.getElementById('anadir-tiempo').disabled = true
 function terminarLeccion() {
-  leccion.emit('parar leccion', 'la leccion ha sido detenida')
-  document.getElementById('terminar-leccion').disabled = true
-  document.getElementById('comenzar-leccion').disabled = true
+  $.ajax({
+    url: '/api/lecciones/terminar_leccion',
+    method: 'POST',
+    success: function(response) {
+      leccion.emit('parar leccion', 'la leccion ha sido detenida')
+      document.getElementById('terminar-leccion').disabled = true
+      document.getElementById('comenzar-leccion').disabled = true
+    }
+  })
 }
 
 function terminarLeccionDevelopment() {
@@ -275,14 +281,8 @@ $('#input-tiempo').keypress(function(event){
 });
 
 
-function terminarPrueba() {
-  $.ajax({
-    url: '/api/lecciones/terminar_leccion',
-    method: 'POST',
-    success: function(response) {
-      console.log(response);
-    }
-  })
+function terminarLeccionAjax() {
+  
 }
 document.getElementById('continuar-leccion').disabled = true
 leccion.on('get_message', function(mensaje) {

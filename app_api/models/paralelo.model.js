@@ -178,7 +178,7 @@ ParaleloSchema.statics.empezoLeccion = function(id_paralelo, callback) {
 }
 
 ParaleloSchema.statics.leccionTerminada = function(id_paralelo, callback) {
-	this.update({_id: id_paralelo}, {$set: {'leccion': '', 'dandoLeccion': false, leccionYaComenzo: false}},callback)
+	this.update({_id: id_paralelo}, {$set: {'leccion': '', 'dandoLeccion': false, 'leccionYaComenzo': false}},callback)
 }
 
 module.exports = mongoose.model('Paralelo', ParaleloSchema);

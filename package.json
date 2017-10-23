@@ -26,7 +26,7 @@
     "production:up": "cross-env NODE_ENV=production env-cmd .env node app.js",
     "predev": "npm install",
     "testprofesores": "cross-env NODE_ENV=testprofesores env-cmd .env node app.js",
-    "dev": "npm-run-all --parallel mon sync docs",
+    "dev": "npm-run-all --parallel mon",
     "watchify": "watchify -vd -p browserify-hmr -e app_client/estudiantes/src/main.js -o app_client/estudiantes/dist/build.js",
     "parcel": "browserify  -e app_client/estudiantes/src/main.js -p [ parcelify -o app_client/estudiantes/dist/build.css] -o public/bower_components/tmp",
     "mon": "env-cmd .env nodemon app.js --config nodemon.json",

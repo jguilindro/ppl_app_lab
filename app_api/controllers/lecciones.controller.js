@@ -224,8 +224,12 @@ const leccionYaCalificada = (req, res) => {
 }
 
 const terminarLeccion = (req, res, next) => {
-  res.io.of('/tomando_leccion').emit('get_message','something')
-  res.send('asd')
+  ParaleloModel.obtenerParalelosProfesor(req.session._id, function(err, paralelo) {
+    ParaleloModel.leccionTerminada(paralelo._id, (err, para) => {
+      if (err) return respuesta.serverError(res);
+      return respuesta.ok(res, true)
+    })
+  })
 }
 
 const leccionDatos = (req, res) => {
