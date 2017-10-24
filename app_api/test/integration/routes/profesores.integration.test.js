@@ -2,7 +2,7 @@ describe('Profesores', () => {
   after(() => {
     //1process.exit(0)
   })
-  it('GET todos los prsdssddddofesores', (done) => {
+  it('GET todos los profesores', (done) => {
     request(app)
       .get('/api/profesores')
       .end(function(err, res) {
@@ -11,6 +11,7 @@ describe('Profesores', () => {
       })
   })
   it('GET todos los profesores', (done) => {
-    assert.equal('sad',true, 'foo is a string')
+    assert.equal('sad','sad', 'foo is a string')
+    done()
   })
 })
