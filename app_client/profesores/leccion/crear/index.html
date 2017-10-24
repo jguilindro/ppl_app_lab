@@ -91,7 +91,7 @@
           </header>
           <main>
             <div class="tiempo" style="position: fixed">
-              <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{preguntas_escogidas.tiempoTotal}} Min</h4>
+              <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> <h4>{{leccion_nueva.tiempoEstimado}} Min</h4>
             </div>
             <section class="container row" id="capitulos">
               <section class="col s7 m9 l10">
@@ -104,7 +104,7 @@
                       </div>
                       <div class="collapsible-body question" v-for="pregunta in capitulo.preguntas">
                         <div :id="'tooltip-' + pregunta._id" v-on:mouseover="showTooltip(pregunta._id, pregunta.descripcion, pregunta.tiempoEstimado)">
-                        <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" onclick="preguntaSeleccionada(this)">
+                        <input type="checkbox" v-bind:id="pregunta._id" value="asdadsa" @click="anadirPregunta(pregunta)">
                         <label v-bind:for="pregunta._id">
                           {{pregunta.nombre}}
                         </label>
@@ -119,7 +119,7 @@
               </section>
               <section class="col s4 hide-on-small-only m3 l2">
                 <ul class="section table-of-contents">
-                  <li v-for="capitulo in capitulosAMostrar">
+                  <li v-for="capitulo in capitulosMostrar">
                     <a v-bind:href="'#' + capitulo._id">{{capitulo.nombre}}</a>
                   </li>
                 </ul>
@@ -140,7 +140,7 @@
             <section class="container" id="overview">
               <p class="flow-text"><span class="title">Nombre:                </span> {{leccion_nueva.nombre}}</p>
               <p class="flow-text"><span class="title">Materia:               </span> {{leccion_nueva.nombreMateria}}</p>
-              <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{preguntas_escogidas.tiempoTotal}} minutos</p>
+              <p class="flow-text"><span class="title">Tiempo total estimado: </span> {{leccion_nueva.tiempoEstimado}} minutos</p>
               <p class="flow-text"><span class="title">Tipo de lección:       </span> {{leccion_nueva.tipo}}</p>
               <p class="flow-text"><span class="title">Fecha prevista:        </span> {{leccion_nueva.fechaInicio}}</p>
               <p class="flow-text"><span class="title">Puntaje total:         </span> {{leccion_nueva.puntaje}}</p>
@@ -152,7 +152,7 @@
   	              <h2 class="flow-text center-align">Preguntas escogidas</h2>
   	              <main>
   	                <p class="collection-item"><span class="badge">Tiempo Estimado</span>Pregunta</p>
-  	                <li v-for="pregunta in preguntas_escogidas.preguntas" class="collection-item">
+  	                <li v-for="pregunta in preguntasSel" class="collection-item">
   	                  <input type="checkbox" name = "" :id="pregunta._id" onclick="preguntaSeleccionada(this)" checked class="filled-in">
   	                    <label :for="pregunta._id" class="maxWidth">
                           <span class="title">{{pregunta.capitulo.nombre}}</span>

@@ -83,3 +83,7 @@ div.tiempo {
   padding-left: 0%;
 }
 .tooltip_templates { display: none; }
+
+#datePicker{
+    margin-top: 7%;
+}
