@@ -1,24 +1,94 @@
 [![Build Status](https://travis-ci.org/joelerll/ppl_app_lab.svg?branch=develop_v2)](https://travis-ci.org/joelerll/ppl_app_lab)
 [![Coverage Status](https://coveralls.io/repos/github/joelerll/ppl_app_lab/badge.svg?branch=develop_v2)](https://coveralls.io/github/joelerll/ppl_app_lab?branch=develop_v2)
-# Importante
-* Existe un nuevo .env con diferente formato. Pedirlo si se quiere usar
-* Todavia no esta el script de crear las bases de datos automaticamente
-* Definir el uso de los rollbacks knexjs
-* Se usara el logger winston para todo, incluso los console.log
-* Usar promises para todo y seguir el formato especificado para que sea testeable el api
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-https://github.com/tj/co
-* Usar el archivo responses.js para retornar los json de respuetas y de errores, si falta uno. Crearlos de acuerdo al archivo
-* Documentar el api, se usara apidocs para esto
+[![Coverage Status](https://codecov.io/gh/joelerll/ppl_app_lab/branch/develop_v2/graph/badge.svg)](https://codecov.io/gh/joelerll/ppl_app_lab/branch/develop_v2)
+
+# PPL ESPOL LAB
+
+Aplicacion para el manejo de las clases de ppl
+
+# Documentacion
+
+[PPL DOCS](https://joelerll95.gitbooks.io/ppl_aplicacion/content/)
+
+# Prerrequisitos
+
+* Mysql
+* Mongodb (opcional)
+* Redis (opcional y sera usado para realtime)
+* Nodejs >= 6.9.5
+
+# Instalacion
+
+Guardar el siguiente texto en un archivo llamado __.env__ y customizarlo segun lo mostrado
+
+```txt
+PORT=8000
+SECRET=mi_secret
+MONGO_URL=mongodb://localhost/ppl
+DATABASE_HOST=127.0.0.1
+DATABASE_USER=mi_user_base_de_datos
+DATABASE_PASSWORD=mi_clave_de_base_de_datos
+```
+
+Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
+
+```sh
+> npm install
+```
+
+# Development
+
+```sh
+> npm run dev
+```
 
 # Testing
 
-#Unit api, server
-ava (cambiar por mocha)
+```sh
+> npm run test
+```
 
-# E2E testing front
-cypress
-cypress run --project ./src/clients/foo
+# Production
 
-# Setup Server
-export $(cat .env | xargs)
+1. Cargar el archivo __.env__ a las variables de entorno
+
+```sh
+> export $(cat .env | xargs)
+```
+
+2. Actualizar los archivos locales
+
+```sh
+> git pull
+```
+
+3. 
+```sh
+> npm install
+```
+
+4. Correr los scripts para produccion
+
+```sh
+> npm run production
+```
+
+5. Correr la aplicacion
+
+```sh
+> forever start -o out.log -e err.log app.js
+```
+
+# Ayuda
+
+Mostar comandos posibles de npm
+
+```sh
+> npm start
+```
+
+# Comunicación
+
+[Trello](https://trello.com/b/khhR0x5e/ppldev)
+[Discord](https://discord.gg/Sjkhd6D)
+[Appeir](https://appear.in/ppl_app_lab)
