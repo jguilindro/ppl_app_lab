@@ -55,21 +55,29 @@ app.use('/docs/api',express.static(path.join(__dirname, './docs/api')))
 app.use('/reports', express.static(path.join(__dirname, './app_client/varios/reports')))
 app.use('/coverage', express.static(path.join(__dirname, './app_client/varios/coverage')))
 
+var server = require('http').Server(app)
+
 // cliente app
 var client = express()
-require('./app_client/server.routes.client.js')(client)
+require('./app_client/server.routes.client')(client)
 
 // api app
 var api = express()
-require('./app_api/server.routes.api.js')(api)
+require('./app_api/server.routes.api')(api)
 
 // realtime app
-
+var realtime = express()
+var io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000})
+require('./app_realtime/server.routes.realtime')(realtime, io)
 
 // definicion subapps
 app.use('/', client)
 app.use('/api', api)
-
+app.use('/realtime', realtime)
+// app.use(function(req, res, next){
+//   res.io = io;
+//   next();
+// });
 
 // no autorizado
 // 404 not found
@@ -106,4 +114,7 @@ function normalizePort(val) {
   return false;
 }
 
-module.exports = app
+module.exports = {
+  app,
+  server
+}

@@ -1,10 +1,8 @@
-var app = require('./app')
-var server = require('http').Server(app)
+var {app, server} = require('./app')
 
 server.on('error', onError)
 server.on('listening', onListening)
 server.listen(app.get('port'))
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;

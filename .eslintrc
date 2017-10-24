@@ -1,0 +1,33 @@
+{
+  "extends": "airbnb",
+  "plugins": [
+    "standard",
+    "prettier",
+    "promise"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": 2,
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "devDependencies": true
+      }],
+    "prettier/prettier": "error",
+    "promise/always-return": "error",
+    "quotes": ["error", "double"]
+  },
+  "globals": {
+    "describe": true,
+    "it": true,
+    "expect": true,
+    "app": true,
+    "td": true,
+    "beforeEach": true,
+    "request": true,
+    "Joi": true,
+    "joiAssert": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+    "linters": {
+        "eslint": {
+            "args": [
+                "--reset"
+            ]
+        }
+    }
+}

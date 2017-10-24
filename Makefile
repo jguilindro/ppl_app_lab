@@ -8,6 +8,12 @@ mongo:
 test:
 	yarn test
 
+redis:
+	cd ~/extras/redis-3.2.7/src && ./redis-server
+
+redis-cli:
+	cd ~/extras/redis-3.2.7/src && ./redis-cli
+
 docs:
 	yarn docs
 

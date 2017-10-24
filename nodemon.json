@@ -13,8 +13,10 @@
     "restart": ""
   },
   "watch": [
+    "server.js",
     "app.js",
-    "app_api/**"
+    "app_api/**",
+    "app_realtime/**"
   ],
   "env": {
     "NODE_ENV": "development"

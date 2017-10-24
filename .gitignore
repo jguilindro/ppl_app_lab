@@ -34,3 +34,5 @@ npm.error*
 *.backup
 tmux*
 TODO
+app_realtime/realtime.js
+prueba.js
