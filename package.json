@@ -128,6 +128,7 @@
     "faker": "^4.1.0",
     "gitbook-cli": "^2.3.2",
     "istanbul": "^0.4.5",
+    "jsonfile": "^4.0.0",
     "leakage": "^0.3.0",
     "minifier": "^0.8.1",
     "mocha": "^4.0.1",

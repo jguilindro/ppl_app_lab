@@ -17,24 +17,24 @@ Aplicacion para el manejo de las clases de ppl
 * Redis (opcional y sera usado para realtime)
 * Nodejs >= 6.9.5
 
-# Instalacion
+# Setup
 
-Guardar el siguiente texto en un archivo llamado __.env__ y customizarlo segun lo mostrado
+1. Renombrar el archivo __.env_template__ por __.env__ y cambiar los campos DATABASE_USER y DATABASE_PASSWORD por los de su base de datos
 
-```txt
-PORT=8000
-SECRET=mi_secret
-MONGO_URL=mongodb://localhost/ppl
-DATABASE_HOST=127.0.0.1
-DATABASE_USER=mi_user_base_de_datos
-DATABASE_PASSWORD=mi_clave_de_base_de_datos
-```
-
-Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
+2. Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
 
 ```sh
 > npm install
 ```
+
+Si por motivos de probar la aplicacion rapidamente se puede usar
+
+```sh
+> npm run development
+```
+
+__Tomar en cuenta que este comando borrara si existe la base de datos ppl_development__
+
 
 # Development
 
@@ -76,7 +76,7 @@ Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
 5. Correr la aplicacion
 
 ```sh
-> forever start -o out.log -e err.log app.js
+> forever start -o out.log -e err.log server.js
 ```
 
 # Ayuda
@@ -90,5 +90,7 @@ Mostar comandos posibles de npm
 # Comunicación
 
 [Trello](https://trello.com/b/khhR0x5e/ppldev)
+
 [Discord](https://discord.gg/Sjkhd6D)
+
 [Appeir](https://appear.in/ppl_app_lab)
