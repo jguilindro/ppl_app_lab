@@ -43,7 +43,8 @@
     "js:production:estudiantes": "cross-env NODE_ENV=production browserify -g envify -p [ vueify/plugins/extract-css -o app_client/estudiantes/dist/build-component.css ] -e app_client/estudiantes/src/main.js | uglifyjs -c drop_console=true,warnings=false -m > app_client/estudiantes/dist/build.js",
     "browserify": "browserify",
     "cypress": "./node_modules/.bin/cypress open --project ./app_client",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage:codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "scripts-info": {
     "start": "Ver informacion de los scripts",
@@ -107,6 +108,7 @@
     "browserify-hmr": "^0.3.5",
     "chai": "^4.1.2",
     "chalk": "^2.2.0",
+    "codecov": "^3.0.0",
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",

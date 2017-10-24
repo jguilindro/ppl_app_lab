@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/joelerll/ppl_app_lab.svg?branch=develop_v2)](https://travis-ci.org/joelerll/ppl_app_lab)
-
+[![Coverage Status](https://coveralls.io/repos/github/joelerll/ppl_app_lab/badge.svg?branch=develop_v2)](https://coveralls.io/github/joelerll/ppl_app_lab?branch=develop_v2)
 # Importante
 * Existe un nuevo .env con diferente formato. Pedirlo si se quiere usar
 * Todavia no esta el script de crear las bases de datos automaticamente

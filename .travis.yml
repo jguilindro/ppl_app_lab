@@ -18,7 +18,9 @@ install:
   - "yarn install"
 
 # after_success: yarn coverage
-after_success: yarn coverage
+after_success: 
+  - yarn coverage
+  - yarn coverage:codecov
 # script:
 #   - cypress run --record
 
