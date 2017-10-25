@@ -19,6 +19,7 @@ function inicializarMaterialize(){
 }
 
 function descargarCSV(){
+  console.log(1234)
   const materia   = $('#selectMateriaCSV').val();
   const paralelos = $('#selectParalelosCSV').val();
   const capitulos = $('#selectCapitulosCSV').val();

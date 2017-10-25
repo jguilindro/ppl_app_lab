@@ -1,7 +1,12 @@
 $(document).ready(function(){
   $('#navbar').load('/partials/navbar.html', function(){
      inicializarMaterialize();
+     $('#descargar').click( () => {
+        console.log(1234)
+        descargarCSV();
+      })
   });
+
 });
 
 function inicializarMaterialize(){
