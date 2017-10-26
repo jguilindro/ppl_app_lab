@@ -53,3 +53,7 @@ body{
 .nombre-leccion{
 	color: rgba(0, 0, 0, 0.87);
 }
+
+td>a{
+	width: 100% !important;
+}
