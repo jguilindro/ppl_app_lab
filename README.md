@@ -8,7 +8,7 @@ Aplicacion para el manejo de las clases de ppl
 
 # Documentacion
 
-[PPL DOCS](https://joelerll95.gitbooks.io/ppl_aplicacion/content/)
+[PPL DOCS](https://joelerll95.gitbooks.io/ppl-lab/content/)
 
 # Prerrequisitos
 

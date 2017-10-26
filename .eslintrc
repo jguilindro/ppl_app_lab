@@ -2,7 +2,6 @@
   "extends": "airbnb",
   "plugins": [
     "standard",
-    "prettier",
     "promise"
   ],
   "parserOptions": {
@@ -10,14 +9,13 @@
     "sourceType": "module"
   },
   "rules": {
-    "semi": 2,
+    "semi": ["error", "never"],
     "import/no-extraneous-dependencies": [
       "error", {
         "devDependencies": true
       }],
-    "prettier/prettier": "error",
     "promise/always-return": "error",
-    "quotes": ["error", "double"]
+    "quotes": ["error", "single"]
   },
   "globals": {
     "describe": true,

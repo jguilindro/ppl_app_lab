@@ -1,8 +1,9 @@
 {
     "linters": {
         "eslint": {
-            "args": [
-                "--reset"
+            "excludes": [
+                "**/node_modules/**",
+                "**/vendor/**"
             ]
         }
     }

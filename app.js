@@ -8,21 +8,21 @@
 
 global.db = require('./databases').relationalDB
 
-var express = require('express') // libreria routing
-var path = require('path')
-var cors = require('cors')
-var morgan = require('morgan') // logging
-var cookieParser = require('cookie-parser')
-var session = require('express-session')
-var MongoStore = require('connect-mongo')(session) // guardar sessiones en mongo
-var chalk = require('chalk')
+const express = require('express') // libreria routing
+const path = require('path')
+const cors = require('cors')
+const morgan = require('morgan') // logging
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session) // guardar sessiones en mongo
+const chalk = require('chalk')
 
-var app = express()
-var port = normalizePort(process.env.PORT || 8000)
+const app = express()
+const port = normalizePort(process.env.PORT || 8000)
 app.set('port', port)
 
 app.use(cors())
-app.use(cookieParser());
+app.use(cookieParser())
 
 // conectarse a mongodb
 if (process.env.NODE_ENV !== 'testing') { 

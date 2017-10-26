@@ -1,0 +1,23 @@
+{
+    "title": "Person",
+    "type": "object",
+    "properties": {
+        "id": {
+            "description": "",
+            "type": "number"
+        },
+        "nombres": {
+            "description": "",
+            "type": "string"
+        },
+        "apellidos": {
+            "description": "",
+            "type": "string"
+        },
+        "correo": {
+            "description": "",
+            "type": "string"
+        }
+    },
+    "required": ["id", "nombres"]
+}
