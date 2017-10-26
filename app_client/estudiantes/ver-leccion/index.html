@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Ver lecciones</title>
+	<title>Ver Lección</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
@@ -16,37 +16,97 @@
 		<div class="border"></div>
 	</header>
 	<div id="app">
-		<a href="/estudiantes">[regresar]</a>
+		
+		<button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
 		<section class="center-align v-center">
-				<h2>{{estudiante.nombres}}</h2>
+				 <h4>{{leccion.nombre}}</h4>
 		</section>
-		<section class="leccion center-align ">
-			<div class="row" id="row-tabs">
-				<div class="col s12">
-					<ul class="tabs tabs-fixed-width z-depth-1">
-						<li class="tab" v-for="pregunta in leccion.preguntas"><a v-bind:href="'#' + pregunta.pregunta" >{{pregunta.ordenPregunta}}</a></li>
-						</div>
-					</ul>
-				</div>
-				<div v-for="(grupo, index) in grupos">
-					<div v-bind:id=grupo[0].pregunta class="col s12" style='display: none'>
-						<!--Ahora se debe colocar todas las respuestas-->
-						<h3 class="nota">- Calificación: {{calificacion[index]}}/{{preguntas[index].puntaje}} -</h3>
-						<div class="row">
-						<b><h3>Feedback: </h3></b>
-							<div class="col s6 estatico">
-								<h5>{{feedback[index]}}</h5>
-							</div>
-						<div class="col s6">
-							<div v-for="respuesta in grupo">
-								<p><b>Respuesta:</b></p><p v-html="respuesta.respuesta"></p>
-							</div>
-						</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+		<!-- PREGUNTAS -->
+
+          <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion">
+            <header class="col s12 col-pregunta">
+              <h4 class="center-align" v-if="!pregunta.tieneSubpreguntas"><b>Pregunta #{{index+1}}</b></h4>    
+              <h4 class="center-align" v-else><b>Sección #{{index+1}}</b></h4>    
+              <label for="nombre">Nombre de la Pregunta</label>
+              <p name="nombre">{{pregunta.nombre}}</p>
+            </header>
+            <!-- DESCRIPCIÓN -->
+            <main class="col s12">
+            	<p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>  
+              <label for="descripcion">Descripción</label>
+              <p v-html="pregunta.descripcion" name="descripcion"></p>
+              
+            </main>
+            <!-- SUBPREGUNTAS -->
+            <footer id="area-subpreguntas"  v-if="pregunta.tieneSubpreguntas">
+              <section v-for="(sub, j) in pregunta.subpreguntas" class="row row-subpregunta" :id="'section-sub-'+pregunta._id">
+                <hr>
+                <header class="center-align">
+                  <h5 class="title-sub"><b>Pregunta #{{j+1}}</b></h5>
+                </header>
+                <!-- DESCRIPCIÓN -->
+                <main class="col s12">
+                <p class="pull right">Puntaje: {{sub.puntaje}}pts.</p>
+                  <label><h6><b>Descripción: </b></h6></label>
+                  <p v-html="sub.contenido"></p>
+                </main>
+                <!-- RESPUESTA -->    
+                <footer id="area-subrespuesta" class="col s12">
+                  <section class="col s12 col-respuesta">
+                    <label for="respuesta">Respuesta del Estudiante</label>
+                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.respuesta}}</p>
+                    <img :src="sub.imagen" :id="'img-'+pregunta.orden+'-'+sub.orden">
+                  </section>
+                  <section class="col s7 col-feedback">
+                    <label>Calificación</label>
+                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.feedback}}</p>
+                  </section>
+                  <section class="col s5 col-calificacion">
+                    <label>Calificación</label>
+                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.calificacion}}</p>
+                  </section>
+                </footer>
+              </section>
+            </footer>
+            <!-- RESPUESTA -->
+            <footer id="area-respuesta" v-if="!pregunta.tieneSubpreguntas" class="col s12">
+              <section class="col s12 col-respuesta">
+                <label for="respuesta">Respuesta del Estudiante</label>
+                <div v-for="respuesta in respuestas" >
+                  <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
+                  <img v-bind:src="respuesta.imagenes" v-if="pregunta._id == respuesta.pregunta">
+                </div>  
+              </section>
+              <section class="col s7 col-feedback">
+                    <label>Feedback</label>
+                    <div v-for="respuesta in respuestas" >
+                  <p v-if="pregunta._id == respuesta.pregunta && respuesta.feedback == ''" name="feedback">No hay feedback para mostrar.</p>
+                  <p v-html="respuesta.feedback" v-if="pregunta._id == respuesta.pregunta" name="feedback"></p>
+                </div>  
+                  </section>
+              <section class="col s5 col-calificacion">
+                    <label>Calificación</label>
+                    <div v-for="respuesta in respuestas" >
+                  <p v-html="respuesta.calificacion" v-if="pregunta._id == respuesta.pregunta" name="calificacion"></p>
+                </div>  
+                  </section>
+            </footer>
+            </br></br>
+            <hr><hr>
+        
+          </section>
+          <!-- FIN PREGUNTAS -->
+        </main>
+        <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
+    </br>
+</br>
+      </main>
+      <!-- Mostrar calificacion total y ponderada, probablemente se lo use luego
+      <footer class="row">
+        <div class="col s12">
+          <h5 class="center-align">Calificación total: {{calificacionTotal}}/{{leccion.puntaje}}</h5>
+          <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}/100</h5>
+        </div>-->
 	</div>
 	<footer>
 		<script src="/bower_components/jquery/dist/jquery.js"></script>

@@ -45,6 +45,7 @@ let App = new Vue({
   				self.estudiante = res.datos.estudiante;
   				self.respuestas = res.datos.respuestas;
   				self.preguntas  = self.armarArrayPreguntas(res.datos.leccion.preguntas, self.respuestas);
+  				console.log(res.datos);
   			},
   			error: function(err){
   				console.log(err)
