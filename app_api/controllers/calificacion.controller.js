@@ -444,6 +444,7 @@ const csv = function(req, res) {
         if (paralelos_peer.length) {
           var paralelo_peer_asignado = yield obtenerNivelParaleloPeer(profesor)
           var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo_peer_asignado)
+          // var paralelo = paralelo_peer_asignado
           var paralelo = yield obtenerParaleloDePeer(paralelo_peer_asignado, paralelos_peer)
         } else {
           var paralelo = paralelo_titular
@@ -456,6 +457,7 @@ const csv = function(req, res) {
           if (!calificada) {
             continue
           }
+          // console.log(calificaciones_leccion.length)
           var row = []
           if (calificaciones_leccion.length) {
             for (var j = 0; j < calificaciones_leccion.length; j++) {
