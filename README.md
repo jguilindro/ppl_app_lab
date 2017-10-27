@@ -19,9 +19,15 @@ Aplicacion para el manejo de las clases de ppl
 
 # Setup
 
-1. Renombrar el archivo __.env_template__ por __.env__ y cambiar los campos DATABASE_USER y DATABASE_PASSWORD por los de su base de datos
+1. Anadir los submodulos del proyecto (docs y app-estudiante)
 
-2. Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
+```sh
+> git submodule update --init --recursive 
+```
+
+2. Renombrar el archivo __.env_template__ por __.env__ y cambiar los campos DATABASE_USER y DATABASE_PASSWORD por los de su base de datos
+
+3. Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
 
 ```sh
 > npm install

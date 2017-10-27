@@ -159,7 +159,7 @@
     "vue-socket.io": "^2.1.1-a",
     "vueify": "^9.4.1",
     "vuetify": "^0.14.1",
-    "vuex": "^2.3.1",
+    "vuex": "^3.0.0",
     "watchify": "^3.9.0"
   },
   "apidoc": {
