@@ -1,6 +1,0 @@
-[submodule "docs/code"]
-	path = docs/code
-	url = https://git.gitbook.com/joelerll95/ppl-lab.git
-[submodule "app_client/estudiantes"]
-	path = app_client/estudiantes
-	url = https://github.com/joelerll/ppl-client-estudiantes.git
