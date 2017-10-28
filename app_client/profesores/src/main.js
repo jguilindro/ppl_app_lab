@@ -1,31 +1,43 @@
 import Vue from 'vue'
-import App from './App.vue'
-import router from './router/router'
-import store from './store'
+// import VueMaterial from 'vue-material'
+// import 'vue-material/dist/vue-material.css'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
 import socketio from 'socket.io-client'
 import VueSocketio from 'vue-socket.io'
-import offline from 'offline-js'
-import axios from 'axios'
-import VueMaterial from 'vue-material'
-// import 'vue-mateial/dist/vue-material.css'
-Vue.use(VueMaterial)
-//Vue.use(VueSocketio, socketio('/tomando_leccion'));
+import App from './App'
+import router from './router'
+import store from './store/index'
 
+// Vue.use(VueMaterial)
+Vue.use(Vuetify)
+Vue.config.productionTip = false
+
+let url
+if (process.env.NODE_ENV === 'production') {
+  url = '/tomando_leccion'
+} else {
+  url = 'http://localhost:8000/tomando_leccion'
+}
+
+Vue.use(VueSocketio, socketio(url))
+
+/* eslint-disable no-new */
 new Vue({
-  // sockets:{
-  //   connect: function(){
-  //     console.log('la coneccion fue correcta')
-  //   },
-  //   customEmit: function(val){
-  //     console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-  //   }
-  // },
+  sockets: {
+    connect: () => {
+      console.log('la coneccion fue correcta')
+    },
+    customEmit: () => {
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    },
+  },
   el: '#app',
-  store,
   router,
+  store,
+  template: '<App/>',
   created() {
     this.$store.dispatch('getEstudiante')
   },
-  template: '<App/>',
-  components: { App }
+  components: { App },
 })

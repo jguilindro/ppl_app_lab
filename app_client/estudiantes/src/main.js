@@ -1,32 +1,37 @@
 import Vue from 'vue'
-import axios from 'axios'
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.css'
+// import VueMaterial from 'vue-material'
+// import 'vue-material/dist/vue-material.css'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+import socketio from 'socket.io-client'
+import VueSocketio from 'vue-socket.io'
 import App from './App'
 import router from './router'
 import store from './store/index'
-// import socketio from 'socket.io-client'
-// import VueSocketio from 'vue-socket.io'
-// import offline from 'offline-js'
 
-
-Vue.use(VueMaterial)
-
-// Vue.material.registerTheme('default', {
-//   primary: '#FDD835',
-//   accent: '#FDD835',
-//   warn: '#FDD835',
-//   background: 'white',
-// })
-
+// Vue.use(VueMaterial)
+Vue.use(Vuetify)
 Vue.config.productionTip = false
 
-axios.get('/api/profesores/').then((resp) => {
-  console.log(resp.data)
-})
+let url
+if (process.env.NODE_ENV === 'production') {
+  url = '/tomando_leccion'
+} else {
+  url = 'http://localhost:8000/tomando_leccion'
+}
+
+Vue.use(VueSocketio, socketio(url))
 
 /* eslint-disable no-new */
 new Vue({
+  sockets: {
+    connect: () => {
+      console.log('la coneccion fue correcta')
+    },
+    customEmit: () => {
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    },
+  },
   el: '#app',
   router,
   store,

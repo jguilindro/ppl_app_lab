@@ -10,7 +10,8 @@
    "docs/"
  ],
  "events": {
-    "restart": ""
+    "start": "yarn eslint server.js app.js app_api/** app_client/server.routes.client.js app_realtime/**",
+    "restart": "yarn eslint server.js app.js app_api/** app_client/server.routes.client.js app_realtime/**"
   },
   "watch": [
     "server.js",

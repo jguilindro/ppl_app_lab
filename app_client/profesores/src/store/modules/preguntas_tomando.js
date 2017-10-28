@@ -1,4 +1,4 @@
 
-const state = {
+let state = {
   // array de preguntas
 }

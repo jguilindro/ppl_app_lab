@@ -1,23 +1,24 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import * as getters from './getters';
-import * as actions from './actions';
-import * as mutations from './mutations';
+import Vue from 'vue'
+import Vuex from 'vuex'
+// import * as getters from './getters'
+import * as actions from './actions'
+import * as mutations from './mutations'
 
-Vue.use(Vuex);
+
+Vue.use(Vuex)
 
 const state = {
-  count: 0,
-  history: [],
   estudiante: {},
-  lecciones: []
-};
+  lecciones: [],
+  paralelo: {},
+}
 
 const store = new Vuex.Store({
   state,
-  getters,
+  // getters,
   actions,
-  mutations
-});
+  mutations,
+})
+
 
 export default store

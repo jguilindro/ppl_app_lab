@@ -11,7 +11,7 @@ export const incrementIfOdd = ({ commit, state }) => {
 }
 
 export const getEstudiante = ({ commit }) => {
-  axios.get('http://localhost:8000/api/profesores').then((res) => {
+  axios.get('/api/profesores').then((res) => {
     commit(types.CARGAR_ESTUDIANTE, res.data[0])
   })
 }

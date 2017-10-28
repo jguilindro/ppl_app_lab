@@ -1,6 +1,6 @@
 
 
-const state = {
+let state = {
   _id,
   codigo,
   nombre,

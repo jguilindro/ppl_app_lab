@@ -1,7 +1,7 @@
 var path = require('path')
 var express = require('express')
 var CASAuthentication = require('cas-authentication')
-//
+
 module.exports = function (app) {
   // CAS configuration
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'

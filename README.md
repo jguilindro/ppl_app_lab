@@ -6,23 +6,35 @@
 
 Aplicacion para el manejo de las clases de ppl
 
-# Documentacion
+## Documentacion
 
 [PPL DOCS](https://joelerll95.gitbooks.io/ppl-lab/content/)
 
-# Prerrequisitos
+## Prerrequisitos
 
 * Mysql
 * Mongodb (opcional)
 * Redis (opcional y sera usado para realtime)
 * Nodejs >= 6.9.5
 
-# Setup
+## Setup
 
 1. Anadir los submodulos del proyecto (docs y app-estudiante)
 
+Si ya lo clonaste usar:
+
 ```sh
-> git submodule update --init --recursive 
+> git submodule update --init --recursive
+```
+
+Si no lo has clonado:
+```sh
+> git clone --recursive https://github.com/razerjon24/ppl_app_lab.git
+```
+
+```sh
+> git checkout origin/develop_2
+> git checkout -b develop_2
 ```
 
 2. Renombrar el archivo __.env_template__ por __.env__ y cambiar los campos DATABASE_USER y DATABASE_PASSWORD por los de su base de datos
@@ -44,17 +56,39 @@ __Tomar en cuenta que este comando borrara si existe la base de datos ppl_develo
 
 # Development
 
+1. Correr al app server
+
 ```sh
 > npm run dev
 ```
 
-# Testing
+2. En otra terminal correr el app cliente estudiantes
+
+Moverse a la carpeta app_client/estudiantes
+
+```
+> npm install
+> npm run dev
+```
+
+3. En otra terminal correr el app cliente profesores
+
+Moverse a la carpeta app_client/profesores
+
+```
+> npm install
+> npm run dev
+```
+
+## Testing
+
+#### Testing server
 
 ```sh
 > npm run test
 ```
 
-# Production
+## Production
 
 1. Cargar el archivo __.env__ a las variables de entorno
 
@@ -75,8 +109,9 @@ __Tomar en cuenta que este comando borrara si existe la base de datos ppl_develo
 
 4. Correr los scripts para produccion
 
+(POR DESARROLLAR)
 ```sh
-> npm run production
+> 
 ```
 
 5. Correr la aplicacion
@@ -85,7 +120,14 @@ __Tomar en cuenta que este comando borrara si existe la base de datos ppl_develo
 > forever start -o out.log -e err.log server.js
 ```
 
-# Ayuda
+
+## Documentacion
+
+```sh
+> npm run docs
+```
+
+## Ayuda
 
 Mostar comandos posibles de npm
 
@@ -93,7 +135,7 @@ Mostar comandos posibles de npm
 > npm start
 ```
 
-# Comunicación
+## Comunicación
 
 [Trello](https://trello.com/b/khhR0x5e/ppldev)
 

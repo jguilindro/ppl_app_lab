@@ -1,5 +1,5 @@
 
 
-const state = {
+let state = {
   // lecciones array
 }

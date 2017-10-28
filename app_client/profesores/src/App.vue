@@ -1,17 +1,64 @@
 <template>
   <div id="app">
-    <router-link to="/">Perfil</router-link>
-    <router-link to="/tomar-leccion">Tomar leccion</router-link>
-    <router-link to="/quejas">Quejdas</router-link>
-    <router-link to="/prueba">Prueba</router-link>
-    <router-link to="/leccion">Leccion</router-link>
-    <router-view></router-view>
+    <header>
+      <span>
+        Profesores PPL
+      </span>
+    </header>
+    <main>
+      <!-- <router-link to="/leccion">Leccion</router-link> -->
+      <router-view></router-view>
+    </main>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'app'
+  name: 'app',
+  methods: {
+    toggleLeftSidenav() {
+      this.$refs.leftSidenav.toggle()
+    },
+  },
 }
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://code.getmdl.io/1.2.1/material.blue-red.min.css');
+
+body {
+  margin: 0;
+}
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+
+main {
+  /*text-align: center;*/
+  /*margin-top: 40px;*/
+}
+
+header {
+  margin: 0;
+  height: 56px;
+  padding: 0 16px 0 24px;
+  background-color: #35495E;
+  color: #ffffff;
+}
+
+header span {
+  display: block;
+  position: relative;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: .02em;
+  font-weight: 400;
+  box-sizing: border-box;
+  padding-top: 16px;
+}
+</style>
