@@ -278,6 +278,15 @@ const csv = function(req, res) {
     })
   }
 
+  function obtenerParaleloCsv(id_paralelo) {
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParaleloCsv(id_paralelo, (err, paralelo) => {
+        if (err) return reject(new Error('No se puedo obtener paralelos profesor'))
+        return resolve(paralelo)
+      })
+    })
+  }
+
   function obtenerParalelosProfesor(id_profesor) {
     return new Promise((resolve, reject) => {
       ParaleloModel.obtenerParaleloProfesorCsv(id_profesor, (err, paralelos) => {
@@ -314,14 +323,21 @@ const csv = function(req, res) {
     })
   }
 
-  function obtenerNivelParaleloPeer(peer) {
+  function obtenerNivelParalelosPeer(peer) {
     return new Promise((resolve, reject) => {
+      var paralelos = []
       for (var i = 0; i < peer.nivelPeer.length; i++) {
         if (peer.nivelPeer[i].nivel == 1) {
-          return resolve(peer.nivelPeer[i].paralelo)
+          paralelos.push(peer.nivelPeer[i].paralelo)
         }
       }
-      return resolve(false) // no es profesor nivel peer uno de ningun paralelo
+      if (paralelos.length != 0) {
+        return resolve(paralelos)
+      } else {
+        return resolve(false)
+      }
+      
+      // return resolve(false) // no es profesor nivel peer uno de ningun paralelo
     })
   }
 
@@ -438,17 +454,33 @@ const csv = function(req, res) {
     var paralelo_titular = yield obtenerParalelosProfesor(id_profesor)
 
     var paralelos_peer = yield obtenerParalelosPeer(id_profesor)
+
+    var leccionesParalelo = []
+    var bandera = true;
     if (paralelos_peer || paralelo_titular) {
       if (!lecciones && !paralelos && !grupos) {
-        // console.log(paralelo_titular);
         if (paralelos_peer.length) {
-          var paralelo_peer_asignado = yield obtenerNivelParaleloPeer(profesor)
-          var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo_peer_asignado)
-          // var paralelo = paralelo_peer_asignado
-          var paralelo = yield obtenerParaleloDePeer(paralelo_peer_asignado, paralelos_peer)
-        } else {
+          var paralelos_peer_asignado = yield obtenerNivelParalelosPeer(profesor)
+          if (paralelos_peer_asignado.length == 1) {
+            bandera = false
+            leccionesParalelo = yield obtenerLeccionesParalelo(paralelos_peer_asignado[0])
+            var paralelo = yield obtenerParaleloDePeer(paralelos_peer_asignado[0], paralelos_peer)  
+          } else {
+            for (var i = 0; i < paralelos_peer_asignado.length; i++) {
+               let leccion_tmp = yield obtenerLeccionesParalelo(paralelos_peer_asignado[i])
+               leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
+            }
+          }
+          
+        }
+
+        if (paralelo_titular) {
           var paralelo = paralelo_titular
-          var leccionesParalelo = yield obtenerLeccionesParalelo(paralelo._id)
+          let leccion_tmp = yield obtenerLeccionesParalelo(paralelo._id)
+          leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
+        } else if (bandera){
+          var paralelo = paralelo_titular
+          leccionesParalelo = yield obtenerLeccionesParalelo(paralelo._id)
         }
         var documento = []
         for (var i = 0; i < leccionesParalelo.length; i++) {
@@ -457,20 +489,20 @@ const csv = function(req, res) {
           if (!calificada) {
             continue
           }
-          // console.log(calificaciones_leccion.length)
           var row = []
+          let paralelo_tmp = yield obtenerParaleloCsv(leccionesParalelo[i].paralelo)
           if (calificaciones_leccion.length) {
             for (var j = 0; j < calificaciones_leccion.length; j++) {
               // console.log(calificaciones_leccion[i]);
               if (!calificaciones_leccion[j].grupo) {
                 continue
               }
-              var grupoCompleto = buscarEstudiantesGrupo(calificaciones_leccion[j].grupo._id, paralelo)
+              var grupoCompleto = buscarEstudiantesGrupo(calificaciones_leccion[j].grupo._id, paralelo_tmp)
               if (!grupoCompleto || grupoCompleto.length == 0) {
                 continue
               }
               var noAsistieron = noAsistencia(grupoCompleto, calificaciones_leccion[j])
-              row = generarRowsGrupo(grupoCompleto, paralelo, leccionesParalelo[i], noAsistieron, calificaciones_leccion[j])
+              row = generarRowsGrupo(grupoCompleto, paralelo_tmp, leccionesParalelo[i], noAsistieron, calificaciones_leccion[j])
               documento = documento.concat(row)
             }
             documento = ordenarPorGrupo(documento)
