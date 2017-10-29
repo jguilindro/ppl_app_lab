@@ -1,36 +1,39 @@
-var {app, server} = require('./app')
+const logger = require('./app_api/utils/logger')
 
-server.on('error', onError)
-server.on('listening', onListening)
-server.listen(app.get('port'))
+const { app, server } = require('./app')
+
 function onError(error) {
   if (error.syscall !== 'listen') {
-    throw error;
+    throw error
   }
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const port = process.env.PORT
+  const bind = typeof port === 'string'
+    ? `Pipe ${port}`
+    : `Port ${port}`
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' correr en otro puerto, este puerto requiere permisos de root');
-      process.exit(1);
-      break;
+      logger.info(`${bind} correr en otro puerto, este puerto requiere permisos de root`)
+      process.exit(1)
+      break
     case 'EADDRINUSE':
-      console.error(bind + ' el puerto ya esta en uso client');
-      process.exit(1);
-      break;
+      logger.info(`${bind} el puerto ya esta en uso client`)
+      process.exit(1)
+      break
     default:
-      throw error;
+      throw error
   }
 }
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'puerto  ' + addr.port;
+  const addr = server.address()
+  const bind = typeof addr === 'string'
+    ? `Pipe ${addr}`
+    : `Port ${addr.port}`
   if (process.env.NODE_ENV !== 'testing') {
-    console.log('server corriendo en ' + bind)
+    logger.info(`server corriendo en  ${bind}`)
   }
-  
 }
+
+server.on('error', onError)
+server.on('listening', onListening)
+server.listen(app.get('port'))

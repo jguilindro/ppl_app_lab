@@ -2,11 +2,11 @@
   <div id="app">
     <header>
       <span>
-        PPL APP
+        PPL
       </span>
     </header>
     <main>
-      <!-- <router-link to="/leccion">Leccion</router-link> -->
+      <router-link to="/ingresar-codigo">Leccion</router-link>
       <router-view></router-view>
     </main>
   </div>

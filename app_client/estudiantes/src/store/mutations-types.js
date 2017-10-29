@@ -6,3 +6,4 @@ export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE'
 
 // ajax peticiones inicio
 export const CARGAR_ESTUDIANTE = 'CARGAR_ESTUDIANTE'
+export const SOCKET_CONECTADO = 'SOCKET_CONECTADO'

@@ -15,7 +15,8 @@
         "devDependencies": true
       }],
     "promise/always-return": "error",
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+    "arrow-body-style": [0, "as-needed"]
   },
   "globals": {
     "describe": true,
@@ -26,6 +27,9 @@
     "beforeEach": true,
     "request": true,
     "Joi": true,
-    "joiAssert": true
+    "joiAssert": true,
+    "db": true,
+    "logger": true,
+    "responses": true
   }
 }

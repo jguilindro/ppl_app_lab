@@ -14,6 +14,7 @@ const state = {
 }
 
 const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   state,
   // getters,
   actions,

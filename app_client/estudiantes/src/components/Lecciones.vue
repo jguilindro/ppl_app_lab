@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Lecciones</h1>
+    <h1>Mis Lecciones CAMBIO</h1>
     <v-btn flat>Mi boton</v-btn>
   </div>
 </template>

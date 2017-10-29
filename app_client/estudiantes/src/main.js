@@ -3,6 +3,7 @@ import Vue from 'vue'
 // import 'vue-material/dist/vue-material.css'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import { sync } from 'vuex-router-sync'
 import socketio from 'socket.io-client'
 import VueSocketio from 'vue-socket.io'
 import App from './App'
@@ -11,6 +12,7 @@ import store from './store/index'
 
 // Vue.use(VueMaterial)
 Vue.use(Vuetify)
+sync(store, router)
 Vue.config.productionTip = false
 
 let url

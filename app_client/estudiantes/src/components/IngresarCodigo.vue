@@ -1,5 +1,7 @@
 <template>
   <div>
-    <h1>Not Found FILE</h1>
+    <h1>
+      IngresarCodigo
+    </h1>
   </div>
 </template>

@@ -1,12 +1,9 @@
-// Aqui se haran las validaciones de los request
 // usar la libreria joi para las validaciones, https://github.com/hapijs/joi
-
 // http://usejsdoc.org/about-getting-started.html
 // https://github.com/documentationjs/documentation/blob/master/docs/GETTING_STARTED.mdn
 // https://esdoc.org/
-var { 
-  obtenerTodosProfesores 
-  } = require('../models/profesor.model')
+
+const { obtenerTodosProfesores } = require('../models/profesor.model')
 
 /**
  * Profesor
@@ -14,20 +11,23 @@ var {
  * @constructor
  * @param {string} title - The title of the book.
  * @param {string} author - The author of the book.
- */
-class ProfesoresController { 
+  */
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["obtenerTodosProfesores"] }] */
+class ProfesoresController {
   constructor(params) {
     this.params = params
   }
 
-  obtenerTodosProfesores() {
+  get obtenerTodosProfesores() {
     return obtenerTodosProfesores()
-      .then(res => {
-        return responses.ok(res)
+      .then((res) => {
+        const resp = responses.ok(res)
+        return resp
       })
-      .catch(error => { 
-        return responses.ERROR_SERVIDOR
-       })
+      .catch(() => {
+        const error = responses.ERROR_SERVIDOR
+        return error
+      })
   }
 }
 
