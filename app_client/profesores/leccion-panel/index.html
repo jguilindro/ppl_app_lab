@@ -32,10 +32,10 @@
       
       <section class="row" id="section-tabs">
           <br>
-          <div class="col s10">
+          <div class="col s12">
               <ul class="tabs" id="tabs-swipe-demo">
-                <li class="tab col s5" id="t1"><a id = "ta1" class="active" href="#test1">Leccion</a></li>
-                <li class="tab col s5 " id="t2"><a id= "ta2"href="#test2">Respuestas</a></li>
+                <li class="tab col s6" id="t1"><a id = "ta1" class="active" href="#test1">Leccion</a></li>
+                <li class="tab col s6 " id="t2"><a id= "ta2"href="#test2">Respuestas</a></li>
               </ul>
           </div>
           <div class="col s2">
@@ -114,50 +114,36 @@
       <div id="test2" class="col s12">
         <label>Respuestas</label>
         <br>
-        <div id="row row_respuestas" v-for="(res, index) in respuestas">
-          <div class="card-panel col s12 m12 l6">
-            <div class="card-content">
-              <p><i class="material-icons cyan-text text-darken-2">group</i>{{res.grupoNombre}}</p>
-              <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.estudianteNombre}} {{res.estudianteApellido}}</p>
-              <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.preguntaNombre}}</p>
-            </div>  
-            <div v-if= "res.arraySubrespuestas.length > 0">
+        <div class="row row_respuestas" v-for="(grupo, index) in respuestasGrupos" v-if="grupo.respuestas.length > 0" >
+          <div class="collection z-depth-1 card-panel col s12 m12 l6" v-for="(res, index) in grupo.respuestas" >
+            <p><i class="material-icons cyan-text text-darken-2">group</i>{{grupo.nombre}}</p>
+            <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.estudianteNombre}} {{res.estudianteApellido}}</p>
+            <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.preguntaNombre}}</p>
               <ul id="projects-collection" class="collection">
                 <li class="collection-item avatar">
                   <i class="material-icons circle light-blue darken-2">question_answer</i>
                   <span class="collection-header">Respuestas</span>
-                  <p>A Subrespuestas</p>
                 </li>
-                <li class="collection-item" v-for="(sub, index) in res.arraySubrespuestas" v-if="sub.respuesta">
+                <li class="collection-item" v-for="(sub, index) in res.arraySubrespuestas">
                   <div class="row">
                     <div class="col s8">
                       <p class="collections-title indigo-text text-darken-4">Subrespuesta  {{sub.ordenPregunta}}</p>
                       <p class="collections-content">{{sub.respuesta}}</p>
                     </div>
                     <div class="col s4">
-                      <img class="materialboxed" :data-caption="sub.respuesta" width="250" :src="sub.imagen">
+                      <img class="materialboxed responsive-img" :data-caption="sub.respuesta" width="250" :src="sub.imagen">
                     </div>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div v-else>
-              <label> Respuesta: </label> 
-              <div class="row">
-                <div class="col s8">
-                  <p>{{res.respuesta}}</p>    
-                </div>
-                <div class="col s4">
-                  <img class="materialboxed" :data-caption="res.respuesta" width="250" :src="res.imagenes">
-                </div>
-              </div>
-            </div>
+              </ul> 
+          
+            
           </div>
         </div>
       </div>
-  
-  	  </div>
-  	</div>
+        
+    </div>
+    
   </div>
   <script src="/bower_components/offline/offline.min.js"></script>
   <script src="/bower_components/lodash/dist/lodash.min.js"></script>
