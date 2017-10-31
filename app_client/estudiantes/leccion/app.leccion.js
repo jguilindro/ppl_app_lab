@@ -474,6 +474,7 @@ let App = new Vue({
         feedback           : '',
         calificacion       : 0,
         imagenes           : urlImagen,
+        visitado           : false,
         arraySubrespuestas : arraySubrespuestas
       };
       return respuesta_realtime;
@@ -496,7 +497,9 @@ let App = new Vue({
           calificacion : 0,
           imagen       : imagen
         };
-        arraySubrespuestas.push(subrespuesta);
+        if(respuesta != ''){
+          arraySubrespuestas.push(subrespuesta);
+        }
       }
       return arraySubrespuestas;
     },

@@ -1,3 +1,33 @@
+var respuestas = {
+  template: '<div class="row row_respuestas" v-for="(res, index) in respuestasGrupos">\
+    <div class="card-panel col s12 m12 l6" v-if= "res.respuestas.length > 0">\
+      <div class="card-content">\
+        <p><i class="material-icons cyan-text text-darken-2">group</i>{{res.Nombre}}</p>\
+        <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.respuesta[0].estudianteNombre}} {{res.respuesta[0].estudianteApellido}}</p>\
+        <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.respuesta[0].preguntaNombre}}</p>\
+      </div>\
+      <ul id="projects-collection" class="collection">\
+        <li class="collection-item avatar">\
+          <i class="material-icons circle light-blue darken-2">question_answer</i>\
+            <span class="collection-header">Respuestas</span>\
+        </li>\
+        <li class="collection-item" v-for="(sub, index) in res.respuesta[0].arraySubrespuestas" v-if="sub.respuesta">\
+          <div class="row">\
+            <div class="col s8">\
+              <p class="collections-title indigo-text text-darken-4">Subrespuesta  {{sub.ordenPregunta}}</p>\
+              <p class="collections-content">{{sub.respuesta}}</p>\
+            </div>\
+            <div class="col s4">\
+              <img class="materialboxed" :data-caption="sub.respuesta" width="250" :src="sub.imagen">\
+            </div>\
+          </div>\
+        </li>\
+      </ul>\
+    </div></div>',
+  props: ['respuestasGrupos'],
+}
+
+
 var App = new Vue({
   el: '#app',
   mounted() {
@@ -7,8 +37,22 @@ var App = new Vue({
     $('.materialboxed').materialbox();
   },
   created() {
-    this.obtenerLeccion()
-    this.obtenerParalelo()
+    this.obtenerLeccion();
+    this.obtenerParalelo();
+  },
+  data: {
+    estudiantes_conectados: [],
+    grupos: [],
+    leccion: {},
+    paralelo: {},
+    tiempo: '',
+    dataEstudiantes: '',
+    mas_tiempo: 0,
+    respuestas: [],
+    respuestasGrupos: []
+  },
+  components : {
+    'ver-respuestas' : respuestas
   },
   methods: {
     obtenerLeccion() {
@@ -26,6 +70,9 @@ var App = new Vue({
       this.$http.get(`/api/paralelos/${id_paralelo}/obtener_paralelo`).then(res => {
         this.paralelo = JSON.parse(JSON.stringify(res.body.datos))
         this.grupos = this.paralelo.grupos
+        //
+        this.obtenerRespuestaGrupos(this.grupos); 
+        //
         this.grupos.forEach(grupo => {
           grupo.estudiantes_conectados = []
         })
@@ -50,8 +97,69 @@ var App = new Vue({
     bloquearEstudiante(id_estudiante) {
       console.log(id_estudiante);
     },
-    obtenerRespuestas(){
-
+    obtenerRespuestaGrupos(grupos){
+      console.log('ObtenerRespuestaGrupos');
+      for (var i = 0; i < grupos.length; i++) {
+        var grupo = {
+          nombre : grupos[i].nombre,
+          _id : grupos[i]._id,
+          respuestas : []
+        };
+        this.respuestasGrupos.push(grupo)
+      }
+    },
+    guardarRespuesta(respuesta){
+      console.log('guardarRespuesta');
+      var resGeneral = this.respuestasGrupos;
+      for (var i = 0; i < resGeneral.length; i++) {
+        if(resGeneral[i]._id == respuesta.grupoId){
+          if(resGeneral[i].respuestas.length > 0){
+            for (var j = 0; j < resGeneral[i].respuestas.length; j++) {
+              if(resGeneral[i].respuestas[j].pregunta == respuesta.pregunta){
+                if(resGeneral[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
+                  //resGeneral[i].respuestas[j] = respuesta;
+                  resGeneral[i].respuestas.splice(j,1);
+                  resGeneral[i].respuestas.push(respuesta);
+                  Materialize.toast('¡ El '+ respuesta.grupoNombre + 
+                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                  break;
+                }
+                else{
+                  console.log('No entra');
+                  break;
+                }
+              }
+              else{
+                console.log('Sección nueva');
+                if ( j == resGeneral[i].respuestas.length-1){
+                  console.log('ultimo elemento');
+                  if(resGeneral[i].respuestas[j] != respuesta.pregunta){
+                    console.log('sección añadida');
+                    resGeneral[i].respuestas.push(respuesta);
+                    Materialize.toast('¡ El '+ respuesta.grupoNombre + 
+                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                    break;
+                  }
+                  else {
+                    if(resGeneral[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
+                      resGeneral[i].respuestas[j] = respuesta;
+                      Materialize.toast('¡ El '+ respuesta.grupoNombre + 
+                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                      break;
+                    }
+                    else{break;}
+                  }
+                }
+              }
+            }
+            break;
+          }
+          else {
+            resGeneral[i].respuestas.push(respuesta);
+            break;
+          }
+        }
+      }
     },
     tomarLeccion() {
       var id_leccion = window.location.href.toString().split('/')[5]
@@ -75,20 +183,7 @@ var App = new Vue({
         })
       }
     }
-  },
-  data: {
-    estudiantes_conectados: [
-
-    ],
-    grupos: [
-    ],
-    leccion: {},
-    paralelo: {},
-    tiempo: '',
-    dataEstudiantes: '',
-    mas_tiempo: 0,
-    respuestas: [],
-  },
+  }
 })
 
 
@@ -305,12 +400,16 @@ function continuar() {
 }
 
 leccion.on('respuesta para profesor', function(respuesta_estudiante) {
-  App.respuestas.push(respuesta_estudiante);
-  App.respuestas.reverse();
-  console.log(App.respuestas);
   
-  Materialize.toast('¡ '+ respuesta_estudiante.estudianteNombre+ respuesta_estudiante.estudianteApellido + 
-    ' A respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
+  //App.validarRespuesta(respuesta_estudiante);
+  //console.log(App.respuestas);
+  //App.respuestas.push(respuesta_estudiante);
+
+  App.guardarRespuesta(respuesta_estudiante);
+  console.log(App.respuestasGrupos);
+
+  //Materialize.toast('¡ El '+ respuesta_estudiante.grupoNombre + 
+  //  ' Ha respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
 
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
