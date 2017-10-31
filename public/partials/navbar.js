@@ -51,3 +51,6 @@ function descargarCSV(){
   });
 }
 
+function salir () {
+  window.location.href = `/api/session/logout`
+}

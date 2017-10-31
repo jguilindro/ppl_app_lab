@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(event) {
   $.get({
-    url: "/navbar/profesores",
+    url: "partials/navbar/profesores",
     success: function(data) {
       document.getElementById('#navbar').innerHTML = data;
       inicializarMaterialize();

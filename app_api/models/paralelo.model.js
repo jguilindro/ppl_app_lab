@@ -80,6 +80,15 @@ ParaleloSchema.statics.obtenerParalelo = function(id_paralelo,callback) {
   this.findOne({_id: id_paralelo}).populate({path: 'grupos'}).exec(callback);
 }
 
+ParaleloSchema.statics.obtenerParaleloCsv = function(id_paralelo, callback) {
+  // this.findOne({_id: id_paralelo}).populate({path: 'grupos estudiantes'}).exec(callback);
+  this.findOne({_id: id_paralelo}).populate({
+    path: 'grupos',
+    populate: { path: 'estudiantes' },
+    select: 'estudiantes nombre'
+  }).exec(callback);
+}
+
 ParaleloSchema.statics.obtenerParaleloWebService = function(paralelo, codigomateria, callback) {
   this.findOne({$and: [{nombre: paralelo}, {codigo: codigomateria}]}, callback)
   // this.find({}, callback)

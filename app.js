@@ -355,10 +355,22 @@ app.use(function(req, res, next) {
 });
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development  <= OJO PRODUCTION LOGGER
-  var mensaje = err.message;
-  var error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
+  if (false) {
+    var mensaje = err.message;
+    var error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500);
+    res.json({"errorMessage": mensaje, "errorCodigo": error.status, "estado": false});
+  } else {
+    if (req.session) {
+      if (req.session.correo && req.session.privilegios === 'profesor') {
+        res.redirect('/profesores')
+      } else if (req.session.correo && req.session.privilegios === 'estudiante') {
+          res.redirect('/estudiantes')
+      }  else {
+        res.redirect('/')
+      }
+    }
+  }
 });
 var debug = require('debug')('espol-ppl:server');
 server.listen(port);
