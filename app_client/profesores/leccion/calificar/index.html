@@ -13,22 +13,20 @@
   <body>
     <header id="navbar"></header>
     <main id="app">
-      <header class="seccion-1 row container">
-        <h2 class="center-align">Calificar Lección</h2>
-        <section class="form-group col s12">
-          <h5>Estudiante:</h5><h6>{{estudiante.nombres+' '+estudiante.apellidos}} ({{estudiante.correo}})</h6>
-        </section>
+      <header class="seccion-1 row">
+        <h2 class="title">Calificar Lección</h2>
+         <b>Estudiante: </b>{{estudiante.nombres+' '+estudiante.apellidos}} ({{estudiante.correo}})
       </header>
       <main class="form-group col s12">
         <header>
-          <h3 class="center-align">{{leccion.nombre}}</h3>
+          <h3 class="title">{{leccion.nombre}}</h3>
         </header>
         <main>
           <!-- PREGUNTAS -->
-          <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion">
+          <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion card">
             <header class="col s12 col-pregunta">
-              <h4 class="center-align" v-if="!pregunta.tieneSubpreguntas"><b>Pregunta #{{index+1}}</b></h4>    
-              <h4 class="center-align" v-else><b>Sección #{{index+1}}</b></h4>    
+              <h4 class="title" v-if="!pregunta.esSeccion">Pregunta #{{index+1}}</h4>    
+              <h4 class="title" v-else>Sección #{{index+1}}</h4>    
               <label for="nombre">Nombre de la Pregunta</label>
               <p name="nombre">{{pregunta.nombre}}</p>
             </header>
@@ -39,11 +37,11 @@
               <p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>  
             </main>
             <!-- SUBPREGUNTAS -->
-            <footer id="area-subpreguntas"  v-if="pregunta.tieneSubpreguntas">
-              <section v-for="(sub, j) in pregunta.subpreguntas" class="row row-subpregunta" :id="'section-sub-'+pregunta._id">
+            <footer id="area-subpreguntas"  v-if="pregunta.esSeccion" class="col s12">
+              <section v-for="(sub, j) in pregunta.subpreguntas" class="row seccion" :id="'section-sub-'+pregunta._id">
                 <hr>
-                <header class="center-align">
-                  <h5 class="title-sub"><b>Pregunta #{{j+1}}</b></h5>
+                <header>
+                  <h5 class="title">Pregunta #{{j+1}}</h5>
                 </header>
                 <!-- DESCRIPCIÓN -->
                 <main class="col s12">
@@ -54,13 +52,19 @@
                 <!-- RESPUESTA -->    
                 <footer id="area-subrespuesta" class="col s12">
                   <section class="col s7 col-respuesta">
-                    <label for="respuesta">Respuesta del Estudiante</label>
+                    <label :for="'res-'+pregunta.orden+'-'+sub.orden">Respuesta del Estudiante</label>
                     <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.respuesta}}</p>
                     <img :src="sub.imagen" :id="'img-'+pregunta.orden+'-'+sub.orden">
                   </section>
                   <section class="col s5 col-calificacion">
-                    <label>Calificación</label>
-                    <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-'+pregunta.orden+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada" >
+                    <label :for="'calificacion-'+pregunta.orden+'-'+sub.orden">Calificación</label>
+                    <!--<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-'+pregunta.orden+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada" >-->
+                    <select :id="'calificacion-'+pregunta.orden+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada">
+                      <option value="" selected="true" disabled="true"></option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
                     <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'fb-'+pregunta.orden+'-'+sub.orden" :value="sub.feedback" :disabled="sub.calificada"></textarea>
                     <button class="waves-effect waves-light btn pull right" :id="'btn-'+pregunta.orden+'-'+sub.orden" @click="calificarSub(pregunta, sub)" :disabled="sub.calificada">Calificar</button>
                   </section>
@@ -68,21 +72,24 @@
               </section>
             </footer>
             <!-- RESPUESTA -->
-            <footer id="area-respuesta" v-if="!pregunta.tieneSubpreguntas" class="col s12">
+            <footer id="area-respuesta" v-if="!pregunta.esSeccion" class="col s12">
               <section class="col s7 col-respuesta">
                 <label for="respuesta">Respuesta del Estudiante</label>
-                <div v-for="respuesta in respuestas" >
-                  <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
-                  <img v-bind:src="respuesta.imagenes" v-if="pregunta._id == respuesta.pregunta">
-                </div>  
+                <p :id="'res-'+pregunta.orden">{{pregunta.respuesta}}</p>
+                <img :src="pregunta.imagen" :id="'img-'+pregunta.orden">
               </section>
               <section class="col s5 col-calificacion">
-                <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">
-                <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" v-bind:id="'feedback-' + pregunta._id"></textarea>
-                <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" v-bind:id="'btn-' + pregunta._id">Calificar</button>  
+                <!--<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" v-bind:id="'calificacion-' + pregunta._id">-->
+                <select :id="'calificacion-' + pregunta._id" :value="pregunta.calificacion" :disabled="pregunta.calificada">
+                  <option value="" selected="true" disabled="true"></option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </select>
+                <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'feedback-' + pregunta._id" :value="pregunta.feedback" :disabled="pregunta.calificada"></textarea>
+                <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" :id="'btn-' + pregunta._id" :disabled="pregunta.calificada">Calificar</button>  
               </section>
             </footer>
-            <hr><hr>
           </section>
           <!-- FIN PREGUNTAS -->
         </main>

@@ -50,6 +50,9 @@ const respuestasSchema = mongoose.Schema({
   imagenes:{
     type: String
   },
+  calificada : {
+    type : Boolean
+  },
   subrespuestas: [{
     respuesta     : { type : String },
     ordenPregunta : { type : Number },
@@ -108,7 +111,17 @@ respuestasSchema.statics.calificarRespuestaGrupal = function(id_leccion, id_preg
   //Busca en la colección a todas las respuestas del grupo dado a la pregunta dada de la lección dada
   //Actualiza el valor de la calificación de todas las respuestas encontradas (todas las respuestas del grupo) a valor de la nueva calificación
   //Actualiza el valor del feedback
-  this.update({leccion: id_leccion, pregunta: id_pregunta, grupo: id_grupo}, {$set: {calificacion: calificacion_nueva, feedback: feedback_nuevo}}, { multi: true }, callback);
+  this.update({
+    leccion : id_leccion, 
+    pregunta: id_pregunta, 
+    grupo   : id_grupo
+  }, {
+    $set: {
+      calificacion: calificacion_nueva, 
+      feedback    : feedback_nuevo,
+      calificada  : true
+    }
+  }, { multi: true }, callback);
 }
 
 respuestasSchema.statics.calificarSub = function(id_leccion, id_pregunta, id_grupo, orden_pregunta, calificacion_nueva, feedback_nuevo, callback){

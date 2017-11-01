@@ -1,0 +1,264 @@
+MongoDB shell version v3.4.2
+connecting to: mongodb://127.0.0.1:27017/ppl
+MongoDB server version: 3.4.2
+conn actual:  connection to 127.0.0.1:27017
+base actual:  ppl
+conn antigua: connection to 127.0.0.1:27018
+base antigua: ppl
+[
+	{
+		"idAntiguo" : "BJbgiMRd3hb",
+		"idNuevo" : "SJxvxlYOweh-",
+		"correo" : "anjopena@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "B10WiG0_nhb",
+		"idNuevo" : "HkabYOvehb",
+		"correo" : "dharo@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "Hk_Zof0_n3W",
+		"idNuevo" : "HJde-tdwxhW",
+		"correo" : "darealba@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "S1_GoMCOnn-",
+		"idNuevo" : "HktIggKOPgh-",
+		"correo" : "gabancar@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BJCloMA_22b",
+		"idNuevo" : "r1lUgxY_vgn-",
+		"correo" : "chrasuar@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "B1XgoMC_33W",
+		"idNuevo" : "B12bZFuPenb",
+		"correo" : "aadachi@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rytesM0uh2Z",
+		"idNuevo" : "ryvbbK_Dln-",
+		"correo" : "bsponce@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BJNsM0d33b",
+		"idNuevo" : "B1HSelKOPlnZ",
+		"correo" : "acmurill@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "r1PGjzAun2-",
+		"idNuevo" : "HJgfbtdPlhb",
+		"correo" : "fraanbol@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "ry6ljfR_23W",
+		"idNuevo" : "ByagWFdwxnb",
+		"correo" : "clarrea@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BkXfifAu33W",
+		"idNuevo" : "rJFWbtdPl2W",
+		"correo" : "elema@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "ryGzjMAOhnW",
+		"idNuevo" : "By1PlltOvl2-",
+		"correo" : "erduenas@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "H1cMjfCun2-",
+		"idNuevo" : "SyCwegYuwlhb",
+		"correo" : "gdfuente@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "B12ljM0O32b",
+		"idNuevo" : "HJ3Wt_wlhW",
+		"correo" : "caarmas@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HJH-jzAOhnW",
+		"idNuevo" : "HJoxbFODx3W",
+		"correo" : "dbmedina@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HJVZjf0d33Z",
+		"idNuevo" : "S1Hx-tODl2-",
+		"correo" : "danadgue@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rypzizAu33b",
+		"idNuevo" : "ry-gWFuDx2W",
+		"correo" : "gbeltran@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "B1GmsGROn2Z",
+		"idNuevo" : "ByJz-tODlnZ",
+		"correo" : "jacoppia@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "H1UgoGAd33b",
+		"idNuevo" : "B1rvxeY_wen-",
+		"correo" : "bjiron@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "SkvejzA_nhZ",
+		"idNuevo" : "rJOWWtdDg2b",
+		"correo" : "bsespino@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rJIXszCd2h-",
+		"idNuevo" : "rJAZ-F_vl3-",
+		"correo" : "jdmoreno@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "r1kgjzCOn2W",
+		"idNuevo" : "BkZwxxKdPe2W",
+		"correo" : "andaljim@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "r1wmsGAuhnW",
+		"idNuevo" : "ryQWWYuDgnb",
+		"correo" : "jcuzco@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BJ2ozCd32Z",
+		"idNuevo" : "HJ_rxxt_venb",
+		"correo" : "anabmart@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "S1_mszRun3Z",
+		"idNuevo" : "SJiZZKuvxnW",
+		"correo" : "juagvera@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BkZMjz0dh3-",
+		"idNuevo" : "rke-F_Px2Z",
+		"correo" : "edalban@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BkDZsGAO3n-",
+		"idNuevo" : "HytxZFdwl3W",
+		"correo" : "derealpe@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "SyNljfR_hh-",
+		"idNuevo" : "SkcxZtuDgn-",
+		"correo" : "aavelez@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HJBMjzRuhhW",
+		"idNuevo" : "BJdLllYuveh-",
+		"correo" : "fcapelo@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "S1cgsM0d2n-",
+		"idNuevo" : "HJ0ebY_Px3W",
+		"correo" : "cimacas@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BkYjfCu2nW",
+		"idNuevo" : "B1LbF_DghZ",
+		"correo" : "ajplaza@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rJ7XsMCu2hb",
+		"idNuevo" : "H1UWWFdwgn-",
+		"correo" : "jemimuri@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "ryb7if0_2nZ",
+		"idNuevo" : "r1Wf-tdve2W",
+		"correo" : "jampflor@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "SkfWjGC_hnb",
+		"idNuevo" : "BJJlWtuDlh-",
+		"correo" : "drcedill@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "ryPszCOnnZ",
+		"idNuevo" : "ByTPxlF_Deh-",
+		"correo" : "artuarez@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HJ0fjGRu3nZ",
+		"idNuevo" : "B1-Fuwenb",
+		"correo" : "hchalen@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rkk7iz0_n2Z",
+		"idNuevo" : "HkNWt_Pg2-",
+		"correo" : "heyyfuen@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HyjMjzRdh2Z",
+		"idNuevo" : "HJ8eZFOvghW",
+		"correo" : "gdmaruri@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HkYGof0O32W",
+		"idNuevo" : "rJxxZtODg2-",
+		"correo" : "gsegarra@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rJVMoGAO23-",
+		"idNuevo" : "BJLDleKuwghb",
+		"correo" : "eveyusol@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HkefjfRuh3b",
+		"idNuevo" : "By0ZKdPxhb",
+		"correo" : "dsatian@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "ByNmoGCd33b",
+		"idNuevo" : "S1-OggKOwxh-",
+		"correo" : "jhdaguer@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "Sk8foGAO33W",
+		"idNuevo" : "HkpUeeYuDx2W",
+		"correo" : "franvera@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rkmZiGCu2nZ",
+		"idNuevo" : "rJzdleYdwx3Z",
+		"correo" : "dcampana@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "BysljGRO22Z",
+		"idNuevo" : "rkS-FOwghW",
+		"correo" : "carxceva@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rJgsfRd22W",
+		"idNuevo" : "SkvDgxK_Dl2b",
+		"correo" : "acarmile@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "Hy6bofCun2W",
+		"idNuevo" : "Sk1LxltdDl2Z",
+		"correo" : "degranda@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "rykZoMRO3nb",
+		"idNuevo" : "Bk-IxltuDe3W",
+		"correo" : "cjmunoz@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "B1nfsz0d32Z",
+		"idNuevo" : "r15vxxYODl3W",
+		"correo" : "gusadcas@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "HkBmiz0_32-",
+		"idNuevo" : "rJhx-FdvlnW",
+		"correo" : "josagarc@espol.edu.ec"
+	},
+	{
+		"idAntiguo" : "SJusfRun3b",
+		"idNuevo" : "SJrIegFdPeh-",
+		"correo" : "aldamosq@espol.edu.ec"
+	}
+]

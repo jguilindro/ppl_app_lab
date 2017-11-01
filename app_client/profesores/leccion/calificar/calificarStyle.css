@@ -8,56 +8,10 @@ body{
     width: 80%;
     margin: 0 auto;
 }
-.collection .collection-item{
-	background-color: rgba(255,255,255,0.2);
-	border-color: rgba(255,255,255,0.1);
-}
-p.collection-item{
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-.strike {
-    display: block;
-    text-align: center;
-    overflow: hidden;
-    white-space: nowrap; 
-}
 
-.strike > span {
-    position: relative;
-    display: inline-block;
-}
-
-.strike > span:before,
-.strike > span:after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 9999px;
-    height: 1px;
-    background: rgba(0,0,0,0.5);
-}
-
-.strike > span:before {
-    right: 100%;
-    margin-right: 15px;
-}
-
-.strike > span:after {
-    left: 100%;
-    margin-left: 15px;
-}
-#pages{
-    height: 100%;
-}
 .title{
     font-weight: bold;
-}
-.preguntas-selected button{
-    margin-bottom: 2%;
-}
-#pages h1{
-    font-weight: bold;
+    text-align: center;
 }
 
 img{
@@ -70,7 +24,7 @@ img{
 }
 
 .seccion{
-    padding: 2%;
+    padding: 2%; 
     /*border: 1px solid;*/
 }
 
