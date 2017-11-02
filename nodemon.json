@@ -10,7 +10,6 @@
    "docs/"
  ],
  "events": {
-    
   },
   "watch": [
     "server.js",
