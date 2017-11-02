@@ -39,7 +39,7 @@ new Vue({
   store,
   template: '<App/>',
   created() {
-    this.$store.dispatch('getEstudiante')
+    // this.$store.dispatch('getEstudiante')
   },
   components: { App },
 })

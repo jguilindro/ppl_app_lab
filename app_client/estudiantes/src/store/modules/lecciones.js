@@ -1,5 +1,0 @@
-
-
-let state = {
-  // lecciones array
-}

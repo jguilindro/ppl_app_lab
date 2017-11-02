@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 const state = {
   conectado: false,
+  loggeado: false,
   estudiante: {},
   lecciones: [],
   paralelo: {},

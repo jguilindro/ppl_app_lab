@@ -10,9 +10,9 @@ export const incrementIfOdd = ({ commit, state }) => {
   }
 }
 
-export const getEstudiante = ({ commit }) => {
-  axios.get('/api/profesores').then((res) => {
-    commit(types.PERFIL_API_PETICION, res.data[0])
+export const obtenerPerfilDatos = ({ commit }) => {
+  axios.get('/api/estudiantes/perfil_datos').then((res) => {
+    commit(types.PERFIL_API_PETICION, res.data)
   })
 }
 

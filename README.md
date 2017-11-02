@@ -29,7 +29,7 @@ Si ya lo clonaste usar:
 
 Si no lo has clonado:
 ```sh
-> git clone --recursive https://github.com/razerjon24/ppl_app_lab.git
+> git clone -b develop_v2 --single-branch  --recursive https://github.com/razerjon24/ppl_app_lab.git
 ```
 
 ```sh
