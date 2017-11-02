@@ -5,5 +5,13 @@ export const DECREMENT = 'decrement'
 export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE'
 
 // ajax peticiones inicio
-export const CARGAR_ESTUDIANTE = 'CARGAR_ESTUDIANTE'
-export const SOCKET_CONECTADO = 'SOCKET_CONECTADO'
+export const PERFIL_API_PETICION = 'PERFIL_API_PETICION'
+export const ESTA_CONECTADO = 'ESTA_CONECTADO'
+
+// codigo
+export const CODIGO_LECCION = 'CODIGO_LECCION'
+export const CODIGO_ES_VALIDO = 'CODIGO_ES_VALIDO'
+
+// lecciones
+export const PREGUNTA_ACTUAL = 'PREGUNTA_ACTUAL'
+export const RESPUESTA_PREGUNTA = 'RESPUESTA_PREGUNTA'

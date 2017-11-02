@@ -1,9 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <span>
-        PPL
-      </span>
+      <span>PPL</span>
     </header>
     <main>
       <router-link to="/ingresar-codigo">Leccion</router-link>
@@ -15,10 +13,11 @@
 <script>
 export default {
   name: 'app',
-  methods: {
-    toggleLeftSidenav() {
-      this.$refs.leftSidenav.toggle()
-    },
+  data: () => ({
+    drawer: true,
+  }),
+  props: {
+    source: String,
   },
 }
 </script>

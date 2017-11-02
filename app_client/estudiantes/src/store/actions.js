@@ -12,12 +12,12 @@ export const incrementIfOdd = ({ commit, state }) => {
 
 export const getEstudiante = ({ commit }) => {
   axios.get('/api/profesores').then((res) => {
-    commit(types.CARGAR_ESTUDIANTE, res.data[0])
+    commit(types.PERFIL_API_PETICION, res.data[0])
   })
 }
 
 export const obtenerDatosEstudiante = ({ commit }) => {
   axios.get('/api/session/usuario_conectado').then((res) => {
-    commit(types.CARGAR_ESTUDIANTE, res.data.datos)
+    commit(types.PERFIL_API_PETICION, res.data.datos)
   })
 }
