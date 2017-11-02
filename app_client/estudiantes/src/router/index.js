@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Lecciones from '@/components/Lecciones'
+import LeccionesDetalle from '@/components/LeccionesDetalle'
 import NotFound from '@/components/NotFound'
 import IngresarCodigo from '@/components/IngresarCodigo'
 
@@ -13,6 +14,11 @@ export default new Router({
       path: '/',
       name: 'Lecciones',
       component: Lecciones,
+    },
+    {
+      path: '/LeccionesDetalle',
+      name: 'LeccionesDetalle',
+      component: LeccionesDetalle,
     },
     {
       path: '/ingresar-codigo',

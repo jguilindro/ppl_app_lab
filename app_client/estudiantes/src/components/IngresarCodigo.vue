@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>
+    <h5>
       IngresarCodigo
-    </h1>
+    </h5>
   </div>
 </template>

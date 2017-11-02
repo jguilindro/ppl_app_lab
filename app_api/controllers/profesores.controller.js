@@ -18,7 +18,7 @@ class ProfesoresController {
     this.params = params
   }
 
-  get obtenerTodosProfesores() {
+  obtenerTodosProfesores() {
     return obtenerTodosProfesores()
       .then((res) => {
         const resp = responses.ok(res)
