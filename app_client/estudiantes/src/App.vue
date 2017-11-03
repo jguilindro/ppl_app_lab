@@ -97,6 +97,10 @@
     height: 7em !important;
   }
 
+  #logo_espol{
+    padding: 8px;
+  }
+
   /*Botón hamburguesa*/
   .navigation-drawer {
     width: auto !important;
@@ -130,7 +134,7 @@
       padding-bottom: 0em !important;
       padding-left: 0% !important;
       padding-right: 0% !important;
-    }
+  }
 
 
 

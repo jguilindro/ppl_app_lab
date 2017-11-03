@@ -62,48 +62,36 @@
   }
 
   #container_leccion {
-    padding: 12px;
     width: 100%;
-  }
-
-  #logo_espol{
-    padding: 8px;
-  }
-
-  #container_leccion {
-    /*border: 1px solid yellow;*/
   }
 
   /*Leccion y tipo*/
   .left {
     float: left;
-    width: 80%;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow: ellipsis;
-    /*border: 1px solid red;*/
+    width: 85%;
   }
 
   /*Calificación*/
   .rigth {
     float: right;
-    width: 20%;
-    /*border: 1px solid red;*/
+    width: 15%;
     text-align: right;
   }
 
   .rigth *{
-    font-size: 25px; 
+    font-size: 1.5em; 
   }
 
   #nota {
     display: inline-block;
+    width: auto;
   }
 
   #totalNota {
     font-size: 0.75em;
     display: inline-block;
     vertical-align: top;
+    /*border: 1px solid red;*/
   }
 
 </style>
