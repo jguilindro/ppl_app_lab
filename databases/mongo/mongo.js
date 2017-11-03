@@ -1,5 +1,4 @@
 var MongoClient = require('mongodb').MongoClient
-var chalk = require('chalk')
 let Conectar = function() {
     return new Promise(function(resolve, reject) {
           MongoClient.connect(process.env.MONGO_URL, function(err, db) {

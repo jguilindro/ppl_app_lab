@@ -10,7 +10,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 
-// Vue.use(VueMaterial)
+// Vue.use(VueMaterial) //
 Vue.use(Vuetify)
 sync(store, router)
 Vue.config.productionTip = false

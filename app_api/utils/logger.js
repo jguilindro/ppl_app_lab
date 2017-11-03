@@ -43,7 +43,6 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'testing')
 }
 
 module.exports = logger
-
 // logger = new winston.Logger({
 //         emitErrs: true,
 //         transports: [

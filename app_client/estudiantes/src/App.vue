@@ -1,74 +1,81 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="sideNav" temporary>
+  <v-app >
+    <div v-show="loggeado">
+        <v-navigation-drawer v-model="sideNav" temporary>
+        <v-list>
+          <v-list class="pa-0">
+            <v-list-tile avatar>
+              <v-list-tile-avatar>
+                <img src="http://www.iepfvillarreal.com/images/usuario.png" />
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>Bosco Andrade Bravo</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
 
-      <v-list>
-        <v-list class="pa-0">
-          <v-list-tile avatar>
-            <v-list-tile-avatar>
-              <img src="http://www.iepfvillarreal.com/images/usuario.png" />
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>Bosco Andrade Bravo</v-list-tile-title>
-            </v-list-tile-content>
+          <v-divider></v-divider>
+
+          <v-list-tile v-for="item in items" :key="item.title" @click="">
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>{{ item.title }}</v-list-tile-content>
           </v-list-tile>
         </v-list>
 
-        <v-divider></v-divider>
-
-        <v-list-tile v-for="item in items" :key="item.title" @click="">
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-
-    </v-navigation-drawer>
+      </v-navigation-drawer>
 
 
-    <v-toolbar class="indigo white--text" height=110>
-      <!-- class="hidden-sm-and-up " -->
-      <v-toolbar-side-icon
-        @click.stop="sideNav = !sideNav"
-        class="white--text">
-      </v-toolbar-side-icon>
-      <v-avatar size="110px">
-        <img id="logo_espol" src="./assets/logo_espol_new.png" alt="">
-      </v-avatar>
+      <v-toolbar class="indigo white--text" height=110>
+        <!-- class="hidden-sm-and-up " -->
+        <v-toolbar-side-icon
+          @click.stop="sideNav = !sideNav"
+          class="white--text">
+        </v-toolbar-side-icon>
+        <v-avatar size="110px">
+          <img id="logo_espol" src="./assets/logo_espol_new.png" alt="">
+        </v-avatar>
 
-      <v-toolbar-title class="hidden-xs-only"><h4 class="titulo">Peer Proyect Learning</h4></v-toolbar-title>
-      <v-toolbar-title class="hidden-sm-and-up"><h2 class="titulo">PPL</h2></v-toolbar-title>
+        <v-toolbar-title class="hidden-xs-only"><h4 class="titulo">Peer Proyect Learning</h4></v-toolbar-title>
+        <v-toolbar-title class="hidden-sm-and-up"><h2 class="titulo">PPL</h2></v-toolbar-title>
 
-     <!--  <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat>
-          <v-icon left dark>exit_to_app</v-icon>
-          Cerrar Sesión
-        </v-btn>
-      </v-toolbar-items> -->
+       <!--  <v-spacer></v-spacer>
+        <v-toolbar-items class="hidden-xs-only">
+          <v-btn flat>
+            <v-icon left dark>exit_to_app</v-icon>
+            Cerrar Sesión
+          </v-btn>
+        </v-toolbar-items> -->
 
-    </v-toolbar>
-    <main>
-      <!-- <router-link to="/ingresar-codigo">Leccion</router-link> -->
-      <!-- <div id="main"> -->
-        <router-view class="grey lighten-3"></router-view>
-      <!-- </div> -->
+      </v-toolbar>
+      <main>
+        <!-- <router-link to="/ingresar-codigo">Leccion</router-link> -->
+        <!-- <div id="main"> -->
+          <router-view class="grey lighten-3"></router-view>
+        <!-- </div> -->
 
-    </main>
+      </main>
 
-    <v-footer class="indigo">
-      <div id="footer" class="white--text">ESPOL ©2017</div>
-    </v-footer>
-
+      <v-footer class="indigo">
+        <div id="footer" class="white--text">ESPOL ©2017</div>
+      </v-footer>
+    </div>
+    <div v-show="!loggeado">
+      <router-view></router-view>
+    </div>
   </v-app>
-
 </template>
 
 
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
+    computed: mapGetters([
+      'loggeado',
+    ]),
     data() {
       return {
         sideNav: false,

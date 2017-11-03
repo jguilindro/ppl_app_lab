@@ -1,15 +1,17 @@
-import * as types from './mutations-types'
+// import * as types from './mutations-types'
 
-export const increment = (state) => {
-  state.count = state.count + 1
-  state.history.push(types.INCREMENT)
+export const LOGGEARSE = (state) => {
+  state.loggeado = true
 }
 
-export const decrement = (state) => {
-  state.count = state.count - 1
-  state.history.push(types.DECREMENT)
+
+export const PERFIL_API_PETICION = (state, data) => {
+  state.estudiante = data.estudiante
+  state.lecciones = data.lecciones
 }
 
-export const CARGAR_ESTUDIANTE = (state, data) => {
-  state.estudiante = data
-}
+// export default {
+//   [types.PERFIL_API_PETICION](state) {
+//     Vue.set(state, 'loggeado', true)
+//   },
+// }

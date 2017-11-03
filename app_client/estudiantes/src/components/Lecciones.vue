@@ -44,6 +44,9 @@
 
 <script>
   export default {
+    created() {
+      this.$store.dispatch('PERFIL_API_PETICION')
+    },
     data() {
       return {
         items: [

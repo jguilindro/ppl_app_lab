@@ -8,8 +8,10 @@ import Login from '@/components/Login'
 
 Vue.use(Router)
 
-export default new Router({
-  mode: 'history',
+// Usar Login component solo cuando esta de development de la app en cliente
+
+const router = new Router({
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -36,3 +38,13 @@ export default new Router({
     },
   ],
 })
+
+// router.beforeEach((to, from, next) => {
+//   if (to.fullPath === '/') {
+//     next()
+//   } else {
+//     next('/')
+//   }
+// })
+
+export default router

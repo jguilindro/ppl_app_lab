@@ -6,6 +6,7 @@ export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE'
 
 // ajax peticiones inicio
 export const PERFIL_API_PETICION = 'PERFIL_API_PETICION'
+export const LOGGEARSE = 'LOGGEARSE'
 export const ESTA_CONECTADO = 'ESTA_CONECTADO'
 
 // codigo

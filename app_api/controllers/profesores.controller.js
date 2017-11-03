@@ -3,32 +3,37 @@
 // https://github.com/documentationjs/documentation/blob/master/docs/GETTING_STARTED.mdn
 // https://esdoc.org/
 
-const { obtenerTodosProfesores } = require('../models/profesor.model')
+const ProfesorModel = require('../models/profesor.model')
+const db = require('../../databases').relationalDB
+const responses = require('../utils/responses')
 
-/**
- * Profesor
- * @author Joel Rodriguez
- * @constructor
- * @param {string} title - The title of the book.
- * @param {string} author - The author of the book.
-  */
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["obtenerTodosProfesores"] }] */
-class ProfesoresController {
-  constructor(params) {
-    this.params = params
-  }
+const Profesor = new ProfesorModel(db)
 
-  obtenerTodosProfesores() {
-    return obtenerTodosProfesores()
-      .then((res) => {
-        const resp = responses.ok(res)
-        return resp
-      })
-      .catch(() => {
-        const error = responses.ERROR_SERVIDOR
-        return error
-      })
-  }
+const getAll = () => {
+  return Profesor.getAll()
+    .then((res) => {
+      return responses.ok(res)
+    })
+    .catch((error) => {
+      logger.info(error)
+      logger.error(`Profesor Controller Error ${error}`)
+      return responses.ERROR_SERVIDOR
+    })
 }
 
-module.exports = ProfesoresController
+const getByCorreo = (usuario) => {
+  return Profesor.getByCorreo(usuario)
+    .then((res) => {
+      return responses.ok(res)
+    })
+    .catch((error) => {
+      logger.info(error)
+      logger.error(`Profesor Controller Error ${error}`)
+      return responses.ERROR_SERVIDOR
+    })
+}
+
+module.exports = {
+  getAll,
+  getByCorreo,
+}

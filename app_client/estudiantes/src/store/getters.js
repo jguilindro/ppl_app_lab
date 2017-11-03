@@ -2,4 +2,4 @@ export const count = () => {
   'asd'
 }
 
-export const limit = 5
+export const loggeado = state => state.loggeado

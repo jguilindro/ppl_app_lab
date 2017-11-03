@@ -23,21 +23,25 @@ module.exports = (app) => {
   })
 
   if (process.env.NODE_ENV === 'development') {
-    app.use('/', express.static(path.join(__dirname, 'varios/login')))
+    app.use('/', function(req, res, next) {
+      next()
+    } ,
+      express.static(path.join(__dirname, 'varios/login')))
   } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'cas') {
     app.get('/', cas.bounce, (req, res) => {
       // buscar es usuario en la base de datos, determinar si es admin, profesor, estudiante
       // guardarlo si es que existe, else redireccionarlo a que no esta autorizado
-      req.session.save((err) => {
-        if (err) {
-          res.redirect('/')
-        } else {
-          res.redirect('/profesores')
-        }
-      })
+      // req.session.save((err) => {
+      //   if (err) {
+      //     res.redirect('/')
+      //   } else {
+      //     res.redirect('/profesores')
+      //   }
+      // })
     })
   }
 
   app.use('/profesores', express.static(path.join(__dirname, 'profesores/dist')))
   app.use('/estudiantes', express.static(path.join(__dirname, 'estudiantes/dist')))
+  app.use('/no_autorizado', express.static(path.join(__dirname, 'varios/no_autorizado')))
 }

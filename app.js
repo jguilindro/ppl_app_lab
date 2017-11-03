@@ -6,12 +6,12 @@
   cas .- test cas
 */
 
-global.db = require('./databases').relationalDB
 const express = require('express') // libreria routing
 const path = require('path')
 const cors = require('cors')
 const morgan = require('morgan') // logging
 const cookieParser = require('cookie-parser')
+const bodyParser        = require('body-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session) // guardar sessiones en mongo
 const chalk = require('chalk')
@@ -22,31 +22,73 @@ const app = express()
 const port = process.env.PORT || 8000
 app.set('port', port)
 
-app.use(cors())
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
+
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  expire: 1 * 24 * 60 * 60 ,
+  saveUninitialized: false,
+  store: new MongoStore({
+      url: process.env.MONGO_URL,
+      ttl: 12 * 60 * 60,
+  }),
+  cookie: {
+    httpOnly: false,
+  },
+}))
+
 // conectarse a mongodb
-if (process.env.NODE_ENV !== 'testing') {
-  mongo.Mongo.Conectar()
-    .then(() => {
-      app.use(session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: false,
-        expire: 1 * 24 * 60 * 60,
-        store: new MongoStore({
-          url: process.env.MONGO_URL,
-          ttl: 1 * 24 * 60 * 60,
-        }),
-      }))
-      logger.info(chalk.green('Conectado a MONGODB'))
-      return true
-    })
-    .catch(() => {
-      logger.info(chalk.red('Error Conexion MONGODB'))
-      throw new Error('Error Conexion MONGODB')
-    })
-}
+// var MongoClient = require('mongodb').MongoClient
+// if (process.env.NODE_ENV !== 'testing') {
+//   MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+//     if (err) {
+//       logger.info(chalk.red('Error Conexion MONGODB'))
+//       throw new Error('Error Conexion MONGODB')
+//     } else {
+//       app.use(session({
+//         secret: process.env.SECRET,
+//         resave: true,
+//         saveUninitialized: false,
+//         expire: 12 * 60 * 60,
+//         store: new MongoStore({
+//           url: process.env.MONGO_URL,
+//           ttl: 12 * 60 * 60,
+//         }),
+//            cookie: {
+//               httpOnly: false,
+//             },
+//       }))
+//       logger.info(chalk.green('Conectado a MONGODB'))
+//     }
+//   })
+//   mongo.Mongo.Conectar()
+//     .then(() => {
+//       app.use(session({
+//         secret: process.env.SECRET,
+//         resave: true,
+//         saveUninitialized: false,
+//         expire: 12 * 60 * 60,
+//         store: new MongoStore({
+//           url: process.env.MONGO_URL,
+//           ttl: 12 * 60 * 60,
+//         }),
+//            cookie: {
+//               httpOnly: false,
+//             },
+//       }))
+//       logger.info(chalk.green('Conectado a MONGODB'))
+//       return true
+//     })
+//     .catch(() => {
+//       logger.info(chalk.red('Error Conexion MONGODB'))
+//       throw new Error('Error Conexion MONGODB')
+//     })
+// }
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'cas') {
   app.use(morgan('tiny'))

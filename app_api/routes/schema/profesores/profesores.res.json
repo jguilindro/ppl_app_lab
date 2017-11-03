@@ -19,5 +19,5 @@
             "type": "string"
         }
     },
-    "required": ["id", "nombres"]
+    "required": ["id", "nombres", "correo", "apellidos"]
 }

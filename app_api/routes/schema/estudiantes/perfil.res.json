@@ -1,0 +1,57 @@
+{
+    "title": "Perfil Datos",
+    "type": "object",
+    "properties": {
+        "estudiante": {
+            "description": "datos basicos del estudiante",
+            "type": "object",
+            "properties": {
+                "nombres": {
+                  "description": "",
+                  "type": "string"
+                },
+                "apellidos": {
+                  "description": "",
+                  "type": "string"
+                },
+                "correo": {
+                  "description": "",
+                  "type": "string"
+                }
+            },
+            "required": ["nombres", "apellidos", "correo"]
+        },
+        "lecciones": {
+            "description": "todas las lecciones dadas por el estudiante",
+            "type": "array",
+            "items": {
+              "description": "Array de Lecciones",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "",
+                  "type": "number"
+                },
+                "calificacion": {
+                  "description": "",
+                  "type": "number"
+                },
+                "fecha_terminado": {
+                  "description": "",
+                  "type": "number"
+                },
+                "nombre": {
+                  "description": "",
+                  "type": "string"
+                },
+                "tipo": {
+                  "description": "Puede ser: estimacion, estimacion|laboratorio",
+                  "type": "string"
+                }
+              },
+              "required": ["id", "calificacion", "fecha_terminado", "nombre", "tipo"]
+            }
+        }
+    },
+    "required": ["estudiante", "lecciones"]
+}
