@@ -3,3 +3,5 @@ export const count = () => {
 }
 
 export const loggeado = state => state.loggeado
+
+export const estudiante = state => state.estudiante
