@@ -120,6 +120,11 @@ app.use('/', client)
 app.use('/api', api)
 app.use('/realtime', realtime)
 
+process.on('uncaughtException', function(err) {
+  logger.error('Caught exception: ' + err)
+  logger.error(err.stack)
+});
+
 module.exports = {
   app,
   server,
