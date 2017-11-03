@@ -3,7 +3,7 @@ npm-debug.log
 public/bower_components
 .idea/
 .env
-*.png
+app_client/cypress/screenshots/*
 env.env
 env.txt
 *.csv
