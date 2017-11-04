@@ -1,18 +1,14 @@
 <template>
   <v-app >
-    <div v-show="loggeado">
-        <v-navigation-drawer v-model="sideNav" temporary>
+    <!-- <div id="main" v-show="loggeado"> -->
+        <v-navigation-drawer id="navegacion" v-model="sideNav" temporary>
+        <avatar id="avatarUsuario" :username="estudiante.apellidos" :size="55" color="#fff"></avatar>  
+          <div id="info">
+              <div id="nombres">{{estudiante.apellidos}} {{estudiante.nombres}}</div>
+              <div id="correo">{{estudiante.correo}}</div>
+          </div>
+
         <v-list>
-          <v-list class="pa-0" id="contenedorUsuario">
-            <v-list-tile avatar>
-              <div id="avatarUsuario">
-                 <avatar :username="estudiante.apellidos" :size="55" color="#fff"></avatar>  
-              </div>
-              <v-list-tile-content id="nombreUsuario">
-                <v-list-tile-title>{{estudiante.apellidos}} {{estudiante.nombres}}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
           <v-divider></v-divider>
           <v-list-tile v-for="item in items" :key="item.title" @click="">
             <v-list-tile-action>
@@ -20,6 +16,7 @@
             </v-list-tile-action>
             <v-list-tile-content>{{ item.title }}</v-list-tile-content>
           </v-list-tile>
+
         </v-list>
       </v-navigation-drawer>
 
@@ -41,10 +38,10 @@
       <v-footer class="cyan darken-4 white--text">
         <div id="footer" class="white--text">ESPOL ©2017</div>
       </v-footer>
-    </div>
+    <!-- </div>
     <div v-show="!loggeado">
       <router-view></router-view>
-    </div>
+    </div> -->
   </v-app>
 </template>
 
@@ -61,11 +58,13 @@
     computed: mapGetters([
       'loggeado',
       'estudiante',
+      'lecciones',
     ]),
     components: { Avatar },
     data() {
       return {
         sideNav: false,
+        nombre1: 'Bosco Andrade',
         items: [
           { title: 'Cerrar Sesión', icon: 'exit_to_app' },
           { title: 'About', icon: 'question_answer' },
@@ -76,9 +75,12 @@
 
 </script>
 
-
-
 <style>
+
+  main {
+    width: 100%;
+    /*border: 1px solid red;*/
+  }
 
   ul {
     padding-top: 0em !important;
@@ -86,6 +88,7 @@
   }
 
   #container_general {
+    width: 100%;
     padding-top: 0em !important;
     padding-bottom: 0em !important;
     padding-left: 10% !important;
@@ -106,23 +109,37 @@
     width: auto !important;
   }
 
-  #contenedorUsuario {
-    padding: 0.5em !important;
-  }
+    #avatarUsuario {
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+    }
 
-  #nombreUsuario {
-    margin-left: 0.5em;
-  }
+    #avatarUsuario *{
+      display: table;
+      margin: 0 auto;
+    }
 
-  #avatarUsuario *{
-    justify-content: center;
-  }
+    #info {
+      text-align: center;
+      margin-left: 1em;
+      margin-right: 1em;
+      margin-bottom: 1em;
+    }
 
-  /*Titulo*/
+    #nombres {
+      font-weight: bold;
+    }
+
+    #correo {
+      opacity: 0.5;
+    }
+
+  /*Titulo Princiapl*/
   .toolbar__title{
     font-size: 2em;
   }
 
+  /*Footer*/
   #footer {
     width: 100%;
     text-align: center;
@@ -130,14 +147,16 @@
 
   @media only screen and (max-width : 750px) {
     #container_general {
+      width: 100%;
       padding-top: 0em !important;
       padding-bottom: 0em !important;
       padding-left: 0% !important;
       padding-right: 0% !important;
-  }
+    }
 
-
-
+    #navegacion {
+      width: 75% !important;
+    }
 
   }
 
