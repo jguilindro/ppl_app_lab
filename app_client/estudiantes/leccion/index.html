@@ -28,10 +28,11 @@
       </header>
       <main id="leccion">
         <header class="row" id="row-tabs">
+          <!--TABS-->
           <section class="col s12">
             <ul class="tabs-fixed-width tabs" id="ul-tabs">
               <li class="tab"><a class="active" href="#instrucciones">Instrucciones</a></li>
-              <li class="tab disabled" v-for="pregunta in leccion.preguntas" :id="'tab-' + pregunta.ordenPregunta"><a :href="'#' + pregunta.pregunta._id">{{pregunta.ordenPregunta}}</a></li>
+              <li :class="'tab ' + pregunta.terminada" v-for="pregunta in preguntas" :id="'tab-' + pregunta.ordenP"><a :href="'#' + pregunta._id">{{pregunta.ordenP}}</a></li>
               <li class="tab"><a href="#terminar">Terminar</a></li>
             </ul>
           </section>
@@ -55,14 +56,14 @@
             <article class="row row-pregunta" >
               <!-- PREGUNTA | DESCRIPCIÓN DE SECCIÓN -->
               <header id="area-pregunta" class="col s12">
-                <label v-if="!pregunta.tieneSubpreguntas">Pregunta: </label>
-                <label v-if="pregunta.tieneSubpreguntas">Descripción de la sección: </label>
+                <label v-if="!pregunta.esSeccion">Pregunta: </label>
+                <label v-if="pregunta.esSeccion">Descripción de la sección: </label>
                 <label><h6 class="center-align"><b>Tiempo estimado: </b>{{pregunta.tiempoEstimado}} minutos</h6></label>
                 <p v-html="pregunta.descripcion"></p>
               </header>
               <hr><hr>
               <!-- SUBPREGUNTAS -->
-              <main id="area-subpreguntas" class="col s12" v-if="pregunta.tieneSubpreguntas">
+              <main id="area-subpreguntas" class="col s12" v-if="pregunta.esSeccion">
                 <section v-for="(sub, j) in pregunta.subpreguntas" class="row row-subpregunta" :id="'section-sub-' + pregunta._id">
                   <!-- DESCRIPCIÓN -->
                   <header class="center-align">
@@ -79,54 +80,54 @@
                       <label><h6><b>Respuesta: </b></h6></label>
                     </header>
                     <main>
-                      <textarea :id="'textarea-sub-' + pregunta.orden + '-' + sub.orden" class="materialize-textarea">
+                      <textarea :id="'textarea-sub-' + pregunta.ordenP + '-' + sub.orden" class="materialize-textarea" v-model="sub.respuesta" :disabled="sub.respondida">
                       </textarea>
-                      <footer style="margin: 3% 0;" class="row">
+                      <footer style="margin: 3% 0;" class="row" :disabled="sub.respondida">
                         <article class="col s12">
                           <label>Subir una imagen</label>
                           <br/>
-                          <input :id="'fi-'+ pregunta.orden + '-' + sub.orden" type='file' @change="getImageSub(pregunta, sub, $event)"/>  
+                          <input :id="'fi-'+ pregunta.ordenP + '-' + sub.orden" type='file' @change="getImageSub(pregunta, sub, $event)" :disabled="sub.respondida"/>  
                         </article>
                         <article class="col s12">
-                          <button href="." class="waves-effect waves-light btn pull right" @click="responderSub(pregunta, sub)" :id="'btn-responder-sub-' + pregunta.orden + '-' + sub.orden">Responder</button>
+                          <button href="." class="waves-effect waves-light btn pull right" @click="responderSub(pregunta, sub)" :id="'btn-responder-sub-' + pregunta.ordenP + '-' + sub.orden" :disabled="sub.respondida">Responder</button>
                         </article>
                       </footer>
                       <section>
-                        <img hidden :id="'source_image-'+ pregunta.orden + '-' + sub.orden" src="#"/>
+                        <img hidden :id="'source_image-'+ pregunta.ordenP + '-' + sub.orden" src="#"/>
                       </section>
                       <section>
-                        <img hidden :id="'result_image-'+ pregunta.orden + '-' + sub.orden" src=""/>
+                        <img :hidden="sub.imagen==''" :id="'result_image-'+ pregunta.ordenP + '-' + sub.orden" :src="sub.imagen" class="imagen" :disabled="sub.respondida"/>
                       </section>
                       <section>
-                        <img hidden :id="'loading-'+ pregunta.orden + '-' + sub.orden" src="/img/loading.gif" />
+                        <img hidden :id="'loading-'+ pregunta.ordenP + '-' + sub.orden" src="/img/loading.gif" />
                       </section>
                     </main>
                   </article>
                 </section>
               </main>
               <!-- ÁREA RESPUESTA -->
-              <main id="area-respuesta" class="col s12" v-if="!pregunta.tieneSubpreguntas">
+              <main id="area-respuesta" class="col s12" v-if="!pregunta.esSeccion">
                 <article class="row" id="row-area-respuesta">
                   <label><h6><b>Respuesta: </b></h6></label>
-                  <textarea v-bind:id="'textarea-' + pregunta._id" class="materialize-textarea">
+                  <textarea :id="'textarea-' + pregunta._id" class="materialize-textarea" v-model="pregunta.respuesta" :disabled="pregunta.respondida">
                   </textarea>
                   <section style="margin: 3% 0;">
                     <label>Subir una imagen</label>
                     <br />
-                    <input :id="'fi-' + pregunta._id" type='file' @change="getImage(pregunta._id,$event)"/>
+                    <input :id="'fi-' + pregunta._id" type='file' @change="getImageP(pregunta,$event)" :disabled="pregunta.respondida"/>
                   </section>
                   <section>
-                    <img hidden v-bind:id="'source_image-'+ pregunta._id" src="#"/>
+                    <img hidden :id="'source_image-'+ pregunta._id" src="#"/>
                   </section>
                   <section>
-                    <img hidden v-bind:id="'result_image-'+ pregunta._id" src="#" />
+                    <img :hidden="pregunta.imagenes==''" :id="'result_image-'+ pregunta._id" :src="pregunta.imagenes" :disabled="pregunta.respondida" class="imagen" />
                   </section>
                   <section>
-                    <img hidden v-bind:id="'loading-'+ pregunta._id" src="/img/loading.gif" />
+                    <img hidden :id="'loading-'+ pregunta._id" src="/img/loading.gif" />
                   </section>
                 </article>
                 <article class="row" id="botones">
-                  <button href="." class="waves-effect waves-light btn pull right" @click="responder(pregunta)" v-bind:id="'btn-responder-' + pregunta._id">Responder</button>
+                  <button href="." class="waves-effect waves-light btn pull right" @click="responderP(pregunta)" :id="'btn-responder-' + pregunta._id" :disabled="pregunta.respondida">Responder</button>
                 </article>
               </main>
               <!-- FIN PREGUNTA -->
@@ -137,7 +138,7 @@
             <article class="row row-terminar center-align">
               <section class="col s12" id="section-btn-terminar">
                 <h4>Terminar la lección</h4>
-                <a class="waves-effect waves-light btn" @click="responderTodas">Terminar</a>
+                <a class="waves-effect waves-light btn" href="/estudiantes/">Terminar</a>
               </section>
             </article>
          </section>

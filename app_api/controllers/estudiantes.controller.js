@@ -234,7 +234,9 @@ const leccionDatos = (req, res) => {
     let leccion          = yield obtenerLeccion(estudiante.leccion);
     let respuestas       = yield obtenerRespuestas(estudiante.leccion, id_estudiante);
     let anadido          = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante);
-    respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, anadidoARegisto: anadido})
+
+    let preguntas        = armarArrayPreguntas(leccion.preguntas, respuestas);
+    respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, anadidoARegisto: anadido, preguntas: preguntas})
   });
 
 }
@@ -248,4 +250,126 @@ module.exports = {
   calificarLeccion,
   tomarLeccion,
   leccionDatos
+}
+
+////////////////////////////////////////////
+//FUNCIONES
+////////////////////////////////////////////
+/*
+  Arma un array con las preguntas de la lección junto con las respuestas que el estudiante pudo haber enviado previamente
+  @Params:
+    arrayP: array de preguntas de la lección que se está tomando
+    arrayR: array de respuestas del estudiante.
+*/
+function armarArrayPreguntas(arrayP, arrayR){
+  let preguntas = [];
+  for (let i = 0; i < arrayP.length; i++) {
+    //Asigno la información de la pregunta y el orden que esta tiene en la lección actual
+    let actualP    = armarPregunta(arrayP[i].pregunta);
+    actualP.ordenP = arrayP[i].ordenPregunta;
+    //Obtengo la respuesta del estudiante a esta pregunta actual. Por el id de la pregunta
+    let actualR   = arrayR.find( respuesta => respuesta.pregunta == actualP._id );
+    //Si la pregunta es una sección se añaden sus subpreguntas y subrespuestas
+    actualP.esSeccion = ( actualP.subpreguntas != null && actualP.subpreguntas.length > 0 );
+    if( actualP.esSeccion ){
+      actualP.subpreguntas = armarArraySubpreguntas(actualP, actualR);
+      actualP.terminada    = verificarSeccionTerminada(actualP);
+      actualP.respondida   = verificarSeccionRespondida(actualP);
+    }else{
+      asignarRespuestaP(actualP, actualR);
+      actualP.terminada = '';
+    }
+    preguntas.push(actualP);
+  }
+  return preguntas;
+}
+/*
+  Devuelve el objeto de Pregunta con los campos necesarios para la lección
+*/
+function armarPregunta(pregunta){
+  let obj = {};
+  obj._id            = pregunta._id;
+  obj.descripcion    = pregunta.descripcion;
+  obj.nombre         = pregunta.nombre;
+  obj.puntaje        = pregunta.puntaje;
+  obj.subpreguntas   = pregunta.subpreguntas;
+  obj.tiempoEstimado = pregunta.tiempoEstimado;
+  return obj;
+}
+
+/*
+  Devuelve el array de las subpreguntas de la sección junto con las respuestas correspondientes que el estudiante pudo haber enviado previamente.
+  @Params:
+    pregunta:  JSON de la pregunta actual
+    respuesta: JSON de la respuesta a la pregunta actual
+*/
+function armarArraySubpreguntas(pregunta, respuesta){
+  let subpreguntas = [];
+  for (var i = 0; i < pregunta.subpreguntas.length; i++) {
+    //Asigno contenido, orden y puntaje
+    let actualSP = pregunta.subpreguntas[i];
+    let actualSR = null;
+    //Si la pregunta actual si fue respondida por el estudiante asigno la subrespuesta a la subpregunta actual
+    if( respuesta != null ){
+      //Obtengo la respuesta correspondiente
+      actualSR = respuesta.subrespuestas.find( sr => sr.ordenPregunta == actualSP.orden );
+    }
+    //Asigno la respuesta del estudiante y la imagen que subió
+    asignarRespuesta(actualSP, actualSR);
+    subpreguntas.push(actualSP);
+  }
+  return subpreguntas;
+}
+
+/*
+  Asigno los datos necesarios de la respuesta del estudiante
+  Esta función valida si el objeto enviado como respuesta es null
+  Esto significa que el estudiante o no respondió a la pregunta o a la subpregunta
+*/
+function asignarRespuesta(pregunta, respuesta){
+  if( respuesta == null ){
+    pregunta.respuesta  = '';
+    pregunta.imagen     = '';
+    pregunta.respondida = false;
+  }else{
+    pregunta.respuesta  = respuesta.respuesta;  
+    pregunta.imagen     = respuesta.imagen;
+    pregunta.respondida = true;
+  }
+}
+
+function verificarSeccionTerminada(seccion){
+  let flag = '';
+  for (var i = 0; i < seccion.subpreguntas.length; i++) {
+    let actualP = seccion.subpreguntas[i];
+    if( !actualP.respondida ){
+      flag = 'disabled';
+      break;
+    }
+  }
+  return flag;
+}
+
+function verificarSeccionRespondida(seccion){
+  let flag = false;
+  for (var i = 0; i < seccion.subpreguntas.length; i++) {
+    let actualP = seccion.subpreguntas[i];
+    if( actualP.respondida ){
+      flag = true;
+      break;
+    }
+  }
+  return flag;
+}
+
+function asignarRespuestaP(pregunta, respuesta){
+  if( respuesta == null ){
+    pregunta.respuesta  = '';
+    pregunta.imagenes   = '';
+    pregunta.respondida = false;
+  }else{
+    pregunta.respuesta  = respuesta.respuesta;  
+    pregunta.imagenes   = respuesta.imagenes;
+    pregunta.respondida = true;
+  }
 }
