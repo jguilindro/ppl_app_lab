@@ -1,15 +1,28 @@
-/* eslint class-methods-use-this:
-  ["error", { "exceptMethods":
-  ["getLeccionesByEstudianteCorreo"] }]
-*/
-
 /* eslint comma-dangle: ["error", "never"] */
-
+/**
+* @name Leccion
+* @author Joel Rodriguez
+*/
 class Leccion {
-  constructor(db) {
+  /**
+  * crea una instancia de Leccion
+  * @param {logger} modulo logger
+  * @param {db} modulo database
+  * @author Joel Rodriguez
+  */
+  constructor(logger, db) {
+    this.logger = logger
     this.db = db
   }
-  
+
+  /**
+  * Obtener las lecciones del estudiante por el correo y ordenadas por fecha por mas reciente
+  * @param {correo}
+  * @return {Promise} lecciones del estudiante en formato json
+  * ej: {calificacion, nombre, tipo, fecha_terminado, id}
+  * @error {Error} error object
+  * @author Joel Rodriguez
+  */
   getLeccionesByEstudianteCorreo(correo) {
     return new Promise((resolve, reject) => {
       this.db.from('estudiantes')
@@ -30,12 +43,13 @@ class Leccion {
           'lecciones.fecha_terminado',
           'lecciones.id'])
         .where({ 'estudiantes.correo': correo })
+        .orderBy('lecciones.fecha_terminado', 'desc')
         .then((lecciones) => {
           return resolve(lecciones)
         })
         .catch((error) => {
-          logger.info(error)
-          logger.error(`Leccion model Error ${error}`)
+          this.logger.info(error)
+          this.logger.error(`Leccion model Error ${error}`)
           reject(error)
         })
     })

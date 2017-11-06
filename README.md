@@ -13,7 +13,7 @@ Aplicacion para el manejo de las clases de ppl
 ## Prerrequisitos
 
 * Mysql
-* Mongodb (opcional)
+* Mongodb
 * Redis (opcional y sera usado para realtime)
 * Nodejs >= 6.9.5
 
@@ -142,3 +142,12 @@ Mostar comandos posibles de npm
 [Discord](https://discord.gg/Sjkhd6D)
 
 [Appeir](https://appear.in/ppl_app_lab)
+
+## Recomendado
+https://github.com/rwaldron/idiomatic.js/
+
+
+<!-- // usar la libreria joi para las validaciones, https://github.com/hapijs/joi
+http://usejsdoc.org/-->
+
+<!-- // @apiSchema (Body) {jsonschema=./schema/profesores.req.json} apiParam -->

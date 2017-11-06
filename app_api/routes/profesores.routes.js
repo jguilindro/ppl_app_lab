@@ -1,4 +1,9 @@
 const ProfesorController = require('../controllers/profesores.controller')
+const Profesor = require('../models/profesor.model')
+
+const ProfesorModel = new Profesor(logger, db)
+
+const Profesores = new ProfesorController(logger, responses, ProfesorModel)
 
 module.exports = (app) => {
   app.route('/profesores')
@@ -12,7 +17,7 @@ module.exports = (app) => {
       * @apiSampleRequest off
     */
     .get((req, res) => {
-      ProfesorController.getAll()
+      Profesores.getAll()
         .then((respuesta) => {
           res.status(respuesta.codigo_estado)
           res.json(respuesta)

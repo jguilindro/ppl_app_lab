@@ -1,39 +1,50 @@
-// usar la libreria joi para las validaciones, https://github.com/hapijs/joi
-// http://usejsdoc.org/about-getting-started.html
-// https://github.com/documentationjs/documentation/blob/master/docs/GETTING_STARTED.mdn
-// https://esdoc.org/
+/**
+* @name Profesores
+* @author Joel Rodriguez
+*/
+class Profesores {
+  /**
+  * crea una instancia de Profesores
+  * @param {logger} modulo logger
+  * @param {responses} modulo responses
+  * @param {ProfesorModel}
+  * @author Joel Rodriguez
+  */
+  constructor(logger, responses, ProfesorModel) {
+    this.logger = logger
+    this.responses = responses
+    this.ProfesorModel = ProfesorModel
+  }
 
-const ProfesorModel = require('../models/profesor.model')
-const db = require('../../databases').relationalDB
-const responses = require('../utils/responses')
+  /**
+  * Devuelve todos los profesores
+  * @returns {Json} formato responses ok
+  * @error {Json} formato erro server
+  * @author Joel Rodriguez
+  */
+  getAll() {
+    return this.ProfesorModel.getAll()
+      .then((res) => {
+        return this.responses.ok(res)
+      })
+      .catch((error) => {
+        this.logger.info(error)
+        this.logger.error(`Profesor Controller Error ${error}`)
+        return this.responses.ERROR_SERVIDOR
+      })
+  }
 
-const Profesor = new ProfesorModel(db)
-
-const getAll = () => {
-  return Profesor.getAll()
-    .then((res) => {
-      return responses.ok(res)
-    })
-    .catch((error) => {
-      logger.info(error)
-      logger.error(`Profesor Controller Error ${error}`)
-      return responses.ERROR_SERVIDOR
-    })
+  getByCorreo(correo) {
+    return this.ProfesorModel.getByCorreo(correo)
+      .then((res) => {
+        return this.responses.ok(res)
+      })
+      .catch((error) => {
+        this.logger.info(error)
+        this.logger.error(`Profesor Controller Error ${error}`)
+        return this.responses.ERROR_SERVIDOR
+      })
+  }
 }
 
-const getByCorreo = (usuario) => {
-  return Profesor.getByCorreo(usuario)
-    .then((res) => {
-      return responses.ok(res)
-    })
-    .catch((error) => {
-      logger.info(error)
-      logger.error(`Profesor Controller Error ${error}`)
-      return responses.ERROR_SERVIDOR
-    })
-}
-
-module.exports = {
-  getAll,
-  getByCorreo,
-}
+module.exports = Profesores

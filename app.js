@@ -5,7 +5,12 @@
   debug .- usar el chome inscpector
   cas .- test cas
 */
+process.on('uncaughtException', function(err) {
+  logger.error('Caught exception: ' + err)
+  logger.error(err.stack)
+});
 
+global.db = require('./databases').relationalDB
 const express = require('express') // libreria routing
 const path = require('path')
 const cors = require('cors')
@@ -21,7 +26,6 @@ const logger = require('./app_api/utils/logger')
 const app = express()
 const port = process.env.PORT || 8000
 app.set('port', port)
-
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -119,11 +123,6 @@ require('./app_realtime/server.routes.realtime')(realtime, io)
 app.use('/', client)
 app.use('/api', api)
 app.use('/realtime', realtime)
-
-process.on('uncaughtException', function(err) {
-  logger.error('Caught exception: ' + err)
-  logger.error(err.stack)
-});
 
 module.exports = {
   app,

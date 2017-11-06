@@ -37,8 +37,12 @@
                   "type": "number"
                 },
                 "fecha_terminado": {
-                  "description": "",
-                  "type": "number"
+                  "description": "devuelve solo la fecha en un formato dia-mes-anio",
+                  "type": "date"
+                },
+                "hora_terminado": {
+                  "description": "devuelve solo la hora en un formato hora-minuto AM|PM",
+                  "type": "date"
                 },
                 "nombre": {
                   "description": "",

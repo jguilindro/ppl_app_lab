@@ -1,16 +1,28 @@
-/* eslint class-methods-use-this:
-  ["error", { "exceptMethods":
-  ["getByCorreo",
-  "getAll"] }]
-*/
-
 /* eslint comma-dangle: ["error", "never"] */
 
+/**
+* @name Profesor
+* @author Joel Rodriguez
+*/
 class Profesor {
-  constructor(db) {
+  /**
+  * crea una instancia de Profesor
+  * @param {logger} modulo logger
+  * @param {db} modulo database
+  * @author Joel Rodriguez
+  */
+  constructor(logger, db) {
+    this.logger = logger
     this.db = db
   }
-  
+
+  /**
+  * Obtener profesor por el correo
+  * @param {correo}
+  * @return {Promise} json profesor
+  * @error {Promise} error object
+  * @author Joel Rodriguez
+  */
   getByCorreo(correo) {
     return new Promise((resolve, reject) => {
       this.db.select().from('profesores')
@@ -22,13 +34,19 @@ class Profesor {
           return resolve(profesor)
         })
         .catch((error) => {
-          logger.info(error)
-          logger.error(`Profesor model Error ${error}`)
+          this.logger.info(error)
+          this.logger.error(`Profesor model Error ${error}`)
           reject(error)
         })
     })
   }
 
+  /**
+  * Obtener todos los profesores
+  * @return {Promise} json profesor
+  * @error {Promise} error object
+  * @author Joel Rodriguez
+  */
   getAll() {
     return new Promise((resolve, reject) => {
       this.db.select().from('profesores')
@@ -36,8 +54,8 @@ class Profesor {
           return resolve(profesores)
         })
         .catch((error) => {
-          logger.info(error)
-          logger.error(`Profesor model Error ${error}`)
+          this.logger.info(error)
+          this.logger.error(`Profesor model Error ${error}`)
           reject(error)
         })
     })
