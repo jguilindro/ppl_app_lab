@@ -43,6 +43,7 @@ let App = new Vue({
   				console.log(self.leccion.preguntas)
   				console.log(self.respuestas)
   				self.preguntas  = self.armarArrayPreguntas(self.leccion.preguntas, self.respuestas);
+          $('select').material_select();
   			},
   			error: function(err){
   				console.log(err)
