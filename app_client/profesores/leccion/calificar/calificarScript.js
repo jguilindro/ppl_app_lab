@@ -28,7 +28,7 @@ let App = new Vue({
 	    $('.scrollspy').scrollSpy();
 	    $('.modal').modal();
 	    $('.tooltipped').tooltip({delay: 50});
-	    $('select').material_select();
+	    //$('select').material_select();
   	},
   	//////////////////////////////////////////////////////
     //LLAMADAS A LA API
@@ -58,7 +58,7 @@ let App = new Vue({
               self.modificarCalificacionLeccion(actual.calificacion, actual.puntaje);
             }
           }
-          $('select').material_select();
+          //$('select').material_select();
   			},
   			error: function(err){
   				console.log(err)
@@ -153,13 +153,13 @@ let App = new Vue({
 			$(idTextarea).prop('disabled', true);
 			$(idBtn).prop('disabled', true);
 			$(idSelect).prop('disabled', true);
-			$(idSelect).material_select();
+			//$(idSelect).material_select();
 		},
 		desbloquearElementos: function(idSelect, idTextarea, idBtn){
 			$(idTextarea).prop('disabled', false);
 			$(idBtn).prop('disabled', false);
 			$(idSelect).prop('disabled', false);
-			$(idSelect).material_select();
+			//$(idSelect).material_select();
 		},
 		/*
 			Añade los valores de respuesta al objeto de pregunta
