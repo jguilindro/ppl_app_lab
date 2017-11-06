@@ -40,9 +40,24 @@ let App = new Vue({
   				self.leccion 		= res.datos.leccion;
   				self.estudiante = res.datos.estudiante;
   				self.respuestas = res.datos.respuestas;
-  				console.log(self.leccion.preguntas)
-  				console.log(self.respuestas)
-  				self.preguntas  = self.armarArrayPreguntas(self.leccion.preguntas, self.respuestas);
+          self.preguntas  = res.datos.preguntas;
+          console.log(self.preguntas);
+          for (var i = 0; i < self.preguntas.length; i++) {
+            let actual = self.preguntas[i];
+            console.log(actual)
+            if( actual.esSeccion ){
+              for (var j = 0; j < actual.subpreguntas.length; j++) {
+                let actualSP = actual.subpreguntas[j];
+                if(actualSP.calificada){
+                  console.log('cal', actualSP.calificacion)
+                  console.log('puntaje', actualSP.puntaje)
+                  self.modificarCalificacionLeccion(actualSP.calificacion, actualSP.puntaje);  
+                }
+              }
+            }else{
+              self.modificarCalificacionLeccion(actual.calificacion, actual.puntaje);
+            }
+          }
           $('select').material_select();
   			},
   			error: function(err){
@@ -65,9 +80,9 @@ let App = new Vue({
   				Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
   			},
   			error: function(err){
-  				const idSelect 	 = '#calificacion-' + pregunta.orden + '-' + sub.orden;
-					const idTextarea = '#fb-'  					+ pregunta.orden + '-' + sub.orden;
-					const idBtn 		 = '#btn-'  				+ pregunta.orden + '-' + sub.orden;
+  				const idSelect 	 = '#calificacion-' + pregunta.ordenP + '-' + sub.orden;
+					const idTextarea = '#fb-'  					+ pregunta.ordenP + '-' + sub.orden;
+					const idBtn 		 = '#btn-'  				+ pregunta.ordenP + '-' + sub.orden;
   				sub.calificada 	 = false;
   				App.desbloquearElementos(idSelect, idTextarea, idBtn);
   				Materialize.toast('Error al enviar su calificación. Intente de nuevo!', 3000, 'rounded red');
@@ -117,64 +132,6 @@ let App = new Vue({
   	//////////////////////////////////////////////////////
     //HELPERS
     //////////////////////////////////////////////////////
-    /*
-      Devuelve el array de preguntas que se va a mostrar al usuario
-    */
-    armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas){
-      let arrayPreguntas = [];
-      for( let i = 0; i < preguntasObtenidas.length; i++ ) {
-      	//Asigno información de pregunta y el orden de la pregunta
-        let preguntaActual   = preguntasObtenidas[i].pregunta;
-        preguntaActual.orden = preguntasObtenidas[i].ordenPregunta;
-        //Obtengo la respuesta del estudiante
-        let respuestaActual  = $.grep(respuestasObtenidas, function(respuesta, i){
-        	return preguntaActual._id == respuesta.pregunta;
-        })[0];
-        //Si la pregunta es una sección se añaden sus subpreguntas y subrespuestas
-        preguntaActual.esSeccion = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
-        if( preguntaActual.esSeccion ){
-        	preguntaActual.subpreguntas = App.armarArraySubpreguntas(preguntaActual, respuestaActual);
-        }else{
-        	if( respuestaActual == null ){
-        		preguntaActual.calificada = true;
-        		arrayPreguntas.push(preguntaActual);
-        		continue;		
-        	}
-        	//Si no lo es, se asigna su respuesta y se aumenta la calificación total
-        	App.asignarRespuesta(preguntaActual, respuestaActual);
-        	App.modificarCalificacionLeccion(preguntaActual.calificacion, preguntaActual.puntaje);
-        }
-        //Se añade la pregunta al array que se va a devolver
-        arrayPreguntas.push(preguntaActual);
-      }
-      return arrayPreguntas;
-    },
-    
-    /*
-			Devuelve el array de subpreguntas de la pregunta indicada
-    */
-    armarArraySubpreguntas: function(pregunta, respuesta){
-    	let arraySubpreguntas = [];
-    	for (var i = 0; i < pregunta.subpreguntas.length; i++) {
-    		//Asigno información de subpregunta
-    		let subActual    = pregunta.subpreguntas[i];
-    		if( respuesta == null ){
-    			subActual.calificada = true;
-    			arraySubpreguntas.push(subActual);
-    			continue;	
-    		}
-    		//Obtengo la subrespuesta del estudiante
-    		let subResActual = $.grep(respuesta.subrespuestas, function(res, i){
-    			return subActual.orden == res.ordenPregunta;
-    		})[0];
-    		//Asigno su respuesta y aumento la calificación total de la lección
-    		App.asignarRespuesta(subActual, subResActual);
-				App.modificarCalificacionLeccion(subActual.calificacion, subActual.puntaje);    		
-				//Se añade la subpregunta al array que se va a devolver
-    		arraySubpreguntas.push(subActual);
-    	}
-    	return arraySubpreguntas;
-    },
     modificarCalificacionLeccion: function(calificacionPregunta, puntajePregunta){
     	let calPonderada 					= App.ponderarCalificacion(2, calificacionPregunta, puntajePregunta);
     	App.calificacionTotal 		= App.calificacionTotal + calPonderada;
@@ -268,9 +225,9 @@ let App = new Vue({
 			Se envía la calificación de la pregunta (subpregunta) a la base de datos
 		*/
 		calificarSub: function(pregunta, sub){
-			const idSelect 	 = '#calificacion-' + pregunta.orden + '-' + sub.orden;
-			const idTextarea = '#fb-'  					+ pregunta.orden + '-' + sub.orden;
-			const idBtn 		 = '#btn-'  				+ pregunta.orden + '-' + sub.orden;
+			const idSelect 	 = '#calificacion-' + pregunta.ordenP + '-' + sub.orden;
+			const idTextarea = '#fb-'  					+ pregunta.ordenP + '-' + sub.orden;
+			const idBtn 		 = '#btn-'  				+ pregunta.ordenP + '-' + sub.orden;
 			//Valido la calificación ingresada
 			let calificacion = $(idSelect).val();
 			if ( calificacion > 2 || calificacion < 0 ) {
