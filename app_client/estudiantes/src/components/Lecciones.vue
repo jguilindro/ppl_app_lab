@@ -1,21 +1,23 @@
 
 <template>
-  <div id="container_general">
+  <div id="container_general" class="grey lighten-2">
 
     <v-list two-line >
       <div v-for="(value,key) in agruparPorFecha()">
-        <v-subheader class="grey lighten-3" v-text="comprobarDia(key)"></v-subheader>
+        <v-subheader class="grey lighten-2" v-text="comprobarDia(key)"></v-subheader>
         
         <div v-for="v in value">
-          <v-list-tile @click="" to="/LeccionesDetalle">
-            <v-list-tile-content >        
+          <v-list-tile @click="" to="/LeccionesDetalle" class="grey lighten-3">
+            <v-list-tile-content>        
               <div id="container_leccion">
                 <div class="left">
                   <div> <v-list-tile-title v-html="v.nombre"></v-list-tile-title></div>
                   <div> <v-list-tile-sub-title v-html="v.tipo"></v-list-tile-sub-title> </div>
                 </div>
                 <div class="rigth" v-if="v.calificacion">
-                  <v-list-tile-sub-title id="nota" class="red--text" v-html="comprobarCalificacion(v.calificacion)"></v-list-tile-sub-title>
+                  <div v-if="v.calificacion>=75" id="nota100" class="nota" v-html="comprobarCalificacion(v.calificacion)"></div>
+                  <div v-if="v.calificacion>=50 && v.calificacion<75" id="nota75" class="nota" v-html="comprobarCalificacion(v.calificacion)"></div>
+                  <div v-if="v.calificacion<50" id="nota50" class="nota" v-html="comprobarCalificacion(v.calificacion)"></div>
                   <div id="totalNota">| 100</div>
                 </div>
                 <div v-if="!v.calificacion">
@@ -140,9 +142,21 @@
     display: inline-block;
   }
 
-  #nota {
+  .nota {
     display: inline-block;
     width: auto;
+  }
+
+  #nota50{
+    color: #F50000;
+  }
+
+  #nota75{
+    color: #F0A901;
+  }
+
+  #nota100{
+    color: #1ABD25;
   }
 
   #totalNota {
