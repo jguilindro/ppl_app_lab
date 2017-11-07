@@ -76,7 +76,11 @@ class Estudiantes {
         )(values[1])
         const LECCIONES = values[0].reduce((tmp, actual) => {
           let actual_tmp = actual
-          const fecha_tomada_tmp = moment(actual.fecha_terminado, moment.ISO_8601).format('DD-MM-YYYY')
+          // Traducción de Moment a Español. Fuente:https://es.stackoverflow.com/questions/56219/como-cambio-el-idioma-del-plugin-momentjs
+          moment.locale('es', {
+            weekdaysShort: 'Dom._Lun._Mar._Mier._Jue._Vier._Sab.'.split('_'),
+          })
+          const fecha_tomada_tmp = moment(actual.fecha_terminado, moment.ISO_8601).format('ddd DD/MM')
           const hora_tomada_tmp = moment(actual.fecha_terminado, moment.ISO_8601).format('LT')
           actual_tmp['fecha_terminado'] = fecha_tomada_tmp
           actual_tmp['hora_terminado'] = hora_tomada_tmp

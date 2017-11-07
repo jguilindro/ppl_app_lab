@@ -2,9 +2,10 @@
   <v-app >
     <!-- <div id="main" v-show="loggeado"> -->
         <v-navigation-drawer id="navegacion" v-model="sideNav" temporary>
-        <avatar id="avatarUsuario" :username="estudiante.apellidos" :size="55" color="#fff"></avatar>  
+        <avatar id="avatarUsuario" :username="getNombre()" :size="55" color="#fff"></avatar>  
           <div id="info">
-              <div id="nombres">{{estudiante.apellidos}} {{estudiante.nombres}}</div>
+
+              <div id="nombres">{{getNombre()}}</div>
               <div id="correo">{{estudiante.correo}}</div>
           </div>
 
@@ -49,9 +50,6 @@
 
 <script>
   import { mapGetters } from 'vuex'
-
-  // npm install vue-avatar
-  // npm i -S vue-avatar
   import Avatar from 'vue-avatar/dist/Avatar'
 
   export default {
@@ -64,12 +62,18 @@
     data() {
       return {
         sideNav: false,
-        nombre1: 'Bosco Andrade',
         items: [
           { title: 'Cerrar Sesión', icon: 'exit_to_app' },
           { title: 'About', icon: 'question_answer' },
         ],
       }
+    },
+    methods: {
+      getNombre() {
+        const nombre = this.estudiante.nombres.split(' ')[0]
+        const apellido = this.estudiante.apellidos.split(' ')[0]
+        return nombre.concat(' ').concat(apellido)
+      },
     },
   }
 
@@ -105,6 +109,10 @@
   }
 
   /*Botón hamburguesa*/
+  #navegacion {
+      width: 50% !important;
+  }
+
   .navigation-drawer {
     width: auto !important;
   }
@@ -153,11 +161,10 @@
       padding-left: 0% !important;
       padding-right: 0% !important;
     }
-
+    
     #navegacion {
       width: 75% !important;
     }
-
   }
 
 </style>

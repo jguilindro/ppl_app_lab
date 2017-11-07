@@ -24,6 +24,7 @@
         for (var file of chunk.files) {
           if (file.match(/\.(js|css)$/)) { %>
     <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.2/lodash.js"></script>
   </head>
   <body>
     <noscript>
