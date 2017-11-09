@@ -267,8 +267,8 @@ const leccionDatos = (req, res) => {
     let estudiante       = yield buscarEstudiante(id_estudiante);
     let leccion          = yield obtenerLeccion(id_leccion);
     let respuestas       = yield obtenerRespuestas(id_leccion, id_estudiante);
-
     let preguntas        = yield armarArrayPreguntas(leccion.preguntas, respuestas);
+
     respuesta.ok(res, {estudiante: estudiante, leccion: leccion, respuestas: respuestas, preguntas : preguntas})
   });
 };
@@ -306,6 +306,7 @@ function armarArrayPreguntas(arrayP, arrayR){
     actualP.ordenP = arrayP[i].ordenPregunta;
     //Obtengo la respuesta del estudiante a esta pregunta actual. Por el id de la pregunta
     let actualR   = arrayR.find( respuesta => respuesta.pregunta == actualP._id );
+    //console.log('idRespuesta', actualR._id)
     //Si la pregunta es una sección se añaden sus subpreguntas y subrespuestas
     actualP.esSeccion = ( actualP.subpreguntas != null && actualP.subpreguntas.length > 0 );
     if( actualP.esSeccion ){
@@ -366,9 +367,9 @@ function asignarRespuesta(pregunta, respuesta){
     pregunta.respuesta  = '';
     pregunta.imagen     = '';
     pregunta.respondida = false;
-    pregunta.calificacion = respuesta.calificacion;
-    pregunta.feedback = respuesta.feedback;
-    pregunta.calificada = respuesta.calificada;
+    pregunta.calificacion = 0;
+    pregunta.feedback = '';
+    pregunta.calificada = false;
   }else{
     pregunta.respuesta  = respuesta.respuesta;  
     pregunta.imagen     = respuesta.imagen;
@@ -408,9 +409,9 @@ function asignarRespuestaP(pregunta, respuesta){
     pregunta.respuesta  = '';
     pregunta.imagenes   = '';
     pregunta.respondida = false;
-    pregunta.calificacion = respuesta.calificacion;
-    pregunta.feedback = respuesta.feedback;
-    pregunta.calificada = respuesta.calificada;
+    pregunta.calificacion = 0;
+    pregunta.feedback = '';
+    pregunta.calificada = false;
   }else{
     pregunta.respuesta  = respuesta.respuesta;  
     pregunta.imagenes   = respuesta.imagenes;

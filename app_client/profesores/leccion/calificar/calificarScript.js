@@ -41,16 +41,12 @@ let App = new Vue({
   				self.estudiante = res.datos.estudiante;
   				self.respuestas = res.datos.respuestas;
           self.preguntas  = res.datos.preguntas;
-          console.log(self.preguntas);
           for (var i = 0; i < self.preguntas.length; i++) {
             let actual = self.preguntas[i];
-            console.log(actual)
             if( actual.esSeccion ){
               for (var j = 0; j < actual.subpreguntas.length; j++) {
                 let actualSP = actual.subpreguntas[j];
                 if(actualSP.calificada){
-                  console.log('cal', actualSP.calificacion)
-                  console.log('puntaje', actualSP.puntaje)
                   self.modificarCalificacionLeccion(actualSP.calificacion, actualSP.puntaje);  
                 }
               }
