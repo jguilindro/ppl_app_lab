@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Lecciones</h1>
-    <v-btn flat>Mi boton</v-btn>
+    <v-btn flat @click='prueba()'>Mi boton </v-btn>
   </div>
 </template>
 
@@ -12,6 +12,11 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js PWA',
     }
+  },
+  methods: {
+    prueba() {
+      console.log('hola')
+    },
   },
 }
 </script>

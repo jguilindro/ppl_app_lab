@@ -2,12 +2,12 @@
   <v-app >
     <!-- <div id="main" v-show="loggeado"> -->
         <v-navigation-drawer id="navegacion" v-model="sideNav" temporary>
-        <avatar id="avatarUsuario" :username="getNombre()" :size="55" color="#fff"></avatar>  
+      <!--    <avatar id="avatarUsuario" :username="getNombre()" :size="55" color="#fff"></avatar>  
           <div id="info">
 
               <div id="nombres">{{getNombre()}}</div>
               <div id="correo">{{estudiante.correo}}</div>
-          </div>
+          </div>-->
 
         <v-list>
           <v-divider></v-divider>
@@ -70,9 +70,10 @@
     },
     methods: {
       getNombre() {
-        const nombre = this.estudiante.nombres.split(' ')[0]
-        const apellido = this.estudiante.apellidos.split(' ')[0]
-        return nombre.concat(' ').concat(apellido)
+        // const nombre = this.estudiante.nombres.split(' ')[0]
+        // const apellido = this.estudiante.apellidos.split(' ')[0]
+        // return nombre.concat(' ').concat(apellido)
+        return ''
       },
     },
   }
