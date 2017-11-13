@@ -2,12 +2,12 @@
   <v-app >
     <!-- <div id="main" v-show="loggeado"> -->
         <v-navigation-drawer id="navegacion" v-model="sideNav" temporary>
-      <!--    <avatar id="avatarUsuario" :username="getNombre()" :size="55" color="#fff"></avatar>  
+        <avatar id="avatarUsuario" :username="estudiante.nombres" :size="55" color="#fff"></avatar>
           <div id="info">
 
-              <div id="nombres">{{getNombre()}}</div>
+              <div id="nombres">{{estudiante.nombres}}</div>
               <div id="correo">{{estudiante.correo}}</div>
-          </div>-->
+          </div>
 
         <v-list>
           <v-divider></v-divider>
@@ -51,7 +51,6 @@
 <script>
   import { mapGetters } from 'vuex'
   import Avatar from 'vue-avatar/dist/Avatar'
-
   export default {
     computed: mapGetters([
       'loggeado',
@@ -68,30 +67,18 @@
         ],
       }
     },
-    methods: {
-      getNombre() {
-        // const nombre = this.estudiante.nombres.split(' ')[0]
-        // const apellido = this.estudiante.apellidos.split(' ')[0]
-        // return nombre.concat(' ').concat(apellido)
-        return ''
-      },
-    },
   }
-
 </script>
 
 <style>
-
   main {
     width: 100%;
     /*border: 1px solid red;*/
   }
-
   ul {
     padding-top: 0em !important;
     padding-bottom: 0em !important;
   }
-
   #container_general {
     width: 100%;
     padding-top: 0em !important;
@@ -99,61 +86,49 @@
     padding-left: 10% !important;
     padding-right: 10% !important;
   }
-
   /*Toolbar*/
   .toolbar__content{
     height: 7em !important;
   }
-
   #logo_espol{
     padding: 8px;
   }
-
   /*Botón hamburguesa*/
   #navegacion {
       width: 50% !important;
   }
-
   .navigation-drawer {
     width: auto !important;
   }
-
     #avatarUsuario {
       margin-top: 1em;
       margin-bottom: 0.5em;
     }
-
     #avatarUsuario *{
       display: table;
       margin: 0 auto;
     }
-
     #info {
       text-align: center;
       margin-left: 1em;
       margin-right: 1em;
       margin-bottom: 1em;
     }
-
     #nombres {
       font-weight: bold;
     }
-
     #correo {
       opacity: 0.5;
     }
-
   /*Titulo Princiapl*/
   .toolbar__title{
     font-size: 2em;
   }
-
   /*Footer*/
   #footer {
     width: 100%;
     text-align: center;
   }
-
   @media only screen and (max-width : 750px) {
     #container_general {
       width: 100%;
@@ -162,10 +137,8 @@
       padding-left: 0% !important;
       padding-right: 0% !important;
     }
-    
     #navegacion {
       width: 75% !important;
     }
   }
-
 </style>

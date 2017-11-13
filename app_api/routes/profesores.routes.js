@@ -7,15 +7,6 @@ const Profesores = new ProfesorController(logger, responses, ProfesorModel)
 
 module.exports = (app) => {
   app.route('/profesores')
-    /**
-      * @api {get} /api/profesores Obtener profesores
-      * @apiName ObtenerProfesores
-      * @apiGroup Profesores
-      * @apiPermission Profesores Admin
-      * @apiDescription Todos los Profesores
-      * @apiSchema {jsonschema=./schema/profesores/profesores.res.json} apiSuccess
-      * @apiSampleRequest off
-    */
     .get((req, res) => {
       Profesores.getAll()
         .then((respuesta) => {
