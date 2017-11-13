@@ -2,10 +2,10 @@
   <v-app >
     <!-- <div id="main" v-show="loggeado"> -->
         <v-navigation-drawer id="navegacion" v-model="sideNav" temporary>
-        <avatar id="avatarUsuario" :username="getNombre()" :size="55" color="#fff"></avatar>  
+        <avatar id="avatarUsuario" :username="estudiante.nombres" :size="55" color="#fff"></avatar>
           <div id="info">
 
-              <div id="nombres">{{getNombre()}}</div>
+              <div id="nombres">{{estudiante.nombres}}</div>
               <div id="correo">{{estudiante.correo}}</div>
           </div>
 
@@ -67,13 +67,6 @@
           { title: 'About', icon: 'question_answer' },
         ],
       }
-    },
-    methods: {
-      getNombre() {
-        const nombre = this.estudiante.nombres.split(' ')[0]
-        const apellido = this.estudiante.apellidos.split(' ')[0]
-        return nombre.concat(' ').concat(apellido)
-      },
     },
   }
 
@@ -161,7 +154,7 @@
       padding-left: 0% !important;
       padding-right: 0% !important;
     }
-    
+
     #navegacion {
       width: 75% !important;
     }

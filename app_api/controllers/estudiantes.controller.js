@@ -62,6 +62,7 @@ class Estudiantes {
   * Obtener datos del estudiante que se mostraran en el perfil del mismo, devuelve el json con fecha_terminado y hora_termiando
   * @param {correo}
   * @return {Json} datos del estudiante en formato json, mas las lecciones que ha dado
+  * ej: [estudiante: {nombres, apellidos, correo}, lecciones:{calificacion, nombre, tipo, fecha_terminado, hora_terminado, id]}
   * @error {Error} error object
   * @author Joel Rodriguez
   */
@@ -74,7 +75,9 @@ class Estudiantes {
           ({ nombres, apellidos, correo }) =>
             ({ nombres, apellidos, correo })
         )(values[1])
-        const LECCIONES = values[0].reduce((tmp, actual) => {
+
+        // anadir a cada leccion la fecha_terminado y hora_terminado
+        const LECCIONES = values[0].reduce((lecciones, actual) => {
           let actual_tmp = actual
           // Traducción de Moment a Español. Fuente:https://es.stackoverflow.com/questions/56219/como-cambio-el-idioma-del-plugin-momentjs
           moment.locale('es', {
@@ -84,8 +87,8 @@ class Estudiantes {
           const hora_tomada_tmp = moment(actual.fecha_terminado, moment.ISO_8601).format('LT')
           actual_tmp['fecha_terminado'] = fecha_tomada_tmp
           actual_tmp['hora_terminado'] = hora_tomada_tmp
-          tmp.push(actual_tmp)
-          return tmp
+          lecciones.push(actual_tmp)
+          return lecciones
         }, [])
         return this.responses.ok({ estudiante: ESTUDIANTE_DATOS_FILTRADO, lecciones: LECCIONES })
       })

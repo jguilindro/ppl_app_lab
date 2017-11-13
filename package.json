@@ -24,15 +24,15 @@
     "test:integration": "yarn cross-env NODE_ENV=testing env-cmd .env nyc --reporter=html --reporter=text mocha --opts app_api/test/integration/mocha.opts app_api/test/integration/**/*.test.js --exit",
     "test:integration:watch": "yarn cross-env NODE_ENV=testing env-cmd .env  mocha --opts app_api/test/integration/mocha.opts app_api/test/**/**/*.test.js --watch --recursive",
     "sync": "browser-sync start --proxy 'http://localhost:8000' --ws --port 5000 --no-open --no-ui",
-    "docs:api": "node node_modules/apidoc/bin/apidoc -e docs/ -i app_api/routes -o docs/api",
     "predocs:code": "gitbook install ./docs/code",
     "docs:code": "gitbook build ./docs/code",
     "docs:code:s": "gitbook serve ./docs/code",
-    "docs": "npm-run-all docs:api docs:code",
+    "docs": "npm-run-all docs:code",
     "npm-scripts-info": "npm-scripts-info",
     "browser-sync": "browser-sync",
     "production": "ss",
     "postproduction": "ss",
+    "npm-run-all": "npm-run-all",
     "cypress": "./node_modules/.bin/cypress open --project ./app_client",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coverage:codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
@@ -75,8 +75,6 @@
     "winston": "^3.0.0-rc0"
   },
   "devDependencies": {
-    "apidoc": "^0.17.6",
-    "apidoc-plugin-schema": "^0.1.6",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.0.0",
