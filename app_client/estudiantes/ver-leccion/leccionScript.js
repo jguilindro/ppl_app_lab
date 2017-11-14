@@ -75,7 +75,7 @@ var App = new Vue({
               self.respuestasConectado=res.datos.respuestas;
               self.preguntas  = self.armarArrayPreguntas(res.datos.leccion.preguntas, self.respuestas, estudiante);
             }
-            console.log(self.preguntasEstudiantes);
+            //console.log(self.preguntasEstudiantes);
           },
           error: function(err){
             console.log(err)
