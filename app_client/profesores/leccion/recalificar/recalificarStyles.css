@@ -5,12 +5,13 @@ body{
 #app{
 	background-color: rgba(250,250,250,1);
   width: 80%;
-  margin: 2% auto;
+  margin: 0 auto;
   padding: 2%;
 }
 
 .title{
     font-weight: bold;
+     text-align: center;
 }
 
 #pages h1{

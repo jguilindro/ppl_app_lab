@@ -12,40 +12,77 @@
   </head>
   <body>
     <header id="navbar"></header>
-    <div id="app" class="row">
-      <h2 class="center-align title">Calificar Lección</h2>
-      <div class="form-group col s12 center-align">
-        <h5 class="title">Estudiante:</h5><h6>{{estudiante.nombres+' '+estudiante.apellidos}} ({{estudiante.correo}})</h6>
-        <h3 class="center-align title">{{leccion.nombre}}</h3>
-      </div>
-      <div class="form-group col s12">
-        <section v-for="(pregunta, index) in preguntas" class="section-pregunta">
-          <h4 class="center-align">Pregunta #{{index+1}}</h4>
-      		<div class="row row-pregunta">
-    		    <div class="col s12 col-pregunta">
-    		      <label for="nombre">Nombre de la Pregunta</label>
-              <p v-if="pregunta.pregunta.tipoPregunta == 'justificacion'" name="nombre">{{pregunta.pregunta.nombre}}</p>
-    		      <label for="descripcion">Descripción</label>
-    		      <p v-if="pregunta.pregunta.tipoPregunta == 'justificacion'" v-html="pregunta.pregunta.descripcion" name="descripcion"></p>
-              <p class="pull right">Puntaje de pregunta: {{pregunta.pregunta.puntaje}} puntos</p>
-            </div>
-          </div>
-          <div class="row row-res-cal">
-            <div class="col s7 col-respuesta">
-              <label for="respuesta">Respuesta del Estudiante</label>
-              <p>{{pregunta.pregunta.respuesta.respuesta}}</p>
-            </div>
-            <div class="col s5 col-calificacion">
-              <label for="calificacion">Calificación</label>
-              <input type="number" name="calificacion" min="0" max="2" v-bind:id="'calificacion-' + pregunta.pregunta._id" v-model="pregunta.pregunta.respuesta.calificacionPonderada">
-              <label for="feedback">Feedback</label>
-              <textarea v-model="pregunta.pregunta.respuesta.feedback" class="materialize-textarea" name="feedback" :id="'feedback-' + pregunta.pregunta._id"></textarea>
-              <button class="waves-effect waves-light btn pull right" @click="recalificar(pregunta.pregunta)" v-bind:id="'btn-' + pregunta.pregunta._id">Recalificar</button>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="row">
+    <main id="app" class="row">
+      <header class="seccion-1 row">
+        <h2 class="title">Recalificar Lección</h2>
+         <b>Estudiante: </b>{{estudiante.nombres+' '+estudiante.apellidos}} ({{estudiante.correo}})
+      </header>
+      <main class="form-group col s12">
+        <header>
+          <h3 class="title">{{leccion.nombre}}</h3>
+        </header>
+        <main>
+          <!-- PREGUNTAS -->
+          <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion card">
+            <header class="col s12 col-pregunta">
+              <h4 class="title" v-if="!pregunta.esSeccion">Pregunta #{{index+1}}</h4>    
+              <h4 class="title" v-else>Sección #{{index+1}}</h4>    
+              <label for="nombre">Nombre de la Pregunta</label>
+              <p name="nombre">{{pregunta.nombre}}</p>
+            </header>
+            <!-- DESCRIPCIÓN -->
+            <main class="col s12">
+              <label for="descripcion">Descripción</label>
+              <p v-html="pregunta.descripcion" name="descripcion"></p>
+              <p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>  
+            </main>
+            <!-- SUBPREGUNTAS -->
+            <footer id="area-subpreguntas"  v-if="pregunta.esSeccion" class="col s12">
+              <section v-for="(sub, j) in pregunta.subpreguntas" class="row seccion" :id="'section-sub-'+pregunta._id">
+                <hr>
+                <header>
+                  <h5 class="title">Pregunta #{{j+1}}</h5>
+                </header>
+                <!-- DESCRIPCIÓN -->
+                <main class="col s12">
+                  <label><h6><b>Descripción: </b></h6></label>
+                  <p v-html="sub.contenido"></p>
+                  <p class="pull right">Puntaje: {{sub.puntaje}}pts.</p>
+                </main>
+                <!-- RESPUESTA -->    
+                <footer id="area-subrespuesta" class="col s12">
+                  <section class="col s7 col-respuesta">
+                    <label :for="'res-'+pregunta.ordenP+'-'+sub.orden">Respuesta del Estudiante</label>
+                    <p :id="'res-'+pregunta.ordenP+'-'+sub.orden">{{sub.respuesta}}</p>
+                    <img :src="sub.imagen" :id="'img-'+pregunta.ordenP+'-'+sub.orden">
+                  </section>
+                  <section class="col s5 col-calificacion">
+                    <label :for="'calificacion-'+pregunta.ordenP+'-'+sub.orden">Calificación</label>
+                    <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-'+pregunta.ordenP+'-'+sub.orden" :value="sub.calificacion" :disabled="!sub.respondida">
+                    <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'fb-'+pregunta.ordenP+'-'+sub.orden" :value="sub.feedback" :disabled="!sub.respondida"></textarea>
+                    <button class="waves-effect waves-light btn pull right" :id="'btn-'+pregunta.ordenP+'-'+sub.orden" @click="calificarSub(pregunta, sub)" :disabled="!sub.respondida">Calificar</button>
+                  </section>
+                </footer>
+              </section>
+            </footer>
+            <!-- RESPUESTA -->
+            <footer id="area-respuesta" v-if="!pregunta.esSeccion" class="col s12">
+              <section class="col s7 col-respuesta">
+                <label for="respuesta">Respuesta del Estudiante</label>
+                <p :id="'res-'+pregunta.ordenP">{{pregunta.respuesta}}</p>
+                <img :src="pregunta.imagen" :id="'img-'+pregunta.ordenP">
+              </section>
+              <section class="col s5 col-calificacion">
+                <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-' + pregunta._id">
+                <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'feedback-' + pregunta._id" :value="pregunta.feedback"></textarea>
+                <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" :id="'btn-' + pregunta._id">Calificar</button>  
+              </section>
+            </footer>
+          </section>
+          <!-- FIN PREGUNTAS -->
+        </main>
+      </main>
+      <footer class="row">
         <div class="col s12">
           <h5 class="center-align">Calificación total: {{calificacionTotal}}/{{leccion.puntaje}}</h5>
           <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}/100</h5>
@@ -54,37 +91,38 @@
           <button class="waves-effect waves-light btn pull right" @click="enviarCalificacion">Aceptar</button>
           <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
         </div>
-      </div>
-      <!-- Modal Structure -->
-      <div id="myModal" class="modal">
-        <div class="modal-content">
-          <p class="center-align">Lección recalificada correctamente</p>
-        </div>
-        <div class="modal-footer">
-          <a  @click="regresar" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-        </div>
-      </div>
-      <!-- Modal Structure -->
-      <div id="modalErrorLeccion" class="modal">
-        <div class="modal-content">
-          <p class="center-align">Ocurrió un error al tratar de enviar la calificación total de la lección</p>
-          <p class="center-align">Intente nuevamente.</p>
-        </div>
-        <div class="modal-footer">
-          <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-        </div>
-      </div>
-      <!-- Modal Structure -->
-      <div id="modalErrorCalificar" class="modal">
-        <div class="modal-content">
-          <p class="center-align">Ocurrió un error al enviar la calificación de esta pregunta.</p>
-          <p class="center-align">Intente nuevamente.</p>
-        </div>
-        <div class="modal-footer">
-          <a class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
-        </div>
-      </div>
-    </div>
+      </footer>
+    </main>
+    <!-- Modal Structure -->
+    <section id="myModal" class="modal">
+      <main class="modal-content">
+        <p class="center-align">Lección recalificada correctamente</p>
+      </main>
+      <footer class="modal-footer">
+        <a  @click="regresar" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+      </footer>
+    </section>
+    <!-- Modal Structure -->
+    <section id="modalErrorLeccion" class="modal">
+      <main class="modal-content">
+        <p class="center-align">Ocurrió un error al tratar de enviar la calificación total de la lección</p>
+        <p class="center-align">Intente nuevamente.</p>
+      </main>
+      <footer class="modal-footer">
+        <a href="/profesores/leccion" id="crear" class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+      </footer>
+    </section>
+    <!-- Modal Structure -->
+    <section id="modalErrorCalificar" class="modal">
+      <main class="modal-content">
+        <p class="center-align">Ocurrió un error al enviar la calificación de esta pregunta.</p>
+        <p class="center-align">Intente nuevamente.</p>
+      </main>
+      <footer class="modal-footer">
+        <a class="modal-action modal-close waves-effect waves-green btn-flat">Aceptar</a>
+      </footer>
+    </section>
+    </main>
     <footer>
       <script src="/bower_components/jquery/dist/jquery.min.js"></script>
       <script src="/bower_components/vue/dist/vue.min.js"></script>

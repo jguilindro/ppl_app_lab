@@ -15,99 +15,98 @@
 		<hr class="yellow_line">
 		<div class="border"></div>
 	</header>
-	<div id="app">
-		
+	<main id="app">
 		<button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
-		<section class="center-align v-center">
-				 <h4>{{leccion.nombre}}</h4>
+		<section class="v-center">
+			<h4 class="title">{{leccion.nombre}}</h4>
 		</section>
 		<!-- PREGUNTAS -->
-
-          <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion">
-            <header class="col s12 col-pregunta">
-              <h4 class="center-align" v-if="!pregunta.tieneSubpreguntas"><b>Pregunta #{{index+1}}</b></h4>    
-              <h4 class="center-align" v-else><b>Sección #{{index+1}}</b></h4>    
-              <label for="nombre">Nombre de la Pregunta</label>
-              <p name="nombre">{{pregunta.nombre}}</p>
-            </header>
-            <!-- DESCRIPCIÓN -->
-            <main class="col s12">
-            	<p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>  
-              <label for="descripcion">Descripción</label>
-              <p v-html="pregunta.descripcion" name="descripcion"></p>
-              
-            </main>
-            <!-- SUBPREGUNTAS -->
-            <footer id="area-subpreguntas"  v-if="pregunta.tieneSubpreguntas">
-              <section v-for="(sub, j) in pregunta.subpreguntas" class="row row-subpregunta" :id="'section-sub-'+pregunta._id">
-                <hr>
-                <header class="center-align">
-                  <h5 class="title-sub"><b>Pregunta #{{j+1}}</b></h5>
-                </header>
-                <!-- DESCRIPCIÓN -->
-                <main class="col s12">
-                <p class="pull right">Puntaje: {{sub.puntaje}}pts.</p>
-                  <label><h6><b>Descripción: </b></h6></label>
-                  <p v-html="sub.contenido"></p>
-                </main>
-                <!-- RESPUESTA -->    
-                <footer id="area-subrespuesta" class="col s12">
-                  <section class="col s12 col-respuesta">
-                    <label for="respuesta">Respuesta del Estudiante</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.respuesta}}</p>
-                    <img :src="sub.imagen" :id="'img-'+pregunta.orden+'-'+sub.orden">
-                  </section>
-                  <section class="col s7 col-feedback">
-                    <label>Calificación</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.feedback}}</p>
-                  </section>
-                  <section class="col s5 col-calificacion">
-                    <label>Calificación</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.calificacion}}</p>
-                  </section>
-                </footer>
-              </section>
-            </footer>
-            <!-- RESPUESTA -->
-            <footer id="area-respuesta" v-if="!pregunta.tieneSubpreguntas" class="col s12">
-              <section class="col s12 col-respuesta">
-                <label for="respuesta">Respuesta del Estudiante</label>
-                <div v-for="respuesta in respuestas" >
-                  <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
-                  <img v-bind:src="respuesta.imagenes" v-if="pregunta._id == respuesta.pregunta">
-                </div>  
-              </section>
-              <section class="col s7 col-feedback">
-                    <label>Feedback</label>
-                    <div v-for="respuesta in respuestas" >
-                  <p v-if="pregunta._id == respuesta.pregunta && respuesta.feedback == ''" name="feedback">No hay feedback para mostrar.</p>
-                  <p v-html="respuesta.feedback" v-if="pregunta._id == respuesta.pregunta" name="feedback"></p>
-                </div>  
-                  </section>
-              <section class="col s5 col-calificacion">
-                    <label>Calificación</label>
-                    <div v-for="respuesta in respuestas" >
-                  <p v-html="respuesta.calificacion" v-if="pregunta._id == respuesta.pregunta" name="calificacion"></p>
-                </div>  
-                  </section>
-            </footer>
-            </br></br>
-            <hr><hr>
-        
-          </section>
-          <!-- FIN PREGUNTAS -->
-        </main>
-        <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
-    </br>
-</br>
+    <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion card">
+      <header class="col s12 col-pregunta">
+        <h4 class="title" v-if="!pregunta.tieneSubpreguntas">Pregunta #{{index+1}}</h4>    
+        <h4 class="title" v-else>Sección #{{index+1}}</h4>    
+        <!--<label for="nombre">Nombre de la Pregunta</label>
+        <p name="nombre">{{pregunta.nombre}}</p>-->
+      </header>
+      <!-- DESCRIPCIÓN -->
+      <main class="col s12">
+      	<p class="pull right">Puntaje: {{pregunta.puntaje}} puntos</p>  
+        <!--<label for="descripcion">Descripción</label>
+        <p v-html="pregunta.descripcion" name="descripcion"></p>-->
       </main>
-      <!-- Mostrar calificacion total y ponderada, probablemente se lo use luego
-      <footer class="row">
-        <div class="col s12">
-          <h5 class="center-align">Calificación total: {{calificacionTotal}}/{{leccion.puntaje}}</h5>
-          <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}/100</h5>
-        </div>-->
-	</div>
+      <!-- SUBPREGUNTAS -->
+      <footer id="area-subpreguntas"  v-if="pregunta.tieneSubpreguntas">
+        <section v-for="(sub, j) in pregunta.subpreguntas" class="row row-subpregunta" :id="'section-sub-'+pregunta._id">
+          <hr>
+          <header class="center-align">
+            <h5 class="title-sub"><b>Pregunta #{{j+1}}</b></h5>
+          </header>
+          <!-- DESCRIPCIÓN -->
+          <main class="col s12">
+            <p class="pull right">Puntaje: {{sub.puntaje}}pts.</p>
+            <!-- <label><h6><b>Descripción: </b></h6></label>
+            <p v-html="sub.contenido"></p>-->
+          </main> 
+          <!-- RESPUESTA --> 
+          <footer id="area-subrespuesta" class="col s12">
+            <section class="col s12 col-respuesta">
+            	<div v-for="respuesta in subrespuestasEstudiantes">
+                <label for="respuesta" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden">Respuesta del Estudiante: {{nombresEstudiantes[respuesta.estudiante]}}</label>
+                <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden" name="respuesta"></p>
+                <img :src="respuesta.imagen" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden" style="object-fit:cover; width: 100%;">
+              </div>
+            </section>
+            <section class="col s7 col-feedback">
+            	<div v-for="respuesta in subrespuestasConectado">
+                <label for="feedback" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante">Feedback</label>
+                <p v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante && respuesta.feedback == ''">No hay feedback para mostrar.</p>
+                <p v-html="respuesta.feedback" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante"></p>
+              </div>
+            </section>
+            <section class="col s5 col-calificacion">
+            	<div v-for="respuesta in subrespuestasConectado">
+              <label for="calificacion" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante">Calificación</label>
+              <p v-html="respuesta.calificacion" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante"></p>
+              </div>
+            </section>
+          </footer>
+        </section>
+      </footer>
+      <!-- RESPUESTA -->
+      <footer id="area-respuesta" v-if="!pregunta.tieneSubpreguntas" class="col s12">
+      	<section v-for="respuestas in respuestasEstudiantes">
+          <section class="col s12 col-respuesta">
+            <article v-for="respuesta in respuestas" >
+            	<label for="respuesta" v-if="pregunta._id == respuesta.pregunta">Respuesta del Estudiante: {{nombresEstudiantes[respuesta.estudiante]}}</label>
+              <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta" name="respuesta"></p>
+              <img :src="respuesta.imagenes" v-if="pregunta._id == respuesta.pregunta" style="object-fit:cover; width: 100%;">
+            </article>  
+          </section>
+        </section>
+        <section class="col s7 col-feedback">
+          <label>Feedback</label>
+          <article v-for="respuesta in respuestasConectado" >
+            <p v-if="pregunta._id == respuesta.pregunta && respuesta.feedback == ''" name="feedback">No hay feedback para mostrar.</p>
+            <p v-html="respuesta.feedback" v-if="pregunta._id == respuesta.pregunta" name="feedback"></p>
+          </article>  
+        </section>
+        <section class="col s5 col-calificacion">
+          <label>Calificación</label>
+          <article v-for="respuesta in respuestasConectado" >
+            <p v-html="respuesta.calificacion" v-if="pregunta._id == respuesta.pregunta && respuesta.estudiante == estudianteId" name="calificacion"></p>
+          </article>  
+        </section>
+      </footer>
+    </section>
+    <!-- FIN PREGUNTAS -->
+    <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
+    <!-- Mostrar calificacion total y ponderada, probablemente se lo use luego
+    <footer class="row">
+      <div class="col s12">
+        <h5 class="center-align">Calificación total: {{calificacionTotal}}/{{leccion.puntaje}}</h5>
+        <h5 class="center-align">Calificación ponderada: {{calificacionPonderada}}/100</h5>
+      </div>-->
+	</main>
 	<footer>
 		<script src="/bower_components/jquery/dist/jquery.js"></script>
 		<script src="/bower_components/vue/dist/vue.js"></script>

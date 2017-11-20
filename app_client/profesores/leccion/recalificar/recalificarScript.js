@@ -1,210 +1,256 @@
-var App = new Vue({
-	el: '#app',
+let App = new Vue({
 	created: function(){
-		this.getLeccion();
-		this.getEstudiante();
+		this.leccionId 		= window.location.href.toString().split('/')[6];
+		this.estudianteId = window.location.href.toString().split('/')[7];
+		this.grupoId   		= window.location.href.toString().split('/')[8];
+		const urlApi		  = '/api/lecciones/datos/' + this.estudianteId + '/' + this.leccionId;
+		this.obtenerDatosLeccion(this, urlApi);
 	},
-	mounted: function(){
-		//Inicializadores de materialize
-    $('.button-collapse').sideNav();
-    $(".dropdown-button").dropdown({ hover: false });
-    $('.scrollspy').scrollSpy();
-    $('.modal').modal();
-    $('.tooltipped').tooltip({delay: 50});
-	},
-	data: {
-		leccion: {},
-		grupo: '',
-		preguntas: [],
-		leccionId: '',
-		estudianteId: '',
-		estudiante: {},
-		registroCalificacion: {},
-		calificacionTotal: 0,
-		calificacionPonderada: 0.00
-	},
-	methods: {
-		/*
-			@Descripción: Carga la lección a recalificar
-		*/
-		getLeccion: function(){
-			var self = this;
-			self.leccionId = window.location.href.toString().split('/')[6];
-			self.estudianteId = window.location.href.toString().split('/')[7];
-			self.grupo = window.location.href.toString().split('/')[8];
-			var obtenerLeccionURL = '/api/lecciones/recalificar/'+ self.leccionId;
-
-			$.get({
-				url: obtenerLeccionURL,
-				success: function(res){
-					self.leccion = res.datos;
-					console.log(self.leccion);
-					//Ordenar las preguntas
-					self.leccion.preguntas.sort(function(p1, p2){
-						return ( (p1.ordenPregunta < p2.ordenPregunta) ? -1 : ( (p1.ordenPregunta > p2.ordenPregunta) ? 1 : 0) );
-					});
-					//Una vez obtenidas las respuestas, suma las calificaciones dadas
-					$.when($.ajax(self.getRespuestas())).then(function(){
-						self.sumarCalificaciones();
-					});
-					//Obtiene la calificación total de la lección
-					self.getRegistroCalificacion();
-				}
-			});
-
-		},
-		/*
-			@Descripción:
-				Obtiene las respuestas del estudiante a cada pregunta de la lección.
-		*/
-		getRespuestas: function(){
-			var self = this;
-			$.each(self.leccion.preguntas, function(index, pregunta){
-				var preguntaId = pregunta.pregunta._id;
-				var obtenerRespuestaURL = '/api/respuestas/buscar/leccion/'+ self.leccionId+ '/pregunta/'+preguntaId+ '/estudiante/'+ self.estudianteId;
-				$.get({
-					url: obtenerRespuestaURL,
-					success: function(res){
-						//Las preguntas que el estudiante no respondió no se guardan
-						if(res.estado && res.datos!=null){
-							pregunta.pregunta.respuesta = res.datos;
-							pregunta.pregunta.respuesta.calificacionPonderada = 0;
-						}
-						if(res.estado && res.datos==null){
-							//Si el estudiante no respondió la pregunta, la calificación es 0 automáticamente
-							self.bloquearInput(pregunta.pregunta._id);
-							self.bloquearTextArea(pregunta.pregunta._id);
-							self.bloquearBtnResponder(pregunta.pregunta._id);
-						}
-						//Ponderar las calificaciones a 0, 1 ó 2
-						var puntajePregunta = pregunta.pregunta.puntaje;
-						var calificacionPregunta = pregunta.pregunta.respuesta.calificacion;
-						var calificacionPonderadaPregunta = (calificacionPregunta / puntajePregunta) * 2;
-
-						pregunta.pregunta.respuesta.calificacionPonderada = calificacionPonderadaPregunta;
-						
-						self.preguntas.push(pregunta);
-						
-						//Ordeno las preguntas
-						self.preguntas.sort(function(p1, p2){
-							return ( (p1.ordenPregunta < p2.ordenPregunta) ? -1 : ( (p1.ordenPregunta > p2.ordenPregunta) ? 1 : 0) );
-						});
-					}
-				});
-			});
-		},
-		/*
-			@Descripción: Obtiene los datos del estudiante al que se le está recalificando la lección.
-		*/
-		getEstudiante: function(){
-			var self = this;
-			var obtenerEstudianteURL = '/api/estudiantes/' + self.estudianteId;
-			$.get({
-				url: obtenerEstudianteURL,
-				success: function(res){
-					self.estudiante = res.datos;
-				}
-			});
-		},
-		/*
-			@Descripción: Obtiene la nota de calificación de esta lección.
-		*/
-		getRegistroCalificacion: function(){
-			var self = this;
-			var urlApi = '/api/calificaciones/' + self.leccionId + '/' + self.grupo;
-			$.get({
-				url: urlApi,
-				success: function(res){
-					self.registroCalificacion = res.datos[0];
-					self.calificacionPonderada = self.registroCalificacion.calificacion;
-				}
-			});
-		},
-		//Eventos
-		enviarCalificacion: function(){
-			var self = this;
-			var urlApi = '/api/calificaciones/recalificar/leccion/' + self.leccionId + '/grupo/' + self.grupo;
+  mounted: function(){
+    this.inicializarMaterialize();
+  },
+  el  : '#app',
+  data: {
+  	leccionId 	 				 : '',	//Id de la lección que se va a calificar
+  	grupoId 		 				 : '',	//Id del grupo del estudiante que se va a calificar
+  	estudianteId 				 : '',	//Id del estudiante que se va a calificar
+    leccion   	 				 : {},	//json que tendrá toda la información de la lección a calificar
+		preguntas 	 				 : [],	//array de todas las preguntas de la lección
+		respuestas	 				 : [],	//array de las respuestas del estudiante a las preguntas de la lección
+		estudiante	 				 : {},	//json del estudiante a calificar
+		calificacionTotal		 : 0.00,		//Va a ser la suma de las calificaciones (sobre 2) de las preguntas, sobre el puntaje de la lección
+		calificacionPonderada: 0.00	//Va a ser la calificación ponderada, sobre 100
+  },
+  methods: {
+  	inicializarMaterialize: function(){
+  		$('.button-collapse').sideNav();
+	    $(".dropdown-button").dropdown({ hover: false });
+	    $('.scrollspy').scrollSpy();
+	    $('.modal').modal();
+	    $('.tooltipped').tooltip({delay: 50});
+	    //$('select').material_select();
+  	},
+  	//////////////////////////////////////////////////////
+    //LLAMADAS A LA API
+    //////////////////////////////////////////////////////
+  	obtenerDatosLeccion : function(self, urlApi){
+  		$.get({
+  			url 		: urlApi,
+  			success : function(res){
+  				self.leccion 		= res.datos.leccion;
+  				self.estudiante = res.datos.estudiante;
+  				self.respuestas = res.datos.respuestas;
+          self.preguntas  = res.datos.preguntas;
+          for (var i = 0; i < self.preguntas.length; i++) {
+            let actual = self.preguntas[i];
+            if( actual.esSeccion ){
+              for (var j = 0; j < actual.subpreguntas.length; j++) {
+                let actualSP = actual.subpreguntas[j];
+                if(actualSP.calificada){
+                  self.modificarCalificacionLeccion(actualSP.calificacion, actualSP.puntaje);  
+                }
+              }
+            }else{
+              self.modificarCalificacionLeccion(actual.calificacion, actual.puntaje);
+            }
+          }
+          //$('select').material_select();
+  			},
+  			error: function(err){
+  				console.log(err)
+  			}
+  		});
+  	},
+  	/*
+			Envía la calificación a la base de datos
+			Si es exitosa, indica al profesor que se calificó correctamente
+			Si hay un error, debe desbloquear el select/textarea/boton
+  	*/
+  	calificarSubRespuesta: function(data, pregunta, sub){
+  		var urlApi = '/api/respuestas/calificar/sub/' + App.leccionId + '/pregunta/' + pregunta._id + '/grupo/' + App.grupoId;
+  		$.ajax({
+  			url  : urlApi,
+  			type : 'PUT',
+  			data : data,
+  			success: function(res){
+  				Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
+  			},
+  			error: function(err){
+  				const idSelect 	 = '#calificacion-' + pregunta.ordenP + '-' + sub.orden;
+					const idTextarea = '#fb-'  					+ pregunta.ordenP + '-' + sub.orden;
+					const idBtn 		 = '#btn-'  				+ pregunta.ordenP + '-' + sub.orden;
+  				sub.calificada 	 = false;
+  				App.desbloquearElementos(idSelect, idTextarea, idBtn);
+  				Materialize.toast('Error al enviar su calificación. Intente de nuevo!', 3000, 'rounded red');
+  				console.log(err)
+  			}
+  		});
+  	},
+  	calificarRespuesta: function(data, pregunta){
+			let urlApi = '/api/respuestas/calificar/leccion/' + App.leccionId + '/pregunta/' + pregunta._id + '/grupo/' + App.grupoId;
+  		$.ajax({
+  			url  : urlApi,
+  			type : 'PUT',
+  			data : data,
+  			success: function(res){
+  				Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
+  			},
+  			error: function(err){
+  				const idSelect 	 		= '#calificacion-' + pregunta._id;	//Id del select de la calificacion
+					const idTextarea 		= '#feedback-' 		+ pregunta._id;	//Id del textarea del feedback
+					const idBtn 		 		= '#btn-' 					+ pregunta._id;	//Id del botón de calificar
+  				pregunta.calificada = false;
+  				App.desbloquearElementos(idSelect, idTextarea, idBtn);
+  				Materialize.toast('Error al enviar su calificación. Intente de nuevo!', 3000, 'rounded red');
+  				console.log(err)
+  			}
+  		});
+  	},
+  	//Esta funcion va a actualizar los registros de la colección de calificaciones con la nueva calificación
+  	enviarCalificacion: function(){
+			var urlApi = '/api/calificaciones/calificar/' + App.leccionId + '/' + App.grupoId;
 			$.ajax({
 				method: 'PUT',
-				url: urlApi,
-				data: {
-					calificacion: self.calificacionPonderada,
-					estudiante: self.estudianteId
+				url 	: urlApi,
+				data 	: {
+					calificacion: App.calificacionPonderada,
+					estudiante  : App.estudianteId
 				},
 				success: function(res){
-					if(res.estado){
-						$('#myModal').modal('open');
-					}else{
-						$('#modalErrorLeccion').modal('open');
-					}
+					$('#myModal').modal('open');
+				},
+				error: function(err){
+					console.log(err)
+					$('#modalErrorLeccion').modal('open');	
 				}
-			});
+			})
 		},
-		regresar: function(){
-			window.location.href = '/profesores/leccion/recalificar/grupos/' + self.grupo;
+  	//////////////////////////////////////////////////////
+    //HELPERS
+    //////////////////////////////////////////////////////
+    modificarCalificacionLeccion: function(calificacionPregunta, puntajePregunta){
+    	let calPonderada 					= App.ponderarCalificacion(2, calificacionPregunta, puntajePregunta);
+    	App.calificacionTotal 		= App.calificacionTotal + calPonderada;
+    	App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+    },
+    /*
+			puntajeMax 			-> ponderacion
+			puntajeObtenido -> x
+
+			x = puntajeObtenido * ponderacion / puntajeMax
+		*/
+		ponderarCalificacion: function(puntajeMax, puntajeObtenido, ponderacion){
+			return ( (puntajeObtenido * ponderacion) / puntajeMax );
 		},
-		recalificar: function(pregunta){
-			console.log(pregunta)
-			var self = this;
-			var urlApi = '/api/respuestas/calificar/leccion/' + self.leccionId + '/pregunta/' + pregunta._id + '/grupo/' + self.grupo;
-
-			var calificacionId = '#calificacion-' + pregunta._id
-			var calificacionPregunta = $(calificacionId).val();
-
-			var feedbackId = '#feedback-' + pregunta._id;
-			var feedbackPregunta = $(feedbackId).val();
-
-			var puntajePregunta = parseInt(pregunta.puntaje);
-
-			var calificacionPreguntaPonderada = ( (calificacionPregunta * puntajePregunta) / 2 );
-
-			if (calificacionPregunta > 2 || calificacionPregunta < 0) {
+    //////////////////////////////////////////////////////
+    //MODIFICACIONES DOM
+    //////////////////////////////////////////////////////
+		bloquearElementos: function(idSelect, idTextarea, idBtn){
+			$(idTextarea).prop('disabled', true);
+			$(idBtn).prop('disabled', true);
+			$(idSelect).prop('disabled', true);
+			//$(idSelect).material_select();
+		},
+		desbloquearElementos: function(idSelect, idTextarea, idBtn){
+			$(idTextarea).prop('disabled', false);
+			$(idBtn).prop('disabled', false);
+			$(idSelect).prop('disabled', false);
+			//$(idSelect).material_select();
+		},
+		/*
+			Añade los valores de respuesta al objeto de pregunta
+			Vue automáticamente le añade los valores a los elementos correspondientes del  DOM
+		*/
+		asignarRespuesta: function(pregunta, respuesta){
+    	pregunta.respuesta 		= respuesta.respuesta;
+      pregunta.calificacion = respuesta.calificacion;
+      pregunta.feedback 		= respuesta.feedback;
+      pregunta.calificada 	= respuesta.calificada;
+      //Asignar imagen
+      if( respuesta.hasOwnProperty('imagen') ){
+      	if( respuesta.imagen.indexOf('imgur') > 0 ){
+	  			pregunta.imagen = respuesta.imagen;	
+	  		}else{
+	  			pregunta.imagen = '';
+	  		}	
+      }
+      if( respuesta.hasOwnProperty('imagenes') ){
+      	if( respuesta.imagenes.indexOf('imgur') > 0 ){
+	  			pregunta.imagen = respuesta.imagenes;	
+	  		}else{
+	  			pregunta.imagen = '';
+	  		}	
+      }
+    },
+		//////////////////////////////////////////////////////
+    //EVENTOS
+    //////////////////////////////////////////////////////
+		calificar: function(pregunta){
+			const idSelect 	 = '#calificacion-' + pregunta._id;	//Id del select de la calificacion
+			const idTextarea = '#feedback-' 		+ pregunta._id;	//Id del textarea del feedback
+			const idBtn 		 = '#btn-' 					+ pregunta._id;	//Id del botón de calificar
+			//Valido la calificación ingresada
+			const calificacion = $(idSelect).val();	//Calificación dada a la pregunta: 0, 1 ó 2
+			if ( calificacion > 2 || calificacion < 0 ) {
+				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
+				return false;
+			}	
+			//Marco la pregunta como calificada y le asigno la calificación y el feedback
+			const feedback     	  = $(idTextarea).val();
+			pregunta.calificada   = true;
+			pregunta.calificacion = calificacion;
+			pregunta.feedback 		= feedback;
+			//Deshabilito el select y el textarea manualmente porque Materialize no se lleva con Vue...
+			App.bloquearElementos(idSelect, idTextarea, idBtn);
+			//Actualizo los valores de la calificación total de la lección
+			const calPonderada  			= App.ponderarCalificacion(2, calificacion, parseInt(pregunta.puntaje));
+			App.calificacionTotal 		= App.calificacionTotal + calPonderada;
+			App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+			//Envío la calificación a la base
+			const data = {
+				calificacion: calificacion,
+				feedback 		: feedback
+			};
+			App.calificarRespuesta(data, pregunta);
+		},
+		/*
+			Esta función se ejecuta cuando el profesor califica una pregunta de una sección (subpregunta)
+			Se marca la pregunta como calificada y se le asigna la calificación
+			Se bloquea el select, el textarea y el botón de calificar de la pregunta
+			Se actualiza la calificación de la lección con la nueva calificación ingresada
+			Se envía la calificación de la pregunta (subpregunta) a la base de datos
+		*/
+		calificarSub: function(pregunta, sub){
+			const idSelect 	 = '#calificacion-' + pregunta.ordenP + '-' + sub.orden;
+			const idTextarea = '#fb-'  					+ pregunta.ordenP + '-' + sub.orden;
+			const idBtn 		 = '#btn-'  				+ pregunta.ordenP + '-' + sub.orden;
+			//Valido la calificación ingresada
+			let calificacion = $(idSelect).val();
+			if ( calificacion > 2 || calificacion < 0 ) {
 				Materialize.toast('La calificación debe estar entre 0 y 2. Vuelva a calificar.', 5000, 'red darken-4 rounded');
 				return false;
 			}
-			console.log(calificacionPreguntaPonderada)
-			console.log(feedbackPregunta)
-			$.ajax({
-				method: 'PUT',
-				url: urlApi,
-				data: {
-					calificacion: calificacionPreguntaPonderada,
-					feedback: feedbackPregunta
-				},
-				success: function(res){
-					if(res.estado){
-						pregunta.respuesta.calificacion = calificacionPreguntaPonderada;
-						self.sumarCalificaciones();
-						Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
-					}
-				}
-			});
+			//Marco la subpregunta como calificada y le asigno la calificación y el feedback
+			const feedback     	  = $(idTextarea).val();
+			sub.calificada   = true;
+			sub.calificacion = calificacion
+			sub.feedback 		 = feedback;
+			//Deshabilito el select y el textarea manualmente porque Materialize no se lleva con Vue...
+			App.bloquearElementos(idSelect, idTextarea, idBtn);
+			//Actualizo los valores de la calificación total de la lección
+			let calPonderada  			  = App.ponderarCalificacion(2, calificacion, sub.puntaje);
+			App.calificacionTotal 		= App.calificacionTotal + calPonderada;
+			App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+			//Envío la calificación a la base
+			let data = {
+				ordenPregunta 		: sub.orden,
+				calificacionNueva : calificacion,
+				feedbackNuevo 		: $(idTextarea).val()
+			};
+			App.calificarSubRespuesta(data, pregunta, sub);	//AJAX
 		},
-		sumarCalificaciones: function(){
-			var self = this;
-			self.calificacionTotal = 0;
-			$.each(self.preguntas, function(index, pregunta){
-				self.calificacionTotal += parseInt(pregunta.pregunta.respuesta.calificacion);
-			});
-			self.ponderarCalificacionLeccion();
-		},
-		ponderarCalificacionLeccion: function(){
-			this.calificacionPonderada = parseFloat( ( this.calificacionTotal * 100 ) / this.leccion.puntaje ).toFixed(2);
-		},
-		bloquearTextArea: function(preguntaId){
-			var self = this;
-			var textareaId = '#feedback-' + preguntaId;
-			$(textareaId).attr('disabled', true);
-		},
-		bloquearBtnResponder: function(preguntaId){
-			var self = this;
-			var btnId = '#btn-' + preguntaId;
-			$(btnId).attr('disabled', true);
-		},
-		bloquearInput: function(preguntaId){
-			var self = this;
-			var inputId = '#calificacion-' + preguntaId;
-			$(inputId).attr('disabled', true);
-		},
-	}
+		regresar: function(){
+			window.location.href = '/profesores/leccion/calificar/grupos/' + App.leccionId;
+		}
+  }
 });
