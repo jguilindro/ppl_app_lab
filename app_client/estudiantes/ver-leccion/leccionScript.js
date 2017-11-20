@@ -12,8 +12,11 @@ var App = new Vue({
     leccion   : {},
     preguntas : [],
     respuestasConectado: [],
+    subrespuestasConectado: [],
+    subrespuestasConectado: [],
     respuestas: [],
     respuestasEstudiantes: [],
+    subrespuestasEstudiantes: [],
     preguntasEstudiantes: [],
     estudiante: {
       nombres  : '',
@@ -68,14 +71,13 @@ var App = new Vue({
             self.leccion    = res.datos.leccion;
             self.estudiante = res.datos.estudiante;
             self.respuestas = res.datos.respuestas;
-            
+            self.preguntas  = self.armarArrayPreguntas(res.datos.leccion.preguntas, self.respuestas, estudiante);
             self.respuestasEstudiantes.push(self.respuestas);
-            //self.preguntasEstudiantes.push(self.preguntas);
+            self.preguntasEstudiantes.push(self.preguntas);
             if(estudiante==self.estudianteId){
               self.respuestasConectado=res.datos.respuestas;
-              self.preguntas  = self.armarArrayPreguntas(res.datos.leccion.preguntas, self.respuestas, estudiante);
             }
-            //console.log(self.preguntasEstudiantes);
+           // console.log(self.preguntasEstudiantes);
           },
           error: function(err){
             console.log(err)
@@ -109,6 +111,7 @@ var App = new Vue({
       Cada pregunta tendrá la información completa de la pregunta y un boolean indicando si tiene subpreguntas
     */
     armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas, estudianteId){
+      var self = this;
       let arrayPreguntas = [];
       for( let i = 0; i < preguntasObtenidas.length; i++ ) {
         let preguntaActual               = preguntasObtenidas[i].pregunta;
@@ -123,6 +126,7 @@ var App = new Vue({
       return arrayPreguntas;
     },
     armarArraySubpreguntas: function(pregunta, respuesta, estudianteId){
+      var self = this;
       let array = [];
       for (var i = 0; i < pregunta.subpreguntas.length; i++) {
         let subActual    = pregunta.subpreguntas[i];
@@ -130,6 +134,7 @@ var App = new Vue({
           return subActual.orden == res.ordenPregunta;
         })[0];
 
+        subActual.pregunta     = pregunta._id;
         subActual.respuesta    = subResActual.respuesta;
         subActual.estudiante   = estudianteId;
         subActual.calificacion = subResActual.calificacion;
@@ -146,6 +151,15 @@ var App = new Vue({
         App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
 
         array.push(subActual);
+        /*Crea arreglos de subrespuestas para todos los estudiantes*/
+        self.subrespuestasEstudiantes.push(subActual);
+        /* Si el estudiante al que se le crean las subpreguntas es el mismo que está conectado
+         * guarda sus respuestas en un arreglo aparte
+         */
+        if (self.estudianteId== estudianteId){
+          self.subrespuestasConectado.push(subActual);
+        }
+        
       }
       return array;
     },

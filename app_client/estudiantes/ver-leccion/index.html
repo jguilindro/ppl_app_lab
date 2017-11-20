@@ -22,7 +22,11 @@
 				 <h4>{{leccion.nombre}}</h4>
 		</section>
 		<!-- PREGUNTAS -->
-	
+
+
+
+
+
           <section v-for="(pregunta, index) in preguntas" :id="'section-p-'+pregunta._id" class="row seccion">
             <header class="col s12 col-pregunta">
               <h4 class="center-align" v-if="!pregunta.tieneSubpreguntas"><b>Pregunta #{{index+1}}</b></h4>    
@@ -53,22 +57,39 @@
                 
                 <!-- RESPUESTA --> 
                 </main> 
+
+                
+
                 <footer id="area-subrespuesta" class="col s12">
                   <section class="col s12 col-respuesta">
-                    <label for="respuesta">Respuesta del Estudiante</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.respuesta}}</p>
-                    <img :src="sub.imagen" :id="'img-'+pregunta.orden+'-'+sub.orden" style="object-fit:cover; width: 100%;">
+                  	<div v-for="respuesta in subrespuestasEstudiantes">
+                    <label for="respuesta" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden">Respuesta del Estudiante: {{nombresEstudiantes[respuesta.estudiante]}}</label>
+                    <p v-html="respuesta.respuesta" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden" name="respuesta"></p>
+                    <img :src="respuesta.imagen" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden" style="object-fit:cover; width: 100%;">
+                    </div>
                   </section>
+
+                  
+
+                  
                   <section class="col s7 col-feedback">
-                    <label>Feedback</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.feedback}}</p>
+                  	<div v-for="respuesta in subrespuestasConectado">
+                    <label for="feedback" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante">Feedback</label>
+                    <p v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante && respuesta.feedback == ''">No hay feedback para mostrar.</p>
+                    <p v-html="respuesta.feedback" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante"></p>
+                </div>
                   </section>
                   <section class="col s5 col-calificacion">
-                    <label>Calificación</label>
-                    <p :id="'res-'+pregunta.orden+'-'+sub.orden">{{sub.calificacion}}</p>
+                  	<div v-for="respuesta in subrespuestasConectado">
+                    <label for="calificacion" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante">Calificación</label>
+                    <p v-html="respuesta.calificacion" v-if="pregunta._id == respuesta.pregunta && sub.orden == respuesta.orden && estudianteId == respuesta.estudiante"></p>
+                    </div>
                   </section>
+                  
                 </footer>
              
+             
+
           </section>
      
          
@@ -104,6 +125,15 @@
             <hr><hr>
         
           </section>
+
+
+
+
+
+
+
+
+
           <!-- FIN PREGUNTAS -->
         </main>
         <button class="waves-effect waves-light btn"  @click="regresar">Regresar</button>
