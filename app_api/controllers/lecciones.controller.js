@@ -273,6 +273,45 @@ const leccionDatos = (req, res) => {
   });
 };
 
+const estadisticas = (req, res) => {
+  const id_leccion = req.params.id_leccion;
+  let arrayGrupos  = [];
+  let arrayCal     = [];
+  let leccion      = {};
+
+  function obtenerCalificacionesDeLeccion(id_leccion){
+    return new Promise((resolve, reject) => {
+      CalificacionModel.obtenerRegistroPorLeccion(id_leccion, (err, docs) => {
+        if (err) return reject(new Error('No se pudieron obtener las calificaciones'));
+        return resolve(docs);
+      });
+    });
+  }
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
+  }
+
+  co(function *(){
+    leccion            = yield obtenerLeccion(id_leccion);
+    let calificaciones = yield obtenerCalificacionesDeLeccion(id_leccion);
+
+    calificaciones.sort(customSort);
+    for (let i = 0; i < calificaciones.length; i++) {
+      let actual = calificaciones[i];
+      arrayGrupos.push(actual.nombreGrupo);
+      arrayCal.push(actual.calificacion);
+    }
+    return respuesta.ok(res, {grupos : arrayGrupos, calificaciones : arrayCal, leccion : leccion});
+  }).catch( fail => {
+    return respuesta.serverError(res);
+  })
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -282,6 +321,7 @@ module.exports = {
   leccionYaCalificada,
   obtenerLeccionRecalificar,
   leccionDatos,
+  estadisticas,
   // realtime
   tomarLeccion,
   anadirTiempo,
@@ -424,3 +464,6 @@ function asignarRespuestaP(pregunta, respuesta){
 
 
 
+function customSort(a, b) {
+  return (Number(a.nombreGrupo.match(/(\d+)/g)[0]) - Number((b.nombreGrupo.match(/(\d+)/g)[0])));
+}

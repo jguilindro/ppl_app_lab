@@ -74,6 +74,7 @@
   "dependencies": {
     "body-parser": "~1.16.0",
     "cas-authentication": "^0.0.8",
+    "chart.js": "^2.7.1",
     "cheerio": "^0.22.0",
     "co": "^4.6.0",
     "colors": "^1.1.2",

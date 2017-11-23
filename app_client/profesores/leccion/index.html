@@ -52,7 +52,7 @@
 		  					<td v-else-if="leccion.estado === 'calificado' && profesor.tipo === 'titular'">
 		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="recalificarLeccion(leccion._id)"><span>Recalificar</span></a>
 		  					</td>
-		  					<td v-if="leccion.estado=='pendiente'">
+		  					<td v-if="leccion.estado === 'pendiente' && profesor.tipo === 'titular'">
 		  						<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a>
 		  					</td>
 		  				</tr>

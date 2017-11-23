@@ -23,4 +23,6 @@ router.post('/terminar_leccion', LeccionController.terminarLeccion);
 
 router.get('/datos/:id_estudiante/:id_leccion', LeccionController.leccionDatos);
 
+router.get('/:id_leccion/estadisticas', LeccionController.estadisticas);
+
 module.exports = router;
