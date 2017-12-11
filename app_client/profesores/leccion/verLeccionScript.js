@@ -8,9 +8,10 @@ var app = new Vue({
 	},
 	el: '#lecciones',
 	data: {
-		lecciones: [],
-		profesor: {},
-		paralelos: [],
+		leccionesAMostrar : [],	//Array solo de las lecciones a mostrar en la vista
+		lecciones: [],			//Array de lecciones de los paralelos del profesor conectado
+		profesor : {},			//JSON con la información del profesor conectado
+		paralelos: [],			//Array de ids de paralelos de los cuales el usuario es profesor o peer 1
 		todasLecciones: [],
 		leccionesId: [],
 	 	gruposParaleloId: [],
@@ -31,6 +32,14 @@ var app = new Vue({
 			$('#modalEliminarLeccion').modal();
 			$('.modal').modal();
 			$('.tooltipped').tooltip({delay: 50});
+			$('select').material_select();
+
+			$('.filtro').change( () => {
+				let tipo 		 = $('#filtroTipo').val();
+				let materia  = $('#filtroMateria').val();
+				let paralelo = $('#filtroParalelo').val();
+				app.leccionesAMostrar = filtrarLecciones(app.lecciones, tipo, materia, paralelo);
+			});
 		},
 		/*
 			Modificada: 26-05-2017 @edisonmora95
@@ -56,12 +65,13 @@ var app = new Vue({
     		}
     	});
     },
+    /* Devuelve solo los paralelos de los cuales el usuario es profesor titular o peer 1 */
     filtrarParalelos(arrayParalelos){
     	let misParalelos = [];
-    	for (var i = 0; i < arrayParalelos.length; i++) {
+    	for (let i = 0; i < arrayParalelos.length; i++) {
     		let paraleloActual = arrayParalelos[i];
-    		const esProfesor = ( paraleloActual.profesor == app.profesor._id );
-    		const esPeer1		 = app.esPeer1(app.profesor, paraleloActual._id);
+    		const esProfesor	 = ( paraleloActual.profesor == app.profesor._id );
+    		const esPeer1			 = app.esPeer1(app.profesor, paraleloActual._id);
     		if( esProfesor || esPeer1 ){
     			misParalelos.push(paraleloActual._id);
     		}
@@ -83,7 +93,9 @@ var app = new Vue({
 			$.get({
 				url: '/api/lecciones/',
 				success : function(res){
-					app.lecciones = app.filtrarLecciones(res.datos);
+					app.lecciones 				= app.filtrarLecciones(res.datos);
+					app.leccionesAMostrar = app.filtrarLecciones(res.datos);
+					app.leccionesAMostrar.sort(app.sortPorUpdate);
 					app.lecciones.sort(app.sortPorUpdate);
 				},
 				error: function(err){
@@ -91,10 +103,11 @@ var app = new Vue({
 				}
 			});
 		},
+		/* Devuelve solo las lecciones de los paralelos del usuario */
 		filtrarLecciones: function(arrayLecciones){
 			let misLecciones = [];
-			for (var i = 0; i < arrayLecciones.length; i++) {
-				let leccionActual = arrayLecciones[i];
+			for (let i = 0; i < arrayLecciones.length; i++) {
+				let leccionActual 	 = arrayLecciones[i];
 				const esDeMiParalelo = isInArray( leccionActual.paralelo, app.paralelos );
 				if( esDeMiParalelo ){
 					misLecciones.push(leccionActual);
@@ -103,8 +116,8 @@ var app = new Vue({
 			return misLecciones;
     },
 		eliminarLeccion: function(id){
-			var self = this;
-			var url = '/api/lecciones/' + id;
+			let self = this;
+			let url = '/api/lecciones/' + id;
 			this.$http.delete(url).then(response => {
 				self.lecciones= [];
 				this.getLecciones();
@@ -181,29 +194,14 @@ var app = new Vue({
     		console.log(response)
     	})
     },
-    calificarLeccion: function(id){
-			window.location.href = '/profesores/leccion/calificar/grupos/'+id;
-    },
-    recalificarLeccion: function(id){
-			window.location.href = '/profesores/leccion/recalificar/grupos/'+ id;
-    },
-    tomandoLeccion(paralelo, id_leccion) {
-      window.location.href = `/profesores/leccion-panel/${id_leccion}/paralelo/${paralelo}`
-    },
     moment: function (date) {
       return moment(date);
     },
     date: function (date) {
-      var es = moment().locale('es');
-      // es.localeData().months(date)
-      // return moment(date).format('DD/MM hh:mm:ss');
+      let es = moment().locale('es');
       if (date == undefined || date == '') {
         return '----'
       }
-      // var hora = moment(date).format('hh')
-      // if ( parseInt(hora) < 5) {
-      //   return moment(date).add(8,'h').tz("America/Guayaquil").format('DD MMMM hh:mm');
-      // }
       return moment(date).format('DD MMMM HH:mm');
     },
     dateInicio: function (date) {
@@ -211,8 +209,6 @@ var app = new Vue({
       if (date == undefined || date == '') {
         return '----'
       }
-      // es.localeData().months(date)
-      // return moment(date).tz("America/Guayaquil").format('DD/MM');
       return moment(date).format('DD MMMM');
     },
     dateTerminada: function (leccion, tiempoEstimado) {
@@ -225,314 +221,128 @@ var app = new Vue({
       }
       return moment(leccion.fechaInicioTomada).add(tiempoEstimado,'m').format('HH:mm');
     },
-
-		//Version inicial de generar Reporte está por backup por si acaso
-/*
-    generarReporte: function(){
-	var reporteData= [];
-
-	var self = this;
-	var promises= [];
-	var promesas= [];
-
-				promises.push(this.$http.get("/api/lecciones").then(response => {
-		        self.todasLecciones= response.body.datos;
-		        $.each(self.todasLecciones, function(index, value){
-		      	self.leccionesId.push(value._id);
-		      	self.nombreLecciones.push(value.nombre);
-		      });
-
-
-
- 			}));
-
-
-             promises.push(this.$http.get( "/api/paralelos").then(res => {
-		 	 $.each(res.body.datos, function(index, value){
-		 	 	self.paralelosDatos.push(value._id);
-		 	 	self.gruposParaleloId.push(value.grupos);
-		 	 	self.nombreParalelo.push(value.nombre);
-		 	 	self.nombreMateria.push(value.nombreMateria);
-		 	 });
-			}));
-
-		Promise.all(promises).then(function(){
-			$.each(self.leccionesId, function(index, leccion){
-		$.each(self.paralelosDatos,function(indice, paralelo){
-			if(self.gruposParaleloId[indice].length!=0){
-				$.each(self.gruposParaleloId[indice], function(i,grupo){
-					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
-						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
-							var calificaciones= {
-								leccion: '',
-								grupo: '',
-								calificacion: '',
-								paralelo: '',
-								materia: ''
-							};
-				 	calificaciones.leccion= self.nombreLecciones[index];
-				 	calificaciones.grupo= grupo;
-				 	calificaciones.calificacion= data.body.datos[0].calificacion;
-				 	calificaciones.paralelo= self.nombreParalelo[indice];
-				 	calificaciones.materia= self.nombreMateria[indice];
-				 	console.log(calificaciones);
-				 	reporteData.push(calificaciones);
-
-					}
-				}));
-				});
-
-			}
-		});
-	});
-
-		Promise.all(promesas).then(function(){
-			$.each(reporteData, function(i, data){
-				var nombre;
-				var datos= data;
-				var indice= i;
-				$.ajax({
-					async: false,
-					url: "/api/grupos/"+datos.grupo,
-					success: function( data ) {
-					nombre=data.datos.nombre;
-				}
-				});
-				reporteData[indice].grupo= nombre;
-			});
-			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
-			});
-
-		});
-
-}*/
-
-// Para probar el CSV del lado del servidor.
-test : function(){
-
-	var self = this;
-
-	this.$http.post( "/api/calificaciones/csv").then(function(response){
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    if (response.body.estado) {
-      var byteCharacters = atob(response.body.datos);
-      var byteNumbers = new Array(byteCharacters.length);
-      for (var i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      var byteArray = new Uint8Array(byteNumbers);
-      var blob = new Blob([byteArray], {type: 'application/octet-stream'});
-      url = window.URL.createObjectURL(blob);
-      a.href = url;
-      a.download = app.profesor.correo.split('@')[0] + '.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-	});
-},
-
-/* Segunda versión CSV backup
->>>>>>> b0fb910b0bcf5ca7accd36e1c9d6df21c5bde80d
-generarReporte: function(){
-	var reporteData= [];
-	var self = this;
-	var promises= [];
-	var promesas= [];
-
-				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
-		        self.profesorConectado= response.body.datos._id;
-					//console.log("Profesor conectado:");
-					//console.log(self.profesorConectado);
-				 }));
-
-
-				promises.push(this.$http.get("/api/lecciones").then(response => {
-		        self.todasLecciones= response.body.datos;
-					//console.log("todas las lecciones:");
-					//console.log(self.todasLecciones);
-		        $.each(self.todasLecciones, function(index, value){
-		        	if(value.creador == self.profesorConectado){
-		      	self.leccionesId.push(value._id);
-		      	self.nombreLecciones.push(value.nombre);
+		// Para probar el CSV del lado del servidor.
+		test : function(){
+			var self = this;
+			this.$http.post( "/api/calificaciones/csv").then(function(response){
+		    var a = document.createElement("a");
+		    document.body.appendChild(a);
+		    a.style = "display: none";
+		    if (response.body.estado) {
+		      var byteCharacters = atob(response.body.datos);
+		      var byteNumbers = new Array(byteCharacters.length);
+		      for (var i = 0; i < byteCharacters.length; i++) {
+		          byteNumbers[i] = byteCharacters.charCodeAt(i);
 		      }
-		      });
- 			}));
-
-
-             promises.push(this.$http.get( "/api/paralelos").then(res => {
-		 	 $.each(res.body.datos, function(index, value){
-		 	 	self.paralelosDatos.push(value._id);
-		 	 	self.gruposParaleloId.push(value.grupos);
-		 	 	self.nombreParalelo.push(value.nombre);
-		 	 	self.nombreMateria.push(value.nombreMateria);
-		 	 });
-			}));
-
-		Promise.all(promises).then(function(){
-			$.each(self.leccionesId, function(index, leccion){
-		$.each(self.paralelosDatos,function(indice, paralelo){
-			if(self.gruposParaleloId[indice].length!=0){
-				$.each(self.gruposParaleloId[indice], function(i,grupo){
-					promesas.push(self.$http.get("/api/calificaciones/"+leccion+'/'+grupo).then(data => {
-						self.$http.get('/api/grupos/'+grupo).then(function (response) {
-								console.log("Hmmm::"+response.body.datos);
-							}
-						);
-						//console.log(data.body.datos[0]);
-						//console.log(data.body.datos[0].participantes);
-						if(data.body.datos.length!=0 && data.body.datos[0].calificada == true){
-							var calificaciones= {
-								leccion: '',
-								grupo: '',
-								calificacion: '',
-								paralelo: '',
-								materia: ''
-							};
-				 	calificaciones.leccion= self.nombreLecciones[index];
-				 	calificaciones.grupo= grupo;
-				 	calificaciones.calificacion= data.body.datos[0].calificacion;
-				 	calificaciones.paralelo= self.nombreParalelo[indice];
-				 	calificaciones.materia= self.nombreMateria[indice];
-				 	//console.log(calificaciones);
-				 	reporteData.push(calificaciones);
-
-					}
-				}));
-				});
-
-			}
-		});
-	});
-
-		Promise.all(promesas).then(function(){
-			$.each(reporteData, function(i, data){
-				var nombre;
-				var datos= data;
-				var indice= i;
-				$.ajax({
-					async: false,
-					url: "/api/grupos/"+datos.grupo,
-					success: function( data ) {
-					nombre=data.datos.nombre;
-				}
-				});
-				reporteData[indice].grupo= nombre;
+		      var byteArray = new Uint8Array(byteNumbers);
+		      var blob = new Blob([byteArray], {type: 'application/octet-stream'});
+		      url = window.URL.createObjectURL(blob);
+		      a.href = url;
+		      a.download = app.profesor.correo.split('@')[0] + '.xlsx';
+		      a.click();
+		      window.URL.revokeObjectURL(url);
+		    }
 			});
-			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
-			});
+		},
+		generarReporte: function(){
+			$('#modalGenerarCsv').modal({dismissible: false});
+			$('#modalGenerarCsv').modal('open');
+			var reporteData= [];
+			var self = this;
+			var promises= [];
+			var promesas= [];
 
-		});
-
-}*/
-
-
-generarReporte: function(){
-	$('#modalGenerarCsv').modal({dismissible: false});
-	$('#modalGenerarCsv').modal('open');
-	var reporteData= [];
-	var self = this;
-	var promises= [];
-	var promesas= [];
-
-				promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
-		        self.profesorConectado= response.body.datos._id;
-				 }));
+						promises.push(this.$http.get("/api/session/usuario_conectado").then(response => {
+				        self.profesorConectado= response.body.datos._id;
+						 }));
 
 
-				promises.push(this.$http.get("/api/lecciones").then(response => {
-		        self.todasLecciones= response.body.datos;
-		        $.each(self.todasLecciones, function(index, value){
-		        	if(value.creador == self.profesorConectado){
-		      	self.leccionesId.push(value._id);
-		      	self.nombreLecciones.push(value.nombre);
-		      }
-		      });
+						promises.push(this.$http.get("/api/lecciones").then(response => {
+				        self.todasLecciones= response.body.datos;
+				        $.each(self.todasLecciones, function(index, value){
+				        	if(value.creador == self.profesorConectado){
+				      	self.leccionesId.push(value._id);
+				      	self.nombreLecciones.push(value.nombre);
+				      }
+				      });
 
 
 
- 			}));
+		 			}));
 
 
-             promises.push(this.$http.get( "/api/paralelos").then(res => {
-		 	 $.each(res.body.datos, function(index, value){
-		 	 	self.paralelosDatos.push(value._id);
-		 	 	self.gruposParaleloId.push(value.grupos);
-		 	 	self.nombreParalelo.push(value.nombre);
-		 	 	self.nombreMateria.push(value.nombreMateria);
-		 	 });
-			}));
+		             promises.push(this.$http.get( "/api/paralelos").then(res => {
+				 	 $.each(res.body.datos, function(index, value){
+				 	 	self.paralelosDatos.push(value._id);
+				 	 	self.gruposParaleloId.push(value.grupos);
+				 	 	self.nombreParalelo.push(value.nombre);
+				 	 	self.nombreMateria.push(value.nombreMateria);
+				 	 });
+					}));
 
-		Promise.all(promises).then(function(){
-			$.each(self.leccionesId, function(index, leccion){
-		$.each(self.paralelosDatos,function(indice, paralelo){
-			if(self.gruposParaleloId[indice].length!=0){
-				$.each(self.gruposParaleloId[indice], function(i,grupo){
-					promesas.push(self.$http.get("/api/grupos/"+grupo).then(data => {
-						if(data.body.datos != null){
-						$.each(data.body.datos.estudiantes, function(a, estudiante){
-							$.each(estudiante.lecciones, function(b, estudianteLeccion){
-								if(estudianteLeccion.calificado == true && estudianteLeccion.leccion == leccion){
-										var calificaciones= {
-											estudiante: '',
-											materia: '',
-											paralelo: '',
-											grupo: '',
-											leccion: '',
-											calificacion: ''
+				Promise.all(promises).then(function(){
+					$.each(self.leccionesId, function(index, leccion){
+				$.each(self.paralelosDatos,function(indice, paralelo){
+					if(self.gruposParaleloId[indice].length!=0){
+						$.each(self.gruposParaleloId[indice], function(i,grupo){
+							promesas.push(self.$http.get("/api/grupos/"+grupo).then(data => {
+								if(data.body.datos != null){
+								$.each(data.body.datos.estudiantes, function(a, estudiante){
+									$.each(estudiante.lecciones, function(b, estudianteLeccion){
+										if(estudianteLeccion.calificado == true && estudianteLeccion.leccion == leccion){
+												var calificaciones= {
+													estudiante: '',
+													materia: '',
+													paralelo: '',
+													grupo: '',
+													leccion: '',
+													calificacion: ''
 
-											};
-								 	calificaciones.leccion= self.nombreLecciones[index];
-								 	calificaciones.grupo= data.body.datos.nombre;
-								 	calificaciones.calificacion= estudianteLeccion.calificacion;
-								 	calificaciones.paralelo= self.nombreParalelo[indice];
-								 	calificaciones.materia= self.nombreMateria[indice];
-								 	calificaciones.estudiante= estudiante.nombres +' '+estudiante.apellidos;
-								 	reporteData.push(calificaciones);
+													};
+										 	calificaciones.leccion= self.nombreLecciones[index];
+										 	calificaciones.grupo= data.body.datos.nombre;
+										 	calificaciones.calificacion= estudianteLeccion.calificacion;
+										 	calificaciones.paralelo= self.nombreParalelo[indice];
+										 	calificaciones.materia= self.nombreMateria[indice];
+										 	calificaciones.estudiante= estudiante.nombres +' '+estudiante.apellidos;
+										 	reporteData.push(calificaciones);
 
-								}
+										}
 
-							});
+									});
 
+								});
+						}
+						}));
 						});
-				}
-				}));
-				});
 
-			}
-		});
-	});
-
-		Promise.all(promesas).then(function(){
-			/*each(reporteData, function(i, data){
-				var nombre;
-				var datos= data;
-				var indice= i;
-				$.ajax({
-					async: false,
-					url: "/api/grupos/"+datos.grupo,
-					success: function( data ) {
-					nombre=data.datos.nombre;
-				}
+					}
 				});
-				reporteData[indice].grupo= nombre;
-			});*/
-			JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
 			});
 
-		});
+				Promise.all(promesas).then(function(){
+					/*each(reporteData, function(i, data){
+						var nombre;
+						var datos= data;
+						var indice= i;
+						$.ajax({
+							async: false,
+							url: "/api/grupos/"+datos.grupo,
+							success: function( data ) {
+							nombre=data.datos.nombre;
+						}
+						});
+						reporteData[indice].grupo= nombre;
+					});*/
+					JSONToCSVConvertor(JSON.stringify(reporteData), "Reporte de Calificaciones Fisica PPL", true);
+					});
 
-}
+				});
 
-
+		},
 
 	}
 });
-
-$('body').on("click", '#btnCapituloNuevo', function(){
-	$('#modalNuevoCapitulo').modal('open');
-})
 
 //Yo lo hice #khemas :v
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
@@ -611,4 +421,34 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 
 function isInArray(value, array) {
   return array.indexOf(value) > -1;
+}
+
+/* No se la razón por la que esto funciona... */
+function filtrarLecciones(lecciones, tipo, materia, paralelo){
+	let arrayLecciones = [];
+	arrayLecciones = filtrarPorTipo(lecciones, tipo);
+	arrayLecciones = filtrarPorMateria(arrayLecciones, materia);
+	arrayLecciones = filtrarPorParalelo(arrayLecciones, paralelo);
+	return arrayLecciones;
+}
+
+function filtrarPorTipo(lecciones, tipo){
+	if( tipo === "" || tipo === null){
+		return lecciones;
+	}
+	return 	$.grep(lecciones, (value, index) => { return value.tipo === tipo;	});
+}
+
+function filtrarPorMateria(lecciones, materia){
+	if( materia === "" || materia === null ){
+		return lecciones;
+	}
+	return 	$.grep(lecciones, (value, index) => { return value.codigoMateria === materia;	});
+}
+
+function filtrarPorParalelo(lecciones, paralelo){
+	if( paralelo === "" || paralelo === null ){
+		return lecciones;
+	}
+	return 	$.grep(lecciones, (value, index) => { return value.nombreParalelo === paralelo;	});	
 }
