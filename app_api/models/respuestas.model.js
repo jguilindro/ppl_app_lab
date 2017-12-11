@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 mongoose.Promise = global.Promise;
+const GrupoModel = require("./grupo.model");
 
 const respuestasSchema = mongoose.Schema({
 	_id: {
@@ -137,6 +138,50 @@ respuestasSchema.statics.calificarSub = function(id_leccion, id_pregunta, id_gru
       "subrespuestas.$.calificada"   : true,
     }
   }, { multi : true}, callback);
+}
+
+/*
+  Devuelve un array de las calificaciones de todos los grupos a una pregunta de una lección
+*/
+/*respuestasSchema.statics.estadisticasPregunta = function(id_leccion, id_pregunta, array_estudiantes, callback){
+  console.log(array_estudiantes)
+  this.aggregate([
+    { 
+      $match : { 
+        leccion  : id_leccion,
+        pregunta : id_pregunta
+      } 
+    },
+    { 
+      $sort : { grupo : 1 }
+    },
+    {
+      $group : {
+        _id          : "$grupo",
+        calificacion : { $first : "$calificacion" },
+        //cal          : { $first : "$subrespuestas.calificacion"}
+        cal : { 
+          $cond : {
+            if   : { 
+              estudiante : { $in : [1, 2]}
+            },
+            then : { $first : "$subrespuestas.calificacion"}
+          }
+        }
+      }
+    }
+  ])
+  .exec(function(err, docs){
+    GrupoModel.populate(docs, {path : "_id", select: "nombre"}, callback)
+  })
+}*/
+
+/* Obtengo las respuestas solo de los estudiantes calificados */
+respuestasSchema.statics.obtenerRespuestasCalificadas = function(id_leccion, array_estudiantes, callback){
+  this.find({
+    leccion    : id_leccion,
+    estudiante : { $in : array_estudiantes}
+  }, callback);
 }
 
 module.exports = mongoose.model('Respuesta', respuestasSchema);

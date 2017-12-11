@@ -21,8 +21,11 @@ router.get('/recalificar/:id_leccion', LeccionController.obtenerLeccionRecalific
 
 router.post('/terminar_leccion', LeccionController.terminarLeccion);
 
+//CALIFICAR LECCIÓN
 router.get('/datos/:id_estudiante/:id_leccion', LeccionController.leccionDatos);
 
-router.get('/:id_leccion/estadisticas', LeccionController.estadisticas);
+//ESTADÍSTICAS
+router.get('/:id_leccion/estadisticas', LeccionController.estadisticasGeneral);
+router.get('/:id_leccion/estadisticas/preguntas', LeccionController.estadisticasPreguntas);
 
 module.exports = router;

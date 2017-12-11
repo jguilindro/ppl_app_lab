@@ -17,6 +17,10 @@
 				<h2 class="center-align">Lecciones</h2>
 			</header>
 			<main class="row">
+				<header class="col l1 valign-wrapper pull right">
+			  	<a v-on:click="test()" class="tooltipped btn-floating waves-effect waves-light btn" id="btn-generar-reporte" data-position="top" data-delay="50" data-tooltip="CSV"> <i class="fa fa-download" aria-hidden="true"></i></a>
+			  	<a href="/profesores/leccion/crear" class="tooltipped btn-floating waves-effect waves-light btn red pull right" data-position="top" data-delay="50" data-tooltip="Crear"><i class="material-icons">add</i></a>
+				</header>
 				<section class="col s12">
 		  		<table class="bordered highlight centered responsive-table">
 		  			<thead>
@@ -52,6 +56,9 @@
 		  					<td v-else-if="leccion.estado === 'calificado' && profesor.tipo === 'titular'">
 		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="recalificarLeccion(leccion._id)"><span>Recalificar</span></a>
 		  					</td>
+		  					<td v-if="leccion.estado === 'calificado'">
+		  						<a :href="'/profesores/leccion/' + leccion._id + '/estadisticas'" class="waves-effect waves-light btn btn-tomar btn-small-new blue">Estadísticas</a>
+		  					</td>
 		  					<td v-if="leccion.estado === 'pendiente' && profesor.tipo === 'titular'">
 		  						<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a>
 		  					</td>
@@ -60,9 +67,7 @@
 		  		</table>
 			  </section>
 			  <footer>
-			  	<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right" id="btn-nueva-leccion"><i class="material-icons">add</i></a>
-			  	<br/>
-			  	<a v-on:click="test()" class="waves-effect waves-light btn pull left" id="btn-generar-reporte"> <i class="fa fa-download" aria-hidden="true"></i> Descargar Notas</a>
+			  	
 			  </footer>
 			</main>
 	  	<!-- Modal Eliminar Leccion Structure -->

@@ -17,7 +17,39 @@
 				<h1 class="title">Estadísticas</h1>
 			</header>
 			<main>
-		    <canvas id="myChart"></canvas>
+				<section class="row">
+					<article class="col s12 l8 sample">
+						<section class="card">
+							<main class="card-content white-text">
+								<canvas id="myChart"></canvas>								
+							</main>
+						</section>
+					</article>
+					<article class="col s12 l4 sample">
+						<section class="card">
+							<header class="card-content">
+								<h5 class="card-title title">Datos</h5>
+							</header>
+							<main class="card-content">
+								<p><b>Lección: </b>{{leccion.nombre}} ({{leccion.nombreMateria}} P{{leccion.nombreParalelo}})</p>
+								<p><b>Tipo: </b>{{leccion.tipo}}</p>
+								<p><b>Mínima:</b> {{estadisticas.min.calificacion}}	({{estadisticas.min.grupo}})</p>
+								<p><b>Máxima:</b> {{estadisticas.max.calificacion}}	({{estadisticas.max.grupo}})</p>
+								<p><b>Promedio:</b> {{estadisticas.prom}}</p>
+								<p></p>
+							</main>
+						</section>
+					</article>
+				</section>
+				<section class="row">
+					<article class="col s12">
+						<section class="card">
+							<main class="card-content white-text">
+								<canvas id="stackedChart"></canvas>								
+							</main>
+						</section>
+					</article>
+				</section>
 			</main>
 		</main>
 		<footer>
@@ -26,6 +58,7 @@
 			<script src="/bower_components/materialize/bin/materialize.js"></script>
 			<script src="/scripts/chart.js/dist/Chart.min.js"></script>
 			<script src="/partials/navbar.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"></script>
 			<script src="./estadisticas.js"></script>
 		</footer>
 	</body>

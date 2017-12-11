@@ -12,5 +12,18 @@ body{
 
 .title{
 	text-align: center;
-	font-weight: bold;
+	font-weight: bold !important;
+}
+
+.row .col{
+	float: left;
+	padding: 0 0.75rem !important;
+}
+
+.card .card-content p{
+	padding: 2% 0;
+}
+
+.carousel{
+	height: 500px;
 }

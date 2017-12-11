@@ -30,6 +30,7 @@ var app = new Vue({
 			$('.scrollspy').scrollSpy();
 			$('#modalEliminarLeccion').modal();
 			$('.modal').modal();
+			$('.tooltipped').tooltip({delay: 50});
 		},
 		/*
 			Modificada: 26-05-2017 @edisonmora95
