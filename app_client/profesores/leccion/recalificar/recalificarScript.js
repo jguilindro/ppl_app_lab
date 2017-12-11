@@ -14,7 +14,7 @@ let App = new Vue({
   	leccionId 	 				 : '',	//Id de la lección que se va a calificar
   	grupoId 		 				 : '',	//Id del grupo del estudiante que se va a calificar
   	estudianteId 				 : '',	//Id del estudiante que se va a calificar
-    leccion   	 				 : {},	//json que tendrá toda la información de la lección a calificar
+    leccion   	 				 : {},	//json que textareandrá toda la información de la lección a calificar
 		preguntas 	 				 : [],	//array de todas las preguntas de la lección
 		respuestas	 				 : [],	//array de las respuestas del estudiante a las preguntas de la lección
 		estudiante	 				 : {},	//json del estudiante a calificar
@@ -51,6 +51,7 @@ let App = new Vue({
                 }
               }
             }else{
+            	console.log(actual.calificacion)
               self.modificarCalificacionLeccion(actual.calificacion, actual.puntaje);
             }
           }
