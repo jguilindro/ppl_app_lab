@@ -236,7 +236,7 @@ const leccionDatos = (req, res) => {
     let anadido          = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante);
 
     let preguntas        = armarArrayPreguntas(leccion.preguntas, respuestas);
-    respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, anadidoARegisto: anadido, preguntas: preguntas})
+    respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, preguntas: preguntas})
   });
 
 }
