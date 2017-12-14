@@ -48,6 +48,7 @@ const PreguntaSchema = mongoose.Schema({
 PreguntaSchema.statics.obtenerTodasPreguntas = function(callback) {
   this.find({})
       .populate('capitulo')
+      .populate('creador', '_id nombres apellidos')
       .exec(callback);
 }
 

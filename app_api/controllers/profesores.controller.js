@@ -7,7 +7,10 @@ const obtenerTodosProfesores =  (req, res, next) => {
 }
 
 const obtenerProfesor = (req, res, next) => {
-  res.send('un profoesr')
+  ProfesorModel.obtenerProfesor(req.params.id_profesor,(err, profesor) => {
+    if (err) return respuesta.serverError(res);
+    return respuesta.ok(res, profesor);
+  })
 }
 
 const crearProfesor = (req, res, next) => {
