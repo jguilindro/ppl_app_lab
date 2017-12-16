@@ -120,6 +120,7 @@ var App = new Vue({
                   //resGeneral[i].respuestas[j] = respuesta;
                   resGeneral[i].respuestas.splice(j,1);
                   resGeneral[i].respuestas.push(respuesta);
+                  resGeneral[i].respuestas.reverse();
                   Materialize.toast('¡ El '+ respuesta.grupoNombre + 
                   ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
                   break;
@@ -136,6 +137,7 @@ var App = new Vue({
                   if(resGeneral[i].respuestas[j] != respuesta.pregunta){
                     console.log('sección añadida');
                     resGeneral[i].respuestas.push(respuesta);
+                    resGeneral[i].respuestas.reverse();
                     Materialize.toast('¡ El '+ respuesta.grupoNombre + 
                   ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
                     break;
