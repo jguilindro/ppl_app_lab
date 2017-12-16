@@ -73,7 +73,7 @@
                 <img :src="pregunta.imagen" :id="'img-'+pregunta.ordenP">
               </section>
               <section class="col s5 col-calificacion">
-                <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-' + pregunta._id">
+                <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-' + pregunta._id" :value="pregunta.calificacion">
                 <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'feedback-' + pregunta._id" :value="pregunta.feedback"></textarea>
                 <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" :id="'btn-' + pregunta._id">Calificar</button>  
               </section>

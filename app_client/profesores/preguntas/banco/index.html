@@ -38,7 +38,9 @@
 							<h4 class="flow-text">Tutorial: {{capitulo.nombre}}</h4>
 							<ul class="preguntas">
 								<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
-									<a :href="'/profesores/preguntas/' + pregunta._id"><p class="pregunta flow-text">{{pregunta.nombre}}</p>
+									<a :href="'/profesores/preguntas/' + pregunta._id"><p class="truncate descripcion flow-text">Creador: {{pregunta.creador.nombres + ' '+ pregunta.creador.apellidos}}</p>
+										<p class="truncate descripcion flow-text">Fecha Creación: {{pregunta.createdAt}}</p>
+										<p class="pregunta flow-text">{{pregunta.nombre}}</p>
 											<p class="truncate descripcion flow-text" v-html="pregunta.descripcion"></p>
 											<span class="blue-text text-darken-2" v-show="pregunta.subpreguntas.length > 0">Esta pregunta contiene subpreguntas</span>
 						  			</a>

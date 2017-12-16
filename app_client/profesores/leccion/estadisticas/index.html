@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Estadísticas - Profesor</title>
+		<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" type="text/css" href="/bower_components/materialize/bin/materialize.css">
+  	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/navbar.css">
+		<link rel="stylesheet" type="text/css" href="./estadisticas.css">
+	</head>
+	<body>
+		<header id="navbar"></header>
+		<main class="container" id="appEstadisticas">
+			<header>
+				<h1 class="title">Estadísticas</h1>
+			</header>
+			<main>
+				<section class="row">
+					<article class="col s12 l8 sample">
+						<section class="card">
+							<main class="card-content white-text">
+								<canvas id="myChart"></canvas>								
+							</main>
+						</section>
+					</article>
+					<article class="col s12 l4 sample">
+						<section class="card">
+							<header class="card-content">
+								<h5 class="card-title title">Datos</h5>
+							</header>
+							<main class="card-content">
+								<p><b>Lección: </b>{{leccion.nombre}} ({{leccion.nombreMateria}} P{{leccion.nombreParalelo}})</p>
+								<p><b>Tipo: </b>{{leccion.tipo}}</p>
+								<p><b>Mínima:</b> {{estadisticas.min.calificacion}}	({{estadisticas.min.grupo}})</p>
+								<p><b>Máxima:</b> {{estadisticas.max.calificacion}}	({{estadisticas.max.grupo}})</p>
+								<p><b>Promedio:</b> {{estadisticas.prom}}</p>
+								<p></p>
+							</main>
+						</section>
+					</article>
+				</section>
+				<section class="row">
+					<article class="col s12">
+						<section class="card">
+							<main class="card-content white-text">
+								<canvas id="stackedChart"></canvas>								
+							</main>
+						</section>
+					</article>
+				</section>
+			</main>
+		</main>
+		<footer>
+			<script src="/bower_components/jquery/dist/jquery.js"></script>
+			<script src="/bower_components/vue/dist/vue.js"></script>
+			<script src="/bower_components/materialize/bin/materialize.js"></script>
+			<script src="/scripts/chart.js/dist/Chart.min.js"></script>
+			<script src="/partials/navbar.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"></script>
+			<script src="./estadisticas.js"></script>
+		</footer>
+	</body>
+</html>

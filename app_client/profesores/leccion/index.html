@@ -17,8 +17,40 @@
 				<h2 class="center-align">Lecciones</h2>
 			</header>
 			<main class="row">
+				<header class="col l2 input-field">
+					<select id="filtroTipo" class="filtro">
+						<option value="" selected="true"></option>
+						<option value="estimacion|laboratorio">Estimación|Laboratorio</option>
+						<option value="tutorial">Tutorial</option>
+					</select>
+					<label>Filtrar por tipo</label>
+				</header>
+				<header class="col l2 input-field">
+					<select id="filtroMateria" class="filtro">
+						<option value="" selected="true"></option>
+						<option value="FISG1002">Física 2</option>
+						<option value="FISG1003">Física 3</option>
+						<option value="FISG2001">Física Conceptual</option>
+					</select>
+					<label>Filtrar por materia</label>
+				</header>
+				<header class="col l2 input-field">
+					<select id="filtroParalelo" class="filtro">
+						<option value="" selected="true"></option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+					<label>Filtrar por paralelo</label>
+				</header>
+				<header class="col l1 valign-wrapper pull right">
+			  	<a v-on:click="test()" class="tooltipped btn-floating waves-effect waves-light btn" id="btn-generar-reporte" data-position="top" data-delay="50" data-tooltip="CSV"> <i class="fa fa-download" aria-hidden="true"></i></a>
+			  	<a href="/profesores/leccion/crear" class="tooltipped btn-floating waves-effect waves-light btn red pull right" data-position="top" data-delay="50" data-tooltip="Crear"><i class="material-icons">add</i></a>
+				</header>
 				<section class="col s12">
-		  		<table class="bordered highlight centered responsive-table">
+		  		<table class="bordered highlight responsive-table">
 		  			<thead>
 		  				<tr>
 		  					<th>Nombre</th>
@@ -32,7 +64,7 @@
 		  				</tr>
 		  			</thead>
 		  			<tbody>
-		  				<tr v-for="leccion in lecciones">
+		  				<tr v-for="leccion in leccionesAMostrar">
 		  					<td><a :href="'./' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
 		  					<td class="text-flow">{{leccion.tipo}}</td>
 		  					<td class="text-flow">{{leccion.nombreMateria}}@{{leccion.nombreParalelo}}</td>
@@ -44,15 +76,18 @@
 		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new #0277bd light-blue darken-3" @click="tomarLeccion(leccion.paralelo, leccion._id)"><span>Tomar</span></a>
 		  					</td>
 		  					<td v-else-if="leccion.estado=='terminado'">
-		  						<a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" @click="calificarLeccion(leccion._id)"><span>Calificar</span></a>
+		  						<a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" :href="'/profesores/leccion/calificar/grupos/'+leccion._id"><span>Calificar</span></a>
 		  					</td>
 		  					<td v-else-if="leccion.estado=='tomando' && profesor.tipo =='titular'">
-		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="tomandoLeccion(leccion.paralelo, leccion._id)"><span>Entrar</span></a>
+		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" :href="'/profesores/leccion-panel/'+leccion._id+'/paralelo/'+leccion.paralelo"><span>Entrar</span></a>
 		  					</td>
 		  					<td v-else-if="leccion.estado === 'calificado' && profesor.tipo === 'titular'">
-		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" @click="recalificarLeccion(leccion._id)"><span>Recalificar</span></a>
+		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" :href="'/profesores/leccion/recalificar/grupos/'+leccion._id"><span>Recalificar</span></a>
 		  					</td>
-		  					<td v-if="leccion.estado=='pendiente'">
+		  					<td v-if="leccion.estado === 'calificado'">
+		  						<a :href="'/profesores/leccion/' + leccion._id + '/estadisticas'" class="waves-effect waves-light btn btn-tomar btn-small-new blue">Estadísticas</a>
+		  					</td>
+		  					<td v-if="leccion.estado === 'pendiente' && profesor.tipo === 'titular'">
 		  						<a href="#" class="right-align btn-eliminar pull right" v-bind:id="leccion._id" v-on:click="crearModalEliminarLeccion(leccion._id, leccion.nombre)"><i class="material-icons tiny">delete</i></a>
 		  					</td>
 		  				</tr>
@@ -60,9 +95,7 @@
 		  		</table>
 			  </section>
 			  <footer>
-			  	<a v-on:click="nuevaPregunta()" class="btn-floating btn-small waves-effect waves-light red pull right" id="btn-nueva-leccion"><i class="material-icons">add</i></a>
-			  	<br/>
-			  	<a v-on:click="test()" class="waves-effect waves-light btn pull left" id="btn-generar-reporte"> <i class="fa fa-download" aria-hidden="true"></i> Descargar Notas</a>
+			  	
 			  </footer>
 			</main>
 	  	<!-- Modal Eliminar Leccion Structure -->

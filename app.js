@@ -205,15 +205,9 @@ app.use('/profesores/grupos', redirecion,authProfesor , procesarSession, middleP
 
 app.use('/profesores/preguntas/banco', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/banco')));
 
-//app.use('/profesores/preguntas/estimacion', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/estimacion')));
-
 app.use('/profesores/preguntas/:id', redirecion, authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
-//app.use('/profesores/preguntas/tutorial',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/tutorial')));
-
 app.use('/profesores/preguntas/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
-
-//app.use('/profesores/preguntas/laboratorio', redirecion,authProfesor, procesarSession, middleProfesorControl,  express.static(path.join(__dirname, 'app_client/profesores/preguntas/laboratorio')));
 
 app.use('/profesores/preguntas/:id', redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/preguntas/ver-pregunta')));
 
@@ -240,6 +234,8 @@ app.use('/profesores/leccion/:id',redirecion, authProfesor, procesarSession, mid
 app.use('/profesores/leccion/recalificar/grupos/:id',redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar/grupos')));
 
 app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/recalificar')));
+
+app.use('/profesores/leccion/:id_leccion/estadisticas', redirecion, authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/leccion/estadisticas')));
 
 app.use('/profesores/rubrica/',redirecion,authProfesor, procesarSession, middleProfesorControl, express.static(path.join(__dirname, 'app_client/profesores/rubrica/')))
 

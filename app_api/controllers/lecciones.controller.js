@@ -1,12 +1,12 @@
-const LeccionModel = require('../models/leccion.model');
-const ParaleloModel = require('../models/paralelo.model');
-const GrupoModel = require('../models/grupo.model');
-const EstudianteModel = require('../models/estudiante.model');
+const LeccionModel      = require('../models/leccion.model');
+const ParaleloModel     = require('../models/paralelo.model');
+const GrupoModel        = require('../models/grupo.model');
+const EstudianteModel   = require('../models/estudiante.model');
 const CalificacionModel = require('../models/calificacion.model');
-const PreguntaModel = require('../models/pregunta.model');
-const RespuestaModel = require('../models/respuestas.model');
-var respuesta = require('../utils/responses');
-var co = require('co')
+const PreguntaModel     = require('../models/pregunta.model');
+const RespuestaModel    = require('../models/respuestas.model');
+var respuesta           = require('../utils/responses');
+var co                  = require('co')
 
 const obtenerTodasLecciones = (req, res) => {
   LeccionModel.obtenerTodasLecciones((err, lecciones) => {
@@ -273,6 +273,258 @@ const leccionDatos = (req, res) => {
   });
 };
 
+/*
+  @Autor: @edisonmora95
+  @Ruta: "/api/lecciones/:id_leccion/estadisticas"
+  @Descripción: Devuelve las calificaciones de todos los grupos de una lección indicada
+  @Respuesta:
+    {
+      grupos        : [],   //Array de nombre de grupos
+      calificaciones: [],   //Array de calificaciones de cada grupo
+      leccion       : {},   //JSON de la lección seleccionada
+      max           : {},   //Calificación máxima y el nombre del grupo que la obtuvo
+      min           : {},   //Calificación mínima y el nombre del grupo que la obtuvo
+      prom          : Float //Promedio de las calificaciones
+    }
+*/
+const estadisticasGeneral = (req, res) => {
+  function obtenerCalificacionesDeLeccion(id_leccion){
+    return new Promise((resolve, reject) => {
+      CalificacionModel.obtenerRegistroPorLeccion(id_leccion, (err, docs) => {
+        if (err) return reject(new Error('No se pudieron obtener las calificaciones'));
+        return resolve(docs);
+      });
+    });
+  }
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
+  }
+  function armarDiccionarioCalificaciones(arrayCal){
+    let diccionario = {};
+    for (let i = 0; i < arrayCal.length; i++) {
+      if( arrayCal[i].grupo != null ){
+        let grupo          = arrayCal[i].grupo.nombre;
+        let calificacion   = arrayCal[i].calificacion;
+        diccionario[grupo] = calificacion;  
+      }
+    }
+    return diccionario
+  }
+  function getMax(diccionario){
+    let max = {
+      grupo : '',
+      calificacion : 0.00
+    };
+    for (var grupo in diccionario) {
+      if (diccionario.hasOwnProperty(grupo)) {
+        if ( diccionario[grupo] > max.calificacion ) {
+          max.grupo        = grupo;
+          max.calificacion = diccionario[grupo];
+        }
+      }
+    }
+    return max;
+  }
+  function getMin(diccionario){
+    let min = {
+      grupo : '',
+      calificacion : 100.00
+    };
+    for (var grupo in diccionario) {
+      if (diccionario.hasOwnProperty(grupo)) {
+        if ( diccionario[grupo] < min.calificacion ) {
+          min.grupo        = grupo;
+          min.calificacion = diccionario[grupo];
+        }
+      }
+    }
+    return min;
+  }
+  function getProm(diccionario){
+    let contador = 0;
+    let promedio = 0.00;
+    for (var grupo in diccionario) {
+      if (diccionario.hasOwnProperty(grupo)) {
+        promedio += diccionario[grupo];
+        contador++;
+      }
+    }
+    promedio = promedio/contador;
+    return promedio.toFixed(2);
+  }
+
+  const id_leccion = req.params.id_leccion;
+  let arrayGrupos  = [];
+  let arrayCal     = [];
+  let leccion      = {};
+
+  co(function *(){
+    leccion            = yield obtenerLeccion(id_leccion);
+    let calificaciones = yield obtenerCalificacionesDeLeccion(id_leccion);
+    calificaciones.sort(customSort);
+    for (let i = 0; i < calificaciones.length; i++) {
+      let actual = calificaciones[i];
+      arrayGrupos.push(actual.nombreGrupo);
+      arrayCal.push(actual.calificacion);
+    }
+    let diccionario = armarDiccionarioCalificaciones(calificaciones);
+    let max = getMax(diccionario);
+    let min = getMin(diccionario);
+    let prom= getProm(diccionario);
+    return respuesta.ok(res, {grupos : arrayGrupos, calificaciones : arrayCal, leccion : leccion, max : max, min : min, prom : prom});
+  }).catch( fail => {
+    return respuesta.serverError(res);
+  })
+}
+
+/*
+  @Autor: @edisonmora95
+  @Ruta : "/api/lecciones/:id_leccion/estadisticas/preguntas"
+  @Descripción : Devuelve la cantidad de 0s, 1s, y 2s que se tuvieron por cada pregunta de la lección indicada
+  @Respuesta:
+    {
+      labels  : [],  //Array con los nombres de las preguntas y secciones
+      cal0    : [],  //Array de cantidad de 0's que se tuvieron por cada pregunta de la lección
+      cal1    : [],  //Array de cantidad de 1's que se tuvieron por cada pregunta de la lección
+      cal2    : [],  //Array de cantidad de 2's que se tuvieron por cada pregunta de la lección
+      nGrupos : int  //Número de grupos que dieron la lección
+    }
+*/
+const estadisticasPreguntas = (req, res) => {
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      });
+    });
+  }
+
+  function obtenerRespuestasCalificadas(id_leccion, array_estudiantes) {
+    return new Promise( (resolve, reject) => {
+      RespuestaModel.obtenerRespuestasCalificadas(id_leccion, array_estudiantes, (err, docs) => {
+        if (err) return reject( new Error("No se pudo realizar el query"))
+        return resolve(docs);
+      });
+    });
+  }
+
+  function obtenerRegistroCalificaciones(id_leccion){
+    return new Promise( (resolve, reject) => {
+      CalificacionModel.obtenerRegistroPorLeccion(id_leccion, (err, registros) => {
+        if (err) return reject("Error en el query de calificaciones")
+        return resolve(registros)
+      });
+    });
+  }
+
+  function obtenerPregunta(id_pregunta) {
+    return new Promise((resolve, reject) => {
+      PreguntaModel.obtenerPregunta(id_pregunta, (err, pregutna) => {
+        if (err) return reject(new Error('No se puedo obtener la pregunta'));
+        return resolve(pregutna);
+      });
+    });
+  }
+
+  function obtenerParaleloPorId(id_paralelo){
+    return new Promise((resolve, reject) => {
+      ParaleloModel.obtenerParalelo(id_paralelo, (err, doc) =>{
+        if (err) return reject(err);
+        return resolve(doc);
+      });
+    });
+  }
+
+  function encerarValoresNoEncontrados(cal0, cal1, cal2, i){
+    if ( isNaN(cal0[i]) ) {
+      cal0[i] = 0;
+    }
+    if ( isNaN(cal1[i]) ) {
+      cal1[i] = 0;
+    }
+    if ( isNaN(cal2[i]) ) {
+      cal2[i] = 0;
+    }
+  }
+
+  function aumentarContadorCalificaciones(cal0, cal1, cal2, i, calificacion){
+    if ( calificacion === 0) {
+      cal0[i]++;  
+    } else if ( calificacion === 1) {
+      cal1[i]++;  
+    } else if ( calificacion === 2) {
+      cal2[i]++;  
+    }
+  }
+
+  const id_leccion = req.params.id_leccion;
+  co( function *(){
+    let contador_subpreguntas = 0;
+    let cal0   = [];
+    let cal1   = [];
+    let cal2   = [];
+    let labels = [];
+    const leccion                = yield obtenerLeccion(id_leccion);
+    const registros_calificacion = yield obtenerRegistroCalificaciones(id_leccion);
+    const paralelo               = yield obtenerParaleloPorId(leccion.paralelo);
+    const nGrupos = paralelo.grupos.length;
+    //Obtengo el array de estudiantes calificados
+    let array_estudiantes = [];
+    for (let i = 0; i < registros_calificacion.length; i++) {
+      array_estudiantes.push(registros_calificacion[i].estudianteCalificado);
+    }
+    //Obtengo las respuestas de todas las preguntas de los estudiantes calificados
+    let array_respuestas = yield obtenerRespuestasCalificadas(id_leccion, array_estudiantes);
+    //Recorro todas las preguntas de la lección
+    for (let i = 0; i < leccion.preguntas.length; i++) {
+      let id_pregunta = leccion.preguntas[i].pregunta;
+      let pregunta    = yield obtenerPregunta(id_pregunta);
+      let num_subpreguntas = pregunta.subpreguntas.length;
+      //Armo el label de la pregunta actual
+      let label       = "";
+      if ( leccion.tipo === "estimacion|laboratorio" ) {
+        label = "Pregunta-" + (i+1);
+        labels[i] = label;
+      } else {
+        for (let m = 0; m < num_subpreguntas; m++) {
+          label = "Sección-" + (i+1) + " P" + (m+1);
+          labels.push(label);  
+        }
+      }
+      //Obtengo todas las respuestas de la pregunta actual
+      let res_pregunta = array_respuestas.filter( (actual) => {
+        return actual.pregunta === id_pregunta;
+      });
+      //Recorro todas las respuestas de la pregunta actual
+      for (let j = 0; j < res_pregunta.length; j++) {
+        let respuesta_actual = res_pregunta[j];
+        if ( leccion.tipo === "estimacion|laboratorio" ) {
+          let calificacion = respuesta_actual.calificacion;
+          encerarValoresNoEncontrados(cal0, cal1, cal2, i);
+          aumentarContadorCalificaciones(cal0, cal1, cal2, i, calificacion);
+        } else {
+          for ( let k = 0; k < respuesta_actual.subrespuestas.length; k++) {
+            let calificacion = respuesta_actual.subrespuestas[k].calificacion;
+            encerarValoresNoEncontrados(cal0, cal1, cal2, (k+contador_subpreguntas));
+            aumentarContadorCalificaciones(cal0, cal1, cal2, (k+contador_subpreguntas), calificacion);
+          }
+        }
+      }
+      contador_subpreguntas = contador_subpreguntas + num_subpreguntas;
+    }
+    return respuesta.ok(res, { labels : labels, cal0 : cal0, cal1 : cal1, cal2 : cal2, nGrupos : nGrupos});
+  })
+  .catch( error => {
+    return respuesta.serverError(res);
+  });
+}
+
 module.exports = {
   crearLeccion,
   obtenerTodasLecciones,
@@ -282,6 +534,8 @@ module.exports = {
   leccionYaCalificada,
   obtenerLeccionRecalificar,
   leccionDatos,
+  estadisticasGeneral,
+  estadisticasPreguntas,
   // realtime
   tomarLeccion,
   anadirTiempo,
@@ -290,7 +544,6 @@ module.exports = {
   obtenerLeccionesParalelo,
   terminarLeccion
 }
-
 
 /*
   Arma un array con las preguntas de la lección junto con las respuestas que el estudiante pudo haber enviado previamente
@@ -422,5 +675,6 @@ function asignarRespuestaP(pregunta, respuesta){
   }
 }
 
-
-
+function customSort(a, b) {
+  return (Number(a.nombreGrupo.match(/(\d+)/g)[0]) - Number((b.nombreGrupo.match(/(\d+)/g)[0])));
+}

@@ -28,7 +28,6 @@ let App = new Vue({
     },
     respuestas: [],   //Array de respuestas que el estudiante ya ha enviado a la base
     corregirHabilitado: false,
-    flag: false,
   },
   methods: {
     //////////////////////////////////////////////////////
@@ -513,7 +512,9 @@ let App = new Vue({
         leccion            : idLeccion,
         paralelo           : idParalelo,
         pregunta           : pregunta._id,
-        preguntaNombre     : pregunta.nombre, 
+        preguntaNombre     : pregunta.nombre,
+        descripcion        : pregunta.descripcion,
+        subpreguntas       : pregunta.subpreguntas, 
         respuesta          : respuesta,
         feedback           : '',
         calificacion       : 0,
