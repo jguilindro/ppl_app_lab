@@ -111,23 +111,34 @@
         </div>
       </div>
       
-      <div id="test2" class="col s12">
+      <div id="test2" class="row">
         <label>Respuestas</label>
         <br>
-        <div class="row row_respuestas" v-for="(grupo, index) in respuestasGrupos" v-if="grupo.respuestas.length > 0" >
-          <div class="collection  card-panel col s12 m12 l12" v-for="(res, index) in grupo.respuestas" v-if="res.arraySubrespuestas.length > 0">
-              <p><i class="material-icons cyan-text text-darken-2">group</i>{{grupo.nombre}}</p>
-              <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.estudianteNombre}} {{res.estudianteApellido}}</p>
-              <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.preguntaNombre}}</p>
+        <div class="col s12">
+            <ul id="tabsRes" class="tabs tabs-fixed-width "></ul>
+        </div>
+        <div id="tabsResDiv" > 
+          <div :id="pregunta.orden" class="col s12" v-for="(pregunta, index) in respuestasPreguntas"> 
+            <div class="card grey">
+              <div class="card-content">
+                <p v-html="pregunta.descripcion" name="descripcion"></p>
+              </div>
+            </div>
+            <div class="collection  card-panel col s12 m12 l12" v-for="(respuesta, index) in pregunta.respuestas" v-if="pregunta.respuestas.length > 0">
+              <p><i class="material-icons cyan-text text-darken-2">group</i>{{respuesta.grupoNombre}}</p>
+              <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{respuesta.estudianteNombre}} {{respuesta.estudianteApellido}}</p>
               <ul id="projects-collection" class="collection">
-                <li class="collection-item avatar">
-                  <i class="material-icons circle light-blue darken-2">question_answer</i>
-                  <span class="collection-header">Respuestas</span>
-                </li>
-                <li class="collection-item" v-for="(sub, index) in res.arraySubrespuestas">
+                <li class="collection-item col s12 m12 l6" v-for="(sub, index) in respuesta.subpreguntas" v-if="sub.respuesta">
+                  <header class="center-align">
+                    <h5 class="title-sub"><b>Pregunta #{{sub.orden}}</b></h5>
+                  </header>
+                  <article class="col s12 l12">
+                    <label><h6 class="collections-title indigo-text text-darken-4" >Descripción: </h6></label>
+                    <p v-html="sub.contenido"></p>
+                  </article>
                   <div class="row">
                     <div class="col s8">
-                      <p class="collections-title indigo-text text-darken-4">Subrespuesta  {{sub.ordenPregunta}}</p>
+                      <p class="collections-title indigo-text text-darken-4">Respuesta:</p>
                       <p class="collections-content">{{sub.respuesta}}</p>
                     </div>
                     <div class="col s4">
@@ -136,29 +147,9 @@
                   </div>
                 </li>
               </ul>  
+            </div>
           </div>
-          <div class="collection card-panel col s12 m12 l6" v-for="(res, index) in grupo.respuestas" v-if="res.respuesta">
-            <p><i class="material-icons cyan-text text-darken-2">group</i>{{grupo.nombre}}</p>
-            <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{res.estudianteNombre}} {{res.estudianteApellido}}</p>
-            <p><i class="material-icons cyan-text text-darken-2">info_outline</i>{{res.preguntaNombre}}</p>
-            <ul id="projects-collection" class="collection">
-              <li class="collection-item avatar">
-                <i class="material-icons circle light-blue darken-2">question_answer</i>
-                <span class="collection-header">Respuesta</span>
-              </li>
-              <li v-if="res.respuesta">
-                <div class="row">
-                  <div class="col s8">
-                    <p class="collections-content">{{res.respuesta}}</p>
-                  </div>
-                  <div class="col s4" v-if="res.imagenes">
-                    <img class="materialboxed responsive-img" :data-caption="res.respuesta" width="250" :src="res.imagenes">
-                  </div>
-                </div>
-              </li>
-            </ul>  
-          </div>
-        </div> 
+        </div>
       </div> <!-- fin test2 -->
         
     </div>

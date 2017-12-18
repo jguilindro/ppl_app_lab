@@ -515,6 +515,7 @@ let App = new Vue({
         preguntaNombre     : pregunta.nombre,
         descripcion        : pregunta.descripcion,
         subpreguntas       : pregunta.subpreguntas, 
+        orden              : pregunta.ordenP,
         respuesta          : respuesta,
         feedback           : '',
         calificacion       : 0,

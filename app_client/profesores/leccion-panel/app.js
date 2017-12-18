@@ -49,7 +49,8 @@ var App = new Vue({
     dataEstudiantes: '',
     mas_tiempo: 0,
     respuestas: [],
-    respuestasGrupos: []
+    respuestasGrupos: [],
+    respuestasPreguntas: [],
   },
   components : {
     'ver-respuestas' : respuestas
@@ -63,6 +64,9 @@ var App = new Vue({
         if (this.leccion.leccionYaComenzo) {
         document.getElementById('pausar-leccion').disabled = false
         }
+
+        this.obtenerPreguntas(this.leccion);
+        this.obtenerTabsPreguntas();
       })
     },
     obtenerParalelo() {
@@ -108,21 +112,44 @@ var App = new Vue({
         this.respuestasGrupos.push(grupo)
       }
     },
+    obtenerPreguntas(leccion){
+      for (var i = 0; i < leccion.preguntas.length; i++) {
+        var pregunta = {
+          orden : leccion.preguntas[i].ordenPregunta,
+          _id : leccion.preguntas[i].pregunta,
+          descripcion : '',
+          respuestas : []
+        };
+        this.respuestasPreguntas.push(pregunta)
+      }
+    },
+    obtenerTabsPreguntas(){
+      var $tabs = $('#tabsRes');
+      for (var i = 0; i < this.respuestasPreguntas.length; i++) {
+        a = i+1
+        $tabs.children().removeAttr('style');  
+        $tabs.append('<li class="tab col s3"><a href="#'+a+'">Seccion '+a+'</a></li>');
+       
+        $tabs.tabs().tabs('select_tab','Seccion'+i);
+      }
+    },
     guardarRespuesta(respuesta){
       console.log('guardarRespuesta');
-      var resGeneral = this.respuestasGrupos;
-      for (var i = 0; i < resGeneral.length; i++) {
-        if(resGeneral[i]._id == respuesta.grupoId){
-          if(resGeneral[i].respuestas.length > 0){
-            for (var j = 0; j < resGeneral[i].respuestas.length; j++) {
-              if(resGeneral[i].respuestas[j].pregunta == respuesta.pregunta){
-                if(resGeneral[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
+      //var resGeneral = this.respuestasGrupos;
+      var resPreguntas = this.respuestasPreguntas;
+      for (var i = 0; i < resPreguntas.length; i++) {
+        if(resPreguntas[i]._id == respuesta.pregunta){
+          resPreguntas[i].descripcion = respuesta.descripcion;
+          if(resPreguntas[i].respuestas.length > 0){
+            for (var j = 0; j < resPreguntas[i].respuestas.length; j++) {
+              if(resPreguntas[i].respuestas[j].grupoId == respuesta.grupoId){
+                if(resPreguntas[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
                   //resGeneral[i].respuestas[j] = respuesta;
-                  resGeneral[i].respuestas.splice(j,1);
-                  resGeneral[i].respuestas.push(respuesta);
-                  resGeneral[i].respuestas.reverse();
+                  resPreguntas[i].respuestas.splice(j,1);
+                  resPreguntas[i].respuestas.push(respuesta);
+                  resPreguntas[i].respuestas.reverse();
                   Materialize.toast('¡ El '+ respuesta.grupoNombre + 
-                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                  ' Ha respondido a la sección: ' + respuesta.orden + ' !', 5000, 'rounded')
                   break;
                 }
                 else{
@@ -132,21 +159,21 @@ var App = new Vue({
               }
               else{
                 console.log('Sección nueva');
-                if ( j == resGeneral[i].respuestas.length-1){
+                if ( j == resPreguntas[i].respuestas.length-1){
                   console.log('ultimo elemento');
-                  if(resGeneral[i].respuestas[j] != respuesta.pregunta){
+                  if(resPreguntas[i].respuestas[j] != respuesta.pregunta){
                     console.log('sección añadida');
-                    resGeneral[i].respuestas.push(respuesta);
-                    resGeneral[i].respuestas.reverse();
+                    resPreguntas[i].respuestas.push(respuesta);
+                    resPreguntas[i].respuestas.reverse();
                     Materialize.toast('¡ El '+ respuesta.grupoNombre + 
-                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                  'Ha respondido a la sección: ' + respuesta.orden + ' !', 5000, 'rounded')
                     break;
                   }
                   else {
-                    if(resGeneral[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
-                      resGeneral[i].respuestas[j] = respuesta;
+                    if(resPreguntas[i].respuestas[j].arraySubrespuestas.length < respuesta.arraySubrespuestas.length){
+                      resPreguntas[i].respuestas[j] = respuesta;
                       Materialize.toast('¡ El '+ respuesta.grupoNombre + 
-                  ' Ha respondido a la ' + respuesta.preguntaNombre + ' !', 5000, 'rounded')
+                  'Ha respondido a la sección: ' + respuesta.orden + ' !', 5000, 'rounded')
                       break;
                     }
                     else{break;}
@@ -157,7 +184,7 @@ var App = new Vue({
             break;
           }
           else {
-            resGeneral[i].respuestas.push(respuesta);
+            resPreguntas[i].respuestas.push(respuesta);
             break;
           }
         }
@@ -408,7 +435,7 @@ leccion.on('respuesta para profesor', function(respuesta_estudiante) {
   //App.respuestas.push(respuesta_estudiante);
 
   App.guardarRespuesta(respuesta_estudiante);
-  console.log(App.respuestasGrupos);
+  console.log(App.respuestasPreguntas);
 
   //Materialize.toast('¡ El '+ respuesta_estudiante.grupoNombre + 
   //  ' Ha respondido a la ' + respuesta_estudiante.preguntaNombre + ' !', 5000, 'rounded')
