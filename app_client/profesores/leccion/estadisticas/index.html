@@ -42,12 +42,32 @@
 					</article>
 				</section>
 				<section class="row">
-					<article class="col s12">
+					<article class="col s8">
 						<section class="card">
 							<main class="card-content white-text">
 								<canvas id="stackedChart"></canvas>								
 							</main>
 						</section>
+					</article>
+					<article class="col s4">
+						<section class="card">
+							<main class="card-content" id="card-preguntas">
+								<ul class="collection with-header">
+									<li class="collection-header">
+										<h5 class="title" v-if="leccion.tipo == 'estimacion|laboratorio'">Preguntas</h5>
+										<h5 class="title" v-if="leccion.tipo == 'tutorial'">Secciones</h5>
+									</li>
+									<li  v-for="(pregunta, index) in leccion.preguntas">
+										<a  :href="'/profesores/preguntas/' + pregunta.pregunta._id" class="collection-item">
+											<p v-if="leccion.tipo == 'estimacion|laboratorio'">Pregunta #{{(index+1)}}</p>
+											<p v-if="leccion.tipo == 'tutorial'">Sección #{{(index+1)}}</p>
+											<span class="subtitle">{{pregunta.pregunta.nombre}}</span>
+										</a>
+									</li>
+								</ul>		
+							</main>
+						</section>
+						
 					</article>
 				</section>
 			</main>

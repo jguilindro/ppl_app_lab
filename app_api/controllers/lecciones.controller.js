@@ -298,7 +298,7 @@ const estadisticasGeneral = (req, res) => {
   }
   function obtenerLeccion(id_leccion) {
     return new Promise((resolve, reject) => {
-      LeccionModel.obtenerLeccion(id_leccion, (err, leccion) => {
+      LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
         if (err) return reject(new Error('No se puedo obtener Leccion'));
         return resolve(leccion);
       });
