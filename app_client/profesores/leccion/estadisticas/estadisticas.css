@@ -15,6 +15,11 @@ body{
 	font-weight: bold !important;
 }
 
+.subtitle{
+	text-align: center;
+	font-size: 0.8rem;
+}
+
 .row .col{
 	float: left;
 	padding: 0 0.75rem !important;
@@ -24,6 +29,6 @@ body{
 	padding: 2% 0;
 }
 
-.carousel{
-	height: 500px;
+#card-preguntas{
+	padding: 0;
 }

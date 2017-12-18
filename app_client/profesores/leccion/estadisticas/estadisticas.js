@@ -71,10 +71,10 @@ let app = new Vue({
 			let arrayColores = [];
 			for (var i = 0; i < calificaciones.length; i++) {
 				let actual = calificaciones[i];
-				if( actual > 80 ){
+				if( actual > 70 ){
+					arrayColores.push('rgba(141, 185, 99, 0.3)');
+				}else if( actual > 50 ){
 					arrayColores.push('rgba(255, 235, 59, 0.3)');
-				}else if( actual > 60 ){
-					arrayColores.push('rgba(255, 143, 0, 0.3)');
 				}else{
 					arrayColores.push('rgba(198, 40, 40, 0.3)');
 				}
@@ -136,6 +136,7 @@ let app = new Vue({
 					}
 				}
 			})
-		}
+			$('.card').matchHeight();
+		},
 	}
 });

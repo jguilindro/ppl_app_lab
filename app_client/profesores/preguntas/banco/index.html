@@ -39,7 +39,7 @@
 							<ul class="preguntas">
 								<li v-for="pregunta in capitulo.preguntas" class="question" v-bind:id="pregunta._id">
 									<a :href="'/profesores/preguntas/' + pregunta._id"><p class="truncate descripcion flow-text">Creador: {{pregunta.creador.nombres + ' '+ pregunta.creador.apellidos}}</p>
-										<p class="truncate descripcion flow-text">Fecha Creación: {{pregunta.createdAt}}</p>
+										<p class="truncate descripcion flow-text">Fecha Creación: {{date(pregunta.createdAt)}}</p>
 										<p class="pregunta flow-text">{{pregunta.nombre}}</p>
 											<p class="truncate descripcion flow-text" v-html="pregunta.descripcion"></p>
 											<span class="blue-text text-darken-2" v-show="pregunta.subpreguntas.length > 0">Esta pregunta contiene subpreguntas</span>
@@ -101,6 +101,8 @@
 			<script src="/bower_components/vue/dist/vue.min.js"></script>
   		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
   		<script src="/bower_components/vue-resource/dist/vue-resource.min.js"></script>
+  		<script src="/bower_components/moment/moment.js"></script>
+      <script src="/bower_components/moment/locale/es.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 			<script src="/partials/navbar.js"></script>
 			<script src="./tutorialScript.js"></script>

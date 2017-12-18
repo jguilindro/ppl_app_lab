@@ -179,6 +179,16 @@ var practica = new Vue({
 			if(pregunta.creador==self.profesor._id) return true;
 			return false
 		},
+		moment: function (date) {
+      return moment(date);
+    },
+    date: function (date) {
+      let es = moment().locale('es');
+      if (date == undefined || date == '') {
+        return '----'
+      }
+      return moment(date).format('DD MMMM HH:mm');
+    },
 	}
 });
 
