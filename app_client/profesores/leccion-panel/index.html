@@ -128,7 +128,7 @@
               <p><i class="material-icons cyan-text text-darken-2">group</i>{{respuesta.grupoNombre}}</p>
               <p><i class="material-icons cyan-text text-darken-2">person</i>Estudiante : {{respuesta.estudianteNombre}} {{respuesta.estudianteApellido}}</p>
               <ul id="projects-collection" class="collection">
-                <li class="collection-item col s12 m12 l6" v-for="(sub, index) in respuesta.subpreguntas" v-if="sub.respuesta">
+                <li class="collection-item col s12 m12 l12" v-for="(sub, index) in respuesta.subpreguntas" v-if="sub.respuesta">
                   <header class="center-align">
                     <h5 class="title-sub"><b>Pregunta #{{sub.orden}}</b></h5>
                   </header>
