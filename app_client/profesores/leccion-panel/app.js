@@ -35,6 +35,9 @@ var App = new Vue({
         dismissible: false
     });
     $('.materialboxed').materialbox();
+    $('.collapsible').collapsible({
+         accordion : true
+      });
   },
   created() {
     this.obtenerLeccion();
@@ -67,7 +70,30 @@ var App = new Vue({
 
         this.obtenerPreguntas(this.leccion);
         this.obtenerTabsPreguntas();
+        $('.collapsible').collapsible({
+        onOpen: function(el) {
+          var self = this;
+          self.CollapsibleOpen = true;
+        }
+      });
       })
+    },
+    /*
+      Abrir/Cerrar el acordeón
+    */
+    collapsibleClicked: function(event){
+      var self = this;
+      if(self.DOMupdated && !self.CollapsibleOpen){
+        $('.collapsible').collapsible({
+          onOpen: function(el) {
+            self.CollapsibleOpen = true;
+          },
+          onClose: function(el){
+            self.CollapsibleOpen = false;
+          }
+        });
+        self.DOMupdated = false;
+      }
     },
     obtenerParalelo() {
       var id_paralelo = window.location.href.toString().split('/')[7]
