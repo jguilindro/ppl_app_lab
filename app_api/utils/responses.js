@@ -15,8 +15,44 @@ const ok = (datos) => {
   return resp
 }
 
+const badRequest = (mensaje) => {
+	const resp = { estado: false, mensaje, codigo_estado: 400 }
+  return resp	
+}
+
+const okGet = (res, datos) => {
+	return res.status(200).json({datos, mensaje : 'Búsqueda exitosa'})
+}
+
+const error = (res, mensaje, datos) => {
+	return res.status(500).json({mensaje, datos})
+}
+
+const okCreate = (res, datos) => {
+	return res.status(200).json({mensaje : 'Registro creado', datos})
+}
+
+const noEncontrado = (res) => {
+	return res.status(404).json({mensaje : 'Registro no encontrado'})
+}
+
+const okDelete = (res) => {
+	return res.status(200).json({mensaje : 'Registro eliminado'})
+}
+
+const serverError = (res, error) => {
+	return res.status(500).json({mensaje : 'Server error', error})
+}
+
 module.exports = {
   ERROR_SERVIDOR,
   NO_AUTORIZADO,
   ok,
+  badRequest,
+  okGet,
+  error,
+  okCreate,
+  okDelete,
+  serverError,
+  noEncontrado,
 }

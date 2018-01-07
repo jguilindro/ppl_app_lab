@@ -3,73 +3,63 @@
 * @author Edison Mora
 */
 
-class Lecciones {
-	/**
-  * Crea una instancia de Lecciones
-  * @param {logger} modulo logger
-  * @author Edison Mora
-  */
-	constructor(logger, LeccionModel, responses) {
-		this.logger 			= logger
-		this.LeccionModel = LeccionModel
-		this.responses 		= responses
-	}
+const LeccionModel = require('../models/pregunta.model')
 
-	/**
+/**
   * Obtener todas las lecciones
   * @return {Json} json con el formato responses ok
   * @error {Error} error object
   * @author Edison Mora
-  */
-	getAll() {
-		return this.LeccionModel.getAll()
-			.then( res => {
-				return this.responses.ok(res)
-			})
-			.catch( error => {
-				this.logger.info(error)
-        this.logger.error(`Leccion Controller Error ${error}`)
-        return this.responses.ERROR_SERVIDOR
-			})
-	}
+*/
+module.exports.getAll= (req, res, next) => {
+	return LeccionModel.getAll()
+		.then( lecciones => {
+			return responses.okGet(res, lecciones)
+		})
+		.catch( error => {
+			logger.info(error)
+      logger.error(`Leccion Controller Error ${error}`)
+      return responses.serverError(res, error)
+		})
+}
 
-	/**
+/**
   * Obtener todas las lecciones de los paralelos indicados
   * @param {paralelos}
   * @return {Json} json con el formato responses ok
   * @error {Error} error object
   * @author Edison Mora
-  */
-	getLeccionesDeParalelos(paralelos) {
-		return this.LeccionModel.getLeccionesDeParalelos(paralelos)
-		.then( res => {
-				return this.responses.ok(res)
-			})
-			.catch( error => {
-				this.logger.info(error)
-        this.logger.error(`Leccion Controller Error ${error}`)
-        return this.responses.ERROR_SERVIDOR
-			})
-	}
+*/
+module.exports.getLeccionesDeParalelos = (req, res, next) => {
+	const paralelos = req.params.paralelos
+	return LeccionModel.getLeccionesDeParalelos(paralelos)
+	.then( lecciones => {
+			return responses.okGet(res, lecciones)
+		})
+		.catch( error => {
+			logger.info(error)
+      logger.error(`Leccion Controller Error ${error}`)
+      return responses.serverError(res, error)
+		})
+}
 
-	/**
+/**
   * Obtener la leccion indicada por el id
   * @param {idLeccion}
   * @return {Json} json con el formato responses ok
   * @error {Error} error object
   * @author Edison Mora
-  */
-	getById(idLeccion) {
-		return this.LeccionModel.getById(idLeccion)
-		.then( res => {
-				return this.responses.ok(res)
-			})
-			.catch( error => {
-				this.logger.info(error)
-        this.logger.error(`Leccion Controller Error ${error}`)
-        return this.responses.ERROR_SERVIDOR
-			})
-	}
+*/
+module.exports.getById = (req, res, next) => {
+	const idLeccion = req.params.id_leccion
+	return LeccionModel.getById(idLeccion)
+	.then( leccion => {
+		if ( leccion ) return responses.okGet(res, leccion)
+		return responses.noEncontrado(res)
+	})
+	.catch( error => {
+		logger.info(error)
+    logger.error(`Leccion Controller Error ${error}`)
+    return responses.noEncontrado(res)
+	})
 }
-
-module.exports = Lecciones

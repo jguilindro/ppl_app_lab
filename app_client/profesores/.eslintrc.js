@@ -1,5 +1,4 @@
 // http://eslint.org/docs/user-guide/configuring
-
 module.exports = {
   root: true,
   parser: 'babel-eslint',
@@ -24,6 +23,7 @@ module.exports = {
   },
   // add your custom rules here
   'rules': {
+    "linebreak-style": 0,
     // don't require .vue extension when importing
     "no-console": 0,
     'import/extensions': ['error', 'always', {

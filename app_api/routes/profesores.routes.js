@@ -1,23 +1,8 @@
 const ProfesorController = require('../controllers/profesores.controller')
-const Profesor = require('../models/profesor.model')
 
-const ProfesorModel = new Profesor(logger, db)
+const express = require('express');
+const router  = express.Router();
 
-const Profesores = new ProfesorController(logger, responses, ProfesorModel)
+router.get('/', ProfesorController.getAll)
 
-module.exports = (app) => {
-  app.route('/profesores')
-    .get((req, res) => {
-      Profesores.getAll()
-        .then((respuesta) => {
-          res.status(respuesta.codigo_estado)
-          res.json(respuesta)
-          return res
-        })
-        .catch((err) => {
-          res.status(err.codigo_estado)
-          res.json(err.estado)
-          return res
-        })
-    })
-}
+module.exports = router
