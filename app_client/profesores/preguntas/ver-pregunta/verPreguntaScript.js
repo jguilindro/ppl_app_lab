@@ -24,7 +24,7 @@ var pregunta = new Vue({
 			$('.myEditor').materialnote();
 			$('.note-editor').find('button').attr('type', 'button');		//No borrar. Corrige el error estupido de materialNote
 			$('select').material_select();
-			$('.modal').modal();
+			// $('.modal').modal();
 		},
 		obtenerUsuario: function(self) {
       this.$http.get('/api/session/usuario_conectado').
@@ -180,6 +180,10 @@ var pregunta = new Vue({
       }
       xhr.send(files[0]);
     },
+    mostrarModalEliminar: function(){
+    	$('.modal').modal();
+		$('#modalEliminar').modal('open');
+	},
     eliminarDiv: function(idDiv){
       this.subTotales--;
       $(idDiv).empty();
@@ -222,7 +226,7 @@ var pregunta = new Vue({
 				self.vincularSubpreguntas();
 				console.log('Pregunta actualizada: ');
 				console.log(self.preguntaEditar);
-				var preguntaId = window.location.href.toString().split('/')[6]
+				var preguntaId = window.location.href.toString().split('/')[5]
 				var url = '/api/preguntas/' + preguntaId;
 				this.$http.put(url, self.preguntaEditar).then(response => {
 					location.reload();
@@ -237,8 +241,8 @@ var pregunta = new Vue({
 		eliminarPregunta: function(){
 			var self = this;
 			if(self.eliminable){
-				var url = '/api/preguntas/'
-				var preguntaId = window.location.href.toString().split('/')[6];
+				var url = '/api/preguntas/'				
+				var preguntaId = window.location.href.toString().split('/')[5];
 				url = url + preguntaId;
 				this.$http.delete(url).then(response => {
 					//Success callback

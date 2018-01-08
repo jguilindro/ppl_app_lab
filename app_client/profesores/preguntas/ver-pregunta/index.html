@@ -93,7 +93,8 @@
 	              </section>
 	            	<section class="row row-ver" id="row-ver-btn">
 	            		<a class="waves-effect waves-light btn pull right" @click="mostrarEditar" v-if="editable">Editar</a>
-	            		<a class="waves-effect waves-light btn"  href="#modalEliminar" v-if="eliminable">Eliminar</a>
+	            		<a class="waves-effect waves-light btn" @click="mostrarModalEliminar" v-if="eliminable">
+	            		Eliminar</a>
 	            	</section>
 	            </div>
 	          </div>
@@ -193,10 +194,10 @@
 							</div>
 						</div>
 					</div>
-	      </section>
+	        </section>
 	      <!-- Fin editar pregunta -->
 	      <!-- Modal Eliminar Structure -->
-			  <div id="modalEliminar" class="modal">
+			<div id="modalEliminar" class="modal">
 			    <div class="modal-content">
 			      <h4 class="center-align">Eliminar</h4>
 			      <p class="center-align">¿Desea eliminar la pregunta?</p>
