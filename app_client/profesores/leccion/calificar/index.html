@@ -58,13 +58,13 @@
                   </section>
                   <section class="col s5 col-calificacion">
                     <label :for="'calificacion-'+pregunta.ordenP+'-'+sub.orden">Calificación</label>
-                    <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-'+pregunta.ordenP+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada" >
-                    <!--<select :id="'calificacion-'+pregunta.ordenP+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada">
+                    <!--<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-'+pregunta.ordenP+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada" >-->
+                    <select :id="'calificacion-'+pregunta.ordenP+'-'+sub.orden" :value="sub.calificacion" :disabled="sub.calificada">
                       <option value="" selected="true" disabled="true"></option>
                       <option value="0">0</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
-                    </select>-->
+                    </select>
                     <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'fb-'+pregunta.ordenP+'-'+sub.orden" :value="sub.feedback" :disabled="sub.calificada"></textarea>
                     <button class="waves-effect waves-light btn pull right" :id="'btn-'+pregunta.ordenP+'-'+sub.orden" @click="calificarSub(pregunta, sub)" :disabled="sub.calificada">Calificar</button>
                   </section>
@@ -79,13 +79,13 @@
                 <img :src="pregunta.imagen" :id="'img-'+pregunta.ordenP">
               </section>
               <section class="col s5 col-calificacion">
-                <input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-' + pregunta._id">
-                <!--<select :id="'calificacion-' + pregunta._id" :value="pregunta.calificacion" :disabled="pregunta.calificada">
+                <!--<input class="form-control" type="number" name="calificacion" placeholder="Calificación" min="0" max="2" :id="'calificacion-' + pregunta._id">-->
+                <select :id="'calificacion-' + pregunta._id" :value="pregunta.calificacion" :disabled="pregunta.calificada">
                   <option value="" selected="true" disabled="true"></option>
                   <option value="0">0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
-                </select>-->
+                </select>
                 <textarea class="materialize-textarea" name="feedback" placeholder="Feedback" :id="'feedback-' + pregunta._id" :value="pregunta.feedback" :disabled="pregunta.calificada"></textarea>
                 <button class="waves-effect waves-light btn pull right" @click="calificar(pregunta)" :id="'btn-' + pregunta._id" :disabled="pregunta.calificada">Calificar</button>  
               </section>
