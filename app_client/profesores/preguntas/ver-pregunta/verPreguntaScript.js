@@ -80,9 +80,6 @@ var pregunta = new Vue({
 				self.aux = !self.aux;
 				//Copio los valores de la pregutaObtenida en preguntaEditar que será un temporal
 				self.preguntaEditar = self.preguntaObtenida;
-				
-				console.log(this.preguntaEditar);
-				console.log(this.preguntaObtenida);
 
 				$('.myEditor').materialnote();
 				$('#firstEditor').code(self.preguntaEditar.descripcion);
@@ -230,8 +227,6 @@ var pregunta = new Vue({
 				self.vincularSubpreguntas();
 				// Selecciona la descripción y la actualiza
 				this.preguntaEditar.descripcion = $('#firstEditor').code();
-				// Vincula campo "capitulo", "tutorial" o "laboratorio", dependiendo de la pregunta.
-				self.vincularAnotacion();
 
 				console.log('Pregunta actualizada: ');
 				console.log(self.preguntaEditar);
@@ -245,17 +240,6 @@ var pregunta = new Vue({
 			}else{
 				alert('Usted no puede editar ni eliminar esta pregunta.');
 			}
-		},
-		vincularAnotacion: function(){
-			// if(preguntaEditar.tipoLeccion=="estimacion"){
-			// 	// this.preguntaEditar
-			// }
-			// if(preguntaEditar.tipoLeccion=="tutorial"){
-				
-			// }
-			// if(preguntaEditar.tipoLeccion=="laboratorio"){
-				
-			// }
 		},
 		eliminarPregunta: function(){
 			var self = this;
