@@ -71,10 +71,10 @@ var App = new Vue({
         this.obtenerPreguntas(this.leccion);
         this.obtenerTabsPreguntas();
         $('.collapsible').collapsible({
-        onOpen: function(el) {
-          var self = this;
-          self.CollapsibleOpen = true;
-        }
+          onOpen: function(el) {
+            var self = this;
+            self.CollapsibleOpen = true;
+          }
       });
       })
     },
@@ -155,7 +155,6 @@ var App = new Vue({
         a = i+1
         $tabs.children().removeAttr('style');  
         $tabs.append('<li class="tab col s3"><a href="#'+a+'">Seccion '+a+'</a></li>');
-       
         $tabs.tabs().tabs('select_tab','Seccion'+i);
       }
     },
