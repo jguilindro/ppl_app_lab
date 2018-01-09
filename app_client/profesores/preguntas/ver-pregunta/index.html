@@ -133,7 +133,7 @@
 										<!--Tipos-->
 										<section class="row row-editar" id="row-editar-tipos">
 											<article class="input-field col s6">
-												<select id="select-editar-tipo-pregunta" v-model="preguntaEditar.tipoPregunta">
+												<select id="select-editar-tipo-pregunta" onchange="actualizarTipoPregunta(this);" v-model="preguntaEditar.tipoPregunta">
 													<option value="" disabled selected></option>
 													<option value="opcion">Opcion multiple</option>
 													<option value="v_f">V/F</option>
@@ -142,7 +142,7 @@
 												<label>Tipo de pregunta:</label>
 											</article>
 											<article class="input-field col s6">
-												<select id="select-editar-tipo-leccion" v-model="preguntaEditar.tipoLeccion">
+												<select id="select-editar-tipo-leccion" onchange="actualizarTipoLeccion(this);" v-model="preguntaEditar.tipoLeccion">
 													<option value="" disabled selected></option>
 													<option value='estimacion'>Estimación</option>
 										      <option value='tutorial'>Tutorial</option>
