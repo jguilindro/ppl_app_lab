@@ -91,7 +91,8 @@ var practica = new Vue({
     },
     filtrarPreguntasPorMateria: function(arrayPreguntas, codigoMateria){
     	return $.grep( arrayPreguntas, function(pregunta, index){
-    		return pregunta.capitulo.codigoMateria === codigoMateria;
+    		if(pregunta.capitulo !== null)
+    			return pregunta.capitulo.codigoMateria === codigoMateria;
     	});
     },
     filtrarPreguntasPorTipoLeccion: function(arrayPreguntas, tipoLeccion){
@@ -134,6 +135,7 @@ var practica = new Vue({
 		},
 		eliminarPregunta: function(id){
 			var url = '/api/preguntas/' + id;
+			// console.log(this.preg)
 			this.$http.delete(url).then(response => {
 				console.log(response)
 				//ELIMINAR LA PREGUNTA DE SELF.CAPITULOS
