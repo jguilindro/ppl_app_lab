@@ -1,10 +1,56 @@
 const RespuestaModel = require('../models/respuestas.model');
 var response  			 = require('../utils/responses');
-const co 		  			 = require('co');
+
+const co 		 = require('co');
+const multer = require('multer');
+const path   = require('path');
+
+const storage = multer.diskStorage({
+	destination : 'public/imagenes',
+	filename    : function(req, file, cb){
+		const nombre = file.originalname.split('.')[0];
+		cb(null, nombre + '-' + Date.now() + path.extname(file.originalname));
+	}
+});
+
+const upload = multer({
+	storage : storage,
+	fileFilter : function(req, file, cb){
+		checkFileType(file, cb);
+	}
+}).single('imagenes');
+
+function checkFileType(file, cb){
+	//Allowed ext
+	const filetypes = /jpeg|jpg|png/;
+	//Test ext
+	const extname  = filetypes.test( path.extname(file.originalname).toLowerCase() );
+	//Test mimetype
+	const mimetype = filetypes.test(file.mimetype);
+
+	if( extname && mimetype ){
+		return cb(null, true);
+	}else { 
+		return cb('Error: Images Only!');
+	}
+}
+
+const subirImagen = (req, res, next) => {
+	upload(req, res, (err) => {
+		if (err) {
+			return response.serverError(res);
+		} else { 
+			if ( req.file == undefined ) {
+				return response.serverError(res);
+			}
+			const path = '/imagenes/' + req.file.filename;
+			return response.creado(res, path);
+		}
+	});
+};
 
 
 const crearRespuesta = (req, res) => {
-	//console.log(req.body)
 	let arraySubrespuestas = JSON.parse(req.body.arraySubrespuestas);
 	let resp = new RespuestaModel({
 		estudiante 	: req.body.estudiante,
@@ -21,7 +67,7 @@ const crearRespuesta = (req, res) => {
 	});
 	co(function* (){
 		let respuesta = yield  obtenerRespuestaDeEstudianteP(req.body.leccion, req.body.pregunta, req.body.estudiante);
-		console.log(respuesta)
+		//console.log(respuesta)
 		if( respuesta == null ){
 			resp.crearRespuesta( err => {
 				if(err) return response.serverError(res);
@@ -116,7 +162,8 @@ module.exports = {
 	obtenerRespuestaPorId,
 	calificarRespuestaGrupal,
 	obtenerRespuestasPorGrupoAPreguntaGet,
-	calificarSub
+	calificarSub,
+	subirImagen
 }
 
 

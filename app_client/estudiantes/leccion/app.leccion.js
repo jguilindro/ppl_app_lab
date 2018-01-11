@@ -77,24 +77,6 @@ let App = new Vue({
       }
     },
     /*
-      Función que añade o quita el gif de loading
-      Requiere el estado, si está cargando algo o no.
-        Si es true, añade el loading en el botón indicado
-        Si es false lo remueve
-    */
-    loading: function(estado, idBtn){
-      if(estado){
-        $(idBtn).empty();
-        $(idBtn).append('<div class="preloader-wrapper small active onLoad"></div>');
-        $('.onLoad').append('<div class="spinner-layer spinner-blue-only load-2"></div>');
-        $('.load-2').append('<div class="circle-clipper left load-3"></div>');
-        $('.load-3').append('<div id="load-4" class="circle"></div>');
-      }else{
-        $(idBtn).empty();
-        $(idBtn).html('Responder')
-      }
-    },
-    /*
       Desbloquea el tab de la siguiente sección al terminar la sección actual
     */
     habilitarSiguienteSeccion: function(pregunta, arrayP){
@@ -116,51 +98,6 @@ let App = new Vue({
         pSig.terminada  = '';  
       }
       return true;
-    },
-    /*
-      Comprime la imagen que el estudiante seleccionó
-      Luego de eso la sube a imgur
-    */
-    comprimirSub: function(pregunta, sub){
-      var output_format = "jpg";
-      var source_image  = document.getElementById('source_image-'+pregunta.ordenP+'-'+sub.orden);
-      var result_image  = document.getElementById('result_image-'+pregunta.ordenP+'-'+sub.orden);
-      var quality       = 15;
-      const idResultImg = '#result_image-'+pregunta.ordenP+'-'+sub.orden;
-      //Espera a que cargue la imagen para poder realizar la compresion y asignarla a la subpregunta
-      $('#source_image-'+pregunta.ordenP+'-'+sub.orden).ready(function(){
-        sub.imagen = jic.compress(source_image, quality, output_format).src;
-        $(idResultImg)
-                      .addClass('materialboxed imagen')
-                      .materialbox()
-                      .hide();
-      });
-      //Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
-      $('#result_image-'+pregunta.ordenP+'-'+sub.orden).ready(function(){
-        App.subirImagenSub((sub.imagen).substring(23), pregunta, sub);
-      });
-    },
-    /*
-      Comprime la imagen que el estudiante seleccionó
-      Luego de eso la sube a imgur
-    */
-    comprimir: function(pregunta){
-      var output_format = "jpg";
-      var source_image  = document.getElementById('source_image-'+pregunta._id);
-      var result_image  = document.getElementById('result_image-'+pregunta._id);
-      var quality       = 15;
-      const idResultImg = '#result_image-' + pregunta._id;
-      $('#source_image-'+pregunta._id).ready(function(){//Espera a que cargue la imagen para poder realizar la compresion
-        pregunta.imagenes = jic.compress(source_image, quality, output_format).src;
-        $(idResultImg)
-                      .addClass('materialboxed imagen')
-                      .materialbox()
-                      .hide();
-      });
-
-      $('#result_image-'+pregunta._id).ready(function(){
-        App.subirImagen((pregunta.imagenes).substring(23), pregunta);//Se convierte el SRC de la imagen comprimida a un formato que el API de imgur pueda leer
-      });
     },
     //////////////////////////////////////////////////////
     //LLAMADAS A LA API
@@ -195,7 +132,7 @@ let App = new Vue({
         type   : 'POST',
         data   : respuesta,
         success: function(res){
-          App.loading(false, idBtn);
+          loading(false, idBtn);
           Materialize.toast('¡Su respuesta ha sido enviada!', 5000, 'rounded');
           pregunta.respondida    = true;  
           const seccionTerminada = ( App.verificarPreguntasSeccion(pregunta) );
@@ -204,7 +141,7 @@ let App = new Vue({
           }
         },
         error  : function(err){
-          App.loading(false, idBtn);
+          loading(false, idBtn);
           Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 1000, 'rounded');
           sub.respondida = false;
         }
@@ -223,7 +160,7 @@ let App = new Vue({
         type   : 'PUT',
         data   : respuesta,
         success: function(res){
-          App.loading(false, idBtn);
+          loading(false, idBtn);
           Materialize.toast('¡Su respuesta ha sido enviada!', 2000, 'rounded');
           const seccionTerminada = ( App.verificarPreguntasSeccion(pregunta) );
           if( seccionTerminada ){
@@ -231,51 +168,27 @@ let App = new Vue({
           }
         },
         error: function(err){
-          App.loading(false, idBtn);
+          loading(false, idBtn);
           Materialize.toast('¡Algo ha pasado!, no hemos podido enviar su respuesta', 2000, 'rounded red');
           sub.respondida = false;
         }
       });
     },
     /*
-      Sube la imagen ya comprimida a imgur y obtiene el link
-    */
-    subirImagenSub: function(imagenSrc, pregunta, sub){
-      let idBtn    = '#btn-responder-sub-' + pregunta.ordenP + '-' + sub.orden;
-      let clientId = "300fdfe500b1718";
-      let xhr      = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.imgur.com/3/image', true);
-      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      xhr.onreadystatechange = function(){
-        sub.respondida = false;
-        if ( xhr.status === 200 && xhr.readyState === 4 ) {
-          //Asigno el link de imgur como el src de la imagen y la muestro
-          const url         = JSON.parse(xhr.responseText);
-          sub.imagen        = url.data.link;
-          const idResultImg = '#result_image-'+pregunta.ordenP+'-'+sub.orden;
-          $(idResultImg).show();
-          //Quito el loading
-          const idLoading   = '#loading-' + pregunta.ordenP + '-' + sub.orden;
-          $(idLoading).hide();
-
-          Materialize.toast('Imagen subida exitosamente', 3000, 'rounded');
-        }
-        if (xhr.status === 400){
-          Materialize.toast('Hubo un error al subir la imagen. Intentelo de nuevo.', 5000, 'rounded red');
-          sub.imagen = '';
-        }
-      }
-      xhr.send(imagenSrc);//Envia la imagen
-    },
-    /*
       Se ejecuta solo si no es tutorial o si es de FC
-      Función que se ejecutará para enviar una respuesta por primera vez
+      @Descripción:
+        * Sube una respuesta a la base de datos
+      @Params:
+        * pregunta  ->  json de la pregunta que el estudiante respondió
+        * respuesta ->  json de la respuesta a enviar
+      @Success:
+        * Verifica si el estudiante ha terminado de responder todas las preguntas.
+      @Error:
+        * Marca la pregunta como no respondida. Habilita los inputs
     */
-    enviarRespuesta: function(pregunta, idEstudiante, idLeccion, idParalelo, idGrupo){
-      const respuesta = App.crearRespuesta(pregunta._id, idEstudiante, idLeccion, idParalelo, idGrupo, pregunta);  //Se crea el objeto Respuesta que se enviará a la base de datos
-      const urlApi    = '/api/respuestas/';
+    enviarRespuesta: function(pregunta, respuesta){
       $.ajax({
-        url    : urlApi,
+        url    : '/api/respuestas/',
         type   : 'POST',
         data   : respuesta,
         success: function(res){
@@ -293,33 +206,41 @@ let App = new Vue({
       });
     },
     /*
-      Sube la imagen ya comprimida a imgur y obtiene el link
+      @Descripcón:
+        * Sube la imagen al servidor.
+      @Params:
+        * data     -> imagen en base64 que se va a subir al servidor.
+        * pregunta -> json de la pregunta que el estudiante respondió con la imagen.
+      @Success:
+        * Añade el path de la imagen en pregunta.imagenes.
+        * Desbloquea botones y quita el loading.
+      @Error:
+        * Desbloquea botones, quita loading y vacía el input.
     */
-    subirImagen: function(imagenSrc, pregunta){
-      let clientId = "300fdfe500b1718";
-      let xhr      = new XMLHttpRequest();
-      xhr.open('POST', 'https://api.imgur.com/3/image', true);
-      xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      xhr.onreadystatechange = function () {
-        pregunta.respondida = false;
-        if ( xhr.status === 200 && xhr.readyState === 4 ) {
-          //Asigno el link de imgur como el src de la imagen y la muestro
-          const url         = JSON.parse(xhr.responseText);
-          pregunta.imagenes = url.data.link;
-          const idResultImg = '#result_image-' + pregunta._id;
-          $(idResultImg).show();
-          //Quito el loading
-          const idLoading   = '#loading-' + pregunta._id;
-          $(idLoading).hide();
-
+    subirImagen: function(data, pregunta, idLoading, idFI){
+      $.ajax({
+        type : 'POST',
+        url  :'/api/respuestas/imagen',
+        data : data,
+        timeout     : 300000, //5 minutos
+        cache       : false,
+        contentType : false,
+        processData : false,
+        mimeType    : 'multipart/form-data',
+        success : function(res) {
+          res               = JSON.parse(res)
+          pregunta.imagenes = res.datos;
+          pregunta.imagen   = res.datos;
+          App.imagenHandler(pregunta, true, idLoading, idFI);
           Materialize.toast('Imagen subida exitosamente', 3000, 'rounded');
-        }
-        if (xhr.status === 400){
+        },
+        error   : function(XMLHttpRequest, textstatus, message) {
           pregunta.imagenes = '';
-          Materialize.toast('Hubo un error al subir la imagen. Intentelo de nuevo.', 5000, 'rounded red');
+          pregunta.imagen   = '';
+          App.imagenHandler(pregunta, false, idLoading, idFI);
+          Materialize.toast('Hubo un error al subir la imagen. Intente nuevamente.', 5000, 'rounded red');
         }
-      }
-      xhr.send(imagenSrc);//Envia la imagen
+      });
     },
     /*
       @Descripcion: Esta función se ejecutará cuando el estudiante quiera responder una pregunta que ya fue respondida y tenga habilitada la opción para responder preguntas.
@@ -367,8 +288,8 @@ let App = new Vue({
     responderSub: function(pregunta, sub){
       sub.respondida  = true;   //Bloquea el textarea/btn/fileInput. 
       const idBtn     = '#btn-responder-sub-' + pregunta.ordenP + '-' + sub.orden;
-      App.loading(true, idBtn); //Se añade el loading al btn
-      const respuesta = App.crearRespuesta(pregunta._id,App.estudiante._id,App.leccion._id,App.estudiante.paralelo,App.estudiante.grupo,pregunta);  
+      loading(true, idBtn); //Se añade el loading al btn
+      const respuesta = crearRespuesta(pregunta._id,App.estudiante._id,App.leccion._id,App.estudiante.paralelo,App.estudiante.grupo,pregunta);  
       if( pregunta.respondida ){
         const obj = {
           leccion       : App.leccion._id,
@@ -383,26 +304,38 @@ let App = new Vue({
     },
     /*
       Esta función se ejecuta cuando el estudiante selecciona una imagen para subir como respuesta
-      Comprime la imagen, la sube a imgur y obtiene el link. El cual se ubica en el objeto respuesta a enviar
+      Comprime la imagen, la sube al servidor y obtiene el path. El cual se ubica en el objeto respuesta a enviar
     */
     getImageSub: function(pregunta, sub, event){
-      //Se marca la pregunta como respondida. Lo cual bloquea el textarea/btn/fileInput. Se añade el loading al btn
-      sub.respondida  = true;
-      const idLoading = '#loading-' + pregunta.ordenP + '-' + sub.orden;
-      $(idLoading).show();
-      //Obtengo la imagen ingresada
-      let input      = event.target;
-      let idSrcImage = '#source_image-' + pregunta.ordenP + '-' + sub.orden;
-      //Si hay una imagen en el input, se la comprime
-      if( input.files && input.files[0] ){
-        let reader    = new FileReader();
-        reader.onload = function(e){
-          $(idSrcImage).attr('src', e.target.result).hide();
-          App.comprimirSub(pregunta, sub);
-        };
-        reader.readAsDataURL(input.files[0]);
+      const file = event.target.files[0];
+      if (!file) {
+        return;
       }
+      sub.respondida  = true;                                     //Se marca la pregunta como respondida. Lo cual bloquea el textarea/btn/fileInput. 
+      const idLoading = '#loading-' + pregunta.ordenP + '-' + sub.orden;
+      const idFI      = '#fi-' + pregunta.ordenP + '-' + sub.orden;
+      $(idLoading).show();  //Se añade el loading al btn
+      //Se comprime la imagen
+      new ImageCompressor(file, {
+        quality: .3,
+        success(result) {
+          //Enviar imagen al servidor
+          let formData = new FormData();
+          formData.append('imagenes', result, result.name);
+          App.subirImagen(formData, sub, idLoading, idFI);
+        },
+        error(e) {
+          console.log(e.message);
+          App.imagenHandler(sub, false, idLoading, idFI);
+        },
+      });
     },
+    /*
+      Esta función se ejecuta cuando el estudiante da click a responder (laboratorio|estimación).
+      @Descripción:
+        * Marca la pregunta como respondida para bloquear los inputs.
+        * Envía la respuesta o la corrige.
+    */
     responderP: function(pregunta){
       const yaFueRespondida = pregunta.respondida;  //Esto funciona...
       pregunta.respondida   = true;                 //Bloquea los inputs de la pregunta actual
@@ -413,8 +346,37 @@ let App = new Vue({
           $('#modalCorregirRespuesta').modal('open');
         }
       }else{
-        App.enviarRespuesta(pregunta, App.estudiante._id, App.leccion._id, App.estudiante.paralelo, App.estudiante.grupo);
+        const respuesta = crearRespuesta(pregunta._id, App.estudiante._id, App.leccion._id, App.estudiante.paralelo, App.estudiante.grupo, pregunta);  //Se crea el objeto Respuesta que se enviará a la base de datos
+        App.enviarRespuesta(pregunta, respuesta);
       }
+    },
+    /*
+      Esta función se ejecuta cuando el estudiante selecciona una imagen para subir como respuesta
+      Comprime la imagen, la sube al servidor y obtiene el path. El cual se ubica en el objeto respuesta a enviar
+    */
+    getImageP: function(pregunta, event) {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+      pregunta.respondida = true;           //Se marca la pregunta como respondida, lo cual bloquea el textarea/btn/fileInput.
+      const idLoading     = '#loading-' + pregunta._id;
+      const idFI          = '#fi-' + pregunta._id;
+      $(idLoading).show(); //Se añade el loading
+      //Se comprime la imagen
+      new ImageCompressor(file, {
+        quality: .3,
+        success(result) {
+          //Enviar imagen al servidor
+          let formData = new FormData();
+          formData.append('imagenes', result, result.name);
+          App.subirImagen(formData, pregunta, idLoading, idFI)
+        },
+        error(e) {
+          console.log(e.message);
+          App.imagenHandler(pregunta, false, idLoading, idFI);
+        },
+      });
     },
     /*
       Función del modal. Si el estudiante escoge la opción de corregir respuestas
@@ -426,105 +388,9 @@ let App = new Vue({
         actualP.respondida = false;
       }
     },
-    /*
-      Esta función se ejecuta cuando el estudiante selecciona una imagen para subir como respuesta
-      Comprime la imagen, la sube a imgur y obtiene el link. El cual se ubica en el objeto respuesta a enviar
-    */
-    getImageP: function(pregunta, event) {
-      //Se marca la pregunta como respondida. Lo cual bloquea el textarea/btn/fileInput. Se añade el loading al btn
-      pregunta.respondida = true;
-      const idLoading     = '#loading-' + pregunta._id;
-      $(idLoading).show();
-      //Obtengo la imagen ingresada
-      let input      = event.target;
-      let idSrcImage = '#source_image-' + pregunta._id;
-      //Si hay una imagen en el input, se la comprime
-      if (input.files && input.files[0]) {
-        var reader    = new FileReader();
-        reader.onload = function (e) {
-          $(idSrcImage).attr('src', e.target.result);
-          App.comprimir(pregunta);//Comprime la imagen obtenida
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    },
     //////////////////////////////////////////
     //HELPERS
     //////////////////////////////////////////
-   /*
-      Esta función crea el objeto Respuesta que se enviará a la base de datos.
-      @FechaModificación: 
-        04-10-2017 @edisonmora95 añadido campo de subrespuestas
-    */
-    crearRespuesta: function(idPregunta, idEstudiante, idLeccion, idParalelo, idGrupo, pregunta){
-      // Armo el array de subrespuestas
-      let arraySubrespuestas  = App.armarArraySubrespuestas(pregunta); //Si la pregunta no tiene subpreguntas, esto queda vacío
-      var arraySubrespuestas2 = JSON.stringify(arraySubrespuestas);
-      //Creo el JSON
-      const respuesta         = {
-        estudiante         : idEstudiante,
-        leccion            : idLeccion,
-        pregunta           : idPregunta,
-        paralelo           : idParalelo,
-        grupo              : idGrupo,
-        contestado         : true,
-        respuesta          : pregunta.respuesta,
-        feedback           : '',
-        calificacion       : 0,
-        imagenes           : pregunta.imagenes,
-        arraySubrespuestas : arraySubrespuestas2
-      };
-      //Creo el socket con la respuesta del estudiante y lo envío al profesor
-      let respuesta_realtime = App.crearSocket(App.estudiante, App.grupo, idLeccion, idParalelo, pregunta, pregunta.respuesta, pregunta.imagenes, arraySubrespuestas);
-      socket.emit('respuesta estudiante', respuesta_realtime);
-      return respuesta;
-    },
-    /*
-      Dada la pregunta ingresada como parámetro, obtiene todas las subrespuestas ingresadas por el estudiante y las añade a un array con el orden de la pregunta a la que pertenece
-    */
-    armarArraySubrespuestas: function(pregunta){
-      let arraySubrespuestas = [];
-      for (let i = 0; i < pregunta.subpreguntas.length; i++) {
-        let subActual    = pregunta.subpreguntas[i];
-        let subrespuesta = {
-          respuesta    : subActual.respuesta,
-          ordenPregunta: subActual.orden,
-          feedback     : '',
-          calificacion : 0,
-          imagen       : subActual.imagen
-        };
-        if( subActual.respondida ){
-          arraySubrespuestas.push(subrespuesta);
-        }
-      }
-      return arraySubrespuestas;
-    },
-    /*
-      Crea el json que se va a enviar como socket al profesor para el realtime
-    */
-    crearSocket: function(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
-      let respuesta_realtime = {
-        estudianteId       : estudiante._id,
-        estudianteNombre   : estudiante.nombres,
-        estudianteApellido : estudiante.apellidos,
-        grupoId            : grupo._id,
-        grupoNombre        : grupo.nombre,
-        leccion            : idLeccion,
-        paralelo           : idParalelo,
-        pregunta           : pregunta._id,
-        preguntaNombre     : pregunta.nombre,
-        descripcion        : pregunta.descripcion,
-        subpreguntas       : pregunta.subpreguntas, 
-        orden              : pregunta.ordenP,
-        respuesta          : respuesta,
-        feedback           : '',
-        calificacion       : 0,
-        imagenes           : urlImagen,
-        visitado           : false,
-        arraySubrespuestas : arraySubrespuestas
-      };
-      return respuesta_realtime;
-    },
     /*
       Retorna true si todas las preguntas de la sección fueron respondidas
     */
@@ -552,8 +418,114 @@ let App = new Vue({
       });
       return todasRespondidas;
     },
+    /*
+      Esta función se ejecuta cuando hay un error al comprimir o subir una imagen, o cuando se termina de subir al servidor
+      Marca la pregunta como respondida, para desbloquear el textarea/btn/file input
+      Quita el loading de la pantalla
+      Si el estado es false, la imagen no se subió/comprimió. Entonces vacía el file input
+    */
+    imagenHandler(pregunta, estado, idLoading, idFI){
+      pregunta.respondida = false;
+      $(idLoading).hide();
+      if ( !estado ) {
+        $(idFI).val('');
+      }
+    },
   }
 });
+
+/*
+  Esta función crea el objeto Respuesta que se enviará a la base de datos.
+  @FechaModificación: 
+    04-10-2017 @edisonmora95 añadido campo de subrespuestas
+*/
+function crearRespuesta(idPregunta, idEstudiante, idLeccion, idParalelo, idGrupo, pregunta) {
+  // Armo el array de subrespuestas
+  let arraySubrespuestas  = armarArraySubrespuestas(pregunta); //Si la pregunta no tiene subpreguntas, esto queda vacío
+  var arraySubrespuestas2 = JSON.stringify(arraySubrespuestas);
+  //Creo el JSON
+  const respuesta         = {
+    estudiante         : idEstudiante,
+    leccion            : idLeccion,
+    pregunta           : idPregunta,
+    paralelo           : idParalelo,
+    grupo              : idGrupo,
+    contestado         : true,
+    respuesta          : pregunta.respuesta,
+    feedback           : '',
+    calificacion       : 0,
+    imagenes           : pregunta.imagenes,
+    arraySubrespuestas : arraySubrespuestas2
+  };
+  //Creo el socket con la respuesta del estudiante y lo envío al profesor
+  let respuesta_realtime = crearSocket(App.estudiante, App.grupo, idLeccion, idParalelo, pregunta, pregunta.respuesta, pregunta.imagenes, arraySubrespuestas);
+  socket.emit('respuesta estudiante', respuesta_realtime);
+  return respuesta;
+}
+/*
+  Dada la pregunta ingresada como parámetro, obtiene todas las subrespuestas ingresadas por el estudiante y las añade a un array con el orden de la pregunta a la que pertenece
+*/
+function armarArraySubrespuestas(pregunta) {
+  let arraySubrespuestas = [];
+  for (let i = 0; i < pregunta.subpreguntas.length; i++) {
+    let subActual    = pregunta.subpreguntas[i];
+    let subrespuesta = {
+      respuesta    : subActual.respuesta,
+      ordenPregunta: subActual.orden,
+      feedback     : '',
+      calificacion : 0,
+      imagen       : subActual.imagen
+    };
+    if( subActual.respondida ){
+      arraySubrespuestas.push(subrespuesta);
+    }
+  }
+  return arraySubrespuestas;
+}
+/*
+  Crea el json que se va a enviar como socket al profesor para el realtime
+*/
+function crearSocket(estudiante, grupo, idLeccion, idParalelo, pregunta, respuesta, urlImagen, arraySubrespuestas){
+  let respuesta_realtime = {
+    estudianteId       : estudiante._id,
+    estudianteNombre   : estudiante.nombres,
+    estudianteApellido : estudiante.apellidos,
+    grupoId            : grupo._id,
+    grupoNombre        : grupo.nombre,
+    leccion            : idLeccion,
+    paralelo           : idParalelo,
+    pregunta           : pregunta._id,
+    preguntaNombre     : pregunta.nombre,
+    descripcion        : pregunta.descripcion,
+    subpreguntas       : pregunta.subpreguntas, 
+    orden              : pregunta.ordenP,
+    respuesta          : respuesta,
+    feedback           : '',
+    calificacion       : 0,
+    imagenes           : urlImagen,
+    visitado           : false,
+    arraySubrespuestas : arraySubrespuestas
+  };
+  return respuesta_realtime;
+}
+/*
+  Función que añade o quita el gif de loading
+  Requiere el estado, si está cargando algo o no.
+    Si es true, añade el loading en el botón indicado
+    Si es false lo remueve
+*/
+function loading(estado, idBtn) {
+  if(estado){
+    $(idBtn).empty();
+    $(idBtn).append('<div class="preloader-wrapper small active onLoad"></div>');
+    $('.onLoad').append('<div class="spinner-layer spinner-blue-only load-2"></div>');
+    $('.load-2').append('<div class="circle-clipper left load-3"></div>');
+    $('.load-3').append('<div id="load-4" class="circle"></div>');
+  }else{
+    $(idBtn).empty();
+    $(idBtn).html('Responder')
+  }
+}
 
 socket.on('tiempo restante', function(tiempo) {
   App.tiempo = tiempo
@@ -614,4 +586,3 @@ supportsWebSockets = 'WebSocket' in window || 'MozWebSocket' in window;
 if (!supportsWebSockets) {
   Materialize.toast('No Soportado', 6000)
 }
-
