@@ -112,7 +112,6 @@ const crearLeccion = (req, res) => {
         paralelo      : leccionCreada.paralelo,
         nombreParalelo: paralelo.nombre
       });
-      console.log('registro:', registro)
       yield crearRegistroCalificacion(registro);
     }
     return respuesta.creado(res, leccionCreada);

@@ -28,7 +28,7 @@ let App = new Vue({
 	    $('.scrollspy').scrollSpy();
 	    $('.modal').modal();
 	    $('.tooltipped').tooltip({delay: 50});
-	    //$('select').material_select();
+	    $('select').material_select();
   	},
   	//////////////////////////////////////////////////////
     //LLAMADAS A LA API
@@ -54,7 +54,9 @@ let App = new Vue({
               self.modificarCalificacionLeccion(actual.calificacion, actual.puntaje);
             }
           }
-          //$('select').material_select();
+          window.setTimeout(function(){
+	          $('select').material_select();  
+	        }, 1000);
   			},
   			error: function(err){
   				console.log(err)
@@ -93,6 +95,7 @@ let App = new Vue({
   			type : 'PUT',
   			data : data,
   			success: function(res){
+  				pregunta.calificada  = true;
   				Materialize.toast('¡Su calificación ha sido enviada!', 1000, 'rounded');
   			},
   			error: function(err){
@@ -149,13 +152,13 @@ let App = new Vue({
 			$(idTextarea).prop('disabled', true);
 			$(idBtn).prop('disabled', true);
 			$(idSelect).prop('disabled', true);
-			//$(idSelect).material_select();
+			$(idSelect).material_select();
 		},
 		desbloquearElementos: function(idSelect, idTextarea, idBtn){
 			$(idTextarea).prop('disabled', false);
 			$(idBtn).prop('disabled', false);
 			$(idSelect).prop('disabled', false);
-			//$(idSelect).material_select();
+			$(idSelect).material_select();
 		},
 		/*
 			Añade los valores de respuesta al objeto de pregunta
@@ -198,6 +201,7 @@ let App = new Vue({
 			//Marco la pregunta como calificada y le asigno la calificación y el feedback
 			const feedback     	  = $(idTextarea).val();
 			pregunta.calificada   = true;
+			$('select').material_select();
 			pregunta.calificacion = calificacion;
 			pregunta.feedback 		= feedback;
 			//Deshabilito el select y el textarea manualmente porque Materialize no se lleva con Vue...

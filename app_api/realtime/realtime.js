@@ -55,7 +55,7 @@ function realtime(io) {
     function profesorRealtime(boton, pausada) {
 
       //loggerCPU()
-      console.log('profesor realtime');
+      logger.trace('profesor realtime')
       co(function *() {
         const HORA_LOCAL = moment();
         const CURRENT_TIME_GUAYAQUIL = moment(HORA_LOCAL.tz('America/Guayaquil').format());
@@ -71,6 +71,7 @@ function realtime(io) {
           leccion.in(PARALELO._id).emit('tiempo restante', 'Lección pausada')
           console.log('pausado', PARALELO._id)
         } else if (pausada == 'pausada') {
+          logger.trace('pausada para continuar', leccionR);
           // por comodidad para pausar tiempo lo que se hace es disminuir el tiempo de cuando empezo la leccion
           var tiempo_pausado = CURRENT_TIME_GUAYAQUIL.diff(moment(leccionR.fechaPausada))
           var tiempo_pausado_restado = INICIO_LECCION.add(tiempo_pausado,'milliseconds')
@@ -149,7 +150,9 @@ function realtime(io) {
       co(function*() {
         logger.trace('hello', process.cpuUsage());
         const leccionR = yield obtenerLeccionRealtime(socket.leccion._id)
+        logger.trace('obtener leccion realtime',leccionR);
         if (!leccionR.corriendoTiempo) {
+          logger.trace('leccion corriendo tiempo', leccionR);
           profesorRealtime(true)
         }
       })
