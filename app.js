@@ -85,10 +85,10 @@ require('./app_api/models/db')
 var app = express();
 var server = require('http').Server(app);
 var debug = require('debug')('espol-ppl:server');
-var port = normalizePort('8000')
+var port = normalizePort(process.env.PORT || '8000')
 
 if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' || process.env.NODE_ENV == 'production' || process.env.NODE_ENV === 'testprofesores') {
-  var URL_CAS_LOCALHOST = 'http://localhost:8000'
+  var URL_CAS_LOCALHOST = 'http://localhost:' + process.env.PORT
 } else if (process.env.NODE_ENV == 'debug') {
   var URL_CAS_LOCALHOST = 'http://localhost:7000'
   port = normalizePort('7000')
@@ -97,7 +97,7 @@ if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production
 }
 
 app.set('port', port);
-server.listen(port);
+// server.listen(port);
 
 var io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000});
 // app.use(function(req, res, next){

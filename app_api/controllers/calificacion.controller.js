@@ -457,6 +457,7 @@ const csv = function(req, res) {
 
     var leccionesParalelo = []
     var bandera = true;
+
     if (paralelos_peer || paralelo_titular) {
       if (!lecciones && !paralelos && !grupos) {
         if (paralelos_peer.length) {
@@ -470,18 +471,20 @@ const csv = function(req, res) {
                let leccion_tmp = yield obtenerLeccionesParalelo(paralelos_peer_asignado[i])
                leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
             }
-          }
-          
+          } 
         }
 
         if (paralelo_titular) {
           var paralelo = paralelo_titular
           let leccion_tmp = yield obtenerLeccionesParalelo(paralelo._id)
           leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
+        } else if (paralelos_peer_asignado.length > 1) {
+          leccionesParalelo = leccionesParalelo
         } else if (bandera){
           var paralelo = paralelo_titular
           leccionesParalelo = yield obtenerLeccionesParalelo(paralelo._id)
         }
+
         var documento = []
         for (var i = 0; i < leccionesParalelo.length; i++) {
           var calificaciones_leccion = yield obtenerCalificacionesPorLeccion(leccionesParalelo[i]._id)
