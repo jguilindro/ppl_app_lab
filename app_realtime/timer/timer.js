@@ -1,0 +1,1 @@
+// pausar , terminar, continuar, para

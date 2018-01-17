@@ -14,7 +14,10 @@
   },
   "watch": [
     "app.js",
-    "app_api/**"
+    "app_api/**",
+    "server.js",
+    "app_api_v2/**",
+    "app_realtime/**"
   ],
   "env": {
     "NODE_ENV": "development"

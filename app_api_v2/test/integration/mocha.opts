@@ -1,0 +1,5 @@
+--require app_api/test/integration/helpers.js
+--reporter mochawesome
+--reporter-options reportDir=app_client/varios/reports,reportFilename=index
+--slow 5000
+--require babel-core/register

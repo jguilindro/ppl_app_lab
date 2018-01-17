@@ -1,12 +1,13 @@
 /* SERVER MODES
   production .- usado en el servidor
-  production:test .- usado para pruebas locales del CAS
   development .- usado para desarrollo local
-  debug .- usado para debug con visual studio code
-  heroku .- usado para HEROKU
+  development:cas .- usado para pruebas locales del CAS
   testing .- usado para los test automaticos
-  testprofesores.- usado para las reuniones de ppl
 */
+process.on('uncaughtException', function(err) {
+  logger.error('Caught exception: ' + err)
+  logger.error(err.stack)
+});
 
 if (process.env.NODE_ENV == 'production') {
   require('dotenv').config()
@@ -84,10 +85,10 @@ require('./app_api/models/db')
 
 var app = express();
 var server = require('http').Server(app);
-var debug = require('debug')('espol-ppl:server');
+// var debug = require('debug')('espol-ppl:server');
 var port = normalizePort(process.env.PORT || '8000')
 
-if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' || process.env.NODE_ENV == 'production' || process.env.NODE_ENV === 'testprofesores') {
+if (process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' || process.env.NODE_ENV == 'production' || process.env.NODE_ENV === 'testprofesores') {
   var URL_CAS_LOCALHOST = 'http://localhost:' + process.env.PORT
 } else if (process.env.NODE_ENV == 'debug') {
   var URL_CAS_LOCALHOST = 'http://localhost:7000'
@@ -106,7 +107,7 @@ var io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120
 // });
 
 // variables de entorno
-if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production:test' ||process.env.NODE_ENV == 'debug' || process.env.NODE_ENV === 'testprofesores' ) {
+if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' ||process.env.NODE_ENV == 'debug' || process.env.NODE_ENV === 'testprofesores' ) {
   app.use(morgan('dev'));
   SERVICE_URL = URL_CAS_LOCALHOST
 } else if ( process.env.NODE_ENV == 'production' ) {
@@ -182,7 +183,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV == 'debug' ||
   var redirecion = function(req, res, next) {
     next()
   }
-} else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'production:test' ||  process.env.NODE_ENV == 'heroku' ) {
+} else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development:cas' ||  process.env.NODE_ENV == 'heroku' ) {
   app.get( '/', cas.bounce, function(req, res, next) { // FIXME: para que sirve?
     res.redirect('/profesores') // asi sea estudiante o profesor, despues se redirigira solo
   });
@@ -368,10 +369,10 @@ app.use(function(err, req, res, next) {
     }
   }
 });
-var debug = require('debug')('espol-ppl:server');
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// var debug = require('debug')('espol-ppl:server');
+// server.listen(port);
+// server.on('error', onError);
+// server.on('listening', onListening);
 function normalizePort(val) {
   var port = parseInt(val, 10);
   if (isNaN(port)) {
@@ -382,30 +383,36 @@ function normalizePort(val) {
   }
   return false;
 }
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+// function onError(error) {
+//   if (error.syscall !== 'listen') {
+//     throw error;
+//   }
+//   var bind = typeof port === 'string'
+//     ? 'Pipe ' + port
+//     : 'Port ' + port;
+//   switch (error.code) {
+//     case 'EACCES':
+//       console.error(bind + ' requires elevated privileges');
+//       process.exit(1);
+//       break;
+//     case 'EADDRINUSE':
+//       console.error(bind + ' is already in use');
+//       process.exit(1);
+//       break;
+//     default:
+//       throw error;
+//   }
+// }
+// function onListening() {
+//   var addr = server.address();
+//   var bind = typeof addr === 'string'
+//     ? 'pipe ' + addr
+//     : 'port ' + addr.port;
+//   debug('Listening on ' + bind);
+// }
+
+
+module.exports = {
+  app,
+  server
 }

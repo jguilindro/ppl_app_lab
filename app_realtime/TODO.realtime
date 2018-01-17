@@ -1,0 +1,27 @@
+# Guardar en local los datos de profesor y estudiantes
+progresive web apps
+
+https://github.com/rajaraodv/redispubsub
+
+https://github.com/shihern/airwaves-server/blob/master/sockets2/index.js
+https://devpost.com/software/airwaves-clvb90
+
+
+https://devpost.com/software/built-with/socket-io
+
+# modulo timer development
+# diagrama de flujo e interaccion de bases de datos
+
+* timer que no se apage cuando el profesor se desconecta
+* que peticiones get y post se haran a la api
+
+
+* Redis (para manejo de lecccion)
+* Mongodb(para guardar metadata lecciones)
+
+
+* Diagramas de flujo leccions
+
+* como se volcaran los datos a redis
+
+* 
