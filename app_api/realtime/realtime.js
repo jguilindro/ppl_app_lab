@@ -97,7 +97,8 @@ function realtime(io) {
             leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
           }
           //loggerCPU()
-          socket.interval = setInterval(function() {
+          cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
+            socket.interval = setInterval(function() {
               let tiempo_temp = TIEMPO_MAXIMO
               let tiempo_rest = TIEMPO_MAXIMO.subtract(1, 's');
               //duration = -1
@@ -114,17 +115,19 @@ function realtime(io) {
               delete tiempo_temp
               delete duration
             }, 1000)
-          var termo = parseInt(moment.duration(TIEMPO_MAXIMO.diff(CURRENT_TIME_GUAYAQUIL), 'seconds').format("ss"), 10)
-          var intervalTiempo = setTimeout(function() {
-            cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
-              leccionTerminada(PARALELO, PARALELO.leccion)
-              leccion.in(PARALELO._id).emit('terminado leccion', true)
-              console.log('leccion terminada por setTimeout')
-            })
-          },termo)
-           socket.interval.ref()
+            socket.interval.ref()
             var leccion_id = socket.leccion._id
-            intervals.push({leccion_id: leccion_id, interval: socket.interval, intervalTiempo: intervalTiempo})
+            intervals.push({leccion_id: leccion_id, interval: socket.interval, intervalTiempo: 'intervalTiempo'})
+          })
+          // var termo = parseInt(moment.duration(TIEMPO_MAXIMO.diff(CURRENT_TIME_GUAYAQUIL), 'seconds').format("ss"), 10)
+          // var intervalTiempo = setTimeout(function() {
+          //   cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
+          //     leccionTerminada(PARALELO, PARALELO.leccion)
+          //     leccion.in(PARALELO._id).emit('terminado leccion', true)
+          //     console.log('leccion terminada por setTimeout')
+          //   })
+          // },termo)
+          
         }
           
        
@@ -269,10 +272,10 @@ function realtime(io) {
           var estudiante = yield obtenerEstudiante(socket.user)
           var profesor = yield obtenerProfesor(socket.user)
           if (estudiante) {
-            var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
-            var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
-            let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
-            leccion.in(paralelo._id).emit('leccion datos', leccionR)
+            // var paralelo = yield obtenerParaleloDeEstudiante(socket.user)
+            // var estudiante_desc = estudianteDesconectado(paralelo.leccion, socket.user._id)
+            // let leccionR = yield obtenerLeccionRealtime(paralelo.leccion)
+            // leccion.in(paralelo._id).emit('leccion datos', leccionR)
           } else {
             if (socket.leccion) {
               // var hecc = yield cleanCrons(crons_intervals, socket.leccion._id);
@@ -369,7 +372,7 @@ function cleanIntervals(todos_intervals, id_leccion, todo) {
         return inicial
       } else {
         if (todo) {
-           clearTimeout(inicial.intervalTiempo)
+           // clearTimeout(inicial.intervalTiempo)
         }
         clearInterval(inicial.interval)
       }
