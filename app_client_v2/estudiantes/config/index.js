@@ -27,6 +27,15 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
+      },
+      '/api/v2': {
+        logLevel: 'debug',
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/api/v2': '/api/v2'
+        }
       }
     },
     cssSourceMap: false

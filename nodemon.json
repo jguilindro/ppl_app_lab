@@ -17,7 +17,8 @@
     "app_api/**",
     "server.js",
     "app_api_v2/**",
-    "app_realtime/**"
+    "app_realtime/**",
+    "app_client/routes.client.js"
   ],
   "env": {
     "NODE_ENV": "development"

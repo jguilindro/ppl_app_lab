@@ -1,3 +1,9 @@
+// SERVER MODES
+//   production .- usado en el servidor
+//   development .- usado para desarrollo local
+//   development:cas .- usado para pruebas locales del CAS
+//   testing .- usado para los test automaticos
+
 const { app, server } = require('./app')
 
 function onError(error) {
