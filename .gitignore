@@ -4,7 +4,6 @@ npm-debug.log
 app_api/ws/update/*.json
 scripts/tmp
 .idea/
-.env
 *.png
 env.env
 env.txt
@@ -44,7 +43,6 @@ node_modules
 npm-debug.log
 public/bower_components
 .idea/
-.env
 app_client/cypress/screenshots/*
 env.env
 env.txt

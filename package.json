@@ -6,7 +6,10 @@
     "dev": "npm-run-all --parallel nodemon:reload",
     "postinstall": "bower install",
     "nodemon:reload": "cross-env NODE_ENV=development env-cmd .env nodemon server.js --config nodemon.json",
-    "development:cas": "cross-env NODE_ENV=development:cas env-cmd .env node server.js"
+    "development:cas": "cross-env NODE_ENV=development:cas env-cmd .env node server.js",
+    "migrate:latest": "cross-env NODE_ENV=development env-cmd .env  knex migrate:latest --knexfile  databases/relational/knexfile.js",
+    "seed:run": "cross-env NODE_ENV=development env-cmd .env  knex seed:run --knexfile  databases/relational/knexfile.js",
+    "development": "npm-run-all migrate:latest seed:run"
   },
   "dependencies": {
     "@xkeshi/image-compressor": "^0.5.3",

@@ -2,11 +2,7 @@ const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
 const co = require('co')
-const MongoClient  = require('mongodb').MongoClient
 const CASAuthentication = require('cas-authentication')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
 
 var EstudianteModel = require('../app_api/models/estudiante.model')
 var ProfesorModel = require('../app_api/models/profesor.model')
@@ -93,21 +89,8 @@ function redirecion(req, res , next) {
 }
 
 module.exports = (app) => {
-
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
-
-  app.use(cookieParser())
-  app.use(session({
-    secret: process.env.SECRET,
-    resave: true,
-    expire: 1 * 24 * 60 * 60 ,
-    saveUninitialized: true,
-    store: new MongoStore({
-        url: process.env.MONGO_URL,
-        ttl: 12 * 60 * 60
-      })
-  }))
   
   if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' ) {
     app.use(morgan('dev'));
@@ -184,8 +167,6 @@ module.exports = (app) => {
   app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/ver-leccion')));
   app.use('/estudiantes/tomar-leccion',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/tomar-leccion')));
   app.get('/estudiantes/tomar-leccion',redirecion,  authEstudiante, middleEstudianteControl, function(req, res, next) {
-    var EstudianteModel = require('./app_api/models/estudiante.model')
-    var ParaleloModel = require('./app_api/models/paralelo.model')
     EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
       ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
         if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
@@ -198,8 +179,6 @@ module.exports = (app) => {
   })
   app.use('/estudiantes/leccion',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, '/estudiantes/leccion')));
   app.get('/estudiantes/leccion',redirecion, authEstudiante, middleEstudianteControl, function(req, res, next) {
-    var EstudianteModel = require('../app_api/models/estudiante.model')
-    var ParaleloModel = require('../app_api/models/paralelo.model')
     EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
       ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
         if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {

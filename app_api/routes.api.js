@@ -1,10 +1,6 @@
-const bodyParser = require('body-parser')
 const authApi = require('./config/auth.api')
 
 module.exports = (app) => {
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: false }))
-
   app.use('/profesores', require('./routes/profesores.router'))
   app.use('/estudiantes', require('./routes/estudiantes.router'))
   app.use('/grupos', require('./routes/grupos.router'))

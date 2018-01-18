@@ -6,7 +6,6 @@
    "scripts/**",
    "public/bower_components/**",
    "gulpfile.js",
-   "app_client/**",
    "docs/"
  ],
  "events": {

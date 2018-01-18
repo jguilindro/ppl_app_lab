@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  // import axios from 'axios'
+  import axios from 'axios'
 
   export default {
     data() {
@@ -25,23 +25,23 @@
       }
     },
     methods: {
-      // submit() {
-      //   axios({
-      //     method: 'post',
-      //     url: '/api/login',
-      //     data: {
-      //       usuario: this.usuario,
-      //     },
-      //   }).then((res) => {
-      //     if (res.data) {
-      //       localStorage.clear()
-      //       this.$store.dispatch('LOGGEARSE')
-      //       this.$router.push('/Lecciones')
-      //     }
-      //   }).catch(() => {
-      //     localStorage.clear()
-      //   })
-      // },
+      submit() {
+        axios({
+          method: 'post',
+          url: '/api/v2/auth/login',
+          data: {
+            usuario: this.usuario,
+          },
+        }).then((res) => {
+          if (res.data) {
+            localStorage.clear()
+            this.$store.dispatch('LOGGEARSE')
+            this.$router.push('/Lecciones')
+          }
+        }).catch(() => {
+          localStorage.clear()
+        })
+      },
     },
   }
 </script>

@@ -109,7 +109,7 @@ Si no lo has clonado:
 > git checkout -b develop_2
 ```
 
-2. Renombrar el archivo __.env_template__ por __.env__ y cambiar los campos DATABASE_USER y DATABASE_PASSWORD por los de su base de datos
+2. Cambiar los datos del archivo .env por los datos correspondiente
 
 3. Instalar las dependencias de nodejs(Puede tomar mucho tiempo)
 

@@ -1,6 +1,7 @@
 export const loggeado = state => state.loggeado
 
 export const estudiante = (state) => {
+  // const nombre = state.estudiante.nombres
   const nombre = state
   console.log(nombre)
   // const apellido = state.estudiante.apellidos.split(' ')[0]
