@@ -62,7 +62,7 @@ module.exports.insert = (pregunta, trx) => {
       .catch((error) => {
         logger.info(error)
         logger.error(`Pregunta model Error ${error}`)
-        reject(e)
+        reject(error)
       })
   })
 }

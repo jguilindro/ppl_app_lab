@@ -1,9 +1,10 @@
 /**
 * @name Preguntas
-* @author Edison Mora
+* @author Edison Mora, Jaminson Riascos
 */
-
+const Joi = require('joi');
 const PreguntaModel = require('../models/pregunta.model')
+const PreguntaSchema = require('../schemas/pregunta.schema')
 
 const array = [
 	{
@@ -63,29 +64,43 @@ module.exports.crearPregunta = (req, res, next) => {
 		idMongo					: req.body.idMongo,
 		profesor_id 		: req.body.profesor_id
 	}
-	//Primero creo la transacción
-	db.transaction( function(trx){
-		return PreguntaModel.insert(pregunta, trx)
-		.then((id) => {
-			//Aquí estará la parte de las subpreguntas
-			trx.commit
-			return responses.okCreate(res, id)	
-		})
-		.catch((error) => {
-			trx.rollback
-			logger.info(error)
-	    logger.error(`Preguntas Controller Error ${error}`)
-	    return responses.serverError(res, error)
-		})
-	})
-	.then(() => {
-		console.log('Entró al then exterior')
-		console.log('Transaccion terminada')
-	})
-	.catch((error) => {
-		logger.info(error)
-    logger.error(`Transaction Error ${error}`)
-	})
+
+	//valido el input
+	Joi.validate(pregunta, PreguntaSchema.schema, function (err, value) {
+
+		if (err === null){ // si no hay error de validacion
+			//Primero creo la transacción
+			db.transaction( function(trx){
+				return PreguntaModel.insert(pregunta, trx)
+				.then((id) => {
+					//Aquí estará la parte de las subpreguntas
+					trx.commit
+					return responses.okCreate(res, id)	
+				})
+				.catch((error) => {
+					trx.rollback
+					logger.info(error)
+			    logger.error(`Preguntas Controller Error ${error}`)
+			    return responses.serverError(res, error)
+				})
+			})
+			.then(() => {
+				console.log('Entró al then exterior')
+				console.log('Transaccion terminada')
+			})
+			.catch((error) => {
+				logger.info(error)
+		    logger.error(`Transaction Error ${error}`)
+			})
+
+		}else{
+
+			logger.info(err)
+			logger.error(`Validation Error: ${err}`)
+		}
+	 });
+
+	
 }
 
 module.exports.eliminarPregunta = (req, res, next) => {
