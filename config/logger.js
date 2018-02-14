@@ -8,11 +8,8 @@
 // Separar cada logger por archivo y que no se combinen
 
 var winston = require('winston')
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, printf } = format;
-const error_file = new winston.transports.File({ filename: 'error.log', level: 'error'});
-const info_file = new winston.transports.File({ filename: 'debug.log', level: 'info'});
-
+const { createLogger, format, transports } = require('winston')
+const { combine, timestamp, label, printf } = format
 const myFormat = printf(info => {
   return `${info.timestamp} ${info.level}: ${info.message}`;
 });
@@ -23,8 +20,8 @@ const logger = winston.createLogger({
     myFormat
   ),
   transports: [
-    error_file,
-    info_file
+    new winston.transports.File({ filename: 'error.log', level: 'error'}),
+    new winston.transports.File({ filename: 'debug.log', level: 'info'})
   ],
   exceptionHandlers: [
     new transports.File({ filename: 'exceptions.log' })

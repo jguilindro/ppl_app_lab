@@ -1,5 +1,5 @@
 module.exports = (app, io) => {
-  const sessionSockets = io.of('/tomando_leccion')
+  const sessionSockets = io.of('/leccion')
   sessionSockets.on('connection', () => {
     console.log('conectod')
   })

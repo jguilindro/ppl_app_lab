@@ -28,7 +28,7 @@ const app = express()
 const server = require('http').Server(app)
 const PORT = process.env.PORT || '8000'
 
-let io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000})
+const io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000})
 require('./app_api/realtime/realtime')(io)
 
 app.use(bodyParser.json())
@@ -63,6 +63,10 @@ if (process.env.NODE_ENV != 'production') {
   require('./app_api_v2/routes.api.v2')(apiV2)
   app.use('/api/v2', apiV2)
 }
+
+const realtime = express()
+require('./app_realtime/routes.realtime')(realtime, io)
+app.use('/realtime', realtime)
 
 // app client
 const client = express()
