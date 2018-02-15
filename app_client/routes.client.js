@@ -92,7 +92,7 @@ module.exports = (app) => {
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
   
-  if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' ) {
+  if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' || process.env.NODE_ENV == 'testing') {
     app.use(morgan('dev'));
     SERVICE_URL = 'http://localhost:' + process.env.PORT
   } else if ( process.env.NODE_ENV == 'production' ) {
@@ -111,7 +111,7 @@ module.exports = (app) => {
     destroy_session: true
   })
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'testing') {
     app.use('/', express.static(path.join(__dirname, 'login')))
     app.use('/api/session', require('../app_api/routes/login.router'))
 

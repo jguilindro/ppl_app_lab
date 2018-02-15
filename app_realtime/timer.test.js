@@ -6,9 +6,6 @@ const co           = require('co')
 const logger = require('../config/logger')
 require("moment-duration-format")
 
-const database = require('./database')
-const db = database({})
-
 const sinon  = require('sinon')
 const expect = require('chai').expect
 const assert = require('assert')
@@ -16,10 +13,10 @@ const a_function_should_be_runned = sinon.spy()
 const lolex = require("lolex")
 
 function socketMock() {
-  let tiempoRestante = -1
-  let terminadaLeccion = false
-  let empezarLeccion = false
-  let paraleloId = -1
+  let tiempoRestante = -1 // [{ leccionId, tiempoRestante}]
+  let terminadaLeccion = false // [{ leccionId, terminadaLeccion}]
+  let empezarLeccion = false // [{ leccionId, empezarLeccion}]
+  let paraleloId = -1 // [{ leccionId, paraleloId}]
   const proto = {
     emit(leccionLabel, tiempoRestante) {
       if (process.env.NODE_ENV !== 'testing')
@@ -30,16 +27,16 @@ function socketMock() {
       if (process.env.NODE_ENV !== 'testing')
         console.log(paraleloIdJoin)
     },
-    obtenerParaleloId() {
+    obtenerParaleloId(leccionId) {
+      return paraleloId
+    },
+    obtenerEmpezarLeccion(leccionId) {
       return empezarLeccion
     },
-    obtenerEmpezarLeccion() {
-      return empezarLeccion
-    },
-    obtenerTerminadaLeccion() {
+    obtenerTerminadaLeccion(leccionId) {
       return terminadaLeccion
     },
-    obtenerTiempoRestante() {
+    obtenerTiempoRestante(leccionId) {
       return tiempoRestante
     },
     in(paraleloId) {
@@ -71,6 +68,24 @@ function socketMock() {
   return Object.assign(Object.create(proto), {})
 }
 
+function dbMock() {
+  const proto = {
+    terminarLeccion() {
+
+    },
+    terminarLeccionPromise() {
+      return new Promise((resolve, reject) => {
+        if (process.env.NODE_ENV !== 'testing')
+          console.log('DB: terminar leccion')
+        resolve(true)
+      })
+    }
+  }
+  return Object.assign(Object.create(proto), {})
+}
+
+const db = dbMock({})
+
 describe('Timer test', function() {
   beforeEach(function () {
     // this.clock.useFakeTimers()
@@ -78,9 +93,9 @@ describe('Timer test', function() {
     this.clock = lolex.install()
   })
   afterEach(function () {
-     this.clock.uninstall()
+    this.clock.uninstall()
   })
-  it('comenzar: Terminar con setInterval', function() {
+  it('terminar y setInterval', function() {
     const socket = socketMock()
     assert.equal(socket.obtenerEmpezarLeccion(), false, 'No debe haber empezado la leccion')
     assert.equal(socket.obtenerTerminadaLeccion(), false, 'No debe haber terminado la leccion')
@@ -98,7 +113,7 @@ describe('Timer test', function() {
     assert.equal(this.Timer.obtenerTimeouts().length, 0, 'Tamano debe ser 0')
     assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
   })
-  it('terminar: Terminar leccion por parte del moderador', function () {
+  it('terminar por moderador', function () {
     const socket = socketMock()
     this.Timer.run({ accion: 'comenzar', socket, leccionId: 1, paraleloId: 5, fechaInicioTomada: moment().toISOString(), tiempoEstimado: 20, usuarioId: 2 })
     this.clock.tick(5000)
@@ -111,7 +126,7 @@ describe('Timer test', function() {
     assert.equal(this.Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
     assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
   })
-  it('aumentar y terminadaLeccion: Aumentar tiempo leccion por parte del moderador y terminado por moderador', function () {
+  it('aumentar y terminadaLeccion', function () {
     const socket = socketMock()
     let fechaInicioTomada = moment().toISOString()
     this.Timer.run({ accion: 'comenzar',socket, leccionId: 1, paraleloId: 5, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: 20, usuarioId: 2 })
@@ -128,7 +143,7 @@ describe('Timer test', function() {
     assert.equal(this.Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
     assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
   })
-  it('aumentar e Interval: Aumentar tiempo leccion por parte del moderador y terminado por Interval', function () {
+  it('aumentar e Interval', function () {
     const socket = socketMock()
     let fechaInicioTomada = moment().toISOString()
     this.Timer.run({ accion: 'comenzar', socket, leccionId: 1, paraleloId: 5, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: 20, usuarioId: 2 })
@@ -149,14 +164,37 @@ describe('Timer test', function() {
     assert.equal(this.Timer.obtenerTimeouts().length, 0, 'Tamano debe ser 0')
     assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
   })
-  // it('comenzar: Terminar con setTimeout', function() {
-  //   const Timer = timer({ moment, tz, logger, db, socket })
-  //   Timer.comenzar({ leccionId: 1, paraleloId: 5, fechaInicioTomada: moment().toISOString(), tiempoEstimado: 20, usuarioId: 2 })
-  //   assert.equal(Timer.obtenerIntervals().length, 1, 'Tamano debe ser 1')
-  //   this.clock.tick(20000)
-  //   assert.equal(Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
-  //   // simular que no acaba con setInterval
-  //   // determinar que setInterval sigue con 1 el array asi haya terminado el tiempo
-  //   // determinar que limpio el array intervals y timeouts
-  // })
+  it('pausar, continuar, terminar por moderador', function () {
+    const socket = socketMock()
+    let fechaInicioTomada = moment().toISOString()
+    this.Timer.run({ accion: 'comenzar', socket, leccionId: 1, paraleloId: 5, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: 20, usuarioId: 2 })
+    this.clock.tick(5000)
+    assert.equal(socket.obtenerTiempoRestante(), 15, 'Debe haber pasado solo 5 segundos (15)')
+    assert.equal(this.Timer.obtenerTimeouts().length, 1, 'Tamano debe ser 1 timeouts')
+    this.Timer.pausar({ socket, leccionId: 1, paraleloId: 5, usuarioId: 2 })
+    assert.equal(this.Timer.obtenerTimeouts().length, 0, 'Tamano debe ser 0')
+    assert.equal(this.Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
+    this.clock.tick(20000)
+    // para colocar el tiempoEstimado debe ser lo que se quedo de tiempoEstimado anteriormente
+    // tiempoEstimado(15) = 20 + 20
+    this.Timer.run({ accion: 'continuar', socket, leccionId: 1, paraleloId: 5, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: 40, usuarioId: 2 })
+    this.clock.tick(1000)
+    assert.equal(this.Timer.obtenerTimeouts().length, 1, 'Tamano debe ser 1')
+    assert.equal(this.Timer.obtenerIntervals().length, 1, 'Tamano debe ser 1')
+    assert.equal(socket.obtenerTiempoRestante(), 14, 'Debe haber pasado solo 14 segundos (14)')
+    this.clock.tick(14000)
+    assert.equal(this.Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
+    assert.equal(this.Timer.obtenerTimeouts().length, 1, 'Tamano debe ser 1 timeouts')
+    assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
+    this.clock.tick(25000)
+    assert.equal(this.Timer.obtenerTimeouts().length, 0, 'Tamano debe ser 0')
+    assert.equal(socket.obtenerTerminadaLeccion(), true, 'Debe haber terminado la leccion')
+  }),
+  it('dos lecciones al mismo tiempo', function() {
+    const socket = socketMock()
+    let fechaInicioTomadaUno = moment().toISOString()
+    let fechaInicioTomadaDos = moment().add(10, 'm').toISOString()
+    this.Timer.run({ accion: 'comenzar', socket, leccionId: 1, paraleloId: 1, fechaInicioTomada: fechaInicioTomadaUno, tiempoEstimado: 20, usuarioId: 1 })
+    this.Timer.run({ accion: 'comenzar', socket, leccionId: 2, paraleloId: 2, fechaInicioTomada: fechaInicioTomadaDos, tiempoEstimado: 20, usuarioId: 2 })
+  })
 })

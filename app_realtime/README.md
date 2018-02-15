@@ -24,7 +24,7 @@ Socketio usa dos metodos, que son los on y los emit. Los __on__ solo escuchan lo
 
 Inicia la leccion y comienza a enviar en tiempo a todos los estudiantes que esten en el paralelo
 
-__recive__
+__recibe__
 
 ```json
  {
@@ -36,7 +36,41 @@ __recive__
  }
 ```
 
+####  aumentar-tiempo-leccion
+
+__recibe__
+
+####  pausar-leccion
+
+__recibe__
+
+####  continuar-leccion
+
+__recibe__
+
+####  terminar-leccion
+
+__recibe__
+
+####  respuesta-estudiante
+
+__recibe__
+
+####  usuario
+
+__recibe__
+
+####  reconectar-estudiante
+
+__recibe__
+
+####  reconectar-profesor
+
+__recibe__
+
 __database__
+
+
 
 ## Metodos EMIT
 
@@ -49,7 +83,9 @@ __envio__
 
 
 #### terminada-leccion(emit in(paraleloId))
+
 	terminado leccion = terminada-leccion
+	
 __envio__
 
 #### empezar-leccion(emit in(paraleloId))
@@ -57,4 +93,6 @@ __envio__
 __envio__
 
 
-#### datos-leccion(emit in(paraleloId))
+#### estudiante-conectado(emit in(paraleloId))  leccion datos
+
+__envio__
