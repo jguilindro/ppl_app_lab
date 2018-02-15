@@ -40,15 +40,21 @@ __database__
 
 ## Metodos EMIT
 
+Porque en parlelo y no en eleccion emit in(paraleloId)
+* Posible: Si un estudiante desconoce su paralelo
+
 #### tiempo-restante-leccion(emit in(paraleloId))
 
 __envio__
 
 
 #### terminada-leccion(emit in(paraleloId))
-
+	terminado leccion = terminada-leccion
 __envio__
 
 #### empezar-leccion(emit in(paraleloId))
 
 __envio__
+
+
+#### datos-leccion(emit in(paraleloId))
