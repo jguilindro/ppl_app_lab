@@ -1,14 +1,15 @@
 const express = require('express')
-const timer = require('./timer')
 const moment       = require('moment')
 const tz           = require('moment-timezone')
 const co           = require('co')
 const logger = require('../config/logger')
 require("moment-duration-format")
 const app = express()
+const path = require('path')
 const http = require('http').Server(app)
-const io = require('socket.io')(http)
-io.set("log level", 0)
+// const io = require('socket.io')(http)
+const io = require('socket.io')(http, {'pingInterval': 60000, 'pingTimeout': 120000})
+// io.set("log level", 0)
 
 function dbMock() {
   const proto = {
@@ -26,7 +27,7 @@ function dbMock() {
   return Object.assign(Object.create(proto), {})
 }
 const db = dbMock({})
-
+app.use('/', express.static(path.join(__dirname, '.')))
 const Timer = require('./timer')
 const timer = Timer({ moment, tz, logger, co, db })
 require('./realtime')({ io, co, db, logger, timer  })

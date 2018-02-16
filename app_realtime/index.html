@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js"></script>
+  <script>
+    // var socket = io('/tomando_leccion', {
+    //   'reconnect': true,
+    //   'forceNew': true
+    // })
+    const socket = io('http://localhost:3000/leccion', {
+      'reconnect': true,
+      'forceNew': true
+    })
+    socket.on('connect', function() {
+      socket.emit('usuario',  { paraleloId: "abcde", usuarioId: 1 })
+      socket.emit('comenzar-leccion', { leccionId: 1, paraleloId: "abcde", fechaInicioTomada: moment().toISOString() , tiempoEstimado: 60, usuarioId: 1 })
+    })
+    socket.on('tiempo-restante-leccion', function(tiempo) {
+      console.log(tiempo)
+    })
+  </script>
+</body>
+</html>

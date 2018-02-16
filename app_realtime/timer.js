@@ -51,7 +51,7 @@ module.exports = ({ moment, tz, logger, co, db }) => {
         timeouts = timeouts.filter(inicial => { if (inicial.leccionId == leccionId) {clearTimeout(inicial.timeout)} return inicial.leccionId != leccionId })
       }
       if (accion === 'comenzar') {
-        socket.join(paraleloId)
+        // socket.join(paraleloId)
         logger.info(`Leccion Comenzo usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
       } else if (accion === 'aumentarTiempo') {
         logger.info(`Leccion aumentado tiempo usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
