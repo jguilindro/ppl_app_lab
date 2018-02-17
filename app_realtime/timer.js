@@ -20,7 +20,7 @@ function intervalExiste(intervals, leccionId) {
 
 var intervals = []
 var timeouts = []
-module.exports = ({ moment, tz, logger, co, db }) => {
+module.exports = ({ moment, logger }) => {
   const proto = {
     obtenerIntervals() {
       return intervals
@@ -40,18 +40,19 @@ module.exports = ({ moment, tz, logger, co, db }) => {
     // tiempoEstimado - tiempoAumentado = tiempoOriginalEstimado
     // el clienter hace un POST donde se guardara la metadata de continuar
     // el cliente enviara via sockets los datos que se necesitan para continuar con la leccion
-    run({ accion, socket, leccionId, paraleloId, fechaInicioTomada, tiempoEstimado, usuarioId }) {
+    run({ accion, socket, Socket, leccionId, paraleloId, fechaInicioTomada, tiempoEstimado, usuarioId }) {
       // reconectarProfesor
+      
       // limpiarlos pos si acaso el moderador envia dos veces la misma peticion
       const existeInterval = intervals.some(leccion => leccionId == leccion.leccionId)
       const existeTimeout = timeouts.some(leccion => leccionId == leccion.leccionId)
+      socket.join(paraleloId) // cada vez que realiza una de las acciones de debe agregar al profesor al room del paralelo
       if (existeInterval)
         intervals = intervals.filter(inicial => { if (inicial.leccionId == leccionId) {clearInterval(inicial.interval)} return inicial.leccionId !=leccionId })
       if (existeTimeout) { // si comento esto, se crean 3?
         timeouts = timeouts.filter(inicial => { if (inicial.leccionId == leccionId) {clearTimeout(inicial.timeout)} return inicial.leccionId != leccionId })
       }
       if (accion === 'comenzar') {
-        // socket.join(paraleloId)
         logger.info(`Leccion Comenzo usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
       } else if (accion === 'aumentarTiempo') {
         logger.info(`Leccion aumentado tiempo usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
@@ -64,11 +65,11 @@ module.exports = ({ moment, tz, logger, co, db }) => {
       intervalId = setInterval(() => {
         let fechaFinLeccion = FECHA_FIN.subtract(1, 's')
         let tiempoRestante = moment.duration(fechaFinLeccion.diff(CURRENT_TIME)).format('h:mm:ss')
-        socket.in(paraleloId).emit('tiempo-restante-leccion', tiempoRestante)
+        Socket.in(paraleloId).emit('tiempo-restante-leccion', tiempoRestante)
         if (!CURRENT_TIME.isBefore(fechaFinLeccion)) {
           intervals = intervals.filter(inicial => {  if (inicial.leccionId == leccionId) {clearInterval(inicial.interval)} return inicial.leccionId !=leccionId })
-          socket.in(paraleloId).emit('terminada-leccion', true)
-          socket.in(paraleloId).emit('tiempo-restante-leccion', 0)
+          Socket.in(paraleloId).emit('terminada-leccion', true)
+          Socket.in(paraleloId).emit('tiempo-restante-leccion', 0)
           logger.info(`Leccion Termino usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
         }
       }, 1000)
@@ -78,7 +79,7 @@ module.exports = ({ moment, tz, logger, co, db }) => {
       timeoutId = setTimeout(() => {
         if (intervalExiste(intervals, leccionId)) {
           intervals = intervals.filter(inicial => {  if (inicial.leccionId == leccionId) {clearInterval(inicial.interval)} return inicial.leccionId !=leccionId })
-          socket.in(paraleloId).emit('terminada-leccion', true)
+          Socket.in(paraleloId).emit('terminada-leccion', true)
           logger.info(`Leccion Termino por setTimeout usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
         } else {
           logger.info(`Leccion fue terminada por setInterval usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
@@ -88,21 +89,21 @@ module.exports = ({ moment, tz, logger, co, db }) => {
       intervals.push({ leccionId, interval: intervalId, usuarioId })
       timeouts.push({ leccionId, timeout: timeoutId, usuarioId })
       if (accion === 'comenzar') {
-        socket.in(paraleloId).emit('empezar-leccion', true) // este solo sirve cuando los estudiantes estan en "ingresar-codigo"
+        Socket.in(paraleloId).emit('empezar-leccion', true) // este solo sirve cuando los estudiantes estan en "ingresar-codigo"
       }
     },
     // el cliente hace un POST donde se guardara metadata de la pausa
     // recibe la confirmacion y entonces ahi ingresa aqui con los datos que se piden
-    pausar({ socket, leccionId, paraleloId, usuarioId }) {
+    pausar({ Socket, leccionId, paraleloId, usuarioId }) {
       intervals = intervals.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearInterval(inicial.interval) })
       timeouts = timeouts.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearTimeout(inicial.timeout) })
       logger.info(`Leccion Pausada usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
-      socket.in(paraleloId).emit('tiempo-restante-leccion', 'Lección pausada')
+      Socket.in(paraleloId).emit('tiempo-restante-leccion', 'Lección pausada')
     },
-    terminar({ socket, leccionId, paraleloId, usuarioId }) {
+    terminar({ Socket, leccionId, paraleloId, usuarioId }) {
       intervals = intervals.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearInterval(inicial.interval) })
       timeouts = timeouts.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearTimeout(inicial.timeout) })
-      socket.in(paraleloId).emit('terminada-leccion', true)
+      Socket.in(paraleloId).emit('terminada-leccion', true)
       logger.info(`Leccion Terminada usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
     },
     reconectarProfesor() {

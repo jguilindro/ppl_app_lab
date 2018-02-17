@@ -13,16 +13,20 @@ const { combine, timestamp, label, printf } = format
 const myFormat = printf(info => {
   return `${info.timestamp} ${info.level}: ${info.message}`;
 });
+let transportsFiles = []
+if (process.env.NODE_ENV !== 'testing' && process.env.NODE_ENV !== 'development') {
+    transportsFiles = [
+    new winston.transports.File({ filename: 'error.log', level: 'error'}),
+    new winston.transports.File({ filename: 'debug.log', level: 'info'})
+    ]
+}
 
 const logger = winston.createLogger({
   format: combine(
     timestamp(),
     myFormat
   ),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error'}),
-    new winston.transports.File({ filename: 'debug.log', level: 'info'})
-  ],
+  transports: transportsFiles,
   exceptionHandlers: [
     new transports.File({ filename: 'exceptions.log' })
   ]

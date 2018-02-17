@@ -1,18 +1,18 @@
 // https://stackoverflow.com/questions/14626636/how-do-i-shutdown-a-node-js-https-server-immediately
 
 module.exports = function({ io, co, db, logger, timer  }) { // , co, logger, db, timer
-  const realtime = io.of('/leccion')
+  const Socket = io.of('/leccion')
   let sockets = [] // socket por leccion [{ socketId, socket, usuarioId, paraleloId }] leccionId
   let nextSocketId = 0
-  realtime.on('connection', function(socket) {
+  Socket.on('connection', function(socket) {
     let socketId = nextSocketId++
     sockets.push({ socketId, socket })
   
     socket.on('comenzar-leccion', function({ leccionId, paraleloId, fechaInicioTomada, tiempoEstimado, usuarioId }) { // comenzar leccion
-      timer.run({ accion: 'comenzar', socket: realtime, leccionId: leccionId, paraleloId: paraleloId, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: tiempoEstimado, usuarioId: usuarioId })
+      timer.run({ accion: 'comenzar', socket, Socket, leccionId: leccionId, paraleloId: paraleloId, fechaInicioTomada: fechaInicioTomada, tiempoEstimado: tiempoEstimado, usuarioId: usuarioId })
     })
     socket.on('terminar-leccion', function({ leccionId, paraleloId, usuarioId }) { // parar leccion
-      timer.terminar({ socket,  leccionId: leccionId, paraleloId: paraleloId, usuarioId: usuarioId })
+      timer.terminar({ Socket,  leccionId: leccionId, paraleloId: paraleloId, usuarioId: usuarioId })
     })
     socket.on('aumentar-tiempo-leccion', function() { // aumentar tiempo
 

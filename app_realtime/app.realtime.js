@@ -1,9 +1,9 @@
 const express = require('express')
 const moment       = require('moment')
-const tz           = require('moment-timezone')
 const co           = require('co')
 const logger = require('../config/logger')
 require("moment-duration-format")
+require('moment-timezone')
 const app = express()
 const path = require('path')
 const http = require('http').Server(app)
@@ -29,7 +29,7 @@ function dbMock() {
 const db = dbMock({})
 app.use('/', express.static(path.join(__dirname, '.')))
 const Timer = require('./timer')
-const timer = Timer({ moment, tz, logger, co, db })
+const timer = Timer({ moment, logger })
 require('./realtime')({ io, co, db, logger, timer  })
 
 module.exports = http
