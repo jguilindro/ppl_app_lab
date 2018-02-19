@@ -1,3 +1,20 @@
+estados leccion
+pendiente, sin-empezar, tomando, pausado, terminado, calificado
+
+estados estudiante leccion
+ingresando-codigo, esperando-empiece-leccion, dando-leccion
+
+
+
+
+# que tanto heap usa
+# cantidad de cpu que usar
+# verificar si crea memory leaks
+[] stress testing
+[] perfomance testing
+[] unit test
+[] integration test
+
 # Guardar en local los datos de profesor y estudiantes
 progresive web apps
 
@@ -25,3 +42,26 @@ https://devpost.com/software/built-with/socket-io
 * como se volcaran los datos a redis
 
 * 
+
+// // Count down from 10 seconds
+// (function countDown (counter) {
+//   console.log(counter);
+//   if (counter > 0)
+//     return setTimeout(countDown, 1000, counter - 1);
+
+//   // Close the server
+//   server.close(function () { console.log('Server closed!'); });
+//   // Destroy all open sockets
+//   for (var socketId in sockets) {
+//     console.log('socket', socketId, 'destroyed');
+//     sockets[socketId].destroy();
+//   }
+// })(10);
+// server.close(callback);
+// setImmediate(function(){server.emit('close')});
+// io.sockets.emit('message', "casa")
+
+// socket.once('close', function () {
+// console.log('socket', socketId, 'closed')
+// delete sockets[socketId]
+// })

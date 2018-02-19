@@ -173,6 +173,7 @@ describe('Timer test', function() {
     this.Timer.pausar({ Socket, leccionId: 1, paraleloId: 5, usuarioId: 2 })
     assert.equal(this.Timer.obtenerTimeouts().length, 0, 'Tamano debe ser 0')
     assert.equal(this.Timer.obtenerIntervals().length, 0, 'Tamano debe ser 0')
+    assert.equal(Socket.obtenerTiempoRestante(paraleloId), 'Lección pausada', 'Debe estar pausada la leccion')
     this.clock.tick(20000)
     // para colocar el tiempoEstimado debe ser lo que se quedo de tiempoEstimado anteriormente
     // tiempoEstimado(15) = 20 + 20

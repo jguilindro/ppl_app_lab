@@ -1,5 +1,15 @@
 ## Arquitectura
 
+
+1. Se hara una copia o se 'cachearan' los datos a la base de datos que se este usando para el realtime y seran:
+	* Leccion que se tomara
+	* Preguntas del paralelo
+	* Paralelo
+	* Estudiantes de este paralelo
+	* Profesor del paralelo
+	* Peers del paralelo
+	* Grupos del paralelo
+
 La analogia de toda esta parte es un grupo de chat
 
 Cada paralelo es un grupo de chat. En donde el moderador es el profesor que en este caso sera mas general y solo lo llamaremos moderador
