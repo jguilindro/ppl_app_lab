@@ -504,8 +504,9 @@ function crearSocket(estudiante, grupo, idLeccion, idParalelo, pregunta, respues
     calificacion       : 0,
     imagenes           : urlImagen,
     visitado           : false,
-    arraySubrespuestas : arraySubrespuestas
+    // arraySubrespuestas : arraySubrespuestas
   };
+  console.log(respuesta_realtime)
   return respuesta_realtime;
 }
 /*

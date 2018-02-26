@@ -6,8 +6,25 @@
 
 // estados estudiante leccion
 // ingresando-codigo, esperando-empiece-leccion, dando-leccion
-module.exports = ({ db, logger, co, moment}) => {
+const random = () => {
+  let text = ""
+  let possible = "0123456789"
+  for( var i = 0; i < 7; i++ )
+      text += possible.charAt(Math.floor(Math.random() * possible.length))
+  return text
+}
+
+module.exports = ({ LeccionesRealtime, logger, co, moment }) => {
   const proto = {
+    copiarLeccionDatos({ leccionId }) { // debe copiarse cuando se crea porque si el estudiante entra antes de que se tome la leccion, no se trackeara
+      // tratara de organizar y de copiar los datos de alguna base de datos
+    },
+    // actualizar los grupos de la leccion o cualquier cosa antes
+    // puede ser usada con un boton que diga actualizar, para que cuando el profesor mientras da una leccion
+    // actualize los datos de grupos, estudiantes y todo eso
+    actualizarLeccion({ leccionId }) {
+
+    },
     estaLogeado({ usuarioId }) { // usado solo para las paginas ingresar-codigo(tomar-leccion), leccion-panel(profesor) y leccion(estudiante)
       // generar el token de sesion con jsonwebtoken de la leccion
     },
@@ -24,8 +41,19 @@ module.exports = ({ db, logger, co, moment}) => {
     },
     // profesores
     // copia los datos necesarios de la leccion en una tabla temporal exclusiva para lecciones realtime
-    tomarLeccion({ leccionDatos }) {
+    tomarLeccion({ leccionId }) {
 
+    },
+    // copia los datos de la leccion, cuando el profesor la guarda. 
+    // TODO: si el profesor elimina la leccion que puede pasar?
+    cacheLeccion({ leccionDatos }) {
+      return new Promise(function(resolve, reject) {
+        let leccion = new LeccionesRealtime(leccionDatos)
+        leccion['codigo'] = random()
+        leccion.crearLeccion().then(leccionCreda => {
+          resolve(leccion['codigo'])
+        }).catch(err => logger.error(err))
+      })
     },
     obtenerDatosParaLeccionProfesor({ paraleloId }) { // /api/estudiantes/leccion/datos_leccion
 
@@ -57,6 +85,12 @@ module.exports = ({ db, logger, co, moment}) => {
     },
     guardarRespuesta({ leccionId, respuesta }) {
 
+    },
+    // test
+    obtenerLeccionPorCodigo({ codigo }) {
+      return new Promise((resolve, reject) => {
+        resolve(LeccionesRealtime.obtenerLeccionPorCodigo({ codigo }))
+      })
     }
   }
   return Object.assign(Object.create(proto), {})

@@ -312,6 +312,7 @@ function realtime(io) {
     })
 
     socket.on('respuesta estudiante', function(data) {
+      console.log(data)
       leccion.in(data.paralelo).emit('respuesta para profesor', data)
     })
 
