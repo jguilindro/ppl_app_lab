@@ -40,6 +40,7 @@ module.exports = ({ moment, logger }) => {
     // tiempoEstimado - tiempoAumentado = tiempoOriginalEstimado
     // el clienter hace un POST donde se guardara la metadata de continuar
     // el cliente enviara via sockets los datos que se necesitan para continuar con la leccion
+    // para aumentarTiempo tengo que pasarle el tiempoEstimado que es calculado como tiempoRestanteLeccion + tiempoQueSeDeseaAumentar
     run({ accion, socket, Socket, leccionId, paraleloId, fechaInicioTomada, tiempoEstimado, usuarioId }) {
       // limpiarlos pos si acaso el moderador envia dos veces la misma peticion
       const existeInterval = intervals.some(leccion => leccionId == leccion.leccionId)
@@ -65,11 +66,11 @@ module.exports = ({ moment, logger }) => {
       intervalId = setInterval(() => {
         let fechaFinLeccion = FECHA_FIN.subtract(1, 's')
         let tiempoRestante = moment.duration(fechaFinLeccion.diff(CURRENT_TIME)).format('h:mm:ss')
-        Socket.in(`${paraleloId}`).emit('tiempo-restante-leccion', tiempoRestante)
+        Socket.in(`${paraleloId}`).emit(EMIT.TIEMPO_RESTANTE, tiempoRestante)
         if (!CURRENT_TIME.isBefore(fechaFinLeccion)) {
           intervals = intervals.filter(inicial => {  if (inicial.leccionId == leccionId) {clearInterval(inicial.interval)} return inicial.leccionId !=leccionId })
-          Socket.in(`${paraleloId}`).emit('terminada-leccion', true)
-          Socket.in(`${paraleloId}`).emit('tiempo-restante-leccion', 0)
+          Socket.in(`${paraleloId}`).emit(EMIT.LECCION_TERMINADA)
+          Socket.in(`${paraleloId}`).emit(EMIT.TIEMPO_RESTANTE, 0)
           logger.info(`moderador-leccion-termino usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
         }
       }, 1000)
@@ -79,7 +80,7 @@ module.exports = ({ moment, logger }) => {
       timeoutId = setTimeout(() => {
         if (intervalExiste(intervals, leccionId)) {
           intervals = intervals.filter(inicial => {  if (inicial.leccionId == leccionId) {clearInterval(inicial.interval)} return inicial.leccionId !=leccionId })
-          Socket.in(`${paraleloId}`).emit('terminada-leccion', true)
+          Socket.in(`${paraleloId}`).emit(EMIT.LECCION_TERMINADA)
           logger.info(`moderador-leccion-termino-setTimeout usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
         } else {
           logger.info(`moderador-leccion-termino-setInterval usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}, fechaInicioTomada: ${moment(fechaInicioTomada).format("DD-MM-YY_hh-mm-ss")}, tiempoEstimado: ${tiempoEstimado}`)
@@ -89,21 +90,19 @@ module.exports = ({ moment, logger }) => {
       intervals.push({ leccionId, interval: intervalId, usuarioId })
       timeouts.push({ leccionId, timeout: timeoutId, usuarioId })
       if (accion === 'comenzar') {
-        Socket.in(`${paraleloId}`).emit('empezar-leccion', true) // este solo sirve cuando los estudiantes estan en "ingresar-codigo"
+        Socket.in(`${paraleloId}`).emit(EMIT.EMPEZAR_LECCION) // este solo sirve cuando los estudiantes estan en "ingresar-codigo"
       }
     },
-    // el cliente hace un POST donde se guardara metadata de la pausa
-    // recibe la confirmacion y entonces ahi ingresa aqui con los datos que se piden
     pausar({ Socket, leccionId, paraleloId, usuarioId }) {
       intervals = intervals.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearInterval(inicial.interval) })
       timeouts = timeouts.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearTimeout(inicial.timeout) })
-      Socket.in(`${paraleloId}`).emit('tiempo-restante-leccion', 'Lección pausada')
+      Socket.in(`${paraleloId}`).emit(EMIT.TIEMPO_RESTANTE, 'Lección pausada')
       logger.info(`moderador-leccion-pausada usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
     },
     terminar({ Socket, leccionId, paraleloId, usuarioId }) {
       intervals = intervals.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearInterval(inicial.interval) })
       timeouts = timeouts.filter(inicial => { inicial.leccionId != leccionId ? inicial : clearTimeout(inicial.timeout) })
-      Socket.in(`${paraleloId}`).emit('terminada-leccion', true)
+      Socket.in(`${paraleloId}`).emit(EMIT.LECCION_TERMINADA)
       logger.info(`moderador-leccion-terminada usuarioId: ${usuarioId}, leccionId: ${leccionId}, paraleloId: ${paraleloId}`)
     }
   }

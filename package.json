@@ -3,9 +3,9 @@
   "version": "2.1.0",
   "private": true,
   "scripts": {
-    "d": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/database.test.js",
-    "t": "cross-env NODE_ENV=testing npm run mocha app_realtime/timer.test.js",
-    "r": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/realtime.test.js",
+    "test:realtime": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/realtime.test.js",
+    "test:realtime:db": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/database.test.js",
+    "test:realtime:t": "cross-env NODE_ENV=testing mocha app_realtime/timer/timer.test.js --require app_realtime/timer/helpers.js --exit",
     "dev": "npm-run-all --parallel nodemon:reload",
     "postinstall": "bower install",
     "nodemon:reload": "cross-env NODE_ENV=development env-cmd .env nodemon server.js --config nodemon.json",

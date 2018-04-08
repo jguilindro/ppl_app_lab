@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 process.on('uncaughtException', (err) => {
   console.error('Caught exception: ' + err)
