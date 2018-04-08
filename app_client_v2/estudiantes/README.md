@@ -1,18 +1,14 @@
-# PPL estudiantes single page
+# estudiantes
 
-PWA de estudiantes de ppl
+> A Vue.js project
 
-## Prerrequisitos
-
-Tener corriendo el servidor del proyecto principal para las llamadas a la api
-
-## Setup
+## Build Setup
 
 ``` bash
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8081
+# serve with hot reload at localhost:8080
 npm run dev
 
 # build for production with minification
@@ -31,7 +27,4 @@ npm run e2e
 npm test
 ```
 
-
-## Revisar Importante
-
-http://airbnb.io/javascript/
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
