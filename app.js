@@ -44,7 +44,6 @@ const server = require('http').Server(app)
 const PORT = process.env.PORT || '8000'
 
 const io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000})
-require('./app_api/realtime/realtime')(io)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -65,20 +64,24 @@ app.use(session({
     })
 }))
 
-// api version 1
+if (process.env.NODE_ENV != 'production') {
+  global.db = require('./databases').relationalDB
+}
+
+// api v1
 const api = express()
 require('./app_api/routes.api')(api)
 app.use('/api', api)
 
-if (process.env.NODE_ENV != 'production') {
-  global.db = require('./databases').relationalDB
-  
-  // api version 2
-  // const apiV2 = express()
-  // require('./app_api_v2/routes.api.v2')(apiV2)
-  // app.use('/api/v2', apiV2)
-}
+// api v2
+const apiV2 = express()
+require('./app_api_v2/routes.api.v2')(apiV2)
+app.use('/api/v2', apiV2)
 
+// realtime
+require('./app_api/realtime/realtime')(io)
+
+// realtime v2
 const realtime = express()
 require('./app_realtime/routes.realtime')(realtime, io)
 app.use('/api/realtime', realtime)
@@ -87,6 +90,11 @@ app.use('/api/realtime', realtime)
 const client = express()
 require('./app_client/routes.client')(client)
 app.use('/', client)
+
+// app client v2
+const clientv2 = express()
+require('./app_client_v2/routes.client.v2')(clientv2)
+app.use('/v2', clientv2)
 
 // error page
 app.use(function(req, res, next) {

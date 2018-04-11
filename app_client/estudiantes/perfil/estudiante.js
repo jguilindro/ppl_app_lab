@@ -19,7 +19,6 @@ var app = new Vue({
       $.get({
         url: '/api/session/usuario_conectado',
         success: function(res) {
-          console.log(res.estado);
           if (res.estado) {
             self.estudiante = res.datos;
             self.presentarLecciones();
