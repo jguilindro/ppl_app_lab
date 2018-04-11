@@ -18,7 +18,7 @@ import router from '../router'
 export default {
   data: () => ({
     valid: true,
-    correo: 'stsemaci@espol.edu.ec'
+    correo: 'leoismar@espol.edu.ec'
   }),
   methods: {
     submit () {

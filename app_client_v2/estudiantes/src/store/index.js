@@ -13,7 +13,8 @@ export const store = new Vuex.Store({
     nombres: null,
     apellidos: null,
     correo: null,
-    error: null
+    error: null,
+    codigoRespuesta: null
   },
   mutations: {
     setError (state, payload) {
@@ -38,6 +39,9 @@ export const store = new Vuex.Store({
       state.nombres = datos.nombres
       state.apellidos = datos.apellidos
       state.correo = datos.correo
+    },
+    setCodigoDatos (state, datos) {
+      state.codigoRespuesta = datos
     }
   },
   actions: {
@@ -50,6 +54,20 @@ export const store = new Vuex.Store({
             commit('setDatos', response.body.datos)
           } else {
             window.location = '/' // como hacer el redirect si no esta loggeado
+          }
+        })
+        .catch((err) => {
+          commit('setError', err)
+        })
+    },
+    verificarCodigo ({commit}, codigo) {
+      commit('setError', null)
+      Vue.http.get(`/api/estudiantes/tomar_leccion/${codigo}`)
+        .then((response) => {
+          if (response.body.estado) {
+            commit('setCodigoDatos', response.body.datos)
+          } else {
+            // window.location = '/'
           }
         })
         .catch((err) => {

@@ -1,7 +1,8 @@
 <template>
   <v-app id="app">
-    <v-navigation-drawer temporary  v-model="sideNav" app>
+    <v-navigation-drawer  id="navegacion" temporary v-model="sideNav" app>
       <v-list>
+        <!-- <avatar id="avatarUsuario" :username="nombres" :size="55" color="#fff"></avatar> -->
         <v-list-tile v-for="item in menuItems" :key="item.title" router :to="item.link">
           <v-list-tile-content>{{ item.title }}</v-list-tile-content>
         </v-list-tile>
@@ -14,8 +15,14 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app dark>
-      <v-toolbar-side-icon @click="sideNav = !sideNav"></v-toolbar-side-icon>
-      <v-toolbar-title >PPL ASSESSMENT</v-toolbar-title>
+      <v-toolbar-side-icon @click="sideNav = !sideNav" class="hidden-md-and-up"></v-toolbar-side-icon>
+      <v-toolbar-title>PPL ASSESSMENT</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down" >
+        <v-btn flat v-for="item in menuItems" :key="item.title" router :to="item.link">{{ item.title }}</v-btn>
+        <v-btn flat @click="att">ATT</v-btn>
+        <v-btn flat @click="logout">Cerrar Sesión</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
     <v-content>
       <v-container>
@@ -26,7 +33,13 @@
 </template>
 
 <script>
-let menuItems = []
+import { mapGetters } from 'vuex'
+import Avatar from 'vue-avatar'
+
+let menuItems = [{
+  title: 'Ingresar Código',
+  link: '/ingresarCodigo'
+}]
 if (process.env.NODE_ENV === 'development') {
   menuItems.push({
     title: 'Lecciones',
@@ -41,6 +54,9 @@ if (process.env.NODE_ENV === 'development') {
 
 export default {
   name: 'App',
+  computed: mapGetters([
+    'nombres'
+  ]),
   data () {
     return {
       sideNav: false,
@@ -50,6 +66,7 @@ export default {
   created () {
     this.$store.dispatch('usuarioDatos')
   },
+  components: { Avatar },
   methods: {
     logout () {
 
@@ -71,5 +88,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+@media only screen and (max-width : 750px) {
+  #navegacion {
+    width: 75% !important;
+  }
 }
 </style>
