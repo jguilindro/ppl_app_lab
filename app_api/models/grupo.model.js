@@ -5,7 +5,6 @@ mongoose.Promise = global.Promise;
 const GrupoSchema = mongoose.Schema({
 	_id: {
 		type: String,
-		unique: true,
 		'default': shortid.generate
 	},
   nombre: {

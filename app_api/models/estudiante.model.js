@@ -7,7 +7,6 @@ var tz = require('moment-timezone')
 const EstudianteSchema = mongoose.Schema({
 	_id: {
 		type: String,
-		unique: true,
 		'default': shortid.generate
 	},
 	nombres: {

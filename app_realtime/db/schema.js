@@ -1,75 +1,63 @@
 // Todos los que dicen estaticos no deben depender de ninguna otro documento para funcionar
 
-const mongoose = require('mongoose');
-const shortid = require('shortid');
-mongoose.Promise = global.Promise;
+const mongoose = require('mongoose')
+const shortid = require('shortid')
+mongoose.Promise = global.Promise
 
 const LeccionRealtimev2Schema = mongoose.Schema({
-   _id: { // estatico
+  _id: {
     type: String,
-    unique: true,
     'default': require('shortid').generate
   },
+  // datos obtenidos de otros documentos
   codigo: { type: String },
   paralelo: {
     _id: { type: String },
     nombre: { type: String },
     nombreMateria: { type: String }
   },
-  grupos: [{ // sera actualizado al momento de colocar tomar-leccion
-    _id: { type: String },
-    nombre: { type: String },
-    estudiantes: [{
-      _id: { type: String },
-      nombres: { type: String },
-      apellidos: { type: String },
-      matricula: { type: String },
-      correo: { type: String }
-    }]
-  }],
-  leccion: {
-    _id: { type: String },
-    creador: { 
-      _id: { type: String },
-      nombres: { type: String },
-      apellidos: { type: String },
-      correo: { type: String }
-    },  // datos del profesor en texto plano
-    nombre: { type: String },
-    tiempoEstimado: { type: Number }, // en minutos
-    tipo: { type: String }
+
+  // manejo del realtime
+  activo: { // cambiado a false cuando el profesor termine la leccion
+    type: Boolean,
+    'default': true
   },
-  moderadoresConectados: [{
-    _id: { type: String },
-    nombres: { type: String },
-    apellidos: { type: String },
-    tipo: { type: String },
-    nivelPeer: { type: Number },
-    correo: { type: String }
+  pausas: [{
+    fecha: { type: Date },
+    moderador: {
+      _id: { type: String },
+      nombres: { type: String },
+      apellidos: { type: String }
+    }
   }],
-  preguntas: [{
-    _id: { type: String },
-    nombre: { type: String },
-    tiempoEstimado: { type: Number },
-    puntaje: { type: Number },
-    descripcion: { type: String },
-    subpreguntas: [{
-      orden: { type: Number },
-      puntaje: { type: String },
-      contenido: { type: String }
-    }],
-    tipoPregunta: { type: String }
+  continuadas: [{
+    fecha: { type: Date },
+    segundosPausado: { type: String },
+    moderador: {
+      _id: { type: String },
+      nombres: { type: String },
+      apellidos: { type: String }
+    }
   }],
-  estudiantes: [{ // sera actualizado al momento de colocar tomar-leccion
-    _id: { type: String },
-    nombres: { type: String },
-    apellidos: { type: String },
-    matricula: { type: String },
-    correo: { type: String },
-    conexiones: [{ fecha: Date }],
-    desconexiones: [{ fecha: Date }]
+  aumentados: [{
+    fecha: { type: Date },
+    segundos: { type: Date },
+    moderador: { 
+      _id: { type: String },
+      nombres: { type: String },
+      apellidos: { type: String }
+    }
   }],
-  estudiantesDandoLeccion: [{ // solo hace add
+  estado: {
+    type: String,
+    enum: ['sinEmpezar', 'tomando', 'pausado', 'terminado'],
+    'default': 'sinEmpezar'
+  },
+  fechaInicio: { type: Date },
+  fechaFin: { type: Date },
+
+  // Datos Otros
+  estudiantesDandoLeccion: [{ // solo hace add cuando el estudiante ingresa el codigo
     _id: { type: String },
     socketId: { type: String },
     dispositivo: { type: String, 'default': ' ' }, // sera un json pasado a string. Porque no se sabe que informacion tendra
@@ -81,86 +69,49 @@ const LeccionRealtimev2Schema = mongoose.Schema({
     grupoNombre: { type: String },
     estado: {
       type: String,
-      enum: ['ingresando-codigo', 'esperando-empiece-leccion', 'dando-leccion'],
-      'default': 'ingresando-codigo'
+      enum: ['ingresandoCodigo', 'esperandoEmpieceLeccion', 'dandoLeccion'],
+      'default': 'ingresandoCodigo' // ingresando codigo solo es algo que indicar que el estudiante ingreso el codigo nada mas
     }
-  }],
-  respuestas: [{
-    estudianteId: { type: String },
-    estudianteNombre: { type: String },
-    estudianteApellido: { type: String },
-    grupoId: { type: String },
-    grupoNombre: { type: String },
-    leccion: { type: String },
-    paralelo: { type: String },
-    pregunta: { type: String },
-    preguntaNombre: { type: String },
-    descripcion: { type: String },
-    subpreguntas: [{
-      orden: { type: Number },
-      puntaje: { type: String },
-      contenido: { type: String },
-      respuesta: { type: Number },
-      imagen:  { type: Number }
-    }],
-    orden: { type: Number },
-    respuesta: { type: String },
-    imagenes: { type: String }
-  }],
-  fechaInicio: { type: Date },
-  fechaFin: { type: Date },
-  aumentados: [{
-    fecha: { type: Date },
-    segundos: { type: Date },
-    moderador: { 
-      _id: { type: String },
-      nombres: { type: String },
-      apellidos: { type: String }
-    }
-  }],
-  pausas: [{
-    fecha: { type: Date },
-    moderador: { 
-      _id: { type: String },
-      nombres: { type: String },
-      apellidos: { type: String }
-    }
-  }],
-  continuadas: [{
-    fecha: { type: Date },
-    moderador: {
-      _id: { type: String },
-      nombres: { type: String },
-      apellidos: { type: String }
-    }
-  }],
-  estado: {
-    type: String,
-    enum: ['pendiente', 'sin-empezar', 'tomando', 'pausado', 'terminado', 'calificado'],
-    'default': 'pendiente'
-  }
+  }]
 },{timestamps: true, versionKey: false, collection: 'leccionesRealtime'})
 
-LeccionRealtimev2Schema.statics.obtenerLecciones = function(){
-  let self = this
-  return new Promise(function(resolve) {
-    resolve(self.find({}))
-  })
-}
-
-LeccionRealtimev2Schema.methods.crearLeccion = function(){
+LeccionRealtimev2Schema.methods.crear = function(){
   let self = this
   return new Promise(function(resolve) {
     resolve(self.save())
   })
 }
 
-LeccionRealtimev2Schema.statics.obtenerLeccionPorCodigo = function({ codigo }){
-  let self = this
-  return new Promise(function(resolve) {
-    resolve(self.findOne({ codigo }))
-  })
+LeccionRealtimev2Schema.statics = {
+  ObtenerPorParaleloId({ paraleloId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      resolve(self.findOne({ 'paralelo._id': paraleloId }))
+    })
+  },
+  ObtenerPorCodigo({ codigo }) {
+    const self = this
+    return new Promise(function(resolve) {
+      resolve(self.findOne({ codigo }))
+    })
+  } 
 }
 
+// LeccionRealtimev2Schema.statics.obtenerLecciones = function(){
+//   let self = this
+//   return new Promise(function(resolve) {
+//     resolve(self.find({}))
+//   })
+// }
 
-module.exports = mongoose.model('LeccionRealtimev2', LeccionRealtimev2Schema)
+// LeccionRealtimev2Schema.statics.obtenerLeccionPorCodigo = function({ codigo }){
+//   let self = this
+//   return new Promise(function(resolve) {
+//     resolve(self.findOne({ codigo }))
+//   })
+// }
+
+
+module.exports = {
+  LeccionRealtime: mongoose.model('LeccionRealtimev2', LeccionRealtimev2Schema)
+}

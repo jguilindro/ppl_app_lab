@@ -1,5 +1,18 @@
+process.on('uncaughtException', (err) => {
+  console.error('Caught exception: ' + err)
+  console.error(err.stack)
+})
+
 if (process.env.NODE_ENV == 'production') { // FIXME: borrarlo y hacerlo con varibles de entorno
   require('dotenv').config()
+}
+
+let urlServidor = ''
+if (process.env.NODE_ENV) {
+  urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
+} else {
+  console.error('Error no escogio ninguna variable de entorno')
+  process.exit(1)
 }
 
 const express = require('express')
@@ -13,14 +26,15 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
-
-process.on('uncaughtException', (err) => {
-  console.error('Caught exception: ' + err)
-  console.error(err.stack)
-})
+const mongo = require('./databases/mongo/mongo')
 
 // base de datos mongo
-require('./app_api/models/db')
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+  mongo.Conectar(urlServidor).catch((err) => {
+    console.error('Error en mongo')
+    process.exit(1)
+  })
+}
 
 // sync db y web service
 //require('./app_api/ws').update()
@@ -46,7 +60,7 @@ app.use(session({
   expire: 1 * 24 * 60 * 60 ,
   saveUninitialized: true,
   store: new MongoStore({
-      url: process.env.MONGO_URL,
+      url: urlServidor,
       ttl: 12 * 60 * 60
     })
 }))
@@ -60,14 +74,14 @@ if (process.env.NODE_ENV != 'production') {
   global.db = require('./databases').relationalDB
   
   // api version 2
-  const apiV2 = express()
-  require('./app_api_v2/routes.api.v2')(apiV2)
-  app.use('/api/v2', apiV2)
+  // const apiV2 = express()
+  // require('./app_api_v2/routes.api.v2')(apiV2)
+  // app.use('/api/v2', apiV2)
 }
 
 const realtime = express()
 require('./app_realtime/routes.realtime')(realtime, io)
-app.use('/realtime', realtime)
+app.use('/api/realtime', realtime)
 
 // app client
 const client = express()

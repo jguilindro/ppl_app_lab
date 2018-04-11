@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'testing') {
     if (err) {
       console.error(chalk.red(`Error conexión ${config.client.toUpperCase()}`))
       console.log(err)
-      process.exit(1)
+      // process.exit(1)
     }
     console.log(chalk.green(`Conectado a ${config.client.toUpperCase()}`))
   })

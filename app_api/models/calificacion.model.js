@@ -6,7 +6,6 @@ const paralelo = require('../models/paralelo.model');
 const CalificacionSchema = mongoose.Schema({
 	_id: {
 		type: String,
-		unique: true,
 		'default': require('shortid').generate
 	},
 	leccion: {

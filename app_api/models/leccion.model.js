@@ -5,7 +5,6 @@ var tz = require('moment-timezone')
 const LeccionSchema = mongoose.Schema({
   _id: {
     type: String,
-    unique: true,
     'default': require('shortid').generate
   },
   nombre: {

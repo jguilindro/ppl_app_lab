@@ -4,7 +4,6 @@ mongoose.Promise = global.Promise
 const ProfesorSchema = mongoose.Schema({
   _id: {
     type: String,
-    unique: true,
     'default': require('shortid').generate
   },
   correo: {

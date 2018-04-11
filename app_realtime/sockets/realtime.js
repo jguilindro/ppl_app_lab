@@ -1,8 +1,10 @@
 // https://stackoverflow.com/questions/14626636/how-do-i-shutdown-a-node-js-https-server-immediately
 // https://github.com/faisalman/ua-parser-js
 // FIXME: no se limpia el bojeto io.sockets al momento que un usuario de desconecta
+const shortid = require('shortid')
+const co = require('co')
 
-module.exports = function({ io, co, shortid, db, logger, timer }) {
+module.exports = function({ io, db, logger, timer }) {
   const Socket = io.of('/leccion')
   let sockets = [] // socket por paralelo [{ socketId, socket, usuarioId, paraleloId }] leccionId
   Socket.on('connection', function(socket) {

@@ -5,7 +5,6 @@ mongoose.Promise = global.Promise;
 const CapituloSchema = mongoose.Schema({
 	_id: {
     type: String,
-    unique: true,
     'default': require('shortid').generate
 	 },
   nombre: {

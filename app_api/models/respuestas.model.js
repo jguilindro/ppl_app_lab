@@ -6,7 +6,6 @@ const GrupoModel = require("./grupo.model");
 const respuestasSchema = mongoose.Schema({
 	_id: {
 		type: String,
-		unique: true,
 		'default' : shortid.generate
 	},
   estudiante: {

@@ -5,7 +5,6 @@ mongoose.Promise = global.Promise;
 const RubricaSchema = mongoose.Schema({
 	_id: {
 		type: String,
-		unique: true,
 		'default': require('shortid').generate
 	},
 	materia: {

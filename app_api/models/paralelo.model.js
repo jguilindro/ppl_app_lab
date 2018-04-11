@@ -4,7 +4,6 @@ mongoose.Promise = global.Promise
 const ParaleloSchema = new mongoose.Schema({
   _id: {
     type: String,
-    unique: true,
     'default': require('shortid').generate
   },
   nombre: {
