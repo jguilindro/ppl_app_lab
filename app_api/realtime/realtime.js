@@ -94,7 +94,7 @@ function realtime(io) {
            var hec = yield cleanIntervals(intervals, socket.leccion._id, true)
           if (boton) {
             var c = yield corriendoTiempo(socket.leccion._id, true);
-            leccion.in(PARALELO._id).emit('empezar leccion', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
+            leccion.in(PARALELO._id).emit('EMPEZAR_LECCION', 6000) // sirve para redirigir a todos los estudiantes una vez  que empieze la leccoin
           }
           //loggerCPU()
           cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
@@ -212,6 +212,7 @@ function realtime(io) {
           leccion.in(PARALELO._id).emit('leccion datos', leccionR)
           //loggerCPU()
           socket.emit('leccion id', LECCION_ID)
+          socket.emit('ESTUDIANTE_ANADIDO_PARALELO')
           delete estudiante_anadido
           delete estudiante_rec
           delete estudiante

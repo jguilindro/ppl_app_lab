@@ -52,6 +52,7 @@ app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
+app.use(morgan('tiny'))
 app.use(cookieParser())
 app.use(session({
   secret: process.env.SECRET,

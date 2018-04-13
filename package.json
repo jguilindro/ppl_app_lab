@@ -14,6 +14,7 @@
     "migrate:latest": "cross-env NODE_ENV=development env-cmd .env  knex migrate:latest --knexfile  databases/relational/knexfile.js",
     "seed:run": "cross-env NODE_ENV=development env-cmd .env  knex seed:run --knexfile  databases/relational/knexfile.js",
     "development": "npm-run-all migrate:latest seed:run",
+    "cel": "browser-sync start --ws --port 5000 --no-open --no-ui",
     "mocha": "mocha",
     "bower": "bower"
   },

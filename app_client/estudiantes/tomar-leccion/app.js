@@ -106,7 +106,7 @@ var app = new Vue({
 
 
 var esperando = false
-socket.on('empezar leccion', function(data) {
+socket.on('EMPEZAR_LECCION', function(data) {
   function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
   }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import moment from 'moment'
 import VeeValidate from 'vee-validate'
+import VueSocketio from 'vue-socket.io'
 // import colors from 'vuetify/es5/util/colors'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue-material-design-icons/styles.css'
@@ -9,20 +10,22 @@ import App from './App'
 import router from './router'
 import { store } from './store'
 
+let url = ''
+if (process.env.NODE_ENV === 'production') {
+  url = '/tomando_leccion'
+} else {
+  url = 'http://localhost:8000/tomando_leccion'
+}
+
 Vue.use(Vuetify, {
-  // theme: {
-  //   primary: colors.purple.base,
-  //   secondary: colors.grey.darken1,
-  //   accent: colors.shades.black,
-  //   error: colors.red.accent3
-  // }
 })
+Vue.use(VueSocketio, url, store)
 Vue.use(VeeValidate)
 Vue.config.productionTip = false
 
 Vue.filter('timeFromDate', (value) => {
   if (value) {
-    return `Terminado ${moment(value).locale('es').fromNow()}`
+    return `${moment(value).locale('es').format('dddd DD MMMM YYYY, HH:mm')}`
   }
 })
 
@@ -32,5 +35,11 @@ new Vue({
   router,
   store,
   components: { App },
+  sockets: {
+    connect () {
+      store.dispatch('setSocketUsuario', this.$socket)
+      store.commit('SOCKET_CONNECT')
+    }
+  },
   template: '<App/>'
 })
