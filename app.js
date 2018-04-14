@@ -8,7 +8,9 @@ if (process.env.NODE_ENV == 'production') { // FIXME: borrarlo y hacerlo con var
 }
 
 let urlServidor = ''
-if (process.env.NODE_ENV) {
+if (require("os").userInfo().username == 'User') {
+  urlServidor = 'mongodb://ppl:ppl@ds157499.mlab.com:57499/ppl_development'
+} else if (process.env.NODE_ENV){
   urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
 } else {
   console.error('Error no escogio ninguna variable de entorno')

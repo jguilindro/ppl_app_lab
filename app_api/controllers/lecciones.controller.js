@@ -7,6 +7,7 @@ const PreguntaModel     = require('../models/pregunta.model');
 const RespuestaModel    = require('../models/respuestas.model');
 var respuesta           = require('../utils/responses');
 var co                  = require('co')
+const _ = require('lodash')
 // armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas, estudianteId){
 //       var self = this;
 //       let arrayPreguntas = [];
@@ -63,7 +64,6 @@ var co                  = require('co')
 const detalleLeccion = async function (req, res) {
   const { leccionId } = req.params
   const estudianteId = req.session._id
-  let leccionDatos = {}
   // Obtener el grupo del estudiante //Obtiene los ids de todos los estudiantes del grupo // nombreDeLosEstudiantes
   obtenerGrupo = (estudianteId) => {
     return new Promise((resolve, reject) => {
@@ -92,11 +92,11 @@ const detalleLeccion = async function (req, res) {
     })
   }
   //Obtengo las respuestas que ya ha enviado el estudiante
-  function obtenerRespuestas(id_leccion, id_estudiante) {
+  function obtenerRespuestas(grupoId) {
     return new Promise((resolve, reject) => {
-      RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
-        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'));
-        return resolve(respues);
+      RespuestaModel.obtenerRespuestaPorGrupo(grupoId, leccionId, (err ,respues) => {
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'))
+        return resolve(respues)
       });
     });
   }
@@ -104,10 +104,33 @@ const detalleLeccion = async function (req, res) {
   let grupo = await obtenerGrupo(estudianteId)
   let estudiante  = await buscarEstudiante(estudianteId)
   let leccion  = await obtenerLeccion(leccionId)
-  let respuestas = await obtenerRespuestas(leccionId, estudianteId)
-  let preguntas = await armarArrayPreguntas(leccion.preguntas, respuestas)
-  // leccionDatos['grupo'] = grupo
-  return respuesta.ok(res, {estudiante: estudiante, leccion: leccion, respuestas: respuestas, preguntas : preguntas, grupo})
+  let grupoId = grupo['_id']
+  // let respuestasPorPregunta = preguntas.reduce((result, pregunta, index) => {
+  //   result = {
+  //     id: pregunta._id,
+
+  //   }
+  //   return result
+  // }, { })
+  var respuestas = await obtenerRespuestas(grupoId, leccionId)
+  let preguntasArmadas = await armarArrayPreguntas(leccion.preguntas, respuestas)
+  let preguntas = leccion['preguntas']
+  let preguntasLimpiada = _.sortBy(preguntas, o => o.ordenP).map((pregunta) => {
+      let preguntaId = pregunta.pregunta['_id']
+      let respuestasPregunta = _.filter(respuestas, function(o) { return o.pregunta === preguntaId })
+      let respuestasFiltradas = respuestasPregunta.map((respuesta) => {
+        return _.pick(respuesta, ['feedback', 'imagenes', 'respuesta', 'calificacion', 'estudiante']) 
+      })
+      let preguntasFiltradas = _.pick(pregunta.pregunta, ['descripcion', 'nombre', 'puntaje'])
+      preguntasFiltradas['respuestas'] = respuestasFiltradas
+      return preguntasFiltradas
+    })
+  let leccionDatos = {
+    nombre: leccion['nombre'],
+    fechaTomada: leccion['fechaInicioTomada'],
+    preguntas: preguntasLimpiada
+  }
+  return respuesta.ok(res, {estudiante: estudiante, preguntasArmadas, leccionTmp: leccion, respuestas, preguntas, grupo, leccion: leccionDatos})
 }
 
 const obtenerTodasLecciones = (req, res) => {

@@ -8,10 +8,10 @@
               <v-avatar class="red">
             <span class="white--text headline">{{ inicialesEstudiante }}</span>
           </v-avatar>
+              <v-list-tile-sub-title> {{ nombresEstudiante }}</v-list-tile-sub-title>
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title> {{ correoEstudiante }} </v-list-tile-title>
-              <v-list-tile-sub-title> {{ nombresEstudiante }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>

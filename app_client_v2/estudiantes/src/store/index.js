@@ -226,6 +226,7 @@ export const store = new Vuex.Store({
     leccionDatos ({commit, state}, leccionId) {
       Vue.http.get(`/api/lecciones/detalle/${leccionId}`)
         .then((response) => {
+          console.log(response.body)
           if (response.body.estado) {
             state.leccion = response.body.datos
           } else {
@@ -260,7 +261,7 @@ export const store = new Vuex.Store({
       return state.online
     },
     leccion (state) {
-      return state.leccion
+      return state.leccion.leccion // cambiarlo
     }
   }
 })

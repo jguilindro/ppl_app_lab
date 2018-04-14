@@ -107,6 +107,10 @@ respuestasSchema.statics.obtenerRespuestaPorId = function(id_respuesta, callback
   this.findOne({_id: id_respuesta}, callback);
 }
 
+respuestasSchema.statics.obtenerRespuestaPorGrupo = function(grupoId, leccionId, callback){
+  this.find({$and: [{ grupo: grupoId }, { leccion : leccionId }]}, callback)
+}
+
 respuestasSchema.statics.calificarRespuestaGrupal = function(id_leccion, id_pregunta, id_grupo, calificacion_nueva, feedback_nuevo, callback){
   //Busca en la colección a todas las respuestas del grupo dado a la pregunta dada de la lección dada
   //Actualiza el valor de la calificación de todas las respuestas encontradas (todas las respuestas del grupo) a valor de la nueva calificación
