@@ -1,10 +1,6 @@
 <template>
   <div class="ingresarCodigo">
-    <!-- {{ estadoRealtimeEstudiante }} -->
     <v-jumbotron>
-      <!-- {{estadoRealtimeEstudiante}} -->
-      <!-- {{estadoRealtimeE}}
-      {{yaIngresoCodigoEstudiante}} -->
     <v-container fill-height v-if="estadoLeccion === 'paralelo-no-esta-dando-leccion' || estadoLeccion === 'tiene-que-ingresar-el-codigo' || estadoLeccion === 'al-ingresar-el-codigo-redirigirlo-directamente'">
       <v-layout align-center>
         <v-flex text-xs-center>
@@ -20,8 +16,12 @@
               required
               pattern="[0-9]*"
               inputmode="numeric"
+              @keypress="keypressed($event)"
             ></v-text-field>
-            <v-btn @click="submit" :disabled="!valid" color="success" large>
+            <v-btn class="hidden-md-and-up" @click="submit" block :disabled="!valid" color="primary" dark>
+              Enviar
+            </v-btn>
+            <v-btn class="hidden-sm-and-down" @click="submit" :disabled="!valid" color="primary" large>
               Enviar
             </v-btn>
           </v-form>
@@ -36,17 +36,16 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <!-- <v-card>
-       <v-snackbar
-      :timeout="6000"
+     <v-snackbar
+      :timeout="3000"
       :multi-line="true"
       :color="'error'"
-      :vertical="true"
-      v-model="codigoMalIngresado"
-      >
-      Código Incorrecto
+      :top="true"
+      v-model="snackbar"
+    >
+      {{ mensajeSnackbar }}
+      <v-btn flat color="white" @click.native="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
-    </v-card> -->
   </v-jumbotron>
   </div>
 </template>
@@ -58,15 +57,29 @@ export default {
   $_veeValidate: {
     validator: 'new'
   },
+  created () {
+    this.$store.dispatch('obtenerParaleloUsuario')
+    this.$validator.localize('es', this.dictionary)
+    if (this.estadoLeccion === 'redirigirlo-directamente') {
+      if (process.env.NODE_ENV === 'production') {
+        window.location.href = '/estudiantes/leccion'
+      } else {
+        store.dispatch('redirigirlo')
+      }
+    }
+  },
   computed: {
     ...mapGetters({
-      estadoLeccion: 'estadoRealtime'
+      estadoLeccion: 'estadoRealtime',
+      online: 'online'
     })
   },
   data () {
     return {
-      valid: true,
+      valid: false,
       codigo: null,
+      snackbar: false,
+      mensajeSnackbar: '',
       dictionary: {
         custom: {
           codigo: {
@@ -80,23 +93,47 @@ export default {
     }
   },
   methods: {
-    submit () {
-      this.$validator.validateAll()
-        .then((esValido) => {
-          if (esValido) {
-            store.dispatch('verificarCodigo', this.codigo)
+    async submit () {
+      let self = this
+      let esValido = await this.$validator.validateAll()
+      if (esValido) {
+        self.snackbar = false
+        await store.dispatch('verificarCodigo', this.codigo)
+        let { estadoRealtime } = self.$store.getters
+        if (estadoRealtime === 'paralelo-no-esta-dando-leccion') {
+          self.snackbar = true
+          self.mensajeSnackbar = 'El paralelo no esta dando lección'
+        } else if (estadoRealtime === 'tiene-que-ingresar-el-codigo') {
+          self.snackbar = true
+          self.mensajeSnackbar = 'El código ingresado no es de la lección'
+        } else if (estadoRealtime === 'al-ingresar-el-codigo-redirigirlo-directamente') {
+          if (process.env.NODE_ENV === 'production') {
+            window.location.href = '/estudiantes/leccion'
+          } else {
+            store.dispatch('redirigirlo')
           }
-        })
+        }
+      } else {
+        self.snackbar = true
+        self.mensajeSnackbar = 'Código con formato no válido'
+      }
     },
-    malIngresado () {
-      this.$store.dispatch('malIngresado')
+    keypressed (e) {
+      const code = (e.keyCode ? e.keyCode : e.which)
+      if (code === 13) {
+        this.submit()
+      }
     }
   },
-  created () {
-    this.$store.dispatch('obtenerParaleloUsuario')
-    this.$validator.localize('es', this.dictionary)
-    if (this.estadoLeccion === 'redirigirlo-directamente') {
-      window.location.href = '/estudiantes/leccion'
+  watch: {
+    estadoLeccion (val) {
+      if (val === 'redirigirlo-directamente') {
+        if (process.env.NODE_ENV === 'production') {
+          window.location.href = '/estudiantes/leccion'
+        } else {
+          store.dispatch('redirigirlo')
+        }
+      }
     }
   }
 }

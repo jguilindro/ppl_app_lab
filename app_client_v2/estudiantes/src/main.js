@@ -39,6 +39,13 @@ new Vue({
     connect () {
       store.dispatch('setSocketUsuario', this.$socket)
       store.commit('SOCKET_CONNECT')
+      store.dispatch('online', true)
+    },
+    disconnect () {
+      store.dispatch('setSocketUsuario', this.$socket)
+      store.commit('SOCKET_CONNECT')
+      this.$store.dispatch('usuarioDatos')
+      store.dispatch('online', false)
     }
   },
   template: '<App/>'

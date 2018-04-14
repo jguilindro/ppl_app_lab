@@ -226,7 +226,7 @@ var App = new Vue({
                 if (res.body.estado) {
                   comenzar()
                   document.getElementById('pausar-leccion').disabled = false
-                  document.getElementById('leccion-no-dar').disabled = true
+                  // document.getElementById('leccion-no-dar').disabled = true
                   document.getElementById('comenzar-leccion').disabled = true
                   document.getElementById('terminar-leccion').disabled = false
                   document.getElementById('anadir-tiempo').disabled = false

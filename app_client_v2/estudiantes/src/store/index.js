@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import moment from 'moment'
 import _ from 'lodash'
 
-import router from '../router'
+// import router from '../router'
 
 Vue.use(Vuex)
 Vue.use(VueResource)
@@ -18,6 +18,7 @@ export const store = new Vuex.Store({
       nombres: '',
       apellidos: ''
     },
+    online: true,
     tmp: null,
     usuarioDatos: {}, // usado para una parte del realtime que se hace un emit, pero en realidad no tiene ninguna utilidad importante en el front
     // REALTIME
@@ -29,25 +30,28 @@ export const store = new Vuex.Store({
       paraleloDandoLeccion: false,
       yaIngresoCodigo: false,
       timeout: -1,
-      estudiateFueAnadidoAParalelo: false
+      estudiateFueAnadidoAParalelo: false,
+      debeSerRedirigidoPorRealtime: false,
+      fueRedirigido: false
     }
   },
   mutations: {
     setSocket (state, socket) {
       state.io = socket
     },
-    disconnectSocket (state) {
-      state.io.emit('disconnect')
+    SOCKET_DISCONNECT (state) {
       state.io = null
-      router.push('/')
+      state.connect = false
     },
     SOCKET_CONNECT (state, socket) {
       state.connect = true
     },
     SOCKET_EMPEZAR_LECCION (state, data) {
       state.leccionRealtime.timeout = data
-      location.pathname = '/'
-      window.location.href = '/estudiantes/leccion'
+      state.leccionRealtime.debeSerRedirigidoPorRealtime = true
+      if (state.leccionRealtime.estado === 'tiene-que-esperar-a-que-empiece-la-leccion') {
+        state.leccionRealtime.estado = 'redirigirlo-directamente'
+      }
     },
     SOCKET_USUARIO (state) {
       delete state.usuarioDatos.lecciones
@@ -89,11 +93,6 @@ export const store = new Vuex.Store({
       state.leccionRealtime.yaIngresoCodigo = datos.codigoLeccion
       state.leccionRealtime.leccionYaComenzo = datos.leccionYaComenzo
       state.leccionRealtime.paraleloDandoLeccion = datos.paraleloDandoLeccion
-      // state.codigoMalIngresado = !datos.codigoLeccion && datos.paraleloDandoLeccion
-      if (datos.leccionYaComenzo) {
-        // location.pathname = '/'
-        window.location.href = '/estudiantes/leccion'
-      }
     },
     setLeccionYaComenzo (state, leccionYaComenzo) {
       state.leccionRealtime.leccionYaComenzo = leccionYaComenzo
@@ -126,6 +125,12 @@ export const store = new Vuex.Store({
     },
     setTmp (state, datos) { // commit('setTmp', response.body.datos)
       state.tmp = datos
+    },
+    setRedirigir (state) {
+      state.leccionRealtime.fueRedirigido = true
+    },
+    setOnline (state, valor) {
+      state.online = valor
     }
   },
   actions: {
@@ -151,18 +156,22 @@ export const store = new Vuex.Store({
     },
     verificarCodigo ({commit}, codigo) {
       commit('setError', null)
-      Vue.http.get(`/api/estudiantes/tomar_leccion/${codigo}`)
-        .then((response) => {
-          if (response.body.estado) {
-            commit('setCodigoDatos', response.body.datos)
-            commit('accionesLeccion')
-          } else {
-            commit('setError', response.body)
-          }
-        })
-        .catch((err) => {
-          commit('setError', err)
-        })
+      return new Promise((resolve, reject) => {
+        Vue.http.get(`/api/estudiantes/tomar_leccion/${codigo}`)
+          .then((response) => {
+            if (response.body.estado) {
+              commit('setCodigoDatos', response.body.datos)
+              commit('accionesLeccion')
+              resolve()
+            } else {
+              commit('setError', response.body)
+            }
+          })
+          .catch((err) => {
+            commit('setError', err)
+            reject(err)
+          })
+      })
     },
     async obtenerParaleloUsuario ({commit, state, dispatch}) {
       commit('setError', null)
@@ -206,6 +215,12 @@ export const store = new Vuex.Store({
     async setSocketUsuario ({dispatch, commit}, socket) {
       await dispatch('setSocket', socket)
       commit('SOCKET_USUARIO')
+    },
+    redirigirlo ({commit}) {
+      commit('setRedirigir')
+    },
+    async online ({commit, dispatch}, estado) {
+      commit('setOnline', estado)
     }
   },
   getters: {
@@ -226,6 +241,9 @@ export const store = new Vuex.Store({
     },
     estadoRealtime (state) {
       return state.leccionRealtime.estado
+    },
+    online (state) {
+      return state.online
     }
   }
 })

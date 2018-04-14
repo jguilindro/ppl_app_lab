@@ -3,30 +3,18 @@
     <v-navigation-drawer  id="navegacion" temporary v-model="sideNav" app>
       <v-list>
          <v-list>
-          <template>
-            <v-list-tile avatar>
-              <v-list-tile-avatar>
-                <v-avatar class="red">
-              <span class="white--text headline">{{ inicialesEstudiante }}</span>
-            </v-avatar>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title> {{ correoEstudiante }} </v-list-tile-title>
-                <v-list-tile-sub-title> {{ nombresEstudiante }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </template>
+          <v-list-tile avatar>
+            <v-list-tile-avatar>
+              <v-avatar class="red">
+            <span class="white--text headline">{{ inicialesEstudiante }}</span>
+          </v-avatar>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title> {{ correoEstudiante }} </v-list-tile-title>
+              <v-list-tile-sub-title> {{ nombresEstudiante }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
         </v-list>
-       <!--  <v-layout row>
-          <v-flex md4 text-md-left>
-            <v-avatar class="teal">
-              <span class="white--text headline">{{ inicialesEstudiante }}</span>
-            </v-avatar>
-          </v-flex>
-          <v-flex md8 >
-            <span>sss</span>
-          </v-flex>
-        </v-layout> -->
         <v-list-tile v-for="item in menuItems" :key="item.title" router :to="item.link">
           <v-list-tile-content>{{ item.title }}</v-list-tile-content>
         </v-list-tile>
@@ -43,7 +31,7 @@
       <v-toolbar-side-icon @click="sideNav = !sideNav" class="hidden-md-and-up"></v-toolbar-side-icon>
       <v-toolbar-title>PPL ASSESSMENT</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon class="hidden-md-and-up" @click="ingresarCodigo()">
+      <v-btn icon class="hidden-md-and-up" @click="ingresarCodigo()" v-show="esRutaIngresarCodigo">
         <v-icon>mdi-lead-pencil</v-icon>
       </v-btn>
       <v-toolbar-items class="hidden-sm-and-down">
@@ -54,12 +42,15 @@
     </v-toolbar>
     <v-content>
       <v-container>
+        <transition enter-active-class="animated slideInDown"
+          leave-active-class="animated slideOutUp">
+            <v-alert :value="!online" color="error" transition="scale-transition">
+              <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
+            </v-alert>
+        </transition>
         <router-view/>
       </v-container>
     </v-content>
-    <v-footer class="">
-      <div id="footer" class="">ESPOL ©2018</div>
-    </v-footer>
   </v-app>
 </template>
 
@@ -89,8 +80,12 @@ export default {
     ...mapGetters({
       nombresEstudiante: 'nombres',
       inicialesEstudiante: 'iniciales',
-      correoEstudiante: 'correo'
-    })
+      correoEstudiante: 'correo',
+      online: 'online'
+    }),
+    esRutaIngresarCodigo () {
+      return this.$route.path !== '/ingresarCodigo'
+    }
   },
   data () {
     return {
