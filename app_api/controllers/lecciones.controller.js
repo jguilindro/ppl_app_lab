@@ -7,6 +7,108 @@ const PreguntaModel     = require('../models/pregunta.model');
 const RespuestaModel    = require('../models/respuestas.model');
 var respuesta           = require('../utils/responses');
 var co                  = require('co')
+// armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas, estudianteId){
+//       var self = this;
+//       let arrayPreguntas = [];
+//       for( let i = 0; i < preguntasObtenidas.length; i++ ) {
+//         let preguntaActual               = preguntasObtenidas[i].pregunta;
+//         let respuestaActual              = $.grep(respuestasObtenidas, function(respuesta, i){
+//           return preguntaActual._id == respuesta.pregunta;
+//         })[0];
+//         preguntaActual.orden             = preguntasObtenidas[i].ordenPregunta;
+//         preguntaActual.subpreguntas      = App.armarArraySubpreguntas(preguntaActual, respuestaActual, estudianteId);
+//         preguntaActual.tieneSubpreguntas = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
+//         arrayPreguntas.push(preguntaActual);
+//       }
+//       return arrayPreguntas;
+//     },
+//     armarArraySubpreguntas: function(pregunta, respuesta, estudianteId){
+//       var self = this;
+//       let array = [];
+//       for (var i = 0; i < pregunta.subpreguntas.length; i++) {
+//         let subActual    = pregunta.subpreguntas[i];
+//         let subResActual = $.grep(respuesta.subrespuestas, function(res, i){
+//           return subActual.orden == res.ordenPregunta;
+//         })[0];
+
+//         subActual.pregunta     = pregunta._id;
+//         subActual.respuesta    = subResActual.respuesta;
+//         subActual.estudiante   = estudianteId;
+//         subActual.calificacion = subResActual.calificacion;
+//         subActual.feedback     = subResActual.feedback;
+//         subActual.calificada   = subResActual.calificada;
+//         if(subResActual.imagen.indexOf('imgur') > 0){
+//           subActual.imagen     = subResActual.imagen; 
+//         }else{
+//           subActual.imagen     = '';
+//         }
+ 
+//         let calPonderada          = App.ponderarCalificacion(2, subActual.calificacion, subActual.puntaje);
+//         App.calificacionTotal     = App.calificacionTotal + calPonderada;
+//         App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
+
+//         array.push(subActual);
+//         /*Crea arreglos de subrespuestas para todos los estudiantes*/
+//         self.subrespuestasEstudiantes.push(subActual);
+//         /* Si el estudiante al que se le crean las subpreguntas es el mismo que está conectado
+//          * guarda sus respuestas en un arreglo aparte
+//          */
+//         if (self.estudianteId== estudianteId){
+//           self.subrespuestasConectado.push(subActual);
+//         }
+        
+//       }
+//       return array;
+//     }
+const detalleLeccion = async function (req, res) {
+  const { leccionId } = req.params
+  const estudianteId = req.session._id
+  let leccionDatos = {}
+  // Obtener el grupo del estudiante //Obtiene los ids de todos los estudiantes del grupo // nombreDeLosEstudiantes
+  obtenerGrupo = (estudianteId) => {
+    return new Promise((resolve, reject) => {
+      GrupoModel.obtenerGruposDeEstudiantePopulate(estudianteId, (err, doc) => {
+        if(err) return reject(err)
+        resolve(doc)
+      })
+    })
+  }
+
+  function buscarEstudiante(id_estudiante) {
+    return new Promise((resolve, reject) => {
+      EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
+        if (err) return reject(new Error('No se pudo obtener estudiante'));
+        return resolve(est);
+      })
+    })
+  }
+  // obtengo la leccion con las preguntas
+  function obtenerLeccion(id_leccion) {
+    return new Promise((resolve, reject) => {
+      LeccionModel.obtenerLeccionPopulate(id_leccion, (err, leccion) => {
+        if (err) return reject(new Error('No se puedo obtener Leccion'));
+        return resolve(leccion);
+      })
+    })
+  }
+  //Obtengo las respuestas que ya ha enviado el estudiante
+  function obtenerRespuestas(id_leccion, id_estudiante) {
+    return new Promise((resolve, reject) => {
+      RespuestaModel.obtenerRespuestasDeEstudiante(id_leccion, id_estudiante, (err ,respues) => {
+        if (err) return reject(new Error('No se puedo obtener Respuesta estudiante'));
+        return resolve(respues);
+      });
+    });
+  }
+
+  let grupo = await obtenerGrupo(estudianteId)
+  let estudiante  = await buscarEstudiante(estudianteId)
+  let leccion  = await obtenerLeccion(leccionId)
+  let respuestas = await obtenerRespuestas(leccionId, estudianteId)
+  let preguntas = await armarArrayPreguntas(leccion.preguntas, respuestas)
+  // leccionDatos['grupo'] = grupo
+  return respuesta.ok(res, {estudiante: estudiante, leccion: leccion, respuestas: respuestas, preguntas : preguntas, grupo})
+}
 
 const obtenerTodasLecciones = (req, res) => {
   LeccionModel.obtenerTodasLecciones((err, lecciones) => {
@@ -541,7 +643,8 @@ module.exports = {
   comenzarLeccion,
   habilitarEstudiantesCursoParaLeccion,
   obtenerLeccionesParalelo,
-  terminarLeccion
+  terminarLeccion,
+  detalleLeccion
 }
 
 /*

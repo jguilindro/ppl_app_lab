@@ -58,6 +58,10 @@ GrupoSchema.statics.obtenerGrupoDeEstudiante = function(id_estudiante, callback)
 GrupoSchema.statics.obtenerGruposDeEstudiante = function(id_estudiante, callback) {
   this.find({estudiantes: id_estudiante}, callback)
 }
+
+GrupoSchema.statics.obtenerGruposDeEstudiantePopulate = function(id_estudiante, callback) {
+  this.findOne({estudiantes: id_estudiante}).populate({path: 'estudiantes'}).exec(callback)
+}
 /*
 	Lecciones
 */

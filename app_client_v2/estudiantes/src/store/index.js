@@ -33,7 +33,8 @@ export const store = new Vuex.Store({
       estudiateFueAnadidoAParalelo: false,
       debeSerRedirigidoPorRealtime: false,
       fueRedirigido: false
-    }
+    },
+    leccion: {}
   },
   mutations: {
     setSocket (state, socket) {
@@ -221,6 +222,19 @@ export const store = new Vuex.Store({
     },
     async online ({commit, dispatch}, estado) {
       commit('setOnline', estado)
+    },
+    leccionDatos ({commit, state}, leccionId) {
+      Vue.http.get(`/api/lecciones/detalle/${leccionId}`)
+        .then((response) => {
+          if (response.body.estado) {
+            state.leccion = response.body.datos
+          } else {
+            commit('setError', response.body)
+          }
+        })
+        .catch((err) => {
+          commit('setError', err)
+        })
     }
   },
   getters: {
@@ -244,6 +258,9 @@ export const store = new Vuex.Store({
     },
     online (state) {
       return state.online
+    },
+    leccion (state) {
+      return state.leccion
     }
   }
 })

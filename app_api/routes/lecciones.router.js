@@ -28,4 +28,7 @@ router.get('/datos/:id_estudiante/:id_leccion', LeccionController.leccionDatos);
 router.get('/:id_leccion/estadisticas', LeccionController.estadisticasGeneral);
 router.get('/:id_leccion/estadisticas/preguntas', LeccionController.estadisticasPreguntas);
 
+// OBTENER DATOS PARA MOSTRAR
+router.get('/detalle/:leccionId', LeccionController.detalleLeccion)
+
 module.exports = router;

@@ -165,7 +165,7 @@ function realtime(io) {
     socket.on('usuario', function(usuario) {
       // guardar el usuario conectado
       socket.user = usuario
-      console.log(usuario) //
+      // console.log(usuario) //
       // console.log(`usuario ${Object.keys(io.sockets.sockets).length}`);
       // console.log();
       co(function* () {
