@@ -1,3 +1,9 @@
 [submodule "docs/code"]
 	path = docs/code
 	url = https://git.gitbook.com/joelerll95/ppl-lab.git
+[submodule "att"]
+	path = att
+	url = https://github.com/joelerll/att.git
+[submodule "web_service"]
+	path = web_service
+	url = https://github.com/joelerll/ppl_web_service.git

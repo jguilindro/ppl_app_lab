@@ -1,4 +1,13 @@
-const mongoose = require('mongoose');
+let mongoose = {}
+let db = {}
+if (process.env.NODE_ENV === 'production' && process.env.SERVIDOR === 'heroku') {
+  mongoose = require('mongoose')
+  db = require('mongoose')
+} else if (process.env.NODE_ENV) {
+  db = require('../../databases/mongo/mongo').getDatabaseConnection()
+  mongoose = require('mongoose')
+}
+
 const shortid = require('shortid');
 mongoose.Promise = global.Promise;
 const paralelo = require('../models/paralelo.model');

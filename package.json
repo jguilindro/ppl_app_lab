@@ -69,11 +69,12 @@
     "tracer": "^0.8.7",
     "unstream": "^2.0.0",
     "uuid": "^3.0.1",
-    "validator": "^7.0.0",
+    "validator": "^9.4.1",
     "winston": "^3.0.0-rc0"
   },
   "devDependencies": {
     "axios": "^0.16.2",
+    "gitbook-plugin-api": "^1.1.0",
     "babel-core": "^6.0.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-istanbul": "^4.1.1",

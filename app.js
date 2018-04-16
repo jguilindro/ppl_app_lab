@@ -99,6 +99,10 @@ const clientv2 = express()
 require('./app_client_v2/routes.client.v2')(clientv2)
 app.use('/v2', clientv2)
 
+// ATT
+
+att = require('./att/app').app
+app.use('/', att)
 // error page
 app.use(function(req, res, next) {
   var err = new Error('Url o metodo no valido')
