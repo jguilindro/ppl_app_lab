@@ -33,6 +33,9 @@ export default {
         router.push({name: 'Leccion', params: { leccionId }})
       }
     }
+  },
+  mounted () {
+    this.$store.dispatch('limpiarLeccion')
   }
 }
 </script>

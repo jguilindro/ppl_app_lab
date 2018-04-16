@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <v-navigation-drawer temporary v-model="sideNav" app>
+    <v-navigation-drawer temporary v-model="sideNav" app >
       <v-list>
          <v-list>
           <v-list-tile avatar>
@@ -34,27 +34,36 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app dark>
-      <v-toolbar-side-icon @click="sideNav = !sideNav" class="hidden-md-and-up"></v-toolbar-side-icon>
+    <!-- MOVIL -->
+    <v-toolbar app dark class="hidden-md-and-up">
+      <v-toolbar-side-icon @click="sideNav = !sideNav"></v-toolbar-side-icon>
       <v-toolbar-title>PPL ASSESSMENT</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon class="hidden-md-and-up" @click="ingresarCodigo()" v-show="esRutaIngresarCodigo">
+      <v-btn icon @click="ingresarCodigo()" v-show="esRutaIngresarCodigo">
         <v-icon>mdi-lead-pencil</v-icon>
       </v-btn>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat v-for="item in menuItems" :key="item.title" router :to="item.link">{{ item.title }}</v-btn>
-        <v-btn flat @click="att">ATT</v-btn>
-        <v-btn flat @click="logout"><v-icon>mdi-logout</v-icon> </v-btn>
-      </v-toolbar-items>
+    </v-toolbar >
+    <!-- <v-toolbar color="white" flat>
+      <v-btn icon light @click="back">
+        <v-icon color="grey darken-2">arrow_back</v-icon>
+      </v-btn>
+    </v-toolbar> -->
+    <!-- WEB -->
+    <v-toolbar app dark class="hidden-sm-and-down">
+      <v-toolbar-title>PPL ASSESSMENT</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn flat v-for="item in menuItems" :key="item.title" router :to="item.link">{{ item.title }}</v-btn>
+      <v-btn flat @click="att">ATT</v-btn>
+      <v-btn flat @click="logout"><v-icon>mdi-logout</v-icon> </v-btn>
     </v-toolbar>
-    <v-content>
+    <v-content > <!-- style="padding-top: 0px" -->
       <transition enter-active-class="animated slideInDown"
         leave-active-class="animated slideOutUp">
           <v-alert :value="!online" color="error" transition="scale-transition">
             <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
           </v-alert>
       </transition>
-      <!-- <img src="static/logo/logo_espol_new.png" alt=""> -->
+      <!-- <img :src="clearImageLocal('static/logo/logo_espol_new.png')" alt=""> -->
       <router-view></router-view>
     </v-content>
     <!-- <main>
@@ -115,6 +124,15 @@ export default {
     },
     ingresarCodigo () {
       router.push({name: 'IngresarCodigo'})
+    },
+    back () {
+      router.go(-1)
+    },
+    clearImageLocal (urlDevelopment) {
+      if (process.env.NODE_ENV === 'production') {
+        return urlDevelopment.split('static')['1'].substring(1)
+      }
+      return urlDevelopment
     }
   }
 }

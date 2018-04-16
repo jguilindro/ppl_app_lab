@@ -137,6 +137,9 @@ export const store = new Vuex.Store({
     },
     setLeccion (state, leccion) {
       state.leccion = {...state.leccion, ...leccion}
+    },
+    setLeccionLimpiar (state) {
+      state.leccion = {}
     }
   },
   actions: {
@@ -233,7 +236,6 @@ export const store = new Vuex.Store({
         .then((response) => {
           if (response.body.estado) {
             commit('setLeccion', response.body.datos.leccion)
-            commit('setTmp', response.body.datos)
           } else {
             commit('setError', response.body)
           }
@@ -241,6 +243,9 @@ export const store = new Vuex.Store({
         .catch((err) => {
           commit('setError', err)
         })
+    },
+    limpiarLeccion ({commit}) {
+      commit('setLeccionLimpiar')
     }
   },
   getters: {
