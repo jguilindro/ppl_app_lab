@@ -54,6 +54,7 @@
             <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
           </v-alert>
       </transition>
+      <!-- <img src="static/logo/logo_espol_new.png" alt=""> -->
       <router-view></router-view>
     </v-content>
     <!-- <main>
