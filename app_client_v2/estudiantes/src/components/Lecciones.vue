@@ -4,8 +4,7 @@
       <template v-for="(leccion, index) in lecciones">
         <v-list-tile avatar ripple :key="index" @click="irLeccion(leccion.id, leccion.calificacion)">
           <v-list-tile-avatar>
-
-                {{ leccion.calificacion }}
+            {{ leccion.calificacion }}
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>{{ leccion.nombre }}</v-list-tile-title>

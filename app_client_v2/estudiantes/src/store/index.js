@@ -34,7 +34,8 @@ export const store = new Vuex.Store({
       debeSerRedirigidoPorRealtime: false,
       fueRedirigido: false
     },
-    leccion: {}
+    leccion: {
+    }
   },
   mutations: {
     setSocket (state, socket) {
@@ -65,6 +66,7 @@ export const store = new Vuex.Store({
       state.error = payload
     },
     setLecciones (state, lecciones) {
+      state.lecciones = { }
       let leccionesFiltrado = lecciones.map((leccionDatos) => {
         return {
           calificacion: leccionDatos.calificacion,
@@ -132,6 +134,9 @@ export const store = new Vuex.Store({
     },
     setOnline (state, valor) {
       state.online = valor
+    },
+    setLeccion (state, leccion) {
+      state.leccion = {...state.leccion, ...leccion}
     }
   },
   actions: {
@@ -226,9 +231,9 @@ export const store = new Vuex.Store({
     leccionDatos ({commit, state}, leccionId) {
       Vue.http.get(`/api/lecciones/detalle/${leccionId}`)
         .then((response) => {
-          console.log(response.body)
           if (response.body.estado) {
-            state.leccion = response.body.datos
+            commit('setLeccion', response.body.datos.leccion)
+            commit('setTmp', response.body.datos)
           } else {
             commit('setError', response.body)
           }
@@ -261,7 +266,7 @@ export const store = new Vuex.Store({
       return state.online
     },
     leccion (state) {
-      return state.leccion.leccion // cambiarlo
+      return state.leccion
     }
   }
 })

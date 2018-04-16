@@ -3,7 +3,8 @@ import Vuetify from 'vuetify'
 import moment from 'moment'
 import VeeValidate from 'vee-validate'
 import VueSocketio from 'vue-socket.io'
-// import colors from 'vuetify/es5/util/colors'
+// vue-fullscreen' 'img-vuer' mediumZoom // si vale pero tiene un error al abrir la imagen
+import Viewer from 'v-viewer'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue-material-design-icons/styles.css'
 import App from './App'
@@ -17,10 +18,10 @@ if (process.env.NODE_ENV === 'production') {
   url = 'http://localhost:8000/tomando_leccion'
 }
 
-Vue.use(Vuetify, {
-})
+Vue.use(Vuetify)
 Vue.use(VueSocketio, url, store)
 Vue.use(VeeValidate)
+Vue.use(Viewer)
 Vue.config.productionTip = false
 
 Vue.filter('timeFromDate', (value) => {

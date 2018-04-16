@@ -1,29 +1,36 @@
 <template>
   <v-app id="app">
-    <v-navigation-drawer  id="navegacion" temporary v-model="sideNav" app>
+    <v-navigation-drawer temporary v-model="sideNav" app>
       <v-list>
          <v-list>
           <v-list-tile avatar>
             <v-list-tile-avatar>
-              <v-avatar class="red">
-            <span class="white--text headline">{{ inicialesEstudiante }}</span>
-          </v-avatar>
-              <v-list-tile-sub-title> {{ nombresEstudiante }}</v-list-tile-sub-title>
+            <v-avatar class="red">
+              <span class="white--text headline">{{ inicialesEstudiante }}</span>
+            </v-avatar>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title> {{ correoEstudiante }} </v-list-tile-title>
+              <v-list-tile-title> {{ nombresEstudiante }}</v-list-tile-title>
+              <v-list-tile-sub-title> {{ correoEstudiante }} </v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
         <v-list-tile v-for="item in menuItems" :key="item.title" router :to="item.link">
           <v-list-tile-content>{{ item.title }}</v-list-tile-content>
         </v-list-tile>
-        <v-divider></v-divider>
         <v-list-tile @click="att">
           <v-list-tile-content>ATT</v-list-tile-content>
         </v-list-tile>
+        <v-divider></v-divider>
         <v-list-tile @click="logout">
-          <v-list-tile-content>Cerrar Sesión</v-list-tile-content>
+          <v-layout row justify-space-between>
+            <v-flex xs6 ms6>
+              <v-list-tile-content>Cerrar Sesión</v-list-tile-content>
+            </v-flex>
+            <v-flex xs6 ms6>
+              <v-icon>mdi-logout</v-icon>
+            </v-flex>
+          </v-layout>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
@@ -41,16 +48,17 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container>
-        <transition enter-active-class="animated slideInDown"
-          leave-active-class="animated slideOutUp">
-            <v-alert :value="!online" color="error" transition="scale-transition">
-              <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
-            </v-alert>
-        </transition>
-        <router-view/>
-      </v-container>
+      <transition enter-active-class="animated slideInDown"
+        leave-active-class="animated slideOutUp">
+          <v-alert :value="!online" color="error" transition="scale-transition">
+            <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
+          </v-alert>
+      </transition>
+      <router-view></router-view>
     </v-content>
+    <!-- <main>
+
+    </main> -->
   </v-app>
 </template>
 
@@ -121,10 +129,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-@media only screen and (max-width : 750px) {
-  #navegacion {
-    width: 75% !important;
-  }
 }
 </style>

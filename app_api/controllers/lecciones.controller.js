@@ -8,63 +8,11 @@ const RespuestaModel    = require('../models/respuestas.model');
 var respuesta           = require('../utils/responses');
 var co                  = require('co')
 const _ = require('lodash')
-// armarArrayPreguntas: function(preguntasObtenidas, respuestasObtenidas, estudianteId){
-//       var self = this;
-//       let arrayPreguntas = [];
-//       for( let i = 0; i < preguntasObtenidas.length; i++ ) {
-//         let preguntaActual               = preguntasObtenidas[i].pregunta;
-//         let respuestaActual              = $.grep(respuestasObtenidas, function(respuesta, i){
-//           return preguntaActual._id == respuesta.pregunta;
-//         })[0];
-//         preguntaActual.orden             = preguntasObtenidas[i].ordenPregunta;
-//         preguntaActual.subpreguntas      = App.armarArraySubpreguntas(preguntaActual, respuestaActual, estudianteId);
-//         preguntaActual.tieneSubpreguntas = ( preguntaActual.subpreguntas != null && preguntaActual.subpreguntas.length > 0 );
-//         arrayPreguntas.push(preguntaActual);
-//       }
-//       return arrayPreguntas;
-//     },
-//     armarArraySubpreguntas: function(pregunta, respuesta, estudianteId){
-//       var self = this;
-//       let array = [];
-//       for (var i = 0; i < pregunta.subpreguntas.length; i++) {
-//         let subActual    = pregunta.subpreguntas[i];
-//         let subResActual = $.grep(respuesta.subrespuestas, function(res, i){
-//           return subActual.orden == res.ordenPregunta;
-//         })[0];
 
-//         subActual.pregunta     = pregunta._id;
-//         subActual.respuesta    = subResActual.respuesta;
-//         subActual.estudiante   = estudianteId;
-//         subActual.calificacion = subResActual.calificacion;
-//         subActual.feedback     = subResActual.feedback;
-//         subActual.calificada   = subResActual.calificada;
-//         if(subResActual.imagen.indexOf('imgur') > 0){
-//           subActual.imagen     = subResActual.imagen; 
-//         }else{
-//           subActual.imagen     = '';
-//         }
- 
-//         let calPonderada          = App.ponderarCalificacion(2, subActual.calificacion, subActual.puntaje);
-//         App.calificacionTotal     = App.calificacionTotal + calPonderada;
-//         App.calificacionPonderada = App.ponderarCalificacion(App.leccion.puntaje, App.calificacionTotal, 100).toFixed(2);
-
-//         array.push(subActual);
-//         /*Crea arreglos de subrespuestas para todos los estudiantes*/
-//         self.subrespuestasEstudiantes.push(subActual);
-//         /* Si el estudiante al que se le crean las subpreguntas es el mismo que está conectado
-//          * guarda sus respuestas en un arreglo aparte
-//          */
-//         if (self.estudianteId== estudianteId){
-//           self.subrespuestasConectado.push(subActual);
-//         }
-        
-//       }
-//       return array;
-//     }
 const detalleLeccion = async function (req, res) {
   const { leccionId } = req.params
   const estudianteId = req.session._id
-  // Obtener el grupo del estudiante //Obtiene los ids de todos los estudiantes del grupo // nombreDeLosEstudiantes
+
   obtenerGrupo = (estudianteId) => {
     return new Promise((resolve, reject) => {
       GrupoModel.obtenerGruposDeEstudiantePopulate(estudianteId, (err, doc) => {
@@ -105,30 +53,104 @@ const detalleLeccion = async function (req, res) {
   let estudiante  = await buscarEstudiante(estudianteId)
   let leccion  = await obtenerLeccion(leccionId)
   let grupoId = grupo['_id']
-  // let respuestasPorPregunta = preguntas.reduce((result, pregunta, index) => {
-  //   result = {
-  //     id: pregunta._id,
-
-  //   }
-  //   return result
-  // }, { })
   var respuestas = await obtenerRespuestas(grupoId, leccionId)
   let preguntasArmadas = await armarArrayPreguntas(leccion.preguntas, respuestas)
   let preguntas = leccion['preguntas']
-  let preguntasLimpiada = _.sortBy(preguntas, o => o.ordenP).map((pregunta) => {
-      let preguntaId = pregunta.pregunta['_id']
-      let respuestasPregunta = _.filter(respuestas, function(o) { return o.pregunta === preguntaId })
-      let respuestasFiltradas = respuestasPregunta.map((respuesta) => {
-        return _.pick(respuesta, ['feedback', 'imagenes', 'respuesta', 'calificacion', 'estudiante']) 
-      })
-      let preguntasFiltradas = _.pick(pregunta.pregunta, ['descripcion', 'nombre', 'puntaje'])
-      preguntasFiltradas['respuestas'] = respuestasFiltradas
-      return preguntasFiltradas
+  const buscarEstudiantePorId = (estudianteId) => {
+    let estudiante = grupo.estudiantes.find((estudiante) => {
+      return estudiante['_id'] == estudianteId
     })
-  let leccionDatos = {
-    nombre: leccion['nombre'],
-    fechaTomada: leccion['fechaInicioTomada'],
-    preguntas: preguntasLimpiada
+    return estudiante
+  }
+  const filtarRespuestas = (respuestasPregunta) => {
+    let feedback = ''
+    let calificacion = -1
+    let respuestasFiltradas = respuestasPregunta.map((respuesta) => {
+      feedback = respuesta['feedback']
+      calificacion = respuesta['calificacion']
+      let estudianteId = respuesta['estudiante']
+      let estudiante = buscarEstudiantePorId(estudianteId)
+      let estudianteFiltrado = _.pick(estudiante, ['nombres', 'apellidos'])
+      let respuestaFiltrada = _.pick(respuesta, ['imagenes', 'respuesta'])
+      if (respuestaFiltrada && respuestaFiltrada['imagen']) {
+        respuestaFiltrada['imagen'] = limpiarImagen(respuestaFiltrada['imagen'])
+      }
+      respuestaFiltrada['estudiante'] = estudianteFiltrado
+      return respuestaFiltrada
+    })
+    return { respuestasFiltradas, feedback, calificacion }
+  }
+
+  const limpiarImagen = (imagenUrl) => {
+    if (imagenUrl.indexOf('imgur') > 0) {
+      return imagenUrl
+    } else {
+      return ''
+    }
+  }
+
+  let tieneSupreguntasTmp = 0
+  let preguntasLimpiada = _.sortBy(preguntas, o => o.ordenP).map((resp) => {
+    let preguntaId = resp.pregunta['_id']
+    let preguntaObjeto = resp.pregunta
+    let preguntasFiltradas = _.pick(preguntaObjeto, ['puntaje']) // 'descripcion', 'nombre', 
+    const tieneSupreguntas = preguntaObjeto.subpreguntas.length
+    tieneSupreguntasTmp = tieneSupreguntas
+    if (tieneSupreguntas) {
+      let respuestaPreguntaPorEstudiante = _.filter(respuestas, function(o) { return o.pregunta === preguntaId }) // contiene la respuesta a cada subpregunta
+      let subpreguntas = preguntaObjeto.subpreguntas
+      let preguntas = []
+      for (subpregunta of subpreguntas) {
+        let ordenPregunta = subpregunta['orden']
+        let respuestas = respuestaPreguntaPorEstudiante.map((respuesta) => {
+          let estudiante = buscarEstudiantePorId(respuesta['estudiante'])
+          let estudianteFiltrado = _.pick(estudiante, ['nombres', 'apellidos'])
+          let respuestaEncontrada = respuesta['subrespuestas'].find((subrespuesta) => {
+            return subrespuesta['ordenPregunta'] == ordenPregunta
+          })
+          let respuestaFiltrada = _.pick(respuestaEncontrada, ['imagen', 'respuesta'])
+          if (respuestaFiltrada && respuestaFiltrada['imagen']) {
+            respuestaFiltrada['imagen'] = limpiarImagen(respuestaFiltrada['imagen'])
+          }
+          respuestaFiltrada['estudiante'] = estudianteFiltrado
+          return respuestaFiltrada
+          
+        })
+        let preguntaFiltrada = _.pick(subpregunta, ['puntaje', 'calificacion', 'feedback'])
+        let preguntaTmp = preguntaFiltrada
+        preguntaTmp['respuestas'] = respuestas
+        preguntas.push(preguntaTmp)
+      }
+      preguntasFiltradas['preguntas'] = preguntas
+    } else {
+      let respuestasPregunta = _.filter(respuestas, function(o) { return o.pregunta === preguntaId })
+      let { respuestasFiltradas, feedback, calificacion } = filtarRespuestas(respuestasPregunta)
+      preguntasFiltradas['respuestas'] = respuestasFiltradas
+      preguntasFiltradas['feedback'] = feedback
+      preguntasFiltradas['calificacion'] = calificacion
+    }
+    return preguntasFiltradas
+  })
+  let leccionDatos = {}
+  let calificacion = estudiante.lecciones.find((lec) => {
+    return lec.leccion == leccion['_id']
+  })['calificacion']
+  if (!tieneSupreguntasTmp) {
+    leccionDatos = {
+      id: leccion['_id'],
+      nombre: leccion['nombre'],
+      calificacion,
+      fechaTomada: leccion['fechaInicioTomada'],
+      preguntas: preguntasLimpiada
+    }
+  } else {
+    leccionDatos = {
+      id: leccion['_id'],
+      nombre: leccion['nombre'],
+      calificacion,
+      fechaTomada: leccion['fechaInicioTomada'],
+      secciones: preguntasLimpiada
+    }
   }
   return respuesta.ok(res, {estudiante: estudiante, preguntasArmadas, leccionTmp: leccion, respuestas, preguntas, grupo, leccion: leccionDatos})
 }

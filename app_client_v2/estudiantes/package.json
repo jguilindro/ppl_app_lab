@@ -18,6 +18,7 @@
     "axios": "^0.18.0",
     "lodash": "^4.17.5",
     "moment": "^2.22.0",
+    "v-viewer": "^0.3.2",
     "vee-validate": "^2.0.6",
     "vue": "^2.5.2",
     "vue-avatar": "^2.1.3",

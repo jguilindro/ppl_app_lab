@@ -1,0 +1,82 @@
+      <!-- <v-container grid-list-md text-xs-center>
+        <v-layout row justify-space-around>
+          <v-flex xs12 md12>
+
+          </v-flex>
+          <v-flex xs12 md12>
+
+          </v-flex>
+        </v-layout>
+      </v-container> -->
+
+
+               <!-- <v-divider
+                  inset
+                ></v-divider> -->
+                <!-- {{ respuesta.respuesta }} -->
+                <!-- <div :key="i.resp"> -->
+                  <!-- <img :src="respuesta.imagenes" alt=""> -->
+                  <!-- <progressive-img id="imagen" v-if="respuesta.imagenes != ''" :src="respuesta.imagenes" /> -->
+                <!-- </div> -->
+
+                <!-- <img v-lazy="" > -->
+                <!-- <v-card>
+                  <v-card-media :src="respuesta.imagenes" height="200px">
+                  </v-card-media>
+                </v-card> -->
+
+ <!-- {{ respuesta.estudiante.apellidos }} {{ respuesta.estudiante.nombres }} -->
+
+
+<!-- respuesta con imagen -->
+                  <v-container fluid grid-list-lg v-if="false">
+                    <div v-if="selectedImage && indexId == (index.toString() + i.toString())" max-width="85vw">
+                      <img :src="selectedImage" alt="" width="100%" @click.stop="selectedImage = null">
+                      <hr>
+                    </div>
+                    <v-layout row>
+                      <v-flex xs7>
+                        <div>
+                          <div class="grey--text">{{ respuesta.estudiante.apellidos }}</div>
+                          <div>{{ respuesta.respuesta }}</div>
+                        </div>
+                      </v-flex>
+
+                      <v-flex xs5 class="images" v-viewer="{movable: false}">
+                        <!-- <img :src="respuesta.imagenes" alt=""> -->
+                        <!-- :src="respuesta.imagenes" height="125px" contain -->
+                        <!-- <v-card-media ref="imagen" @click="zoom(respuesta.imagenes, index.toString() + i.toString())" :src="respuesta.imagenes" height="125px" contain></v-card-media> -->
+                        <!-- <progressive-img src="https://slashsync.com/v/slashpanda/anime/poster/250x360/guilty-crown.png"/> -->
+                        <!-- <progressive-img :src="respuesta.imagenes" :blur="100"/> -->
+                        <!-- <img v-gallery :src="respuesta.imagenes"> -->
+                        <!-- <img class="preview" :v-progressive="'respuesta.imagenes'" :src="respuesta.imagenes"/> -->
+                        <div >
+                          <!-- <img :src="respuesta.imagenes"> -->
+                        </div>
+                        <!-- <button type="button" @click="show">Show</button> -->
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                  <!-- sin respuesta con imagen -->
+                  <v-container fluid grid-list-lg v-if="respuesta.respuesta == ''">
+                    <v-layout row justify-space-around>
+                      <v-flex xs7>
+                        <div>
+                          <div class="grey--text">{{ respuesta.estudiante.apellidos }}</div>
+                        </div>
+                      </v-flex>
+                      <v-flex xs5>
+                        <!-- <div id="container">
+                          <img
+                            src="https://images.unsplash.com/photo-1486334803289-1623f249dd1e?auto=format&fit=crop&w=1920&q=60&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D"
+                            alt="Image"
+                          >
+                        </div> -->
+                        <v-card-media
+                          :src="respuesta.imagenes"
+                          height="125px"
+                          class="imagen"
+                        ><!-- <progressive-img :src="respuesta.imagenes" /> --></v-card-media>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>

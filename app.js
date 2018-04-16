@@ -68,7 +68,7 @@ app.use(session({
 }))
 
 if (process.env.NODE_ENV != 'production') {
-  global.db = require('./databases').relationalDB
+  // global.db = require('./databases').relationalDB
 }
 
 // api v1
