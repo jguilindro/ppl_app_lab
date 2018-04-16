@@ -165,8 +165,8 @@ module.exports = (app) => {
 
   // TODO: Primeros cambios de version con single page
   // ++++++++++++++++++++++++++++++++
-  app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/perfil')))
-  // app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, function(req, res) { res.redirect('/v2/estudiantes')})
+  // app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/perfil')))
+  app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, function(req, res) { res.redirect('/v2/estudiantes')})
   app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/ver-leccion')));
   app.use('/estudiantes/tomar-leccion',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/tomar-leccion')));
   app.get('/estudiantes/tomar-leccion',redirecion,  authEstudiante, middleEstudianteControl, function(req, res, next) {

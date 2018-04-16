@@ -135,6 +135,7 @@ const detalleLeccion = async function (req, res) {
   let calificacion = estudiante.lecciones.find((lec) => {
     return lec.leccion == leccion['_id']
   })['calificacion']
+
   if (!tieneSupreguntasTmp) {
     leccionDatos = {
       id: leccion['_id'],
