@@ -3,15 +3,15 @@ process.on('uncaughtException', (err) => {
   console.error(err.stack)
 })
 
-if (process.env.NODE_ENV == 'production') { // FIXME: borrarlo y hacerlo con varibles de entorno
-  require('dotenv').config()
-}
-
 let urlServidor = ''
-if (require("os").userInfo().username == 'User') {
+if (require("os").userInfo().username == 'User') { // usado para cuando estoy en el basar
   urlServidor = 'mongodb://ppl:ppl@ds157499.mlab.com:57499/ppl_development'
 } else if (process.env.NODE_ENV){
-  urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
+  if (process.env.NODE_ENV === 'development:cas') {
+    urlServidor = `mongodb://localhost/ppl_development`
+  } else {
+    urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
+  }
 } else {
   console.error('Error no escogio ninguna variable de entorno')
   process.exit(1)
@@ -20,7 +20,6 @@ if (require("os").userInfo().username == 'User') {
 const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
-const cors = require('cors')
 const compression = require('compression')
 const MongoClient = require('mongodb').MongoClient
 const cookieParser = require('cookie-parser')
@@ -28,30 +27,25 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
-const mongo = require('./databases/mongo/mongo')
+const app = express()
+const server = require('http').Server(app)
+const PORT = process.env.PORT || '8000'
+
+const db = require('./databases/mongo/mongo')
 
 // base de datos mongo
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
-  mongo.Conectar(urlServidor).catch((err) => {
+if (process.env.NODE_ENV !== 'testing') {
+  db.Conectar(urlServidor).catch((err) => {
     console.error('Error en mongo')
     process.exit(1)
   })
 }
 
-// sync db y web service
-//require('./app_api/ws').update()
-
-const app = express()
-const server = require('http').Server(app)
-const PORT = process.env.PORT || '8000'
-
 const io = require('socket.io')(server, {'pingInterval': 60000, 'pingTimeout': 120000})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(compression())
 app.use(favicon(path.join(__dirname, 'public', 'img/favicon.ico')))
-app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
 app.use(morgan('tiny'))
@@ -59,7 +53,9 @@ app.use(cookieParser())
 app.use(session({
   secret: process.env.SECRET,
   resave: true,
-  expire: 1 * 24 * 60 * 60 ,
+  name: 'SID',
+  unset: 'destroy',
+  maxAge: 1 * 24 * 60 * 60 ,
   saveUninitialized: true,
   store: new MongoStore({
       url: urlServidor,
@@ -67,9 +63,16 @@ app.use(session({
     })
 }))
 
+// base de datos mysql
 if (process.env.NODE_ENV != 'production') {
   // global.db = require('./databases').relationalDB
 }
+
+/*
+  ===============
+  MONTAR LAS APPS
+  ===============
+*/
 
 // api v1
 const api = express()
@@ -100,14 +103,18 @@ require('./app_client_v2/routes.client.v2')(clientv2)
 app.use('/v2', clientv2)
 
 // ATT
+const att = require('./att/app').app
+app.use('/', att(io))
 
-att = require('./att/app').app
-app.use('/', att)
 // error page
 app.use(function(req, res, next) {
-  var err = new Error('Url o metodo no valido')
-  err.status = 404
-  next(err)
+  if (process.env.NODE_ENV === 'production') {
+    res.redirect('/')
+  } else {
+    var err = new Error('Url o metodo no valido')
+    err.status = 404
+    next(err)
+  }
 })
 
 app.set('port', PORT)

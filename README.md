@@ -1,7 +1,45 @@
 <!-- mongodb://ppl:ppl@ds157499.mlab.com:57499/ppl_development -->
 # Peer Proyect Learning ESPOL WEB APP
 
-## Correr la app en produccion
+Apliación de tomar lecciones en tiempo real
+
+Es la unión de 3 proyectos.
+
+* PPL
+* ATT .- aplicación de preguntas y repuestas a los profesores
+* WEB SERVICE .- usado por las dos anteriores para actualizar las bases de datos correspondiente
+
+## Production
+
+__Recordar copiar las dependencias de production de att a ppl porque todavía no encuentro una forma de hacerlo separado__
+
+Hara un git reset HEAD a todos los proyectos
+
+Hara un pull a todos los proyecto
+
+Instalará las dependencias de los package de ppl y att
+
+Instalar las variables de entorno necesarias
+
+Correrá el servidor con forever
+
+
+```sh
+./production # no usarlo en LOCAL
+```
+
+## Development
+### Variables de entorno usadas
+
+```txt
+development
+production
+testing
+development:cas .- usada para pruebas locales del cas
+```
+
+
+<!-- ## Correr la app en produccion
 
 ```sh
 > git pull
@@ -219,7 +257,7 @@ Mostar comandos posibles de npm
 ## Recomendado
 https://github.com/rwaldron/idiomatic.js/
 
-
+ -->
 <!-- // usar la libreria joi para las validaciones, https://github.com/hapijs/joi
 http://usejsdoc.org/-->
 

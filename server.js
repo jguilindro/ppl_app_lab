@@ -1,8 +1,8 @@
 // SERVER MODES
 //   production .- usado en el servidor
 //   development .- usado para desarrollo local
-//   development:cas .- usado para pruebas locales del CAS
 //   testing .- usado para los test automaticos
+//   development:cas .- usado para pruebas locales del CAS
 
 const { app, server } = require('./app')
 

@@ -1,1 +1,36 @@
 #! /bin/bash
+
+# COPIAR DEPENDENCIAS DE ATT Y WEBSERVICE
+# buscar como usar webservice en otro proceso
+
+# ATT
+cd att
+git reset --hard HEAD
+git pull
+cd client/estudiantes
+yarn
+yarn build
+cd ..
+cd profesores
+yarn
+yarn build
+cd ../../..
+
+# WEBSERVICE
+
+# PPL
+git reset --hard HEAD
+git pull
+cd app_client_v2/estudiantes
+yarn
+yarn build
+cd ../..
+yarn
+
+# SET .ENV
+export $(cat .env | xargs)
+
+# HACER COPIA DE LAS DB
+
+
+# RUN SERVER

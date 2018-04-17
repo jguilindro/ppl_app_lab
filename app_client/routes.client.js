@@ -46,7 +46,7 @@ function procesarSession (req, res, next) {
       req.session.correo = estudiante.correo;
       req.session._id = estudiante._id;
       req.session.login = true;
-      res.redirect('/estudiantes') // CAMBIO DE FRONT
+      res.redirect('/estudiantes')
     } else if (!estudiante && !profesor) {
       res.redirect('/otros')
     }
@@ -92,11 +92,10 @@ function redirecion(req, res , next) {
 module.exports = (app) => {
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
-  
-  if ( process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'development:cas' || process.env.NODE_ENV == 'testing') {
+  if ( process.env.NODE_ENV === 'development'  || process.env.NODE_ENV === 'testing') {
     app.use(morgan('dev'));
     SERVICE_URL = 'http://localhost:' + process.env.PORT
-  } else if ( process.env.NODE_ENV == 'production' ) {
+  } else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development:cas') {
     app.use(morgan('tiny'))
     SERVICE_URL = URL_ESPOL_SERVER
   }
@@ -162,40 +161,6 @@ module.exports = (app) => {
   app.use('/profesores/leccion/recalificar/:id_leccion/:id_estudiante/:id_grupo',redirecion,authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores/leccion/recalificar')))
   app.use('/profesores/leccion/:id_leccion/estadisticas', redirecion, authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores/leccion/estadisticas')))
   app.use('/profesores/rubrica/',redirecion,authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores/rubrica/')))
-
-  // TODO: Primeros cambios de version con single page
-  // ++++++++++++++++++++++++++++++++
-  // app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/perfil')))
-  app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, function(req, res) { res.redirect('/v2/estudiantes')})
-  app.use('/estudiantes/ver-leccion/:id',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/ver-leccion')));
-  app.use('/estudiantes/tomar-leccion',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, 'estudiantes/tomar-leccion')));
-  app.get('/estudiantes/tomar-leccion',redirecion,  authEstudiante, middleEstudianteControl, function(req, res, next) {
-    EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
-      ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-        if (estudiante.codigoIngresado &&  paralelo.leccionYaComenzo) {
-          res.redirect('/estudiantes/leccion')
-        } else {
-          res.sendFile( path.resolve(__dirname + '/app_client/estudiantes/tomar-leccion/index.html') )
-        }
-      })
-    })
-  })
-  // ++++++++++++++++++++++++++++++++
-
-  app.get('/estudiantes/leccion',redirecion, authEstudiante, middleEstudianteControl, function(req, res, next) {
-    EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
-      ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
-        if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
-          next()
-        } else {
-          res.redirect('/estudiantes/tomar-leccion')
-        }
-      })
-    })
-  },express.static(path.join(__dirname, '/estudiantes/leccion')))
-  app.use('/estudiantes/leccion',redirecion, authEstudiante, middleEstudianteControl, express.static(path.join(__dirname, '/estudiantes/leccion')))
-
-
   app.use('/navbar/profesores' ,express.static(path.join(__dirname, 'profesores/partials/navbar.html')))
   app.use('/otros', function(req, res, next) {
     if (req.sessionID) {
@@ -229,6 +194,20 @@ module.exports = (app) => {
       })
     }
   })
+
+  // ESTUDIANTES
+  app.use('/estudiantes/leccion',redirecion, authEstudiante, middleEstudianteControl,  function(req, res, next) {
+    EstudianteModel.obtenerEstudiante(req.session._id, (err, estudiante) => {
+      ParaleloModel.obtenerParaleloDeEstudiante(req.session._id, (err, paralelo) => {
+        if (estudiante.codigoIngresado && paralelo.leccionYaComenzo) {
+          next()
+        } else {
+          res.redirect('/v2/estudiantes/#/ingresarCodigo')
+        }
+      })
+    })
+  }, express.static(path.join(__dirname, '/estudiantes/leccion')))
+  app.use('/estudiantes',redirecion, authEstudiante, middleEstudianteControl, (req, res) => { res.redirect('/v2/estudiantes')})
 
   // app.use('*', express.static(path.join(__dirname, 'error')))
 }

@@ -28,6 +28,10 @@ let Conectar = function(url) {
 }
 
 let getDatabaseConnection = function() {
+  if (!db) {
+    console.error('Llamar los modelos de mongoose despues de inicializar la base de datos')
+    process.exit(1)
+  }
   return db
 }
 
