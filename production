@@ -3,15 +3,21 @@
 # COPIAR DEPENDENCIAS DE ATT Y WEBSERVICE
 # buscar como usar webservice en otro proceso
 
+# git pull --recurse-submodules
+# git submodule update --remote --recursive
+
 # ATT
+echo "Instalando ATT"
 cd att
 git reset --hard HEAD
-git pull
+git pull origin master
 cd client/estudiantes
+echo "Instalando ATT ESTUDIANTES"
 yarn
 yarn build
 cd ..
 cd profesores
+echo "Instalando ATT PROFESORES"
 yarn
 yarn build
 cd ../../..

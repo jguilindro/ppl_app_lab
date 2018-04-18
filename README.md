@@ -23,6 +23,9 @@ Instalar las variables de entorno necesarias
 
 Correrá el servidor con forever
 
+1. git submodule init
+
+2. git submodule update
 
 ```sh
 ./production # no usarlo en LOCAL
@@ -36,6 +39,7 @@ development
 production
 testing
 development:cas .- usada para pruebas locales del cas
+APP.- usada para detectar en att cuando se la esta usando integrada con ppl
 ```
 
 

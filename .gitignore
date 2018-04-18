@@ -2,6 +2,7 @@ node_modules/
 public/bower_components
 npm-debug.log
 app_api/ws/update/*.json
+public/imagenes
 scripts/tmp
 .idea/
 *.png
@@ -55,7 +56,6 @@ coverage/
 reports/
 !reports/.gitkeep
 .nyc_output
-build.js*
 dist/
 !dist/index.html
 *.mp4
