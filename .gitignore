@@ -17,8 +17,6 @@ app_client/estudiantes/dist/*.js
 app_client/estudiantes/dist/build-webpack.js
 
 ## webpack files
-.postcssrc.js
-.eslintrc
 package.backup.json
 karma.conf.js
 gulpfile.js

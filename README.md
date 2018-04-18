@@ -11,21 +11,13 @@ Es la unión de 3 proyectos.
 
 ## Production
 
-__Recordar copiar las dependencias de production de att a ppl porque todavía no encuentro una forma de hacerlo separado__
+__La primera vez clonado__
 
-Hara un git reset HEAD a todos los proyectos
+```sh
+git submodule update --init
 
-Hara un pull a todos los proyecto
+```
 
-Instalará las dependencias de los package de ppl y att
-
-Instalar las variables de entorno necesarias
-
-Correrá el servidor con forever
-
-1. git submodule init
-
-2. git submodule update
 
 ```sh
 ./production # no usarlo en LOCAL
