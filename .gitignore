@@ -18,9 +18,6 @@ app_client/estudiantes/dist/build-webpack.js
 
 ## webpack files
 package.backup.json
-karma.conf.js
-gulpfile.js
-webpack.config.js
 data/db/*.bson
 data/db/*.json
 data/db/*
@@ -28,7 +25,6 @@ data/db/*
 docs/api/*
 docs/code/_book/
 package-lock.json
-hacer
 apache2/
 yarn-error*
 npm-error*

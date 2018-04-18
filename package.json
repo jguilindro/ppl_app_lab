@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "bower install",
-    "dev": "cross-env NODE_ENV=development env-cmd .env nodemon server.js --config nodemon.json",
+    "dev": "cross-env NODE_ENV=production env-cmd .env nodemon server.js --config nodemon.json",
     "dev:cas": "cross-env NODE_ENV=development:cas env-cmd .env node server.js",
     "test:realtime": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/sockets/realtime.test.js --require app_realtime/sockets/helpers.sockets.js --exit",
     "test:realtime:db": "cross-env NODE_ENV=testing env-cmd .env npm run mocha app_realtime/db/database.test.js --timeout=20000 --require app_realtime/db/helpers.db.js --exit",

@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const co = require('co')
 const CASAuthentication = require('cas-authentication')
-
+const MongoClient = require('mongodb')
 var EstudianteModel = require('../app_api/models/estudiante.model')
 var ProfesorModel = require('../app_api/models/profesor.model')
 var ParaleloModel = require('../app_api/models/paralelo.model')
@@ -89,6 +89,20 @@ function redirecion(req, res , next) {
   }
 }
 
+let urlServidor = ''
+if (require("os").userInfo().username == 'User') { // usado para cuando estoy en el basar
+  urlServidor = 'mongodb://ppl:ppl@ds157499.mlab.com:57499/ppl_development'
+} else if (process.env.NODE_ENV){
+  if (process.env.NODE_ENV === 'development:cas') {
+    urlServidor = `mongodb://localhost/ppl_development`
+  } else {
+    urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
+  }
+} else {
+  console.error('Error no escogio ninguna variable de entorno')
+  process.exit(1)
+}
+
 module.exports = (app) => {
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
@@ -165,7 +179,7 @@ module.exports = (app) => {
   app.use('/otros', function(req, res, next) {
     if (req.sessionID) {
       if (res) {
-        MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+        MongoClient.connect(urlServidor, function(err, db) {
           var collection = db.collection('sessions');
           collection.remove({_id: req.sessionID}, function(err, docs) {
             req.session = null

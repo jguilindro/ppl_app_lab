@@ -35,6 +35,8 @@ yarn
 
 # SET .ENV
 export $(cat .env | xargs)
+export NODE_ENV=production
+forever start -o out.log -e err.log server.js
 
 # HACER COPIA DE LAS DB
 
