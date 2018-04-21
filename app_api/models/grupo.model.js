@@ -29,6 +29,17 @@ const GrupoSchema = mongoose.Schema({
 	}
 },{versionKey: false, timestamps: true, collection: 'grupos'})
 
+GrupoSchema.statics = {
+  EliminarEstudiante({ estudianteId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({'estudiantes': estudianteId }, {$pull: { 'estudiantes': estudianteId }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  }
+}
+
 GrupoSchema.statics.obtenerTodosGrupos = function(callback) {
 	this.find({}).populate({path: 'estudiantes'}).exec(callback);
 }

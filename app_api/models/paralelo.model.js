@@ -44,7 +44,7 @@ const ParaleloSchema = new mongoose.Schema({
   },
   termino: {
     type: String,
-    enum: ['1','2']
+    enum: ['1s','2s']
   },
   profesor: {
     type: String,
@@ -72,6 +72,59 @@ const ParaleloSchema = new mongoose.Schema({
     ref: 'Grupo'
   }]
 }, {timestamps: true, versionKey: false, collection: 'paralelos'});
+
+// V2 metodos
+ParaleloSchema.methods = {
+  Crear() {
+    let self = this
+    return Promise.resolve(self.save())
+  }
+}
+
+ParaleloSchema.statics = {
+  ObtenerTodos() {
+    let self = this
+    return new Promise(function(resolve) {
+      resolve(self.find({ }))
+    })
+  },
+  ObtenerTodosPopulateEstudiantes() {
+    let self = this
+    return new Promise(function(resolve) {
+      resolve(self.find({ }).populate({path: 'estudiantes'}))
+    })
+  },
+  ObtenerParaleloEstudiante({ estudianteId }) {
+    let self = this
+    return new Promise(function(resolve) {
+      resolve(self.findOne({ 'estudiantes': estudianteId }))
+    })
+  },
+  AnadirEstudiante({ materiaParalelo, materiaCodigo, estudianteId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({$and: [{ nombre: materiaParalelo }, { codigo: materiaCodigo }]}, {$addToSet: {'estudiantes': estudianteId }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
+  AnadirProfesorTitular({ materiaParalelo, materiaCodigo, profesorId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({$and: [{ nombre: materiaParalelo }, { codigo: materiaCodigo }]}, {$set: {'profesor': profesorId }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
+  EliminarEstudiante({ materiaParalelo, materiaCodigo, estudianteId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({$and: [{ nombre: materiaParalelo }, { codigo: materiaCodigo }]}, {$pull: { 'estudiantes': estudianteId }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  }
+}
 
 ParaleloSchema.statics.obtenerTodosParalelos = function(callback) {
   //this.find({}).populate({path: 'estudiantes grupos'}).exec(callback);

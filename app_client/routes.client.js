@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const co = require('co')
 const CASAuthentication = require('cas-authentication')
-const MongoClient = require('mongodb')
+const MongoClient = require('mongodb').MongoClient
 var EstudianteModel = require('../app_api/models/estudiante.model')
 var ProfesorModel = require('../app_api/models/profesor.model')
 var ParaleloModel = require('../app_api/models/paralelo.model')
@@ -180,10 +180,10 @@ module.exports = (app) => {
     if (req.sessionID) {
       if (res) {
         MongoClient.connect(urlServidor, function(err, db) {
-          var collection = db.collection('sessions');
+          var collection = db.collection('sessions')
           collection.remove({_id: req.sessionID}, function(err, docs) {
             req.session = null
-            db.close();
+            db.close()
             return next()
             })
           })

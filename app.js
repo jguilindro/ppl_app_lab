@@ -21,12 +21,12 @@ const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
 const compression = require('compression')
-const MongoClient = require('mongodb').MongoClient
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const CronJob = require('cron').CronJob
 const app = express()
 const server = require('http').Server(app)
 const PORT = process.env.PORT || '8000'
@@ -35,7 +35,41 @@ const db = require('./databases/mongo/mongo')
 
 // base de datos mongo
 if (process.env.NODE_ENV !== 'testing') {
-  db.Conectar(urlServidor).catch((err) => {
+  db.Conectar(urlServidor)
+  .then(() => {
+    const WSPPL = require('./web_service/index.js')
+    const dbWebService = require('./databases/webService.db')
+    const { exec } = require('child_process')
+    const rutaScriptBackup = path.join(__dirname, 'scripts', 'mongoBackup.sh')
+    if (process.env.NODE_ENV === 'production') {
+      const wsPPL = WSPPL({ db: dbWebService, local: false })
+      wsPPL.inicializar().then(() => {
+        new CronJob('00 00 23 * * *', function() {
+          exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
+            if (error) {
+              console.error(error)
+            } else {
+              wsPPL.actualizar()
+            }
+          })
+        }, null, true, 'America/Guayaquil')
+      })
+    } else {
+      const dump = require('./web_service/dump')
+      const wsPPL = WSPPL({ db: dbWebService, anio: '2017', termino: '2s', local: true, dump })
+      wsPPL.inicializar().then((resp) => {
+        // exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
+        //   if (error) {
+        //     console.log(error)
+        //   } else {
+        //     wsPPL.actualizar()
+        //   }
+        // })
+      })
+    }
+  })
+  .catch((err) => {
+    console.error(err)
     console.error('Error en mongo')
     process.exit(1)
   })
@@ -50,21 +84,19 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
 app.use(morgan('tiny'))
 app.use(cookieParser())
-app.use(session({
-  secret: process.env.SECRET,
-  resave: true,
-  name: 'SID',
-  unset: 'destroy',
-  maxAge: 1 * 24 * 60 * 60 ,
-  saveUninitialized: true,
-  store: new MongoStore({
-      url: urlServidor,
-      ttl: 12 * 60 * 60
-    })
-}))
-
-// base de datos mysql
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV != 'production') { // se hace esto para aumentar el tiempo de respuesta. Se usara solo en development
+  app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa
+    secret: process.env.SECRET,
+    resave: true,
+    name: 'SID',
+    unset: 'destroy',
+    maxAge: 1 * 24 * 60 * 60 ,
+    saveUninitialized: true,
+    store: new MongoStore({
+        url: urlServidor,
+        ttl: 12 * 60 * 60
+      })
+  }))
   // global.db = require('./databases').relationalDB
 }
 
@@ -102,9 +134,16 @@ const clientv2 = express()
 require('./app_client_v2/routes.client.v2')(clientv2)
 app.use('/v2', clientv2)
 
+app.use('/undefined', (req, res) => { res.redirect('/')})
+
 // ATT
-const att = require('./att/app').app
-app.use('/', att(io))
+try {
+  const att = require('./att/app').app
+  app.use('/', att(io))
+} catch(err) {
+  console.error('no tiene instalado el modulo att. Revise el README')
+  console.log(err)
+}
 
 // error page
 app.use(function(req, res, next) {

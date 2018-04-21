@@ -83,6 +83,63 @@ EstudianteSchema.methods.generarJwt = function() {
   }, config.secret );// process..env.JWT_SECRET
 };
 
+// V2 metodos
+
+EstudianteSchema.methods = {
+  Crear() {
+    let self = this
+    return Promise.resolve(self.save())
+  }
+}
+
+EstudianteSchema.statics = {
+  ObtenerPorCorreo({ correo }) {
+    const self = this
+    return new Promise(function(resolve) {
+      resolve(self.findOne({ correo }))
+    })
+  },
+  Eliminar({ id }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.findOneAndRemove({_id: id }).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
+  ObtenerTodos() {
+    const self = this
+    return new Promise(function(resolve) {
+      resolve(self.find({}))
+    })
+  },
+  CambiarApellidos({ correo, apellidosNuevos }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({ correo }, {$set: { apellidos: apellidosNuevos }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
+  CambiarNombres({ correo, nombresNuevos }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({ correo }, {$set: { nombres: nombresNuevos }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
+  CambiarCorreo({ correo, correoNuevo }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({ correo }, {$set: { correo: correoNuevo }}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  }
+}
+
+// V1
 EstudianteSchema.statics.obtenerTodosEstudiantes = function(callback) {
   this.find({}).populate({path: 'lecciones.leccion'}).exec(callback);
 }

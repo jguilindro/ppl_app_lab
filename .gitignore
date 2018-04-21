@@ -1,48 +1,29 @@
+dbbackup/
+.idea/
 node_modules/
 public/bower_components
 npm-debug.log
-app_api/ws/update/*.json
-public/imagenes
-scripts/tmp
-.idea/
-*.png
-env.env
-env.txt
-*.csv
-*.log*
-
-## ignorar builds
-app_client/estudiantes/dist/*.css
-app_client/estudiantes/dist/*.js
-app_client/estudiantes/dist/build-webpack.js
-
-## webpack files
-package.backup.json
-data/db/*.bson
-data/db/*.json
-data/db/*
-.env_debug
-docs/api/*
-docs/code/_book/
 package-lock.json
-apache2/
 yarn-error*
 npm-error*
 npm.error*
 *.log
 *.backup
-tmux*
-TODO
+docs/api/*
+docs/code/_book/
 
-node_modules
-npm-debug.log
-public/bower_components
+public/imagenes
+scripts/tmp
 .idea/
-app_client/cypress/screenshots/*
-env.env
-env.txt
 *.csv
 *.log*
+
+app_api/ws/update/*.json
+TODO
+
+public/bower_components
+
+app_client/cypress/screenshots/*
 
 ## ignorar builds
 coverage/
@@ -53,19 +34,6 @@ reports/
 dist/
 !dist/index.html
 *.mp4
-## webpack files
-.env_debug
-docs/api/*
-docs/code/_book/
-package-lock.json
-hacer
-apache2/
-yarn-error*
-tmp*
-npm-error*
-npm.error*
-*.log
-*.backup
 tmux*
 TODO
 prueba.js

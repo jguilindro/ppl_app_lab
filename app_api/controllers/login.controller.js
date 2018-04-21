@@ -47,6 +47,7 @@ function loginDev(req, res) {
 }
 
 function login(req, res) {
+  
   let correo = ''
   if (req.body.correo.split('@').length != 2) {
     correo = `${req.body.correo}@espol.edu.ec`

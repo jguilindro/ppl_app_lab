@@ -8,7 +8,8 @@ let Conectar = function(url) {
     let options = {}
     if (process.env.NODE_ENV === 'production')
       options = { autoIndex: false }
-    db = mongoose.createConnection(url, options)
+    conn = mongoose.connect(url, options)
+    db = mongoose.connection
     db.on('error', function(err) {
       console.log(`error ${err}`)
     })

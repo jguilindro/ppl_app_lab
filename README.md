@@ -9,6 +9,17 @@ Es la unión de 3 proyectos.
 * ATT .- aplicación de preguntas y repuestas a los profesores
 * WEB SERVICE .- usado por las dos anteriores para actualizar las bases de datos correspondiente
 
+## Nombres bases de datos
+
+* Development.- ppl_development
+* Production.- ppl_production
+* Testing.- ppl_testing
+
+## Nombres bases de datos att
+* Development.- att_development
+* Production.- att_production
+
+
 ## Production
 
 __La primera vez clonado__
@@ -21,6 +32,9 @@ git submodule update --init
 
 ```sh
 ./production # no usarlo en LOCAL
+export $(cat .env | xargs) # instalar las variables de entorno
+export NODE_ENV=production # 
+forever start -o out.log -e err.log server.js
 ```
 
 ## Development

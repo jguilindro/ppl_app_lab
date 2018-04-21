@@ -39,6 +39,25 @@ const ProfesorSchema = mongoose.Schema({
   }]
 },{timestamps: true, versionKey: false, collection: 'profesores'});
 
+// V2 metodos
+
+ProfesorSchema.methods = {
+  Crear() {
+    let self = this
+    return Promise.resolve(self.save())
+  }
+}
+
+
+ProfesorSchema.statics = {
+  ObtenerPorCorreo({ correo }) {
+    const self = this
+    return new Promise(function(resolve) {
+      resolve(self.findOne({ correo }))
+    })
+  }
+}
+
 ProfesorSchema.statics.obtenerTodosProfesores = function(callback) {
   this.model('Profesor').find({}, callback);
 }
