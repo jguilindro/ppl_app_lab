@@ -35,6 +35,7 @@ git submodule update --init
 export $(cat .env | xargs) # instalar las variables de entorno
 export NODE_ENV=production # 
 forever start -o out.log -e err.log server.js
+pm2 start app.js
 ```
 
 ## Development
