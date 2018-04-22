@@ -118,8 +118,9 @@ module.exports = (app) => {
     cas_url      : 'https://auth.espol.edu.ec',
     service_url  : SERVICE_URL,
     cas_version  : '2.0',
-    dev_mode_user: 'joeedrod',
     is_dev_mode  : false,
+    destroy_session: true,
+    renew: true,
     session_name : 'cas_user',
     session_info : 'cas_userinfo',
     destroy_session: true

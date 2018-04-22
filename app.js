@@ -84,19 +84,20 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
 app.use(morgan('tiny'))
 app.use(cookieParser())
+app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa
+  secret: process.env.SECRET,
+  resave: true,
+  name: 'SID',
+  unset: 'destroy',
+  maxAge: 1 * 24 * 60 * 60 ,
+  saveUninitialized: true,
+  store: new MongoStore({
+      url: urlServidor,
+      ttl: 12 * 60 * 60
+    })
+}))
 if (process.env.NODE_ENV != 'production') { // se hace esto para aumentar el tiempo de respuesta. Se usara solo en development
-  app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa
-    secret: process.env.SECRET,
-    resave: true,
-    name: 'SID',
-    unset: 'destroy',
-    maxAge: 1 * 24 * 60 * 60 ,
-    saveUninitialized: true,
-    store: new MongoStore({
-        url: urlServidor,
-        ttl: 12 * 60 * 60
-      })
-  }))
+  
   // global.db = require('./databases').relationalDB
 }
 
