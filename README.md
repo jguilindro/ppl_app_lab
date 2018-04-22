@@ -35,9 +35,15 @@ export NODE_ENV=development
 ./production # no usarlo en LOCAL
 export $(cat .env | xargs) # instalar las variables de entorno
 export NODE_ENV=production # 
-forever start -o out.log -e err.log server.js
-pm2 start app.js
+pm2 start server.js
+# pm2 monit
+# pm2 restart
+# pm2 list
+# pm2 stop 0
+# https://www.npmjs.com/package/pm2
 ```
+
+<!-- forever start -o out.log -e err.log server.js -->
 
 ## Development
 ### Variables de entorno usadas

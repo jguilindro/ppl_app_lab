@@ -18,7 +18,14 @@ if (process.env.NODE_ENV === 'production') {
   url = 'http://localhost:8000/tomando_leccion'
 }
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  theme: {
+    primary: '#3f51b5',
+    secondary: '#b0bec5',
+    accent: '#8c9eff',
+    error: '#b71c1c'
+  }
+})
 Vue.use(VueSocketio, url, store)
 Vue.use(VeeValidate)
 Vue.use(Viewer)
