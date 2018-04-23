@@ -116,6 +116,14 @@ ParaleloSchema.statics = {
       })
     })
   },
+  AnadirProfesorPeer({ materiaParalelo, materiaCodigo, profesorId }) {
+    const self = this
+    return new Promise(function(resolve) {
+      self.update({$and: [{ nombre: materiaParalelo }, { codigo: materiaCodigo }]}, {$addToSet: {'peers': profesorId}}).then((accionEstado) => {
+        resolve(accionEstado.nModified ? true : false)
+      })
+    })
+  },
   EliminarEstudiante({ materiaParalelo, materiaCodigo, estudianteId }) {
     const self = this
     return new Promise(function(resolve) {

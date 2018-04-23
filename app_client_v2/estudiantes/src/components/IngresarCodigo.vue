@@ -32,7 +32,7 @@
       <v-layout align-center>
         <v-flex text-xs-center>
           <v-progress-circular indeterminate :size="70" :width="7" color="blue"></v-progress-circular>
-          <h2>Espere a que el profesor comience la lección</h2>
+          <h2>Espere a que el profesor comience la lección. Si no lo redirige, por favor recargue la página</h2>
         </v-flex>
       </v-layout>
     </v-container>

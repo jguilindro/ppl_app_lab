@@ -38,10 +38,10 @@ module.exports = {
           apellidos,
           correo,
           tipo
-       })
-       if (tipo === 'titular') {
-          let existe = yield Profesor.ObtenerPorCorreo({ correo })
-          let profesorId = ''
+        })
+        let profesorId = ''
+        let existe = yield Profesor.ObtenerPorCorreo({ correo })
+        if (tipo === 'titular') {
           if (existe) {
             profesorId = existe['_id']
           } else { 
@@ -55,7 +55,13 @@ module.exports = {
             resolve(false)
           }
         } else {
-          profesor.Crear()
+          if (existe) {
+            profesorId = existe['_id']
+          } else { 
+            let profesorCreado = yield profesor.Crear()
+            profesorId = profesorCreado['_id']
+          }
+          yield Paralelo.AnadirProfesorPeer({ materiaParalelo: paralelo, materiaCodigo: codigoMateria, profesorId })
           resolve(true)
         }
       }).catch((err) => {

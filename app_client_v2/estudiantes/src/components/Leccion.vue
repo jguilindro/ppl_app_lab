@@ -1,14 +1,11 @@
 <template>
   <v-card>
   <v-container fluid style="min-height: 0;" grid-list-lg>
-    <!-- prueba de imagen como medium -->
-    <!-- <img height="50px" src="https://pm1.narvii.com/6173/8d68f90a6ab1fe0588f9ff40ee133a35012ecb72_hq.jpg">
-        mediumZoom(this.$el.querySelector('img'), { scrollOffset: 0, metaClick: false, background: '#000' }) -->
       <h1>{{ leccion.nombre }}</h1>
       <v-avatar size="50px" slot="activator" class="blue" >
         <span class="white--text" >{{ leccion.calificacion }}</span>
       </v-avatar>
-      <h4 class="grey--text">{{ leccion.fechaTomada | timeFromDate }}</h4>
+      <h4 class="grey--text">{{ leccion.fechaTomada | fechaFormato }}</h4>
       <v-layout row wrap>
           <v-flex xs12>
             <v-card color="blue-grey darken-2" class="white--text">
@@ -58,6 +55,7 @@
                       </v-flex>
                     </v-layout>
                   </v-container>
+
                   <!-- sin respuesta con imagen -->
                   <v-container fluid grid-list-lg v-if="!respuesta.respuesta && respuesta.imagenes">
                     <v-layout row justify-space-around>
@@ -95,9 +93,8 @@
         <v-divider dark inset></v-divider>
       </div>
 
-      <!-- secciones -->
+      <!-- Preguntas con secciones -->
       <div v-if="obtenerTipo === 'secciones'" v-for="(seccion, indexSeccion) in leccion.secciones" :key="indexSeccion">
-        <!-- <v-card > -->
           <div v-for="(pregunta, indexPreguntas) in seccion.preguntas" :key="indexPreguntas">
             <v-card >
               <v-card-title primary-title>
@@ -116,6 +113,7 @@
                   </v-flex>
                   <v-flex xs12 v-for="(respuesta, i) in pregunta.respuestas" :key="i">
                     <v-card color="blue-grey darken-2" class="white--text">
+
                       <!-- respuesta sin imagen -->
                       <v-card-title primary-title v-if="!respuesta.imagenes">
                         <div class="grey--text">{{ respuesta.estudiante.apellidos }}</div>
@@ -141,6 +139,7 @@
                           </v-flex>
                         </v-layout>
                       </v-container>
+
                       <!-- sin respuesta con imagen -->
                       <v-container fluid grid-list-lg v-if="!respuesta.respuesta && respuesta.imagenes">
                         <v-layout row justify-space-around>
@@ -176,12 +175,12 @@
               </v-card-title>
             </v-card>
           </div>
-        <!-- </v-card> -->
         <v-divider dark inset></v-divider>
       </div>
   </v-container>
   </v-card>
 </template>
+
 <script>
 import { mapGetters } from 'vuex'
 export default {
@@ -209,5 +208,6 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 </style>

@@ -9,7 +9,7 @@
           <v-list-tile-content>
             <v-list-tile-title>{{ leccion.nombre }}</v-list-tile-title>
             <v-list-tile-sub-title>{{ leccion.tipo }}</v-list-tile-sub-title>
-            <v-list-tile-sub-title>{{ leccion.fechaInicioTomada | timeFromDate }}</v-list-tile-sub-title>
+            <v-list-tile-sub-title>{{ leccion.fechaInicioTomada | fechaFormato }}</v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-divider v-if="index + 1 < lecciones.length" :key="`divider-${index}`"></v-divider>

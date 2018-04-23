@@ -31,7 +31,6 @@ git submodule update --init
 
 
 ```sh
-export NODE_ENV=development
 ./production # no usarlo en LOCAL
 export $(cat .env | xargs) # instalar las variables de entorno
 export NODE_ENV=production # 

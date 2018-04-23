@@ -1,12 +1,12 @@
 <template>
   <v-app id="app">
-    <v-navigation-drawer temporary v-model="sideNav" app>
+    <v-navigation-drawer temporary v-model="sideNav" app >
       <v-list>
          <v-list>
           <v-list-tile avatar>
-            <v-list-tile-avatar>
-            <v-avatar class="red">
-              <span class="white--text headline">{{ inicialesEstudiante }}</span>
+            <v-list-tile-avatar color="blue" size="60px" style="margin-right: 15px;">
+            <v-avatar size="59px">
+              <img color="red" src="./assets/espol.png" alt="">
             </v-avatar>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -39,18 +39,13 @@
       <v-toolbar-side-icon @click="sideNav = !sideNav" class="white--text"></v-toolbar-side-icon>
       <v-toolbar-title class="white--text">PPL ASSESSMENT</v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- <v-btn class="white--text" icon @click="ingresarCodigo()" v-show="esRutaIngresarCodigo">
-        <v-icon>mdi-lead-pencil</v-icon>
-      </v-btn> -->
     </v-toolbar >
-    <!-- <v-toolbar color="white" flat>
-      <v-btn icon light @click="back">
-        <v-icon color="grey darken-2">arrow_back</v-icon>
-      </v-btn>
-    </v-toolbar> -->
-    <!-- #ebebeb blanco
-         #001a43 azul
-        #F5b400 dorado
+    <!--
+      COLORES ESPOL
+      #ebebeb blanco
+      #001a43 azul
+      #F5b400 dorado
+      #8da9c6 logo
     -->
     <!-- WEB -->
     <v-toolbar app color="blue darken-4" class="hidden-sm-and-down">
@@ -64,14 +59,13 @@
       <v-btn flat class="white--text" @click="att">ATT</v-btn>
       <v-btn flat class="white--text" @click="logout"><v-icon>mdi-logout</v-icon> </v-btn>
     </v-toolbar>
-    <v-content > <!-- style="padding-top: 0px" -->
+    <v-content >
       <transition enter-active-class="animated slideInDown"
         leave-active-class="animated slideOutUp">
           <v-alert :value="!online" color="error" transition="scale-transition">
             <v-icon>mdi-wifi-off</v-icon> <span>Por favor conéctese a internet.</span>
           </v-alert>
       </transition>
-      <!-- <img :src="clearImageLocal('static/logo/logo_espol_new.png')" alt="">  v-show="estadoLeccion === 'redirigirlo-directamente'"-->
       <v-btn class="hidden-md-and-up" color="amber white--text" dark large v-show="estadoLeccion === 'redirigirlo-directamente'">INGRESAR A LECCIÓN</v-btn>
       <v-btn class="hidden-md-and-up" color="amber white--text" @click="ingresarCodigo()"  dark large v-show="estadoLeccion !== 'redirigirlo-directamente' && esRutaIngresarCodigo">INGRESAR CÓDIGO</v-btn>
       <router-view></router-view>
