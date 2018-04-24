@@ -32,24 +32,30 @@ function obtenerEstudiantePorCorreo(cas_user) {
 
 function procesarSession (req, res, next) {
   co(function* () {
-    let profesor = yield obtenerProfesorPorCorreo(req.session.cas_user.toLowerCase())
-    let estudiante = yield obtenerEstudiantePorCorreo(req.session.cas_user.toLowerCase())
-    if (profesor) {
-      req.session.privilegios = 'profesor';
-      req.session.correo = profesor.correo;
-      req.session._id = profesor._id;
-      req.session.login = true;
-      res.redirect('/profesores')
+    if (!req.session.cas_user) {
+      next()
+    } else {
+      let profesor = yield obtenerProfesorPorCorreo(req.session.cas_user.toLowerCase())
+      let estudiante = yield obtenerEstudiantePorCorreo(req.session.cas_user.toLowerCase())
+      if (profesor) {
+        req.session.privilegios = 'profesor';
+        req.session.correo = profesor.correo;
+        req.session._id = profesor._id;
+        req.session.login = true;
+        return res.redirect('/profesores')
+      }
+      if (estudiante) {
+        req.session.privilegios = 'estudiante';
+        req.session.correo = estudiante.correo;
+        req.session._id = estudiante._id;
+        req.session.login = true;
+        return res.redirect('/estudiantes')
+      } else if (!estudiante && !profesor) {
+        return res.redirect('/otros')
+      }
     }
-    if (estudiante) {
-      req.session.privilegios = 'estudiante';
-      req.session.correo = estudiante.correo;
-      req.session._id = estudiante._id;
-      req.session.login = true;
-      res.redirect('/estudiantes')
-    } else if (!estudiante && !profesor) {
-      res.redirect('/otros')
-    }
+  }).catch((err) => {
+    console.error(err)
   })
 }
 
@@ -106,10 +112,10 @@ if (require("os").userInfo().username == 'User') { // usado para cuando estoy en
 module.exports = (app) => {
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
-  if ( process.env.NODE_ENV === 'development'  || process.env.NODE_ENV === 'testing') {
+  if ( process.env.NODE_ENV === 'development'  || process.env.NODE_ENV === 'testing' || process.env.NODE_ENV === 'development:cas') {
     app.use(morgan('dev'));
     SERVICE_URL = 'http://localhost:' + process.env.PORT
-  } else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development:cas') {
+  } else if ( process.env.NODE_ENV === 'production') {
     app.use(morgan('tiny'))
     SERVICE_URL = URL_ESPOL_SERVER
   }
@@ -149,7 +155,7 @@ module.exports = (app) => {
     procesarSession = function(req, res, next) { next() }
     redirecion = function(req, res, next) { next() }
   } else if ( process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development:cas' ) {
-    app.get( '/', cas.bounce, procesarSession)
+    app.get( '/', procesarSession,  cas.bounce_redirect)
     var authProfesor = cas.block
     var authEstudiante = cas.block
     app.get('/api/session/usuario_conectado', require('../app_api/controllers/login.controller').obtenerUsuarioLoggeado)

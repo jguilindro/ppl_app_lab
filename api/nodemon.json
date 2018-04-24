@@ -1,0 +1,26 @@
+{
+  "restartable": "rs",
+  "ignore": [
+   ".git",
+   "node_modules/**/node_modules",
+   "scripts/**",
+   "public/bower_components/**",
+   "gulpfile.js",
+   "docs/"
+ ],
+ "events": {
+    "restart": ""
+  },
+  "watch": [
+    "app.js",
+    "estudiantes/**",
+    "profesores/**",
+    "admin/**",
+    "server.api.js",
+    "app.api.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js json"
+}

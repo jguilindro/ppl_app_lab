@@ -53,6 +53,9 @@ if (process.env.NODE_ENV !== 'testing') {
             }
           })
         }, null, true, 'America/Guayaquil')
+      }).catch((err) => {
+        console.error('Erro en inicializar')
+        console.error(err)
       })
     } else {
       const dump = require('./web_service/dump')
@@ -65,6 +68,9 @@ if (process.env.NODE_ENV !== 'testing') {
         //     wsPPL.actualizar()
         //   }
         // })
+      }).catch((err) => {
+        console.error('Erro en inicializar')
+        console.error(err)
       })
     }
   })
@@ -84,7 +90,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
 app.use(morgan('tiny'))
 app.use(cookieParser())
-app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa
+
+if (process.env.NODE_ENV !== 'production' || process.env.NODE_ENV === 'development:cas') { // se hace esto para aumentar el tiempo de respuesta. Se usara solo en development
+  app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa
   secret: process.env.SECRET,
   resave: true,
   name: 'SID',
@@ -95,10 +103,14 @@ app.use(session({                         // debido a que siempre se reinicia el
       url: urlServidor,
       ttl: 12 * 60 * 60
     })
-}))
-if (process.env.NODE_ENV != 'production') { // se hace esto para aumentar el tiempo de respuesta. Se usara solo en development
-  
+  }))
   // global.db = require('./databases').relationalDB
+} else {
+  app.use(session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true
+  }))
 }
 
 /*
@@ -113,9 +125,9 @@ require('./app_api/routes.api')(api)
 app.use('/api', api)
 
 // api v2
-const apiV2 = express()
-require('./app_api_v2/routes.api.v2')(apiV2)
-app.use('/api/v2', apiV2)
+// const apiV2 = express()
+// require('./app_api_v2/routes.api.v2')(apiV2)
+// app.use('/api/v2', apiV2)
 
 // realtime
 require('./app_api/realtime/realtime')(io)

@@ -1,0 +1,35 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.api.js --config nodemon.json",
+    "test": "cross-env NODE_ENV=testing env-cmd .env mocha test/estudiantes.test.js --timeout 15000 --exit"
+  },
+  "dependencies": {
+    "ajv": "^6.4.0",
+    "body-parser": "^1.18.2",
+    "co": "^4.6.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "jsonwebtoken": "^8.2.1",
+    "moment": "^2.22.1",
+    "mongoose": "^5.0.16",
+    "mysql": "^2.15.0",
+    "shortid": "^2.2.8",
+    "winston": "^2.4.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "cross-env": "^5.1.4",
+    "env-cmd": "^7.0.0",
+    "mocha": "^5.1.1",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.3",
+    "sinon": "^4.5.0",
+    "sqlite3": "^4.0.0",
+    "supertest": "^3.0.0"
+  }
+}

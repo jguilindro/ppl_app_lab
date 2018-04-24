@@ -100,7 +100,7 @@
               <v-card-title primary-title>
                 <v-layout row wrap>
                   <v-flex xs12>
-                    <h2>Seccion {{ indexSeccion + 1 }}</h2>
+                    <h2>Sección {{ indexSeccion + 1 }}</h2>
                     <h3>Pregunta {{ indexPreguntas + 1 }}</h3>
                   </v-flex>
                   <v-flex xs12>
