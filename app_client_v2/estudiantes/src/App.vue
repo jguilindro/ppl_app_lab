@@ -118,7 +118,6 @@ export default {
   },
   created () {
     this.$store.dispatch('setSocketUsuario', this.$socket)
-    this.$store.dispatch('usuarioDatos')
   },
   methods: {
     logout () {

@@ -29,6 +29,14 @@
            <a href="/profesores/leccion" class="modal-action modal-close waves-effect waves-green btn-flat">SALIR</a>
          </div>
        </div>
+
+       <div id="seguroTerminar" class="modal">
+         <div class="modal-content" style="text-align: center;">
+           <h3>Seguro que desea terminar la lección</h3>
+           <button class="btn boton red" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+           <button class="btn boton blue" type="button" id="terminar-leccion" onclick="cancelarTerminarModal()">CANCELAR</button>
+         </div>
+       </div>
       
       <section class="row" id="section-tabs">
           <br>
@@ -53,7 +61,7 @@
               <button class="btn boton"  id='comenzar-leccion'type="button">comenzar lección</button>
             </div>
             <div class="col s4">
-              <button class="btn boton red" type="button" id="terminar-leccion" onclick="terminarLeccion()">terminar lección</button>
+              <button class="btn boton red" type="button" onclick="terminarLeccionModal()">terminar lección</button>
             </div>
             <div class="col s1">
               <!-- <input type="number" v-model="mas_tiempo" min="0" name="" value=""> -->

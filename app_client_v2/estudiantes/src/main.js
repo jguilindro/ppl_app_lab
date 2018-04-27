@@ -37,8 +37,8 @@ new Vue({
       store.dispatch('online', true)
     },
     disconnect () {
-      store.dispatch('setSocketUsuario', this.$socket)
-      store.commit('SOCKET_CONNECT')
+      // store.dispatch('setSocketUsuario', this.$socket)
+      // store.commit('SOCKET_CONNECT')
       // this.$store.dispatch('usuarioDatos')
       store.dispatch('online', false)
     }

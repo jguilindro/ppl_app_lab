@@ -273,6 +273,7 @@ leccion.on('terminado leccion', function(match) {
 })
 
 leccion.on('estudiante conectado', function(estudiante) {
+  console.log('aasasas')
   let grupo_index = App.obtenerGrupoEstudiante(estudiante)
   var existe = App.estudiantes_conectados.some(est => est._id == estudiante._id)
   if (!existe) {
@@ -490,3 +491,11 @@ leccion.on('respuesta para profesor', function(respuesta_estudiante) {
   console.log('respuesta de estudiante')
   console.log(respuesta_estudiante)
 })
+
+function terminarLeccionModal() {
+  $('#seguroTerminar').modal('open')
+}
+
+function cancelarTerminarModal() {
+  $('#seguroTerminar').modal('close')
+}

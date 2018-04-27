@@ -36,6 +36,9 @@ export default {
   },
   mounted () {
     this.$store.dispatch('limpiarLeccion')
+  },
+  created () {
+    this.$store.dispatch('usuarioDatos')
   }
 }
 </script>
