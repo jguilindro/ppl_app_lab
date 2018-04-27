@@ -272,6 +272,19 @@ leccion.on('terminado leccion', function(match) {
   }
 })
 
+leccion.on('estudiante conectado', function(estudiante) {
+  let grupo_index = App.obtenerGrupoEstudiante(estudiante)
+  var existe = App.estudiantes_conectados.some(est => est._id == estudiante._id)
+  if (!existe) {
+    if (grupo_index != -1 &&  grupo_index < App.grupos.length) {
+        App.estudiantes_conectados.push(estudiante)
+        App.grupos[grupo_index].estudiantes_conectados.push(estudiante)
+        $('#'+ estudiante._id).removeClass('offline')
+        $('#'+ estudiante._id).addClass('online')
+    }
+  }
+})
+
 leccion.on('leccion datos', function(leccion) {
   if (leccion.pausada) {
     document.getElementById('pausar-leccion').disabled = true
@@ -289,8 +302,8 @@ leccion.on('leccion datos', function(leccion) {
   // console.log(App.estudiantes_conectados);
   console.log('conectados');
   console.log(JSON.stringify(App.estudiantes_conectados))
-  console.log('desconectados');
-  console.log(JSON.stringify(leccion.estudiantesDesconectados))
+  // console.log('desconectados');
+  // console.log(JSON.stringify(leccion.estudiantesDesconectados))
   for (var i = 0; i < App.estudiantes_conectados.length; i++) {
     var existe = App.estudiantes_conectados.some(estudiante => estudiante._id == App.estudiantes_conectados[i]._id)
     // esto da error de index
@@ -308,19 +321,19 @@ leccion.on('leccion datos', function(leccion) {
     for (var i = 0; i < App.paralelo.estudiantes.length; i++) {
       $('#'+ App.paralelo.estudiantes[i]).removeClass('online')
       $('#'+ App.paralelo.estudiantes[i]).addClass('offline')
-      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
-      $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
-      $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
+      // $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('spinner')
+      // $('#esperando-'+ App.paralelo.estudiantes[i]).removeClass('fa-thumbs-o-up fa fa-lg icono')
+      // $('#'+ App.paralelo.estudiantes[i]).removeClass('.dando-leccion')
     }
     for (var i = 0; i < App.estudiantes_conectados.length; i++) {
       $('#'+ App.estudiantes_conectados[i]._id).removeClass('offline')
       $('#'+ App.estudiantes_conectados[i]._id).addClass('online')
-      if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
-        $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
-      }
-      if (App.estudiantes_conectados[i].dandoLeccion) {
-         $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
-      }
+      // if (App.estudiantes_conectados[i].codigoIngresado && !App.estudiantes_conectados[i].dandoLeccion) {
+      //   $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('spinner')
+      // }
+      // if (App.estudiantes_conectados[i].dandoLeccion) {
+      //    $('#esperando-'+ App.estudiantes_conectados[i]._id).addClass('fa-thumbs-o-up fa fa-lg icono')
+      // }
     }
   }
 })
@@ -371,8 +384,17 @@ leccion.on('connect', function() {
   $.get({
     url: '/api/session/usuario_conectado',
     success: function(data) {
-      console.log(data);
-      leccion.emit('usuario', data.datos)
+      var id_paralelo = window.location.href.toString().split('/')[7]
+      var id_leccion = window.location.href.toString().split('/')[5]
+      $.get({
+        url: `/api/paralelos/${id_paralelo}/obtener_paralelo`,
+        success: function(paralelo) {
+          data.datos['paraleloId'] = id_paralelo
+          data.datos['paralelo'] = paralelo.datos
+          data.datos['leccionId'] = id_leccion
+          leccion.emit('usuario profesor', data.datos)
+        }
+      })
     }
   })
 })

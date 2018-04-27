@@ -59,7 +59,7 @@ if (process.env.NODE_ENV !== 'testing') {
       })
     } else {
       const dump = require('./web_service/dump')
-      const wsPPL = WSPPL({ db: dbWebService, anio: '2017', termino: '2s', local: true, dump })
+      const wsPPL = WSPPL({ db: dbWebService, anio: '2018', termino: '1s', local: false, dump })
       wsPPL.inicializar().then((resp) => {
         // exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
         //   if (error) {
@@ -133,9 +133,11 @@ app.use('/api', api)
 require('./app_api/realtime/realtime')(io)
 
 // realtime v2
-const realtime = express()
-require('./app_realtime/routes.realtime')(realtime, io)
-app.use('/api/realtime', realtime)
+if (process.env.NODE_ENV !== 'production') {
+  const realtime = express()
+  require('./realtime/routes.realtime')(realtime, io)
+  app.use('/api/realtime', realtime)
+}
 
 // app client
 const client = express()

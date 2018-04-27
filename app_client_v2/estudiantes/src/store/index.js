@@ -21,7 +21,9 @@ export const store = new Vuex.Store({
     },
     online: true,
     tmp: null,
-    usuarioDatos: {}, // usado para una parte del realtime que se hace un emit, pero en realidad no tiene ninguna utilidad importante en el front
+    usuarioDatos: {
+    }, // usado para una parte del realtime que se hace un emit, pero en realidad no tiene ninguna utilidad importante en el front
+    muchos: {},
     // REALTIME
     io: {},
     connect: false,

@@ -113,9 +113,14 @@ let App = new Vue({
           if ( !res.datos.paralelo.dandoLeccion ) {
             window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
           }
+          var data = res.datos
           App.asignarValoresObtenidos(res);
           App.desbloquearTabs();
-          socket.emit('usuario', App.estudiante);
+          var estudiante = data.estudiante
+          delete estudiante.lecciones
+          estudiante['leccionRealtimeId'] = data.paralelo.leccion
+          estudiante['paraleloId'] = data.paralelo['_id']
+          socket.emit('usuario estudiante', estudiante)
         }
       });
     },
@@ -560,18 +565,26 @@ socket.on('connect', function() {
   document.getElementById('conectado').classList.remove("red");
   document.getElementById('conectado').classList.add("green");
   $.get({
-    url: '/api/session/usuario_conectado',
+    url: '/api/estudiantes/leccion/datos_leccion',
     success: function(data) {
-      socket.emit('reconectar estudiante', data.datos)
+      var estudiante = data.datos.estudiante
+      delete estudiante['lecciones']
+      estudiante['leccionRealtimeId'] = data.datos.paralelo.leccion
+      estudiante['paraleloId'] = data.datos.paralelo['_id']
+      socket.emit('usuario estudiante', estudiante)
     }
   });
 });
 
 socket.on('connect_failed', function() {
   $.get({
-    url: '/api/session/usuario_conectado',
+    url: '/api/estudiantes/leccion/datos_leccion',
     success: function(data) {
-      socket.emit('reconectar estudiante', data.datos)
+      var estudiante = data.datos.estudiante
+      delete estudiante.lecciones
+      estudiante['leccionRealtimeId'] = data.datos.paralelo.leccion
+      estudiante['paraleloId'] = data.datos.paralelo['_id']
+      socket.emit('usuario estudiante', estudiante)
     }
   });
 });

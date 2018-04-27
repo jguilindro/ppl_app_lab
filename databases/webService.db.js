@@ -160,8 +160,8 @@ module.exports = {
   },
   estaLleno() {
     return new Promise(function(resolve, reject) {
-      Paralelo.ObtenerTodos().then((paralelos) => {
-        if (paralelos.length == 0) {
+      Estudiante.ObtenerTodos().then((estudiantes) => {
+        if (estudiantes.length == 0) {
           resolve(false)
         } else {
           resolve(true)

@@ -10,7 +10,7 @@ import App from './App'
 import router from './router'
 import { store } from './store'
 
-let url = process.env.NODE_ENV === 'production' ? 'http://localhost:8000/tomando_leccion' : '/tomando_leccion'
+let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
 
 Vue.use(Vuetify)
 Vue.use(VueSocketio, url, store)
@@ -39,7 +39,7 @@ new Vue({
     disconnect () {
       store.dispatch('setSocketUsuario', this.$socket)
       store.commit('SOCKET_CONNECT')
-      this.$store.dispatch('usuarioDatos')
+      // this.$store.dispatch('usuarioDatos')
       store.dispatch('online', false)
     }
   },

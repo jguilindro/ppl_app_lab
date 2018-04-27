@@ -83,7 +83,7 @@ var app = new Vue({
                 load.setAttribute('class', 'enable')
                 var a = document.getElementById('app')
                 a.setAttribute('class', 'disabled')
-                socket.emit('usuario', user.datos)
+                socket.emit('USUARIO_ESTUDIANTE', user.datos)
                 esperando = true
               }
               if (usuario.codigoIngresado && paralelo.leccionYaComenzo) {

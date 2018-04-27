@@ -163,7 +163,7 @@ const leccionDatos = (req, res) => {
   // Obtiene los datos del estudiante
   function buscarEstudiante(id_estudiante) {
     return new Promise((resolve, reject) => {
-      EstudianteModel.obtenerEstudianteNoPopulate(id_estudiante, (err, est) => {
+      EstudianteModel.obtenerEstudiante(id_estudiante, (err, est) => {
         if (err) return reject(new Error('No se pudo obtener estudiante'));
         return resolve(est);
       });
@@ -231,11 +231,16 @@ const leccionDatos = (req, res) => {
     let estudiante       = yield buscarEstudiante(id_estudiante);
     let grupo            = yield buscarGrupo(id_estudiante);
     let paralelo         = yield buscarParalelo(id_estudiante);
-    let leccion          = yield obtenerLeccion(estudiante.leccion);
+    let leccion = null
+    if (estudiante.leccion) {
+      leccion   = yield obtenerLeccion(estudiante.leccion);
+    } 
     let respuestas       = yield obtenerRespuestas(estudiante.leccion, id_estudiante);
     let anadido          = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante);
-
-    let preguntas        = armarArrayPreguntas(leccion.preguntas, respuestas);
+    let preguntas = []
+    if (leccion) {
+      preguntas        = armarArrayPreguntas(leccion.preguntas, respuestas)
+    }
     respuesta.ok(res, {estudiante: estudiante, grupo: grupo, paralelo: paralelo, leccion: leccion, respuestas: respuestas, preguntas: preguntas})
   });
 

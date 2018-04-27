@@ -19,9 +19,21 @@ export default {
       state.leccionRealtime.estado = 'redirigirlo-directamente'
     }
   },
+  // SOCKET_PROFESOR_ENTRO_A_PARALELO (state, data) {
+  //   delete state.usuarioDatos.lecciones
+  //   let enviar = JSON.parse(JSON.stringify(state.usuarioDatos))
+  //   enviar['parte'] = 'ingresarCodigo'
+  //   enviar['leccionRealtimeId'] = JSON.parse(JSON.stringify(state.muchos.paralelo.leccion))
+  //   enviar['paraleloId'] = JSON.parse(JSON.stringify(state.muchos.paralelo._id))
+  //   state.io.emit('usuario estudiante', enviar)
+  // },
   SOCKET_USUARIO (state) {
     delete state.usuarioDatos.lecciones
-    state.io.emit('usuario', JSON.parse(JSON.stringify(state.usuarioDatos)))
+    let enviar = JSON.parse(JSON.stringify(state.usuarioDatos))
+    enviar['parte'] = 'ingresarCodigo'
+    enviar['leccionRealtimeId'] = JSON.parse(JSON.stringify(state.muchos.paralelo.leccion))
+    enviar['paraleloId'] = JSON.parse(JSON.stringify(state.muchos.paralelo._id))
+    state.io.emit('usuario estudiante', enviar)
   },
   SOCKET_ESTUDIANTE_ANADIDO_PARALELO (state) {
     state.leccionRealtime.estudiateFueAnadidoAParalelo = true
@@ -51,6 +63,9 @@ export default {
     state.estudiante.correo = datos.correo
     state.estudiante.id = datos._id
     state.usuarioDatos = datos
+  },
+  setDatosMuchos (state, datos) {
+    state.muchos = datos
   },
   setLeccionRealtimeEstadoEstudiante (state, datos) {
     state.leccionRealtime.yaIngresoCodigo = datos.codigoIngresado

@@ -4,25 +4,25 @@ export default {
   async usuarioDatos ({commit}) {
     commit('setError', null)
     return new Promise((resolve, reject) => {
-      Vue.http.get('/api/session/usuario_conectado')
-        .then((response) => {
-          if (response.body.estado) {
-            commit('setLecciones', response.body.datos.lecciones)
-            commit('setDatosEstudiante', response.body.datos)
-            commit('setLeccionRealtimeEstadoEstudiante', response.body.datos)
+      Vue.http.get('/api/estudiantes/leccion/datos_leccion')
+        .then((paralelos) => {
+          if (paralelos.body.estado) {
+            commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+            commit('setDatosEstudiante', paralelos.body.datos.estudiante)
+            commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+            commit('setDatosMuchos', paralelos.body.datos)
+            commit('SOCKET_USUARIO')
             return resolve()
-          } else {
-            commit('setError', response.body)
           }
-        })
-        .catch((err) => {
+        }).catch((err) => {
           commit('setError', err)
           return reject(err)
         })
     })
   },
-  verificarCodigo ({commit}, codigo) {
+  verificarCodigo ({commit, dispatch}, codigo) {
     commit('setError', null)
+    dispatch('usuarioDatos')
     return new Promise((resolve, reject) => {
       Vue.http.get(`/api/estudiantes/tomar_leccion/${codigo}`)
         .then((response) => {
@@ -81,7 +81,6 @@ export default {
   },
   async setSocketUsuario ({dispatch, commit}, socket) {
     await dispatch('setSocket', socket)
-    commit('SOCKET_USUARIO')
   },
   redirigirlo ({commit}) {
     commit('setRedirigir')
