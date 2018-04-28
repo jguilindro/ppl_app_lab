@@ -390,6 +390,10 @@ leccion.on('connect', function() {
       $.get({
         url: `/api/paralelos/${id_paralelo}/obtener_paralelo`,
         success: function(paralelo) {
+          // delete paralelo.datos.paralelo
+          delete paralelo.datos.grupos
+          delete paralelo.datos.estudiantes
+          data.datos['leccion'] = { tiempoEstimado: App.leccion['tiempoEstimado'], fechaInicioTomada: App.leccion['fechaInicioTomada'] }
           data.datos['paraleloId'] = id_paralelo
           data.datos['paralelo'] = paralelo.datos
           data.datos['leccionId'] = id_leccion
