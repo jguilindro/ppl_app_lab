@@ -6,9 +6,10 @@ import VueSocketio from 'vue-socket.io'
 import Viewer from 'v-viewer'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue-material-design-icons/styles.css'
-import App from './App'
-import router from './router'
-import { store } from './store'
+// import 'animate.css/animate.css'
+import App from '@/components/App'
+import router from '@/router'
+import { store } from '@/store'
 
 let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
 
@@ -37,9 +38,6 @@ new Vue({
       store.dispatch('online', true)
     },
     disconnect () {
-      // store.dispatch('setSocketUsuario', this.$socket)
-      // store.commit('SOCKET_CONNECT')
-      // this.$store.dispatch('usuarioDatos')
       store.dispatch('online', false)
     }
   },

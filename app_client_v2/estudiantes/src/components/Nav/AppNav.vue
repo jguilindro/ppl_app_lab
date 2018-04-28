@@ -1,12 +1,12 @@
 <template>
-  <v-app id="app">
+  <div id="app-nav">
     <v-navigation-drawer temporary v-model="sideNav" app >
       <v-list>
          <v-list>
           <v-list-tile avatar>
             <v-list-tile-avatar color="blue" size="60px" style="margin-right: 15px;">
             <v-avatar size="59px">
-              <img color="red" src="./assets/espol.png" alt="">
+              <img color="red" src="@/assets/espol.png" alt="">
             </v-avatar>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -68,17 +68,15 @@
       </transition>
       <v-btn class="hidden-md-and-up" color="amber white--text" dark large v-show="estadoLeccion === 'redirigirlo-directamente'">INGRESAR A LECCIÓN</v-btn>
       <v-btn class="hidden-md-and-up" color="amber white--text" @click="ingresarCodigo()"  dark large v-show="estadoLeccion !== 'redirigirlo-directamente' && esRutaIngresarCodigo">INGRESAR CÓDIGO</v-btn>
-      <router-view></router-view>
-    </v-content>
-    <!-- <main>
 
-    </main> -->
-  </v-app>
+    </v-content>
+  </div>
 </template>
 
 <script>
+
 import { mapGetters } from 'vuex'
-import router from './router'
+import router from '@/router'
 
 let menuItems = [{
   title: 'Ingresar Código',
@@ -97,7 +95,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default {
-  name: 'App',
+  name: 'app-nav',
   computed: {
     ...mapGetters({
       nombresEstudiante: 'nombres',
@@ -141,16 +139,3 @@ export default {
   }
 }
 </script>
-
-<style>
-/*@import url('https://fonts.googleapis.com/css?family=Varela+Round');*/
-/*@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import url('https://code.getmdl.io/1.2.1/material.blue-red.min.css');*/
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-</style>

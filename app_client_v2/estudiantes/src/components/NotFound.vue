@@ -1,8 +1,14 @@
 <template>
-  <h1>Not Found</h1>
+  <div>
+    <app-nav></app-nav>
+    <h1>Esta Página no existe</h1>
+  </div>
 </template>
 <script>
-
+import AppNav from '@/components/Nav/AppNav'
+export default {
+  components: { AppNav }
+}
 </script>
 <style scoped>
 

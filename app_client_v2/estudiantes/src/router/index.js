@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Lecciones from '@/components/Lecciones'
 import Login from '@/components/Login'
-import Leccion from '@/components/Leccion'
+import Leccion from '@/components/Leccion/Leccion'
 import IngresarCodigo from '@/components/IngresarCodigo'
 import NotFound from '@/components/NotFound'
+import LeccionRealtime from '@/components/LeccionRealtime/LeccionRealtime'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ let routes = [{
   path: '/ingresarCodigo',
   name: 'IngresarCodigo',
   component: IngresarCodigo
+},
+{
+  path: '/leccionRealtime',
+  name: 'LeccionRealtime',
+  component: LeccionRealtime
 },
 { path: '*',
   component: NotFound
