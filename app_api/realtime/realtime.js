@@ -18,6 +18,7 @@ var intervals = []
 module.exports = (io) => {
   var leccion = io.of('/tomando_leccion')
   leccion.on('connection', function(socket) {
+    console.log(`Cantidad Conectados: ${Object.keys(io.sockets.connected).length}`)
     /*
       @Description: inicializador de profesor timer, crear en la base de datos los profesor
       @LlamadasDB = 3
@@ -30,7 +31,6 @@ module.exports = (io) => {
         const leccionR = yield obtenerLeccionRealtime(leccionId)
         const LECCION_TOMANDO = yield obtenerLeccion(leccionId)
         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada) // cambiar
-        
         if (leccionR.pausada) {
           leccion.in(paraleloId).emit('tiempo restante', 'Lección pausada')
         } else if (pausada == 'pausada') {
@@ -58,7 +58,7 @@ module.exports = (io) => {
               let duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss")
               if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
                 clearInterval(socket.interval)
-                leccionTerminada(PARALELO, leccionId)
+                leccionTerminada(socket.paralelo, leccionId)
                 leccion.in(paraleloId).emit('terminado leccion', true)
                 leccion.in(paraleloId).emit('tiempo restante', 'leccion terminada')
               } else {
@@ -72,11 +72,11 @@ module.exports = (io) => {
             let leccion_id = socket.leccion
             intervals.push({ leccion_id, interval: socket.interval, intervalTiempo: 'intervalTiempo'})
           })
-          // var termo = parseInt(moment.duration(TIEMPO_MAXIMO.diff(CURRENT_TIME_GUAYAQUIL), 'seconds').format("ss"), 10)
+          // var termo = parseInt(moment.duration(TIEMPO_MAXIMO.diff(CURRENT_TIME_GUAYAQUIL), 'minutes').format("ss"), 1)
           // var intervalTiempo = setTimeout(function() {
-          //   cleanIntervals(intervals, PARALELO.leccion, true).then(function() {
-          //     leccionTerminada(PARALELO, PARALELO.leccion)
-          //     leccion.in(PARALELO._id).emit('terminado leccion', true)
+          //   cleanIntervals(intervals, leccionId, true).then(function() {
+          //     leccionTerminada(socket.paralelo, leccionId)
+          //     leccion.in(paraleloId).emit('terminado leccion', true)
           //     console.log('leccion terminada por setTimeout')
           //   })
           // },termo)
@@ -99,6 +99,7 @@ module.exports = (io) => {
         const paraleloId = usuario['paraleloId']
         const leccionId = usuario['leccionId']
         const PARALELO = usuario['paralelo']
+        socket.paralelo = usuario['paralelo']
         leccion.in(paraleloId).emit('PROFESOR_ENTRO_A_PARALELO')
         const leccion_creada = yield leccionYaCreada(leccionId)
         socket.leccion = leccionId // importante, usado en comanzar leccion
@@ -221,8 +222,6 @@ module.exports = (io) => {
     })
 
     socket.on('disconnect', function(user) {
-      const CANTIDAD_CONECTADOS = Object.keys(io.sockets.connected).length
-      console.log(CANTIDAD_CONECTADOS)
       co(function* () {
         if (socket.leccion) {
           var limpiado = yield cleanIntervals(intervals, socket.leccion)

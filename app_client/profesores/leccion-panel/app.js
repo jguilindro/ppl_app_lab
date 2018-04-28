@@ -392,7 +392,7 @@ leccion.on('connect', function() {
         success: function(paralelo) {
           // delete paralelo.datos.paralelo
           delete paralelo.datos.grupos
-          delete paralelo.datos.estudiantes
+          // delete paralelo.datos.estudiantes
           data.datos['leccion'] = { tiempoEstimado: App.leccion['tiempoEstimado'], fechaInicioTomada: App.leccion['fechaInicioTomada'] }
           data.datos['paraleloId'] = id_paralelo
           data.datos['paralelo'] = paralelo.datos
