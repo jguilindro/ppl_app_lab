@@ -58,7 +58,7 @@ module.exports = (io) => {
               let duration = moment.duration(tiempo_rest.diff(CURRENT_TIME_GUAYAQUIL)).format("h:mm:ss")
               if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
                 clearInterval(socket.interval)
-                leccionTerminada(socket.paralelo, leccionId)
+                leccionTerminadaSocket(socket.paralelo, leccionId)
                 leccion.in(paraleloId).emit('terminado leccion', true)
                 leccion.in(paraleloId).emit('tiempo restante', 'leccion terminada')
               } else {
@@ -480,6 +480,41 @@ function leccionTerminada(paralelo, id_leccion) {
   paralelo.estudiantes.forEach(estudiante => {
     promises.push(new Promise((resolve, reject) => {
       EstudianteModel.leccionTerminada(estudiante._id, (err, e) => {
+        if (err) return reject(err)
+        return resolve(true)
+      })
+    }))
+  })
+  return Promise.all(promises).then(values => {
+    for (var i = 0; i < values.length; i++) {
+      if (values[i] != true){
+        return false
+      }
+    }
+    return true
+    console.log('terminado leccion estudiantes');
+  }, fail => {
+   console.log(fail);
+  })
+}
+
+function leccionTerminadaSocket(paralelo, id_leccion) {
+  // ingresa la fecha de culminacion de la leccion y cambio el campo estado por 'terminado'
+  LeccionModel.leccionTerminada(id_leccion, (err, res) => {
+    if (err) return console.log(err);
+    console.log('leccion terminado ' + id_leccion);
+  })
+  // cambia valor dandoLeccion en paralelo por false
+  ParaleloModel.leccionTerminada(paralelo._id, (err, res) => {
+    if (err) return console.log(err);
+    console.log('leccion terminada ' + paralelo._id);
+  })
+  var promises = []
+  // anade a cada estudiante la leccion y cambia el boolean dandoLeccion por false
+  // TODO: anadir fecha empezado leccion
+  paralelo.estudiantes.forEach(estudiante => {
+    promises.push(new Promise((resolve, reject) => {
+      EstudianteModel.leccionTerminada(estudiante, (err, e) => {
         if (err) return reject(err)
         return resolve(true)
       })

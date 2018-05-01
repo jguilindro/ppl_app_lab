@@ -1,24 +1,38 @@
 import Vue from 'vue'
-
+import leccion from './dump/data/leccion.estimacion.json'
 export default {
   async usuarioDatos ({commit}) {
     commit('setError', null)
-    return new Promise((resolve, reject) => {
-      Vue.http.get('/api/estudiantes/leccion/datos_leccion')
-        .then((paralelos) => {
-          if (paralelos.body.estado) {
-            commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-            commit('setDatosEstudiante', paralelos.body.datos.estudiante)
-            commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-            commit('setDatosMuchos', paralelos.body.datos)
-            commit('SOCKET_USUARIO')
-            return resolve()
-          }
-        }).catch((err) => {
-          commit('setError', err)
-          return reject(err)
-        })
-    })
+    if (process.env.NODE_ENV === 'production') {
+      return new Promise((resolve, reject) => {
+        Vue.http.get('/api/estudiantes/leccion/datos_leccion')
+          .then((paralelos) => {
+            if (paralelos.body.estado) {
+              commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+              commit('setDatosEstudiante', paralelos.body.datos.estudiante)
+              commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+              commit('setDatosMuchos', paralelos.body.datos)
+              commit('setRealtimeLeccion', paralelos.body.datos)
+              commit('SOCKET_USUARIO')
+              return resolve()
+            }
+          }).catch((err) => {
+            commit('setError', err)
+            return reject(err)
+          })
+      })
+    } else if (process.env.NODE_ENV === 'development') {
+      return new Promise((resolve, reject) => {
+        let paralelos = leccion
+        // commit('setLecciones', paralelos.estudiante.lecciones)
+        commit('setDatosEstudiante', paralelos.estudiante)
+        commit('setLeccionRealtimeEstadoEstudiante', paralelos.estudiante)
+        commit('setDatosMuchos', paralelos)
+        commit('setRealtimeLeccion', paralelos)
+        commit('SOCKET_USUARIO')
+        return resolve()
+      })
+    }
   },
   verificarCodigo ({commit, dispatch}, codigo) {
     commit('setError', null)

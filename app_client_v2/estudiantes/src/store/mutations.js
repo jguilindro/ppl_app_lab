@@ -33,7 +33,9 @@ export default {
     enviar['parte'] = 'ingresarCodigo'
     enviar['leccionRealtimeId'] = JSON.parse(JSON.stringify(state.muchos.paralelo.leccion))
     enviar['paraleloId'] = JSON.parse(JSON.stringify(state.muchos.paralelo._id))
-    state.io.emit('usuario estudiante', enviar)
+    if (state.io.emit) {
+      state.io.emit('usuario estudiante', enviar)
+    }
   },
   SOCKET_ESTUDIANTE_ANADIDO_PARALELO (state) {
     state.leccionRealtime.estudiateFueAnadidoAParalelo = true
@@ -119,5 +121,46 @@ export default {
   },
   setLeccionLimpiar (state) {
     state.leccion = {}
+  },
+  setRealtimeLeccion (state, datos) {
+    try {
+      state.leccionDando.grupoId = datos.grupo._id
+      state.leccionDando.leccionId = datos.leccion._id
+      state.leccionDando.nombre = datos.leccion.nombre
+      state.leccionDando.estado = datos.leccion.estado
+      let preguntasOrdenadas = _.sortBy(datos.preguntas, (o) => {
+        return o.ordenP
+      })
+      let respuestas = datos.respuestas
+      let preguntasLimpiada = []
+      for (let pregunta of preguntasOrdenadas) {
+        if (!pregunta['esSeccion']) {
+          let respuestaDePregunta = respuestas.find((resp) => {
+            return resp.pregunta === pregunta['_id']
+          })
+          if (respuestaDePregunta) {
+            respuestaDePregunta = {
+              contestado: respuestaDePregunta['contestado'],
+              imagen: respuestaDePregunta['imagenes'],
+              fechaContestado: respuestaDePregunta['createdAt'],
+              respuesta: respuestaDePregunta['respuesta']
+            }
+          }
+          preguntasLimpiada.push({
+            id: pregunta['_id'],
+            descripcion: pregunta['descripcion'],
+            nombre: pregunta['nombre'],
+            puntaje: pregunta['puntaje'],
+            respuesta: respuestaDePregunta,
+            // eslint-disable-next-line
+            respondido: respuestaDePregunta ? true : false,
+            tiempoEstimado: pregunta['tiempoEstimado']
+          })
+        }
+      }
+      state.leccionDando.preguntas = preguntasLimpiada
+    } catch (err) {
+      state.error = err
+    }
   }
 }

@@ -22,5 +22,8 @@ export default {
   },
   leccion (state) {
     return state.leccion
+  },
+  leccionDando (state) {
+    return state.leccionDando
   }
 }

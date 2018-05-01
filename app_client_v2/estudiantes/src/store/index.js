@@ -17,7 +17,8 @@ export const store = new Vuex.Store({
     estudiante: {
       correo: '',
       nombres: '',
-      apellidos: ''
+      apellidos: '',
+      id: ''
     },
     online: true,
     tmp: null,
@@ -38,6 +39,13 @@ export const store = new Vuex.Store({
       fueRedirigido: false
     },
     leccion: { // leccion actual mostrada
+    },
+    leccionDando: {
+      nombre: '',
+      estado: '',
+      grupoId: null,
+      preguntas: [],
+      leccionId: null
     }
   },
   mutations,

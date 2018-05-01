@@ -114,6 +114,7 @@ let App = new Vue({
             window.location.href = '/estudiantes';  //Si no está tomando lección se lo redirige al perfil
           }
           var data = res.datos
+          console.log(JSON.stringify(data))
           App.asignarValoresObtenidos(res);
           App.desbloquearTabs();
           var estudiante = data.estudiante
