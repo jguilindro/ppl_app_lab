@@ -70,139 +70,160 @@
 				</article>
 			</section>
 			<section class="row" id="seccionReglas">
-				<article class="col s12">
-					<div class="col s10 m10 left-align offset-m1 #90caf9 blue lighten-3 title">Presentación</div>
-					<br><br>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">La presentación fue clara y entendible</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="presentacion-1" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
+				<article class="col s10 offset-s1 m8 offset-m2">
+					<header>
+						<h5>Planteamiento</h5>
+					</header>
+					<main>
+						<p style="text-align: justify;">
+				      <input class="with-gap" name="planteamiento" type="radio" id="planteamiento-0" value="0" v-model="planteamiento"/>
+				      <label for="planteamiento-0">
+				      	Planteamiento incorrecto, demostrando poco entendimiento del problema. No hacen uso de gráficos, ni esquemas.
+				      </label>
+				    </p>
+				    <p style="text-align: justify;">
+				      <input class="with-gap" name="planteamiento" type="radio" id="planteamiento-1" value="1" v-model="planteamiento"/>
+				      <label for="planteamiento-1">
+				      	Planteamiento incorrecto, demostrando poco entendimiento del problema. Hacen uso de gráficos y/o esquemas para explicar su razonamiento.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="planteamiento" type="radio" id="planteamiento-2" value="2" v-model="planteamiento"/>
+				      <label for="planteamiento-2">
+				      	Identifican el problema cometiendo errores mínimos. Hacen uso de gráficos y/o esquemas para explicarlo.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="planteamiento" type="radio" id="planteamiento-3" value="3" v-model="planteamiento"/>
+				      <label for="planteamiento-3">
+				      	Identifican claramente el problema. Hacen uso de gráficos y/o esquemas para explicarlo.
+				      </label>
+				    </p>
+					</main>
 				</article>
-				<article class="col s12">
-					<div class="col s10 m10 left-align offset-m1 #e6ee9c lime lighten-3 title">Trabajo en grupo</div> <br><br>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Los estudiantes permitieron que cada uno explique parte del problema.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="trabajoEnGrupo-1" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">La presentación de cada uno de los estudiantes demuestra conexión entre ellos y promueve discusión lógica del tema.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="trabajoEnGrupo-2" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Los miembros del grupo se tratan con respeto y cortesía.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="trabajoEnGrupo-3" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
+				<article class="col s10 offset-s1 m8 offset-m2">
+					<header>
+						<h5>Desarrollo</h5>
+					</header>
+					<main>
+						<p style="text-align: justify;">
+				      <input class="with-gap" name="desarrollo" type="radio" id="desarrollo-0"/ value="0" v-model="desarrollo">
+				      <label for="desarrollo-0" class="rb-red">
+				      	Presentan la solución del problema de una manera desodenada y omiten pasos en el desarrollo. 
+				      </label>
+				    </p>
+				    <p style="text-align: justify;">
+				      <input class="with-gap" name="desarrollo" type="radio" id="desarrollo-1"/ value="1" v-model="desarrollo">
+				      <label for="desarrollo-1">
+				      	Omiten pasos importantes en el desarrollo.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="desarrollo" type="radio" id="desarrollo-2"/ value="2" v-model="desarrollo">
+				      <label for="desarrollo-2">
+				      	El procedimiento es claro, pero desordenado. 
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="desarrollo" type="radio" id="desarrollo-3"/ value="3" v-model="desarrollo">
+				      <label for="desarrollo-3">
+				      	Presentan la solución del problema de una  manera ordenada, organizada y detallada.
+				      </label>
+				    </p>
+					</main>
 				</article>
-				<article class="col s12">
-					<div class="col s10 m10 left-align offset-m1 #84ffff cyan accent-1 title">Introducción</div><br><br>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">La presentación del problema es clara y siguen un orden lógico en la presentación.	</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="introduccion-1" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">La física involucrada en el problema es explicada en forma clara y precisa.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="introduccion-2" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Explican claramente el objetivo del problema y cómo van a utilizar los conceptos físicos.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="introduccion-3" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
+				<article class="col s10 offset-s1 m8 offset-m2">
+					<header>
+						<h5>Conceptos Físicos</h5>
+					</header>
+					<main>
+						<p style="text-align: justify;">
+				      <input class="with-gap" name="fisicos" type="radio" id="fisicos-0" value="0" v-model="fisicos"/>
+				      <label for="fisicos-0">
+				      	La mayoria de conceptos físicos implicados en el problema son explicados incorrectamente.
+				      </label>
+				    </p>
+				    <p style="text-align: justify;">
+				      <input class="with-gap" name="fisicos" type="radio" id="fisicos-1" value="1" v-model="fisicos"/>
+				      <label for="fisicos-1">
+				      	Al menos el 50% de los conceptos físicos son explicados correctamente.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="fisicos" type="radio" id="fisicos-2" value="2" v-model="fisicos"/>
+				      <label for="fisicos-2">
+				      	Explican los conceptos físicos comentiendo errores mínimos.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="fisicos" type="radio" id="fisicos-3" value="3" v-model="fisicos"/>
+				      <label for="fisicos-3">
+				      	Explican correctamente los conceptos físicos implicados en el problema.
+				      </label>
+				    </p>
+					</main>
 				</article>
-				<article class="col s12">
-					<div class="col s10 m10 left-align offset-m1 #ffecb3 amber lighten-4 title">Contenido individual</div><br><br>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Las expresiones matemáticas fueron apropiadas, detalladas y con respuestas correctas.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="contenidoIndividual-1" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Los estudiantes identifican el origen de las ecuaciones y sus limitaciones.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="contenidoIndividual-2" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Las teorías o leyes utilizadas fueron descritas y utilizadas con propiedad.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="contenidoIndividual-3" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
-					<span class="sub-article col m10 offset-m2">
-						<div class="col s10 m7 center-align">Las conclusiones están explícitamente ligadas al problema y son físicamente correctas.</div>
-						<div class="input-field col s1 m1 offset-m2">
-							<select id="contenidoIndividual-4" class="calificacion">
-								<option value="0">0</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-							</select>
-							<label for=""></label>
-						</div>
-					</span>
+				<article class="col s10 offset-s1 m8 offset-m2">
+					<header>
+						<h5>Conceptos Matemáticos</h5>
+					</header>
+					<main>
+						<p style="text-align: justify;">
+				      <input class="with-gap" name="matematicos" type="radio" id="matematicos-0" value="0" v-model="matematicos"/>
+				      <label for="matematicos-0">
+				      	La mayor parte del desarrollo contiene errores matemáticos, demostrando poco conocimiento de los conceptos matematicos requeridos.
+				      </label>
+				    </p>
+				    <p style="text-align: justify;">
+				      <input class="with-gap" name="matematicos" type="radio" id="matematicos-1" value="1" v-model="matematicos"/>
+				      <label for="matematicos-1">
+				      	El desarrollo del problema contiene múltiples errores matemáticos. 
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="matematicos" type="radio" id="matematicos-2" value="2" v-model="matematicos"/>
+				      <label for="matematicos-2">
+				      	Utiliza los conceptos y expresiones matematicas cometiendo errores mínimos. 
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="matematicos" type="radio" id="matematicos-3" value="3" v-model="matematicos"/>
+				      <label for="matematicos-3">
+				      	Utilizan los conceptos y expresiones matemáticas correctamente. 
+				      </label>
+				    </p>
+					</main>
+				</article>
+				<article class="col s10 offset-s1 m8 offset-m2">
+					<header>
+						<h5>Respuesta</h5>
+					</header>
+					<main>
+						<p style="text-align: justify;">
+				      <input class="with-gap" name="respuesta" type="radio" id="respuesta-0" value="0" v-model="respuesta"/>
+				      <label for="respuesta-0">
+				      	No obtienen ninguna respuesta correcta.
+				      </label>
+				    </p>
+				    <p style="text-align: justify;">
+				      <input class="with-gap" name="respuesta" type="radio" id="respuesta-1" value="1" v-model="respuesta"/>
+				      <label for="respuesta-1">
+				      	< 50% de respuestas son correctas 
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="respuesta" type="radio" id="respuesta-2" value="2" v-model="respuesta"/>
+				      <label for="respuesta-2">
+				      	> 50% de respuestas son correctas.
+				      </label>
+				    </p>
+				    <p>
+				      <input class="with-gap" name="respuesta" type="radio" id="respuesta-3" value="3" v-model="respuesta"/>
+				      <label for="respuesta-3">
+				      	Obtienen el 100% de respuestas correctas y (Numéricamente y conceptualmente). 
+				      </label>
+				    </p>
+					</main>
 				</article>
 			</section>
 			<section class="row" id="seccionBotones">
@@ -211,11 +232,10 @@
 						<a class="waves-effect waves-light btn" @click="calificar" id="btn-calificar">Calificar</a>
 					</div>
 					<div class="col m2 offset-m1">
-						<p>Total <label>{{rubrica.calificacion}}/15</label></p>
+						<p>Total <label>{{calificacion}}/15</label></p>
 					</div>
 				</div>
 			</section>
-
 			<section id="modals">
 				<!-- Modal Structure -->
 			  <div id="modalCalificacionExitosa" class="modal">
