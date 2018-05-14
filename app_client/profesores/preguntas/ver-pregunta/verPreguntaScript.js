@@ -5,6 +5,7 @@ var pregunta = new Vue({
 	},
 	mounted: function(){
 		this.inicializarMaterialize();
+		this.obtenerCapitulos(this);
 	},
 	data: {
 		aux: true,
@@ -24,7 +25,7 @@ var pregunta = new Vue({
 			$('.myEditor').materialnote();
 			$('.note-editor').find('button').attr('type', 'button');		//No borrar. Corrige el error estupido de materialNote
 			$('select').material_select();
-			// $('.modal').modal();
+			$('.modal').modal();
 		},
 		obtenerUsuario: function(self) {
       		this.$http.get('/api/session/usuario_conectado').
@@ -52,6 +53,15 @@ var pregunta = new Vue({
 				}
 			});
 		},
+		obtenerCapitulos: function(self){
+	      var url = '/api/capitulos/';
+	      self.$http.get(url).then(response => {
+	        self.capitulosObtenidos = response.body.datos;
+	        self.crearSelectCapitulos(self, 'select-capitulos', self.capituloEscogido, 'div-select-capitulo', self.capitulosObtenidos, 'estimacion');
+	      }, response => {
+	        console.log(response)
+	      });
+	    },
 		checkCreador: function(self){
 			if( self.preguntaObtenida.creador._id == self.profesor._id ){
 				self.editable   = true;
@@ -88,6 +98,8 @@ var pregunta = new Vue({
 				$('#select-editar-tipo-pregunta').material_select();
 				$('#select-editar-tipo-leccion').val(self.preguntaObtenida.tipoLeccion)
 				$('#select-editar-tipo-leccion').material_select();
+				// $('#select-materia').material_select();
+				// $('#select-capitulo').material_select();
 				$('.lblEditar').addClass('active')
 				//Inicializar los wysiwyg
 				$.each(self.preguntaEditar.subpreguntas, function(index, subpregunta){
@@ -256,7 +268,58 @@ var pregunta = new Vue({
 			}else{
 				alert('Usted no puede editar ni eliminar esta pregunta.');
 			}
-		}
+		},
+		/*
+	      Parámetros:
+	        idSelect -> id del elemento select que se va a crear en esta función para contener a los grupos deseados. Ejemplo: select-capitulos
+	        capituloEscogido ->  Elemento de data con el cual se hará el 2 way data binding. Almacenará el capitulo escogido del select
+	        idDivSelect -> id del div que contendrá al elemento select que se va a crear
+	        capitulos -> Los capitulos que se van a mostrar en el select
+	    */
+	    crearSelectCapitulos: function(self, idSelect, capituloEscogido, idDivSelect, capitulos, tipo){
+	      $('#'+idDivSelect).empty();
+	      let label             = $('<label>').html('Capítulos').addClass('active');
+	      //Todos los parametros de id vienen sin el #
+	      var select            = $('<select>').attr({'id': idSelect});
+	      var optionSelectedAux = '#' + idSelect + ' option:selected';
+	      select.change(function(){
+	        self.pregunta.capitulo = $(optionSelectedAux).val();
+	      });
+	      var idDivSelectAux = '#' + idDivSelect;
+	      var divSelect      = $(idDivSelectAux);
+	      self.crearSelectOptions(self, select, capitulos, divSelect);
+	      divSelect.append(label, select);
+	      select.material_select();
+	    },
+	    /*
+	      Parámetros:
+	        select -> elemento select creado en la función crearSelectGrupo que mostrará a los capitulos deseados
+	        capitulos -> los capitulos que se mostrarán como opciones dentro del select
+	        divSelect -> elemento div que contendrá al select
+	    */
+	    crearSelectOptions: function(self, select, capitulos, divSelect){
+	      let optionDisabled = $('<option>').val('').text('');
+	      select.append(optionDisabled);
+	      $.each(capitulos, function(index, capitulo){
+	        let option = $('<option>').val(capitulo._id).text(capitulo.nombre);
+	        select.append(option);
+	      });
+	      divSelect.append(select);
+	    },
+	    /*
+	      @Descripción: función que indicará que una foto se está subiendo (si tuviera lo alto y ancho podría simular a la foto en sí.)
+	      @Params: Requiere el estado, si está cargando algo o no.
+	    */
+	    loading: function(estado){
+	      if ( estado ){
+	        $('.note-editable').append('<div id="onLoad" class="preloader-wrapper big active"></div>');
+	        $('#onLoad').append('<div id="load-2" class="spinner-layer spinner-blue-only"></div>');
+	        $('#load-2').append('<div id="load-3" class="circle-clipper left"></div>');
+	        $('#load-3').append('<div id="load-4" class="circle"></div>');
+	      }else{
+	        $('#onLoad').remove();
+	      }
+	    }
 	}
 });
 
