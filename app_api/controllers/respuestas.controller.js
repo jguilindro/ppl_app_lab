@@ -51,6 +51,7 @@ const subirImagen = (req, res, next) => {
 
 
 const crearRespuesta = (req, res) => {
+  console.log(req.body)
 	let arraySubrespuestas = JSON.parse(req.body.arraySubrespuestas);
 	let resp = new RespuestaModel({
 		estudiante 	: req.body.estudiante,
@@ -67,16 +68,19 @@ const crearRespuesta = (req, res) => {
 	});
 	co(function* (){
 		let respuesta = yield  obtenerRespuestaDeEstudianteP(req.body.leccion, req.body.pregunta, req.body.estudiante);
-		//console.log(respuesta)
 		if( respuesta == null ){
 			resp.crearRespuesta( err => {
-				if(err) return response.serverError(res);
+				if(err) {
+          console.log(err)
+          return response.serverError(res)
+        }
 				return response.creado(res);
 			});
 		}else{
 			return response.serverError(res);	
 		}
 	}).catch( fail => {
+    console.log(fail)
 		return response.serverError(res);
 	});
 }

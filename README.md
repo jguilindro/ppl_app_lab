@@ -34,7 +34,8 @@ git submodule update --init
 ./production # no usarlo en LOCAL
 export $(cat .env | xargs) # instalar las variables de entorno
 export NODE_ENV=production # 
-pm2 start server.js
+pm2 restart 0
+# pm2 start server.js
 # pm2 monit
 # pm2 restart
 # pm2 list

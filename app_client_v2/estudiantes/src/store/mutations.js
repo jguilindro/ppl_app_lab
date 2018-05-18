@@ -60,11 +60,14 @@ export default {
     state.lecciones = leccionesOrdenadasPorFechas
   },
   setDatosEstudiante (state, datos) {
-    state.estudiante.nombres = datos.nombres
-    state.estudiante.apellidos = datos.apellidos
-    state.estudiante.correo = datos.correo
-    state.estudiante.id = datos._id
-    state.usuarioDatos = datos
+    state.estudiante.nombres = datos.estudiante.nombres
+    state.estudiante.apellidos = datos.estudiante.apellidos
+    state.estudiante.correo = datos.estudiante.correo
+    state.estudiante.id = datos.estudiante._id
+    state.usuarioDatos = datos.estudiante
+    state.estudiante.grupoId = datos.grupo._id
+    state.estudiante.paraleloId = datos.paralelo._id
+    // console.log(grupo)
   },
   setDatosMuchos (state, datos) {
     state.muchos = datos
@@ -122,9 +125,17 @@ export default {
   setLeccionLimpiar (state) {
     state.leccion = {}
   },
+  setSubiendoImagen (state, preguntaId) {
+    let index = state.leccionDando.preguntas.findIndex((obj) => obj.id === preguntaId)
+    state.leccionDando.preguntas[index].subiendo = true
+  },
+  setTerminoSubirImagen (state, preguntaId) {
+    let index = state.leccionDando.preguntas.findIndex((obj) => obj.id === preguntaId)
+    state.leccionDando.preguntas[index].subiendo = false
+  },
   setRealtimeLeccion (state, datos) {
     try {
-      state.leccionDando.grupoId = datos.grupo._id
+      // state.leccionDando.grupoId = datos.grupo._id
       state.leccionDando.leccionId = datos.leccion._id
       state.leccionDando.nombre = datos.leccion.nombre
       state.leccionDando.estado = datos.leccion.estado
@@ -151,6 +162,7 @@ export default {
             descripcion: pregunta['descripcion'],
             nombre: pregunta['nombre'],
             puntaje: pregunta['puntaje'],
+            subiendo: false,
             respuesta: respuestaDePregunta,
             // eslint-disable-next-line
             respondido: respuestaDePregunta ? true : false,
@@ -162,5 +174,10 @@ export default {
     } catch (err) {
       state.error = err
     }
+  },
+  setRespuestaLocal (state, { preguntaId, imagen, respuesta, local }) {
+    let resp = { preguntaId, imagen, respuesta, local }
+    let index = state.leccionDando.preguntas.findIndex((obj) => obj.id === preguntaId)
+    state.leccionDando.preguntas[index].respuesta = resp
   }
 }

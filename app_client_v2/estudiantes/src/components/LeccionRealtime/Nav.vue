@@ -12,10 +12,11 @@
           <v-container xs12 fluid grid-list-lg>
             <v-layout row justify-space-between>
               <v-flex xs2>
-                <v-icon color="blue">mdi-circle</v-icon>
+                <v-icon color="blue" v-show="!pregunta.respuesta">mdi-circle</v-icon>
+                <v-icon color="blue-grey lighten-4" v-show="pregunta.respuesta">mdi-circle</v-icon>
               </v-flex>
               <v-flex xs10>
-                <h4>Pregunta {{ pregunta }}</h4>
+                <h4>Pregunta {{ index + 1 }}</h4>
               </v-flex>
             </v-layout>
           </v-container>
@@ -31,7 +32,7 @@
       <v-toolbar-title slot="extension">{{pregunta}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-badge left overlap >
-        <span slot="badge" dark small>1</span>
+        <span slot="badge" dark small>{{ cantidadNoContestadas }}</span>
       </v-badge>
       <v-menu bottom left>
         <v-btn icon slot="activator">
@@ -39,10 +40,10 @@
         </v-btn>
         <v-list>
           <v-list-tile>
-            <v-list-tile-title>PPL</v-list-tile-title>
+            <v-list-tile-title @click="ppl">PPL</v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-title>ATT</v-list-tile-title>
+            <v-list-tile-title @click="att">ATT</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -62,17 +63,19 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'app-nav',
-  props: ['pregunta', 'tiempo', 'leccionNombre', 'cantidadPreguntas', 'preguntaActualParent'],
+  props: ['pregunta', 'tiempo', 'leccionNombre', 'cantidadPreguntas', 'preguntaActualParent', 'preguntas'],
   computed: {
     ...mapGetters({
       online: 'online'
     }),
-    preguntas () {
-      var list = []
-      for (var i = 1; i <= this.cantidadPreguntas; i++) {
-        list.push(i)
+    cantidadNoContestadas () {
+      let cantidad = 0
+      for (let pregunta of this.preguntas) {
+        if (!pregunta.respuesta) {
+          cantidad = cantidad + 1
+        }
       }
-      return list
+      return cantidad
     }
   },
   data () {
@@ -85,6 +88,12 @@ export default {
     cambio (pregunta) {
       this.side = false
       this.preguntaActual = pregunta
+    },
+    att () {
+      window.location = '/att/estudiantes'
+    },
+    ppl () {
+      window.location = '/estudiantes'
     }
   },
   watch: {

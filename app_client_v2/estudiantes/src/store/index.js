@@ -18,7 +18,9 @@ export const store = new Vuex.Store({
       correo: '',
       nombres: '',
       apellidos: '',
-      id: ''
+      id: '',
+      grupoId: '',
+      paraleloId: ''
     },
     online: true,
     tmp: null,
@@ -43,7 +45,6 @@ export const store = new Vuex.Store({
     leccionDando: {
       nombre: '',
       estado: '',
-      grupoId: null,
       preguntas: [],
       leccionId: null
     }

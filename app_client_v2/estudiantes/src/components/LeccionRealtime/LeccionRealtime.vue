@@ -1,7 +1,7 @@
 <template>
   <div id="leccion">
-    <app-nav :pregunta="preguntaActualNombre" tiempo="15:55" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas "
-        v-on:pregunta="pestana($event)" :preguntaActualParent="activo"
+    <app-nav :pregunta="preguntaActualNombre" tiempo="15:55" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
+        v-on:pregunta="pestana($event)" :preguntaActualParent="activo" :preguntas="preguntas"
     ></app-nav>
     <v-container fluid style="min-height: 0;" grid-list-lg>
       <v-tabs :hide-slider="true" v-model="active"  fixed-tabs  v-touch="{
@@ -38,7 +38,7 @@
           </v-card>
           <v-divider dark inset></v-divider>
           <v-card>
-            <v-card-title primary-title v-if="pregunta.respuesta">
+            <v-card-title primary-title v-if="pregunta.respuesta" >
               <v-text-field
                 name="input-4-1"
                 label="Su Respuesta"
@@ -52,16 +52,19 @@
                 name="input-4-1"
                 label="Su Respuesta"
                 multi-line
+                :id="`respuesta_${pregunta.id}`"
               ></v-text-field>
             </v-card-title>
-            <v-card-media height="200px"  v-if="pregunta.respuesta" > <!-- style="width: 50%; margin: 0 auto;" -->
-              <img src="http://images5.fanpop.com/image/photos/28300000/Guilty-Crown-7-guilty-crown-28316715-1280-720.jpg" :v-show="false">
+            <v-card-media height="100px"  v-if="valido(pregunta.respuesta)" > <!-- style="width: 50%; margin: 0 auto;"   && pregunta.respuesta.imagen-->
+              <img :src="pregunta.respuesta.imagen" :id="`imagen_${pregunta.id}`">
             </v-card-media>
-            <!-- <v-btn>RESUBIR</v-btn> -->
-            <input type="file" class="filepond imagen" name="imagenes" v-if="!pregunta.respuesta">
-            <v-btn class="hidden-md-and-up" block color="primary" large :disabled="botonEnviarBloqueado || pregunta.respuesta !== undefined">
+            <div v-if="!valido(pregunta.respuesta)">
+              <input type="file" class="filepond imagen" name="imagenes" :id="pregunta.id">
+            </div>
+            <v-btn class="hidden-md-and-up" block color="primary" large :disabled="pregunta.respuesta !== undefined || pregunta.subiendo" @click.native="responder(pregunta.id)">
               Responder
             </v-btn>
+            <!-- botonEnviarBloqueado === index ||  -->
             <!-- <v-btn class="hidden-md-and-up" block color="primary" dark large>
               Próxima
               <v-icon>mdi-chevron-right</v-icon>
@@ -70,6 +73,36 @@
         </v-tab-item>
       </v-tabs>
     </v-container>
+    <v-snackbar
+        :timeout="4000"
+        :multi-line="true"
+        :color="'error'"
+        :top="true"
+        v-model="snackbar"
+      >
+        Error al enviar imagen en {{preguntaActualNombre}}, por favor reintente
+        <v-btn flat color="white" @click.native="snackbar = false">Cerrar</v-btn>
+    </v-snackbar>
+    <v-snackbar
+        :timeout="4000"
+        :multi-line="true"
+        :color="'error'"
+        :top="true"
+        v-model="snackbarErrorResponder"
+      >
+        Error al responder en {{preguntaActualNombre}}, por favor reintente
+        <v-btn flat color="white" @click.native="snackbarErrorResponder = false">Cerrar</v-btn>
+    </v-snackbar>
+    <v-snackbar
+        :timeout="4000"
+        :multi-line="true"
+        :color="'success'"
+        :top="true"
+        v-model="snackbarResponder"
+      >
+        Respuesta de {{preguntaActualNombre}} enviada
+        <v-btn flat color="white" @click.native="snackbarResponder = false">Cerrar</v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -77,6 +110,7 @@
 import Viewer from 'viewerjs'
 import { mapGetters } from 'vuex'
 import * as FilePondO from 'filepond'
+import _ from 'lodash'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImageResize from 'filepond-plugin-image-resize'
 import FilePondPluginImageTransform from 'filepond-plugin-image-transform'
@@ -95,6 +129,9 @@ export default {
     ...mapGetters({
       leccion: 'leccionDando'
     }),
+    preguntas () {
+      return this.leccion.preguntas
+    },
     leccionNombre () {
       return this.leccion.nombre
     },
@@ -122,9 +159,15 @@ export default {
       preguntaActual: 0,
       botonDerechoBloqueado: false,
       botonIzquierdoBloqueado: true,
-      botonEnviarBloqueado: false,
+      botonEnviarBloqueado: -1,
+      botonesBloqueados: [],
       myFile: null,
-      side: false
+      snackbar: false,
+      snackbarResponder: false,
+      side: false,
+      snackbarErrorResponder: false,
+      respuestas: [],
+      ponds: {}
     }
   },
   mounted () {
@@ -140,9 +183,9 @@ export default {
         timeout: 7000
       }
     })
-    // let self = this
+    let ponds = []
     for (let pond of document.querySelectorAll('.imagen')) {
-      FilePondO.create(pond, {
+      let pondTmp = FilePondO.create(pond, {
         labelIdle: `Subir imagen... <span class="filepond--label-action">Buscar</span>`,
         imagePreviewHeight: 170,
         imageCropAspectRatio: '1:1',
@@ -158,17 +201,32 @@ export default {
         // instantUpload: false
         // files
       })
+      ponds.push(pondTmp)
     }
 
     for (let pond of document.querySelectorAll('.imagen')) {
-      pond.addEventListener('FilePond:addfile', (e) => {
-      })
       pond.addEventListener('FilePond:addfilestart', (e) => {
-        this.botonEnviarBloqueado = true
-        // this.myFile = URL.createObjectURL(file.file)
+        this.$store.dispatch('subiendoImagen', e.srcElement.id)
       })
       pond.addEventListener('FilePond:processfile', (e) => {
-        this.botonEnviarBloqueado = false
+        this.ponds[e.detail.file.id] = { preguntaId: e.srcElement.id }
+        this.$store.dispatch('terminoSubirImagen', e.srcElement.id)
+      })
+      pond.addEventListener('FilePond:removefile', (e) => {
+        delete this.ponds[e.detail.file.id]
+      })
+    }
+
+    for (let pond of ponds) {
+      pond.on('processfile', (error, file) => {
+        if (error) {
+          this.snackbar = true
+          return
+        }
+        this.ponds[file.id]['server'] = file.serverId
+        let URL = window.URL
+        var url = URL.createObjectURL(file.file)
+        this.ponds[file.id]['local'] = url
       })
     }
   },
@@ -178,6 +236,12 @@ export default {
     this.$store.dispatch('usuarioDatos')
   },
   methods: {
+    valido (objeto) {
+      if (!objeto) {
+        return false
+      }
+      return !_.isEmpty(objeto)
+    },
     next () {
       const active = parseInt(this.active)
       if (parseInt(active + 2) === this.cantidadPreguntas) {
@@ -202,6 +266,7 @@ export default {
       } else if (active > 1) {
         this.preguntaActualNombre = `Pregunta ${parseInt(this.active)}`
         this.active = (active - 1).toString()
+        this.botonDerechoBloqueado = false
       }
       this.preguntaActual = parseInt(this.active)
     },
@@ -219,6 +284,26 @@ export default {
       }
       this.active = numero.toString()
       this.preguntaActual = parseInt(this.active)
+    },
+    responder (preguntaId) {
+      let imagen = ''
+      let local = ''
+      // console.log(this.ponds)
+      for (let id in this.ponds) {
+        if (this.ponds[id]['preguntaId'] === preguntaId) {
+          imagen = JSON.parse(this.ponds[id]['server'])['datos']
+          local = this.ponds[id]['local']
+        }
+      }
+      let respuesta = this.$el.querySelector(`#respuesta_${preguntaId}`).value
+      this.$store.dispatch('responder', { imagen, respuesta, preguntaId, local })
+        .then(() => {
+          this.snackbarResponder = true
+        })
+        .catch(() => {
+          this.snackbarErrorResponder = true
+        })
+      // https://vuetifyjs.com/en/components/buttons Loader al boton al enviar
     }
   }
 }

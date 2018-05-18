@@ -9,7 +9,7 @@ export default {
           .then((paralelos) => {
             if (paralelos.body.estado) {
               commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-              commit('setDatosEstudiante', paralelos.body.datos.estudiante)
+              commit('setDatosEstudiante', paralelos.body.datos)
               commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
               commit('setDatosMuchos', paralelos.body.datos)
               commit('setRealtimeLeccion', paralelos.body.datos)
@@ -25,7 +25,7 @@ export default {
       return new Promise((resolve, reject) => {
         let paralelos = leccion
         // commit('setLecciones', paralelos.estudiante.lecciones)
-        commit('setDatosEstudiante', paralelos.estudiante)
+        commit('setDatosEstudiante', paralelos)
         commit('setLeccionRealtimeEstadoEstudiante', paralelos.estudiante)
         commit('setDatosMuchos', paralelos)
         commit('setRealtimeLeccion', paralelos)
@@ -117,5 +117,49 @@ export default {
   },
   limpiarLeccion ({commit}) {
     commit('setLeccionLimpiar')
+  },
+  subiendoImagen ({commit}, preguntaId) {
+    commit('setSubiendoImagen', preguntaId)
+  },
+  terminoSubirImagen ({commit}, preguntaId) {
+    commit('setTerminoSubirImagen', preguntaId)
+  },
+  responder ({commit, state}, datos) {
+    let respuesta = {
+      estudiante: state.estudiante.id,
+      leccion: state.leccionDando.leccionId,
+      paralelo: state.estudiante.paraleloId,
+      grupo: state.estudiante.grupoId,
+      pregunta: datos.preguntaId,
+      imagenes: datos.imagen,
+      respuesta: datos.respuesta,
+      contestado: true,
+      arraySubrespuestas: `[]`
+    }
+    return new Promise((resolve, reject) => {
+      Vue.http.post(`/api/respuestas/`, respuesta)
+        .then((response) => {
+          if (response.body.estado) {
+            commit('setRespuestaLocal', { preguntaId: datos.preguntaId, imagen: datos.imagen, respuesta: datos.respuesta, local: datos.local })
+            resolve(true)
+          } else {
+            commit('setError', response.body)
+            reject(new Error(false))
+          }
+        })
+        .catch((err) => {
+          commit('setError', err)
+          reject(err)
+        })
+    })
+  },
+  getImagen ({commit, state}, url) {
+    Vue.http.get(url)
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((err) => {
+        commit('setError', err)
+      })
   }
 }

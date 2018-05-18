@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const co = require('co')
 const CASAuthentication = require('cas-authentication')
 const MongoClient = require('mongodb').MongoClient
@@ -113,10 +113,10 @@ module.exports = (app) => {
   const URL_ESPOL_SERVER = 'http://ppl-assessment.espol.edu.ec'
   let SERVICE_URL = ''
   if ( process.env.NODE_ENV === 'development'  || process.env.NODE_ENV === 'testing' || process.env.NODE_ENV === 'development:cas') {
-    app.use(morgan('dev'));
+    // app.use(morgan('dev'));
     SERVICE_URL = 'http://localhost:' + process.env.PORT
   } else if ( process.env.NODE_ENV === 'production') {
-    app.use(morgan('tiny'))
+    // app.use(morgan('tiny'))
     SERVICE_URL = URL_ESPOL_SERVER
   }
 

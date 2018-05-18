@@ -59,13 +59,13 @@ if (process.env.NODE_ENV !== 'testing') {
       })
     } else {
       const dump = require('./web_service/dump')
-      const wsPPL = WSPPL({ db: dbWebService, anio: '2018', termino: '1s', local: false, dump })
+      const wsPPL = WSPPL({ db: dbWebService, anio: '2017', termino: '2s', local: true, dump })
       wsPPL.inicializar().then((resp) => {
         // exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
         //   if (error) {
         //     console.log(error)
         //   } else {
-        //     wsPPL.actualizar()
+            wsPPL.actualizar()
         //   }
         // })
       }).catch((err) => {

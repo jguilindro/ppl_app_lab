@@ -7,24 +7,28 @@ const Grupo = require('../app_api/models/grupo.model')
 module.exports = {
   crearEstudiante({ nombres, apellidos, correo, matricula, paralelo,  codigoMateria }) { // null si no se creo o lo que sea?
     return new Promise(function(resolve, reject) {
-      let estudiante = new Estudiante({
-        nombres,
-        apellidos,
-        correo,
-        matricula
-      })
-      estudiante.Crear()
-      .then((estudiante) => {
-        let estudianteId = estudiante['_id']
-        Paralelo.AnadirEstudiante({ materiaParalelo: paralelo, materiaCodigo: codigoMateria, estudianteId }).then((resp) => {
-          if (resp) {
-            resolve(true)
-          } else {
-            resolve(false)
-          }
-        })
-      })
-      .catch((err) => {
+      co(function* () {
+        let estudiante = yield Estudiante.ObtenerPorCorreo({ correo })
+        if (!estudiante) {
+          est = new Estudiante({
+            nombres,
+            apellidos,
+            correo,
+            matricula
+          })
+          estudiante = yield est.Crear()
+          let estudianteId = estudiante['_id']
+          Paralelo.AnadirEstudiante({ materiaParalelo: paralelo, materiaCodigo: codigoMateria, estudianteId }).then((resp) => {
+            if (resp) {
+              resolve(true)
+            } else {
+              resolve(false)
+            }
+          })
+        } else {
+          resolve(true)
+        }
+      }).catch((err) => {
         console.error(err)
         reject(false)
       })
@@ -175,15 +179,17 @@ module.exports = {
         let estudiantesDatos = []
         let paralelos = yield Paralelo.ObtenerTodosPopulateEstudiantes()
         for (paralelo of paralelos) {
-          for (estudiante of paralelo.estudiantes) { 
-            estudiantesDatos.push({
-              nombres: estudiante['nombres'],
-              apellidos: estudiante['apellidos'],
-              matricula: estudiante['matricula'],
-              correo: estudiante['correo'],
-              paralelo: paralelo['nombre'],
-              codigoMateria: paralelo['codigo']
-            })
+          for (estudiante of paralelo.estudiantes) {
+            if (estudiante['ingresadoManualmente'] != true) {
+              estudiantesDatos.push({
+                nombres: estudiante['nombres'],
+                apellidos: estudiante['apellidos'],
+                matricula: estudiante['matricula'],
+                correo: estudiante['correo'],
+                paralelo: paralelo['nombre'],
+                codigoMateria: paralelo['codigo']
+              })
+            }
           } 
         }
         resolve(estudiantesDatos)

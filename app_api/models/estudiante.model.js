@@ -50,6 +50,10 @@ const EstudianteSchema = mongoose.Schema({
     type: String,
     ref: 'Leccion'
   },
+  ingresadoManualmente: {
+    type: Boolean,
+    'default': false
+  },
 	lecciones: [{
 		leccion: {
 			type: String,
@@ -223,7 +227,7 @@ EstudianteSchema.statics.anadirLeccionYaComenzo = function(id_estudiante,callbac
 }
 
 EstudianteSchema.statics.leccionTerminada = function(id_estudiante, callback) {
-  this.update({_id: id_estudiante}, {$set: {dandoLeccion: false,codigoIngresado: false, leccion: ""}}, callback)
+  this.update({_id: id_estudiante}, {$set: { dandoLeccion: false, codigoIngresado: false, leccion: "" }}, callback)
 }
 
 EstudianteSchema.statics.obtenerLeccionEstudianteRealtime = function(id_estudiante, callback) {

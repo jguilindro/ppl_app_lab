@@ -19,6 +19,15 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
+      },
+      '/imagenes': {
+        logLevel: 'debug',
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/imagenes': '/imagenes'
+        }
       }
     },
 
