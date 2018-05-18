@@ -273,7 +273,6 @@ leccion.on('terminado leccion', function(match) {
 })
 
 leccion.on('estudiante conectado', function(estudiante) {
-  console.log('aasasas')
   let grupo_index = App.obtenerGrupoEstudiante(estudiante)
   var existe = App.estudiantes_conectados.some(est => est._id == estudiante._id)
   if (!existe) {
@@ -291,7 +290,6 @@ leccion.on('leccion datos', function(leccion) {
     document.getElementById('pausar-leccion').disabled = true
     document.getElementById('continuar-leccion').disabled = false
   }
-  App.dataEstudiantes = leccion.estudiantesDandoLeccion
   App.estudiantes_conectados = []
   var equals = function(x,y){
     return x.matricula === y.matricula;
@@ -345,6 +343,7 @@ function comenzar() {
 }
 document.getElementById('anadir-tiempo').disabled = true
 function terminarLeccion() {
+  App.dataEstudiantes = App.estudiantes_conectados.length
   $.ajax({
     url: '/api/lecciones/terminar_leccion',
     method: 'POST',
