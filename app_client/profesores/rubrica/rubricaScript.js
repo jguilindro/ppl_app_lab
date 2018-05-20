@@ -56,23 +56,33 @@ let rubricaApp = new Vue({
     desarrollo   : '0',
     fisicos      : '0',
     matematicos  : '0',
-    respuesta    : '0'
+    respuesta    : '0',
+    equipo       : '0'
   },
   watch: {
     planteamiento: function(value) {
-      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta])
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
     },
     desarrollo: function(value) {
-      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta])
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
     },
     fisicos: function(value) {
-      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta])
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
     },
     matematicos: function(value) {
-      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta])
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
     },
     respuesta: function(value) {
-      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta])
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
+    },
+    equipo: function(value) {
+      this.calificacion = sumarCalificaciones([this.planteamiento, this.desarrollo, this.fisicos, this.matematicos, this.respuesta, this.equipo])
+      this.calificacion = ponderarCalificacion(this.calificacion)
     }
   },
   methods: {
@@ -268,6 +278,11 @@ function sumarCalificaciones (calificaciones) {
     suma += parseInt(calificaciones[i])
   }
   return suma;
+}
+function ponderarCalificacion (calificacionNoPonderada){
+    const calificacionMaxima = 18;
+    let calificacionPonderada = ( ( calificacionNoPonderada * 15 ) / calificacionMaxima );
+    return calificacionPonderada;
 }
 function desbloquearSelectMaterialize (idSelect) {
   $(idSelect).prop('disabled', false);

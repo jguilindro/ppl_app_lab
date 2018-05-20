@@ -85,7 +85,7 @@ const csv = (req, res) => {
 				for( let grupo in grupos ){
 					let ejercicioGrupo       = grupos[grupo];
 					let calificacionCapituloT = obtenerTotalCalificaciones( ejercicioGrupo[0].calificaciones );
-					let calificacionCapituloP = ponderarCalificacion(calificacionCapituloT, 22, 100).toFixed(2);
+					let calificacionCapituloP = ponderarCalificacion(calificacionCapituloT, 15, 100).toFixed(2);
 					/* Añado el registro al documento */
 					let fila = armarFila(materia, paraleloActual, capituloActual, grupo, calificacionCapituloP);
 					worksheet.addRow(fila);
