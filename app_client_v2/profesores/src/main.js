@@ -8,12 +8,16 @@ import 'vuetify/dist/vuetify.min.css'
 
 import App from './App'
 import router from './router'
-import { store } from '@/store'
+import { store } from './store'
+
+import Navbar from '@/components/Shared/Navbar'
 
 let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
 
 Vue.use(Vuetify)
 Vue.use(VueSocketio, url, store)
+
+Vue.component('navbar', Navbar)
 
 Vue.config.productionTip = false
 
@@ -27,6 +31,7 @@ Vue.filter('fechaFormato', (value) => {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
