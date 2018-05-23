@@ -32,4 +32,7 @@ export default {
   #content {
     background-color: #d3dbdb !important;
   }
+  .indigo.darken-5 {
+    background-color: #001a43 !important;
+  }
 </style>

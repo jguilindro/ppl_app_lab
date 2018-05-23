@@ -40,9 +40,9 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app dark color="indigo darken-4">
+    <v-toolbar app dark color="indigo darken-5">
       <v-toolbar-side-icon @click.stop="sidenav = !sidenav"></v-toolbar-side-icon>
-      <v-toolbar-title class="white--text">PPL</v-toolbar-title>
+      <v-toolbar-title class="white--text">Sistema de Calificación y Desarrollo PPL</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <v-btn flat>ATT</v-btn>
@@ -119,7 +119,8 @@ export default {
             },
             {
               id: '3-2',
-              title: 'CSV'
+              title: 'CSV',
+              link: '/rubrica/csv'
             }
           ]
         }
@@ -137,4 +138,5 @@ export default {
 .navigation-drawer>.list:not(.list--dense) .list__tile {
     font-weight: 400 !important;
 }
+
 </style>

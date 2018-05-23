@@ -38,7 +38,7 @@
               <v-select :items="grupos" v-model="rubrica.grupo" label="Grupo" @change="grupoOnChange"></v-select>
             </v-flex>
             <v-flex xs4>
-              <v-select :items="ejercicios" v-model="rubrica.ejercicio" label="Ejercicio" @change="ejercicioOnChange"></v-select>
+              <v-select :items="ejercicios" v-model="rubrica.ejercicio" label="Ejercicio" @change="ejercicioOnChange" :disabled="!selectEjercicioHabilitado"></v-select>
             </v-flex>
           </v-layout>
         </v-container>
@@ -49,7 +49,7 @@
       <v-card-text v-if="habilitado">
         <v-layout row class="mt-3">
           <v-spacer></v-spacer>
-          <v-btn class="info" :loading="loading" @click="calificar">
+          <v-btn class="indigo darken-5 white--text" :loading="loading" @click="calificar">
             Calificar
             <v-icon right>send</v-icon>
           </v-btn>
@@ -99,6 +99,7 @@
         dialogError: false,
         loading: false,
         calificacionExistente: false,
+        selectEjercicioHabilitado: false,
         arrayRegistros: [],
         materias: ['Física 3', 'Física 2', 'Física Conceptual'],
         capitulos: ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37'],
@@ -174,8 +175,10 @@
         this.$router.push('/')
       },
       continuar () {
+        this.calificacionExistente = false
         this.dialogApi = false
         this.dialogError = false
+        this.selectEjercicioHabilitado = false
         this.empty(this.reglas)
         this.empty(this.rubrica)
         this.rubrica.fecha = new Date().toISOString().split('T')[0]
@@ -183,9 +186,11 @@
       getCalificaciones (paralelo, grupo, capitulo) {
         const url = `/api/rubrica/paralelo/${paralelo}/grupo/${grupo}/capitulo/${capitulo}`
         this.loading = true
+        this.selectEjercicioHabilitado = false
         this.$http.get(url)
           .then((response) => {
             this.loading = false
+            this.selectEjercicioHabilitado = response.body.estado
             if (response.body.estado) {
               this.arrayRegistros = response.body.datos
               this.calificacionExistente = (response.body.datos.length > 0)
