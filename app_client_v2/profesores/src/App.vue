@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <navbar v-if="usuario"></navbar>
-    <v-content>
+    <v-content id="content">
       <v-container fluid fill-height>
         <v-layout align-center justify-center wrap row>
           <v-flex xs12 sm10 md8>
@@ -28,3 +28,8 @@ export default {
   name: 'App'
 }
 </script>
+<style>
+  #content {
+    background-color: #d3dbdb !important;
+  }
+</style>

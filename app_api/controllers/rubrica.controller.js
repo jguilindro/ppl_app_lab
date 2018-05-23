@@ -17,14 +17,13 @@ const crearRegistro = (req, res) => {
 		capitulo 				: rub.capitulo,
 		ejercicio 			: rub.ejercicio,
 		calificaciones 	: arrayCalificaciones,
-		total 					: rub.calificacion,
+		total 					: rub.total,
 		evaluador 			: rub.evaluador
 	});
-
-	registro.crearRegistro((err, doc) => {
-		if(err) return response.serverError(res)
-		return response.creado(res);
-	});
+  RubricaModel.editarOCrear(rub.grupo, rub.paralelo, rub.capitulo, rub.ejercicio, rub.materia, arrayCalificaciones, rub.total, rub.evaluador, (err, doc) => {
+    if(err) return response.serverError(res)
+    return response.creado(res);
+  })
 };
 
 const obtenerRegistroPorId = (req, res) => {

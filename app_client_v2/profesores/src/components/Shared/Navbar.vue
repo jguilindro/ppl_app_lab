@@ -23,7 +23,7 @@
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile v-for="subItem in item.items" :key="subItem.id" @click="">
+          <v-list-tile v-for="subItem in item.items" :key="subItem.id" @click="" router :to="subItem.link">
             <v-list-tile-content>
               <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
             </v-list-tile-content>
@@ -60,10 +60,10 @@
         <v-btn flat>Grupos</v-btn>
         <v-btn flat @click.native="logout">
           <v-icon>exit_to_app</v-icon>
-        </v-btn>  
+        </v-btn>
       </v-toolbar-items>
-    </v-toolbar>  
-  </main>  
+    </v-toolbar>
+  </main>
 </template>
 <script>
 export default {
