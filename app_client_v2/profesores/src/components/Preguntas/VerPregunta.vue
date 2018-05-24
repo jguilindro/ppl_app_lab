@@ -1,7 +1,7 @@
 <template>
   <v-card v-if="pregunta">
     <v-card-title class="white justify-center">
-      <span class="headline white--text espol">Superposición 2</span>
+      <span class="headline white--text espol">{{ pregunta.nombre }}</span>
     </v-card-title>
     <v-list two-line>
       <v-list-tile>

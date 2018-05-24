@@ -4,19 +4,17 @@
       <h1 class="mx-auto">Rúbrica - CSV</h1>
     </v-card-title>
     <v-card-text>
-      <v-container grid-list-xl fluid>
-        <v-layout row>
-          <v-flex xs4>
-            <v-select :items="materias" v-model="rubrica.materia" label="Materia"></v-select>
-          </v-flex>
-          <v-flex xs4>
-            <v-select :items="capitulos" v-model="rubrica.capitulos" multiple label="Capítulo"></v-select>
-          </v-flex>
-          <v-flex xs4>
-            <v-select :items="paralelos" v-model="rubrica.paralelos" multiple label="Paralelos"></v-select>
-          </v-flex>
-        </v-layout>
-      </v-container>
+      <v-layout row wrap>
+        <v-flex xs4 class="px-1">
+          <v-select :items="materias" v-model="rubrica.materia" label="Materia"></v-select>
+        </v-flex>
+        <v-flex xs4 class="px-1">
+          <v-select :items="capitulos" v-model="rubrica.capitulos" multiple label="Capítulo"></v-select>
+        </v-flex>
+        <v-flex xs4 class="px-1">
+          <v-select :items="paralelos" v-model="rubrica.paralelos" multiple label="Paralelos"></v-select>
+        </v-flex>
+      </v-layout>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>

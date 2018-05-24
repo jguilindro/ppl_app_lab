@@ -11,37 +11,33 @@
         <p class="mx-auto">{{ usuario.nombres }} {{ usuario.apellidos }}</p>
       </v-card-title>
       <v-card-text class="pt-0">
-        <v-container grid-list-xl fluid>
-          <v-layout row>
-            <v-flex xs4>
-              <v-dialog ref="fecha" v-model="dialogFecha" :return-value.sync="rubrica.fecha" persistent lazy full-width width="290px">
-                <v-text-field slot="activator" v-model="rubrica.fecha" label="Fecha" readonly></v-text-field>
-                <v-date-picker v-model="rubrica.fecha" scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="dialogFecha = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.fecha.save(rubrica.fecha)">OK</v-btn>
-                </v-date-picker>
-              </v-dialog>
-            </v-flex>
-            <v-flex xs4>
-              <v-select :items="materias" v-model="rubrica.materia" label="Materia"></v-select>
-            </v-flex>
-            <v-flex xs4>
-              <v-select :items="capitulos" v-model="rubrica.capitulo" label="Capítulo"></v-select>
-            </v-flex>
-          </v-layout>
-          <v-layout row>
-            <v-flex xs4>
-              <v-select :items="paralelos" v-model="rubrica.paralelo" label="Paralelo"></v-select>
-            </v-flex>
-            <v-flex xs4>
-              <v-select :items="grupos" v-model="rubrica.grupo" label="Grupo" @change="grupoOnChange"></v-select>
-            </v-flex>
-            <v-flex xs4>
-              <v-select :items="ejercicios" v-model="rubrica.ejercicio" label="Ejercicio" @change="ejercicioOnChange" :disabled="!selectEjercicioHabilitado"></v-select>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <v-layout row wrap>
+          <v-flex xs6 sm4 class="px-1">
+            <v-dialog ref="fecha" v-model="dialogFecha" :return-value.sync="rubrica.fecha" persistent lazy full-width width="290px">
+              <v-text-field slot="activator" v-model="rubrica.fecha" label="Fecha" readonly></v-text-field>
+              <v-date-picker v-model="rubrica.fecha" scrollable>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="dialogFecha = false">Cancel</v-btn>
+                <v-btn flat color="primary" @click="$refs.fecha.save(rubrica.fecha)">OK</v-btn>
+              </v-date-picker>
+            </v-dialog>
+          </v-flex>
+          <v-flex xs6 sm4 class="px-1">
+            <v-select :items="materias" v-model="rubrica.materia" label="Materia"></v-select>
+          </v-flex>
+          <v-flex xs6 sm4>
+            <v-select :items="capitulos" v-model="rubrica.capitulo" label="Capítulo"></v-select>
+          </v-flex>
+          <v-flex xs6 sm4 class="px-1">
+            <v-select :items="paralelos" v-model="rubrica.paralelo" label="Paralelo"></v-select>
+          </v-flex>
+          <v-flex xs6 sm4 class="px-1">
+            <v-select :items="grupos" v-model="rubrica.grupo" label="Grupo" @change="grupoOnChange"></v-select>
+          </v-flex>
+          <v-flex xs6 sm4 class="px-1">
+            <v-select :items="ejercicios" v-model="rubrica.ejercicio" label="Ejercicio" @change="ejercicioOnChange" :disabled="!selectEjercicioHabilitado"></v-select>
+          </v-flex>
+        </v-layout>
       </v-card-text>
       <v-card-text v-if="habilitado">
         <rubrica :reglas="reglas" :total="rubrica.total" v-on:ponderar="ponderar"></rubrica>
