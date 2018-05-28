@@ -10,7 +10,11 @@ Vue.use(Vuex)
 Vue.use(VueResource)
 
 export const store = new Vuex.Store({
-  state: {},
+  state: {
+    usuario: null,
+    error: null,
+    loading: false
+  },
   getters,
   actions,
   mutations

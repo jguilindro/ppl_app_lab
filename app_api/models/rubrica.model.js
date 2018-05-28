@@ -51,6 +51,24 @@ RubricaSchema.methods.crearRegistro = function(callback){
 	this.save(callback);
 }
 
+RubricaSchema.statics.editarOCrear = function(grupo, paralelo, capitulo, ejercicio, materia, calificaciones, total, evaluador, callback) {
+  this.findOneAndUpdate({
+    paralelo: paralelo,
+    grupo: grupo,
+    capitulo: capitulo,
+    ejercicio: ejercicio
+  }, {
+    paralelo,
+    grupo,
+    capitulo,
+    ejercicio,
+    materia,
+    calificaciones,
+    total,
+    evaluador
+  }, { upsert : true }, callback)
+}
+
 /*
 	Obtiene el registro indicado por el id
 */
