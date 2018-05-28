@@ -7,11 +7,11 @@
         <v-layout row wrap>
           <v-flex d-flex xs12 sm6 md6>
 
-            <v-list two-line>
+            <v-list>
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">assignment_ind</v-icon>
+                    <v-icon slot="activator" class=mr-2>assignment_ind</v-icon>
                     <span>Creador</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -24,11 +24,11 @@
 
           </v-flex>
           <v-flex d-flex xs6 sm4 md4 offset-md2 offset-sm2>
-            <v-list two-line>
+            <v-list >
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">school</v-icon>
+                    <v-icon slot="activator" class=mr-2>school</v-icon>
                     <span>Tipo de Lección</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -40,11 +40,11 @@
           </v-flex>
 
           <v-flex d-flex xs6 sm4 md4>
-            <v-list two-line>
+            <v-list>
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">beenhere</v-icon>
+                    <v-icon slot="activator" class=mr-2>beenhere</v-icon>
                     <span>Tipo de Pregunta</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -56,11 +56,11 @@
           </v-flex>
 
           <v-flex d-flex xs6 sm4 md2 offset-md4 offset-sm2>
-            <v-list two-line>
+            <v-list>
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">star</v-icon>
+                    <v-icon slot="activator" class=mr-2>star</v-icon>
                     <span>Puntaje</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -72,11 +72,11 @@
           </v-flex>
 
           <v-flex d-flex xs6 sm4 md4>
-            <v-list two-line>
+            <v-list>
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">access_time</v-icon>
+                    <v-icon slot="activator" class=mr-2>access_time</v-icon>
                     <span>Tiempo Estimado</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -88,11 +88,11 @@
           </v-flex>
 
           <v-flex d-flex xs6 sm4 md4 offset-md4 offset-sm2>
-            <v-list two-line>
+            <v-list >
               <v-list-tile>
-                <v-list-tile-action>
+                <v-list-tile-action class="icons">
                   <v-tooltip bottom>
-                    <v-icon slot="activator">calendar_today</v-icon>
+                    <v-icon slot="activator" class=mr-2>calendar_today</v-icon>
                     <span>Fecha de Creación</span>
                   </v-tooltip>
                 </v-list-tile-action>
@@ -108,10 +108,10 @@
     <v-divider></v-divider>
     <v-card-actions>
       <v-tooltip bottom>
-          <v-icon slot="activator">assignment</v-icon>
+          <v-icon slot="activator" class=ml-2>assignment</v-icon>
           <span>Descripción</span>
       </v-tooltip>
-      <v-subheader>Descripción</v-subheader>
+      <v-subheader  class=px-2>Descripción</v-subheader>
     </v-card-actions>
     <v-card-text v-html="pregunta.descripcion"></v-card-text>
     <v-divider></v-divider>
@@ -216,7 +216,11 @@ p img {
   width: 60%;
 }
 
+div.list__tile__action.icons{
 
+  min-width: 24px !important;
+
+}
 
 </style>
 
