@@ -17,14 +17,13 @@ const crearRegistro = (req, res) => {
 		capitulo 				: rub.capitulo,
 		ejercicio 			: rub.ejercicio,
 		calificaciones 	: arrayCalificaciones,
-		total 					: rub.calificacion,
+		total 					: rub.total,
 		evaluador 			: rub.evaluador
 	});
-
-	registro.crearRegistro((err, doc) => {
-		if(err) return response.serverError(res)
-		return response.creado(res);
-	});
+  RubricaModel.editarOCrear(rub.grupo, rub.paralelo, rub.capitulo, rub.ejercicio, rub.materia, arrayCalificaciones, rub.total, rub.evaluador, (err, doc) => {
+    if(err) return response.serverError(res)
+    return response.creado(res);
+  })
 };
 
 const obtenerRegistroPorId = (req, res) => {
@@ -85,16 +84,16 @@ const csv = (req, res) => {
 				for( let grupo in grupos ){
 					let ejercicioGrupo       = grupos[grupo];
 					let calificacionCapituloT = obtenerTotalCalificaciones( ejercicioGrupo[0].calificaciones );
-					let calificacionCapituloP = ponderarCalificacion(calificacionCapituloT, 22, 100).toFixed(2);
+					// let calificacionCapituloP = ponderarCalificacion(calificacionCapituloT, 15, 100).toFixed(2);
 					/* Añado el registro al documento */
-					let fila = armarFila(materia, paraleloActual, capituloActual, grupo, calificacionCapituloP);
+					let fila = armarFila(materia, paraleloActual, capituloActual, grupo, calificacionCapituloT);
 					worksheet.addRow(fila);
 				}
 			}
     }
     
     workbook.xlsx.write(unstream({}, function(data) {
-      return respuesta.ok(res,data.toString('base64'))
+      return response.ok(res,data.toString('base64'))
     }));
 	})
 	.catch( fail => console.log(fail) );

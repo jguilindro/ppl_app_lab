@@ -8,15 +8,16 @@ let Conectar = function(url) {
     let options = {}
     if (process.env.NODE_ENV === 'production')
       options = { autoIndex: false }
-    conn = mongoose.connect(url, options)
-    db = mongoose.connection
+    conn = mongoose.connect(url, options) // si vale solo
+    db = mongoose.connection // si vale solo
+    // db = mongoose.createConnection(url, options)
     db.on('error', function(err) {
       console.log(`error ${err}`)
     })
 
     db.on('connected', function() {
       if (process.env.NODE_ENV !== 'testing' && process.env.NODE_ENV !== 'production')
-        console.log(`base de datos conectada PPL`)
+        console.log(`app de PPL conectada con ${url}`)
     })
 
     db.on('disconnected', function() {
