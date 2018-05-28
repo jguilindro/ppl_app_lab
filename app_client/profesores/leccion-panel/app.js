@@ -259,6 +259,7 @@ leccion.on('tiempo restante', function(tiempo) {
 })
 
 leccion.on('terminado leccion', function(match) {
+  App.dataEstudiantes = App.estudiantes_conectados.length
   if (!match) {
     Materialize.toast('Hubo un error al terminar la leccion', 5000);
   } else {
