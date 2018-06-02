@@ -51,5 +51,21 @@ export default {
         commit('setLoading', false)
         commit('setError', err)
       })
+  },
+  getLecciones ({commit}) {
+    commit('setError', null)
+    commit('setLoading', true)
+    Vue.http.get('/api/lecciones')
+      .then((response) => {
+        commit('setLoading', false)
+        if (response.body.estado) {
+          commit('setLecciones', response.body.datos)
+        } else {
+          commit('setError', response.body)
+        }
+      }, (err) => {
+        commit('setLoading', false)
+        commit('setError', err)
+      })
   }
 }
