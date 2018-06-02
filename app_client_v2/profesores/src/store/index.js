@@ -13,7 +13,8 @@ export const store = new Vuex.Store({
   state: {
     usuario: null,
     error: null,
-    loading: false
+    loading: false,
+    lecciones: []
   },
   getters,
   actions,

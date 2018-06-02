@@ -7,5 +7,8 @@ export default {
   },
   setLoading (state, payload) {
     state.loading = payload
+  },
+  setLecciones (state, payload) {
+    state.lecciones = payload
   }
 }

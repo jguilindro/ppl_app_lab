@@ -28,6 +28,21 @@ Vue.filter('fechaFormato', (value) => {
     return `${moment(value).locale('es').format('dddd DD MMMM YYYY, HH:mm')}`
   }
 })
+Vue.filter('formatoCreatedAt', (value) => {
+  if (value) {
+    return `${moment(value).locale('es').format('DD MMMM YYYY')}`
+  }
+})
+Vue.filter('formatoHoraInicio', (value) => {
+  if (value) {
+    return `${moment(value).locale('es').format('DD MMMM, HH:mm')}`
+  }
+})
+Vue.filter('capitalizeFirst', (value) => {
+  if (value) {
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

@@ -9,7 +9,8 @@ import IngresarRubrica from '@/components/Rubrica/IngresarRubrica'
 import RubricaCSV from '@/components/Rubrica/RubricaCSV'
 // Preguntas
 import VerPregunta from '@/components/Preguntas/VerPregunta'
-
+// Lecciones
+import VerLecciones from '@/components/Lecciones/VerLecciones'
 Vue.use(Router)
 
 export default new Router({
@@ -36,8 +37,13 @@ export default new Router({
     },
     {
       path: '/preguntas/:id',
-      name: 'verPregunta',
+      name: 'VerPregunta',
       component: VerPregunta
+    },
+    {
+      path: '/lecciones/',
+      name: 'VerLecciones',
+      component: VerLecciones
     }
   ]
 })

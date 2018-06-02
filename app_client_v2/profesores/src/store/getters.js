@@ -7,5 +7,8 @@ export default {
   },
   loading (state) {
     return state.loading
+  },
+  lecciones (state) {
+    return state.lecciones
   }
 }
