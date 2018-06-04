@@ -30,6 +30,7 @@ var pregunta = new Vue({
 		obtenerUsuario: function(self) {
       		this.$http.get('/api/session/usuario_conectado').
       		then(res => {
+      			console.log(res.body)
 	        	if ( res.body.estado ) {
 	        		self.profesor = res.body.datos;
 	        		self.obtenerPregunta(self);
