@@ -5,7 +5,7 @@
     </v-card-title>
 
         <v-layout row wrap>
-          <v-flex d-flex xs12 sm6 md6>
+          <v-flex d-flex xs12 sm6 md6 >
 
             <v-list>
               <v-list-tile>
@@ -113,7 +113,7 @@
       </v-tooltip>
       <v-subheader  class=px-2>Descripción</v-subheader>
     </v-card-actions>
-    <v-card-text v-html="pregunta.descripcion"></v-card-text>
+    <v-card-text class="px-5" v-html="pregunta.descripcion"></v-card-text>
     <v-divider></v-divider>
     <v-card-text v-for="sub in pregunta.subpreguntas" v-if="pregunta.subpreguntas" :key="sub.orden">
       <v-card-actions>
@@ -124,8 +124,9 @@
         </v-btn>
       </v-card-actions>
       <v-slide-y-transition>
-        <v-card-text v-show="sub.show">
+        <v-card-text v-show="sub.show" class="px-5">
           <p v-html="sub.contenido"></p>
+          <span class="right pl-3">Tiempo: {{sub.tiempo}}</span>
           <span class="right">Puntaje: {{ sub.puntaje }}</span>
         </v-card-text>
       </v-slide-y-transition>
