@@ -54,7 +54,7 @@
                     </v-card-title>
                     <v-card-text  class="mt-0 pt-0">
                       <div class="caption">Creador: {{ pregunta.creador.nombres }} {{ pregunta.creador.apellidos }}</div>
-                      <div class="caption">Fecha: {{ formatFecha(pregunta.createdAt) }}</div>
+                      <div class="caption">Fecha de creación: {{ pregunta.createdAt | formatoCreatedAt }}</div>
                     </v-card-text>
                     <v-card-media class="preview">
                       <div v-html="pregunta.descripcion"></div>

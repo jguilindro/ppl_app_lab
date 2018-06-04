@@ -97,7 +97,7 @@
                   </v-tooltip>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                  <v-list-tile-sub-title>{{Date(pregunta.createdAt)}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{pregunta.createdAt | formatoCreatedAt}}</v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>

@@ -5,20 +5,15 @@
     </v-card-title>
     <v-layout row class="mb-3">
       <v-flex xs6 class="pl-4">
-        <v-text-field
-          v-model="dataTable.search"
-          append-icon="search"
-          label="Búsqueda"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="dataTable.search" append-icon="search" label="Búsqueda" single-line hide-details></v-text-field>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex xs4 lg2 class="pl-5">
         <v-tooltip top>
-          <v-btn icon class="green white--text" medium slot="activator">
+          <v-btn icon class="green white--text" medium slot="activator" @click="csv">
             <v-icon>get_app</v-icon>
           </v-btn>
+          <a :hidden="true" :href="url" :download="'calificaciones.xlsx'" ref="descargar"></a>
           <span>Descargar</span>
         </v-tooltip>
         <v-tooltip top>
@@ -121,7 +116,8 @@
           ],
           loading: false,
           error: false
-        }
+        },
+        url: ''
       }
     },
     methods: {
@@ -135,6 +131,32 @@
         } else if (estado === 'calificado') {
           return 'blue'
         }
+      },
+      csv () {
+        this.$http.post('/api/calificaciones/csv')
+          .then((response) => {
+            console.log(response)
+            if (response.body.estado) {
+              this.generarLinkDescarga(response.body.datos)
+            } else {
+              console.log('ERROR')
+            }
+          }, (err) => {
+            console.log(err)
+          })
+      },
+      generarLinkDescarga (datos) {
+        let byteCharacters = atob(datos)
+        let byteNumbers = new Array(byteCharacters.length)
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i)
+        }
+        let byteArray = new Uint8Array(byteNumbers)
+        let blob = new Blob([byteArray], {type: 'application/octet-stream'})
+        this.url = window.URL.createObjectURL(blob)
+        this.$refs.descargar.download = 'aux.xlsx'
+        this.$refs.descargar.click()
+        window.URL.revokeObjectURL(this.url)
       }
     }
   }
