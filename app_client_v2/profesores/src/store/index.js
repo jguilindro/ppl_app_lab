@@ -14,7 +14,8 @@ export const store = new Vuex.Store({
     usuario: null,
     error: null,
     loading: false,
-    lecciones: []
+    lecciones: [],
+    preguntas: []
   },
   getters,
   actions,

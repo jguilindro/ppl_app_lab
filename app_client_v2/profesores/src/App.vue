@@ -22,6 +22,7 @@ export default {
   created () {
     this.$store.dispatch('obtenerUsuario')
     this.$store.dispatch('getLecciones')
+    this.$store.dispatch('getPreguntas')
   },
   data () {
     return {}

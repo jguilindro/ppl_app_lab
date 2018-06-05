@@ -27,7 +27,7 @@
     <v-data-table :headers="dataTable.headers" :items="lecciones" class="elevation-1" :loading="dataTable.loading" :search="dataTable.search">
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.nombre }}</td>
+        <td @click="leccion(props.item._id)" style="cursor: pointer;">{{ props.item.nombre }}</td>
         <td>{{ props.item.tipo | capitalizeFirst }}</td>
         <td>{{ props.item.nombreMateria }}@{{ props.item.nombreParalelo }}</td>
         <td>{{ props.item.createdAt | formatoCreatedAt}}</td>
@@ -157,6 +157,9 @@
         this.$refs.descargar.download = 'aux.xlsx'
         this.$refs.descargar.click()
         window.URL.revokeObjectURL(this.url)
+      },
+      leccion (id) {
+        this.$router.push('/lecciones/' + id)
       }
     }
   }

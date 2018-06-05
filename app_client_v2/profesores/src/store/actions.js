@@ -67,5 +67,21 @@ export default {
         commit('setLoading', false)
         commit('setError', err)
       })
+  },
+  getPreguntas ({ commit }) {
+    commit('setError', null)
+    commit('setLoading', true)
+    Vue.http.get('/api/preguntas/')
+      .then((response) => {
+        commit('setLoading', false)
+        if (response.body.estado) {
+          commit('setPreguntas', response.body.datos)
+        } else {
+          commit('setError', response.body)
+        }
+      }, (err) => {
+        commit('setError', err)
+        commit('setLoading', false)
+      })
   }
 }

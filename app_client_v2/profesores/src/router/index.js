@@ -13,6 +13,7 @@ import VerPregunta from '@/components/Preguntas/VerPregunta'
 
 // Lecciones
 import VerLecciones from '@/components/Lecciones/VerLecciones'
+import Leccion from '@/components/Lecciones/Leccion'
 
 import BancoDePreguntas from '@/components/Preguntas/BancoDePreguntas'
 
@@ -46,10 +47,14 @@ export default new Router({
       component: VerPregunta
     },
     {
-
       path: '/lecciones/',
       name: 'VerLecciones',
       component: VerLecciones
+    },
+    {
+      path: '/lecciones/:id',
+      name: 'Leccion',
+      component: Leccion
     },
     {
 
