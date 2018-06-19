@@ -49,7 +49,7 @@
           <v-btn v-if="props.item.estado === 'calificado'" class="yellow darken-3 white--text">
             Recalificar
           </v-btn>
-          <v-btn v-if="props.item.estado === 'calificado'" class="blue accent-4 white--text">
+          <v-btn v-if="props.item.estado === 'calificado'" class="blue accent-4 white--text" router :to="`/lecciones/${props.item._id}/estadisticas`">
             Estadísticas
           </v-btn>
         </td>

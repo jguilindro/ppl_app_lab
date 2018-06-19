@@ -14,6 +14,7 @@ import VerPregunta from '@/components/Preguntas/VerPregunta'
 // Lecciones
 import VerLecciones from '@/components/Lecciones/VerLecciones'
 import Leccion from '@/components/Lecciones/Leccion'
+import Estadisticas from '@/components/Lecciones/Estadisticas'
 
 import BancoDePreguntas from '@/components/Preguntas/BancoDePreguntas'
 
@@ -55,6 +56,11 @@ export default new Router({
       path: '/lecciones/:id',
       name: 'Leccion',
       component: Leccion
+    },
+    {
+      path: '/lecciones/:id/estadisticas',
+      name: 'Estadisticas',
+      component: Estadisticas
     },
     {
 
