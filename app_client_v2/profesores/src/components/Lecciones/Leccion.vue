@@ -1,3 +1,22 @@
+<style>
+  span.chip__content {
+    text-transform: uppercase;
+  }
+  h1.display-1, h2.display-1 {
+    text-align: center;
+  }
+  .pregunta:hover {
+    background-color: rgba(192,192,192,0.4);
+    cursor: pointer;
+  }
+  p img {
+    max-width: -webkit-fill-available !important;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+
 <template>
   <v-card v-if="leccion">
     <v-card-title>
@@ -7,15 +26,58 @@
       <v-chip class="mx-auto" outline label :color="setColor(leccion.estado)">{{ leccion.estado }}</v-chip>
     </v-card-title>
     <v-card-text>
-      <v-layout>
-        <v-flex xs6>
-          <p>Fecha prevista: {{ leccion.fechaInicio | formatoCreatedAt }}</p>
-          <p v-if="leccion.fechaInicioTomada">Inicio: {{ leccion.fechaInicioTomada | formatoHoraInicio }}</p>
-          <p v-if="leccion.fechaTerminada">Fin: {{ leccion.fechaTerminada | formatoHoraInicio }}</p>
-          <p>{{ leccion.nombreMateria }} P{{ leccion.nombreParalelo }}</p>
-          <p>Tiempo estimado: {{ leccion.tiempoEstimado }} minutos</p>
-          <p>Puntaje: {{ leccion.puntaje }} puntos</p>
-          <p>Tipo: {{ leccion.tipo | capitalizeFirst}}</p>
+      <v-layout row wrap>
+        <v-flex xs12 sm4>
+          <v-list class="text-xs-center">
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-icon>school</v-icon>
+                  {{ leccion.nombreMateria }} P{{ leccion.nombreParalelo }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-icon>subject</v-icon>
+                  {{ leccion.tipo | capitalizeFirst}}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-flex>
+        <v-flex xs12 sm4>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-icon>grade</v-icon>
+                  {{ leccion.puntaje }} puntos
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-icon>timer</v-icon>
+                  {{ leccion.tiempoEstimado }} minutos
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-flex>
+        <v-flex xs12 sm4>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-icon>event</v-icon>
+                  {{ leccion.fechaInicio | formatoCreatedAt }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
         </v-flex>
       </v-layout>
     </v-card-text>
@@ -28,6 +90,24 @@
       </v-card-text>
       <v-divider></v-divider>
     </section>
+    <v-card-actions v-if="leccion.estado === 'pendiente'">
+      <v-tooltip top>
+        <v-btn icon large slot="activator">
+          <v-icon>delete</v-icon>
+        </v-btn>
+        <span>Eliminar</span>
+      </v-tooltip>
+      <v-spacer></v-spacer>
+      <v-tooltip top>
+        <v-btn icon large slot="activator">
+          <v-icon>edit</v-icon>
+        </v-btn>
+        <span>Editar</span>
+      </v-tooltip>
+    </v-card-actions>
+    <v-card-actions v-else>
+      <p class="caption mx-auto">**No puede editar ni eliminar una lección que ya ha sido tomada.</p>
+    </v-card-actions>
   </v-card>
 </template>
 <script>
@@ -87,15 +167,3 @@
     }
   }
 </script>
-<style>
-  span.chip__content {
-    text-transform: uppercase;
-  }
-  h1.display-1, h2.display-1 {
-    text-align: center;
-  }
-  .pregunta:hover {
-    background-color: rgba(192,192,192,0.4);
-    cursor: pointer;
-  }
-</style>

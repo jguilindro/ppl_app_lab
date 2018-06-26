@@ -281,7 +281,8 @@
           preguntas: [],
           preguntasSel: [],
           tiempoEstimado: 0,
-          puntaje: 0
+          puntaje: 0,
+          createdAt: ''
         },
         materias: [
           {
@@ -383,7 +384,7 @@
           let actual = this.leccion.preguntasSel[i]
           this.leccion.preguntas.push({
             pregunta: actual,
-            ordenPregunta: (i+1)
+            ordenPregunta: (i + 1)
           })
         }
         this.$http.post('/api/lecciones/', this.leccion)
@@ -391,6 +392,7 @@
             if (res.body.estado) {
               this.successDialog = true
               this.leccion._id = res.body.datos._id
+              this.leccion.createdAt = res.body.datos.createdAt
               this.$store.commit('addLeccion', this.leccion)
             } else {
               this.errorDialog = true
