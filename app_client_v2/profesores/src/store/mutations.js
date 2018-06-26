@@ -13,5 +13,8 @@ export default {
   },
   setPreguntas (state, payload) {
     state.preguntas = payload
+  },
+  addLeccion (state, payload) {
+    state.lecciones.push(payload)
   }
 }

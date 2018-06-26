@@ -1,3 +1,8 @@
+<style scoped>
+  .loading-card-text {
+    text-align: center;
+  }
+</style>
 <template>
   <v-card>
     <v-card-title>
@@ -18,6 +23,7 @@
               <h3 class="mx-auto display-1">Datos</h3>
             </v-card-title>
             <v-card-text>
+              <v-divider class="mb-3"></v-divider>
               <h3 class="mx-auto title" style="text-align: center;">{{ leccion.nombre }}</h3>
               <p class="mx-auto mt-3" style="text-align: center;">{{leccion.nombreMateria}} P{{leccion.nombreParalelo}}</p>
               <p><b>Tipo: </b>{{leccion.tipo | capitalizeFirst }}</p>
@@ -151,8 +157,3 @@
     }
   }
 </script>
-<style>
-  .loading-card-text {
-    text-align: center;
-  }
-</style>

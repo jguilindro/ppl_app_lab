@@ -1,3 +1,24 @@
+<style scoped>
+  th {
+    color: #001a43 !important;
+  }
+  td button {
+    width: 125px !important;
+    max-width:  125px !important;
+    min-width: 125px !important;
+  }
+  span.chip__content {
+    text-transform: uppercase;
+  }
+  table {
+    text-align: center !important;
+  }
+  .header-center {
+    text-align: center !important;
+    font-weight: bold !important;
+  }
+</style>
+
 <template>
   <v-card>
     <v-card-title primary-title>
@@ -164,23 +185,3 @@
     }
   }
 </script>
-<style>
-  th {
-    color: #001a43 !important;
-  }
-  td button {
-    width: 125px !important;
-    max-width:  125px !important;
-    min-width: 125px !important;
-  }
-  span.chip__content {
-    text-transform: uppercase;
-  }
-  table {
-    text-align: center !important;
-  }
-  .header-center {
-    text-align: center !important;
-    font-weight: bold !important;
-  }
-</style>
