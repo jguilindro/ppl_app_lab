@@ -77,6 +77,7 @@
 		  					</td>
 		  					<td v-else-if="leccion.estado=='terminado'">
 		  						<a class="waves-effect waves-light btn btn-calificar btn-small-new center-align #80deea cyan lighten-3" :href="'/profesores/leccion/calificar/grupos/'+leccion._id"><span>Calificar</span></a>
+                  <a class="waves-effect waves-light btn btn-tomar btn-small-new" :href="'/profesores/leccion/recalificar/grupos/'+leccion._id"><span>Revisar</span></a>
 		  					</td>
 		  					<td v-else-if="leccion.estado=='tomando' && profesor.tipo =='titular'">
 		  						<a class="waves-effect waves-light btn btn-tomar btn-small-new" :href="'/profesores/leccion-panel/'+leccion._id+'/paralelo/'+leccion.paralelo"><span>Entrar</span></a>
