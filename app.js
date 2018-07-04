@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== 'testing') {
             if (error) {
               console.error(error)
             } else {
-              wsPPL.actualizar()
+              // wsPPL.actualizar()
             }
           })
         }, null, true, 'America/Guayaquil')
