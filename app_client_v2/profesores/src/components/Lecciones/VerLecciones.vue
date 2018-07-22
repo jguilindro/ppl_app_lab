@@ -1,3 +1,24 @@
+<style scoped>
+  th {
+    color: #001a43 !important;
+  }
+  td button {
+    width: 125px !important;
+    max-width:  125px !important;
+    min-width: 125px !important;
+  }
+  span.chip__content {
+    text-transform: uppercase;
+  }
+  table {
+    text-align: center !important;
+  }
+  .header-center {
+    text-align: center !important;
+    font-weight: bold !important;
+  }
+</style>
+
 <template>
   <v-card>
     <v-card-title primary-title>
@@ -5,20 +26,15 @@
     </v-card-title>
     <v-layout row class="mb-3">
       <v-flex xs6 class="pl-4">
-        <v-text-field
-          v-model="dataTable.search"
-          append-icon="search"
-          label="Búsqueda"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="dataTable.search" append-icon="search" label="Búsqueda" single-line hide-details></v-text-field>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex xs4 lg2 class="pl-5">
         <v-tooltip top>
-          <v-btn icon class="green white--text" medium slot="activator">
+          <v-btn icon class="green white--text" medium slot="activator" @click="csv">
             <v-icon>get_app</v-icon>
           </v-btn>
+          <a :hidden="true" :href="url" :download="'calificaciones.xlsx'" ref="descargar"></a>
           <span>Descargar</span>
         </v-tooltip>
         <v-tooltip top>
@@ -32,7 +48,7 @@
     <v-data-table :headers="dataTable.headers" :items="lecciones" class="elevation-1" :loading="dataTable.loading" :search="dataTable.search">
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.nombre }}</td>
+        <td @click="leccion(props.item._id)" style="cursor: pointer;">{{ props.item.nombre }}</td>
         <td>{{ props.item.tipo | capitalizeFirst }}</td>
         <td>{{ props.item.nombreMateria }}@{{ props.item.nombreParalelo }}</td>
         <td>{{ props.item.createdAt | formatoCreatedAt}}</td>
@@ -54,7 +70,7 @@
           <v-btn v-if="props.item.estado === 'calificado'" class="yellow darken-3 white--text">
             Recalificar
           </v-btn>
-          <v-btn v-if="props.item.estado === 'calificado'" class="blue accent-4 white--text">
+          <v-btn v-if="props.item.estado === 'calificado'" class="blue accent-4 white--text" router :to="`/lecciones/${props.item._id}/estadisticas`">
             Estadísticas
           </v-btn>
         </td>
@@ -121,7 +137,8 @@
           ],
           loading: false,
           error: false
-        }
+        },
+        url: ''
       }
     },
     methods: {
@@ -135,27 +152,36 @@
         } else if (estado === 'calificado') {
           return 'blue'
         }
+      },
+      csv () {
+        this.$http.post('/api/calificaciones/csv')
+          .then((response) => {
+            console.log(response)
+            if (response.body.estado) {
+              this.generarLinkDescarga(response.body.datos)
+            } else {
+              console.log('ERROR')
+            }
+          }, (err) => {
+            console.log(err)
+          })
+      },
+      generarLinkDescarga (datos) {
+        let byteCharacters = atob(datos)
+        let byteNumbers = new Array(byteCharacters.length)
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i)
+        }
+        let byteArray = new Uint8Array(byteNumbers)
+        let blob = new Blob([byteArray], {type: 'application/octet-stream'})
+        this.url = window.URL.createObjectURL(blob)
+        this.$refs.descargar.download = 'aux.xlsx'
+        this.$refs.descargar.click()
+        window.URL.revokeObjectURL(this.url)
+      },
+      leccion (id) {
+        this.$router.push('/lecciones/' + id)
       }
     }
   }
 </script>
-<style>
-  th {
-    color: #001a43 !important;
-  }
-  td button {
-    width: 125px !important;
-    max-width:  125px !important;
-    min-width: 125px !important;
-  }
-  span.chip__content {
-    text-transform: uppercase;
-  }
-  table {
-    text-align: center !important;
-  }
-  .header-center {
-    text-align: center !important;
-    font-weight: bold !important;
-  }
-</style>

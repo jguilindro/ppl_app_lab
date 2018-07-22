@@ -10,5 +10,8 @@ export default {
   },
   lecciones (state) {
     return state.lecciones
+  },
+  preguntas (state) {
+    return state.preguntas
   }
 }
