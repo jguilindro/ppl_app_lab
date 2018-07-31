@@ -113,12 +113,12 @@ const calificar = (req, res) => {
 }
 
 
- const obtenerRegistroPorLeccion = (req, res) => {
-	 CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
-	 if(err) return response.serverError(res);
-	 return response.ok(res, registros);
-	 });
- }
+const obtenerRegistroPorLeccion = (req, res) => {
+  CalificacionModel.obtenerRegistroPorLeccion(req.params.id_leccion, (err, registros) => {
+    if(err) return response.serverError(res);
+    return response.ok(res, registros);
+  });
+}
 
 const recalificar = (req, res) => {
 	var id_leccion = req.params.id_leccion;
