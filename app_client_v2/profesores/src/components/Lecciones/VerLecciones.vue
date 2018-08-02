@@ -60,7 +60,7 @@
           <v-btn v-else-if="props.item.estado === 'tomando'" class="orange darken-3 white--text">
             Entrar
           </v-btn>
-          <v-btn v-else-if="props.item.estado === 'terminado'" class="green white--text">
+          <v-btn v-else-if="props.item.estado === 'terminado'" class="green white--text" router :to="'/lecciones/' + props.item._id + '/grupos'">
             Calificar
           </v-btn>
           <v-btn v-if="props.item.estado === 'calificado'" class="yellow darken-3 white--text">

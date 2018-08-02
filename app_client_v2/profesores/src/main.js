@@ -14,6 +14,8 @@ import { store } from './store'
 // Shared components
 import Navbar from '@/components/Shared/Navbar'
 import Rubrica from '@/components/Shared/Rubrica'
+import CalificarPregunta from '@/components/Shared/CalificarPregunta'
+import CalificarSubPregunta from '@/components/Shared/CalificarSubPregunta'
 
 let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
 
@@ -23,6 +25,8 @@ Vue.use(VueSocketio, url, store)
 
 Vue.component('navbar', Navbar)
 Vue.component('rubrica', Rubrica)
+Vue.component('calificar-pregunta', CalificarPregunta)
+Vue.component('calificar-sub-pregunta', CalificarSubPregunta)
 
 Vue.config.productionTip = false
 
