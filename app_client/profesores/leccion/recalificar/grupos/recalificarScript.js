@@ -48,7 +48,7 @@ var appRecalificar = new Vue({
         success: function(res){
           //Gracias a @Joel, tengo que eliminar un registro con grupo NULL...
           self.registros = $.grep(res.datos, function(registro){
-            return registro.grupo != null;
+            return registro.grupo != null && registro.calificada === true;
           });
           //Ordeno los registros por nombre
           self.registros.sort(function(r1, r2){

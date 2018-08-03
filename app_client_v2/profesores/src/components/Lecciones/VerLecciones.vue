@@ -13,10 +13,6 @@
   table {
     text-align: center !important;
   }
-  .header-center {
-    text-align: center !important;
-    font-weight: bold !important;
-  }
 </style>
 
 <template>
@@ -45,26 +41,26 @@
         </v-tooltip>
       </v-flex>
     </v-layout>
-    <v-data-table :headers="dataTable.headers" :items="lecciones" class="elevation-1" :loading="dataTable.loading" :search="dataTable.search">
+    <v-data-table :headers="dataTable.headers" :items="lecciones" class="elevation-1" :loading="dataTable.loading" :search="dataTable.search" :pagination.sync="dataTable.pagination">
       <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
-        <td @click="leccion(props.item._id)" style="cursor: pointer;">{{ props.item.nombre }}</td>
-        <td>{{ props.item.tipo | capitalizeFirst }}</td>
-        <td>{{ props.item.nombreMateria }}@{{ props.item.nombreParalelo }}</td>
-        <td>{{ props.item.createdAt | formatoCreatedAt}}</td>
-        <td>{{ props.item.fechaInicioTomada | formatoHoraInicio}}</td>
-        <td>{{ props.item.fechaTerminada | formatoHoraInicio}}</td>
-        <td>
-          <v-chip outline label :color="setColor(props.item.estado)">{{ props.item.estado }}</v-chip>
+        <td class="text-xs-center" @click="leccion(props.item._id)" style="cursor: pointer;">{{ props.item.nombre }}</td>
+        <td class="text-xs-center">{{ props.item.tipo | capitalizeFirst }}</td>
+        <td class="text-xs-center">{{ props.item.nombreMateria }}@{{ props.item.nombreParalelo }}</td>
+        <td class="text-xs-center">{{ props.item.createdAt | formatoCreatedAt}}</td>
+        <td class="text-xs-center">{{ props.item.fechaInicioTomada | formatoHoraInicio}}</td>
+        <td class="text-xs-center">{{ props.item.fechaTerminada | formatoHoraInicio}}</td>
+        <td class="text-xs-center">
+          <v-chip outline label :color="setColor(props.item.estado)">{{ props.item.estado | capitalizeFirst }}</v-chip>
         </td>
-        <td>
+        <td class="text-xs-center">
           <v-btn v-if="props.item.estado === 'pendiente'" class="indigo darken-5 white--text">
             Tomar
           </v-btn>
           <v-btn v-else-if="props.item.estado === 'tomando'" class="orange darken-3 white--text">
             Entrar
           </v-btn>
-          <v-btn v-else-if="props.item.estado === 'terminado'" class="green white--text">
+          <v-btn v-else-if="props.item.estado === 'terminado'" class="green white--text" router :to="'/lecciones/' + props.item._id + '/grupos'">
             Calificar
           </v-btn>
           <v-btn v-if="props.item.estado === 'calificado'" class="yellow darken-3 white--text">
@@ -93,46 +89,50 @@
     data () {
       return {
         dataTable: {
+          pagination: {
+            sortBy: 'createdAt',
+            descending: true
+          },
           search: '',
           headers: [
             {
               text: 'Nombre',
               value: 'nombre',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Tipo',
               value: 'tipo',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Materia/Paralelo',
               value: 'materia',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Fecha Creada',
               value: 'createdAt',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Fecha Tomada',
               value: 'fechaInicioTomada',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Hora Terminada',
               value: 'fechaTerminada',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Estado',
               value: 'estado',
-              class: 'header-center'
+              class: 'text-xs-center'
             },
             {
               text: 'Acción',
-              class: 'header-center'
+              class: 'text-xs-center'
             }
           ],
           loading: false,
