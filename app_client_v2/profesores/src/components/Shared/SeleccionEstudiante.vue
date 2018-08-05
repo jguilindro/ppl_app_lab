@@ -76,7 +76,7 @@
         this.$http.get(`/api/calificaciones/${idLeccion}`)
           .then((response) => {
             this.grupos = response.body.datos.filter((calificaciones) => {
-              return calificaciones.grupo !== null // Por el grupo que siempre se crea vacio...
+              return calificaciones.grupo !== null && !calificaciones.calificada // Por el grupo que siempre se crea vacio...
             })
           })
           .catch((err) => {

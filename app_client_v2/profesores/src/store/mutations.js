@@ -16,5 +16,8 @@ export default {
   },
   addLeccion (state, payload) {
     state.lecciones.push(payload)
+  },
+  setLeccionCalificar (state, payload) {
+    state.leccionCalificar = payload
   }
 }
