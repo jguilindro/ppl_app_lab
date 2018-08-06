@@ -53,18 +53,18 @@
 		  		<table class="bordered highlight responsive-table">
 		  			<thead>
 		  				<tr>
-		  					<th>Nombre</th>
-			  				<th>Tipo</th>
-			  				<th>Materia@Paralelo</th>
-                <th>Fecha creada</th>
-			  				<th>Fecha tomada</th>
-                <th>Hora terminada</th>
-			  				<th>Estado</th>
+		  					<th @click="sort('nombre')">Nombre</th>
+			  				<th @click="sort('tipo')">Tipo</th>
+			  				<th @click="sort('nombreParalelo')">Materia@Paralelo</th>
+                <th @click="sort('fechaInicio')">Fecha creada</th>
+			  				<th @click="sort('fechaInicioTomada')">Fecha tomada</th>
+                <th @click="sort('tiempoEstimado')">Hora terminada</th>
+			  				<th @click="sort('estado')">Estado</th>
 			  				<th>Acción</th>
 		  				</tr>
 		  			</thead>
 		  			<tbody>
-		  				<tr v-for="leccion in leccionesAMostrar">
+		  				<tr v-for="leccion in sortedLecciones">
 		  					<td><a :href="'./' + leccion._id" class="nombre-leccion">{{leccion.nombre}}</a></td>
 		  					<td class="text-flow">{{leccion.tipo}}</td>
 		  					<td class="text-flow">{{leccion.nombreMateria}}@{{leccion.nombreParalelo}}</td>
@@ -94,6 +94,7 @@
 		  				</tr>
 		  			</tbody>
 		  		</table>
+
 			  </section>
 			  <footer>
 			  	
