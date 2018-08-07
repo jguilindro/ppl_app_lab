@@ -72,7 +72,7 @@ if (process.env.NODE_ENV !== 'testing') {
     //     console.error('Erro en inicializar')
     //     console.error(err)
     //   })
-    }
+    // }
   })
   .catch((err) => {
     console.error(err)
