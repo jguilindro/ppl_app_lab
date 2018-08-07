@@ -1,31 +1,83 @@
+<style scoped>
+  span.chip__content {
+    text-transform: uppercase;
+  }
+  h1.display-1, h2.display-1 {
+    text-align: center;
+  }
+  .pregunta:hover {
+    background-color: rgba(192,192,192,0.4);
+    cursor: pointer;
+  }
+  .border {
+    margin-top: 0px;
+    width: 100%;
+    box-shadow: -1px 2px 5px 0px grey;
+  }
+  .border > * {
+    display:inline-block;
+    width: 100%;
+  }
+  .contenido {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+  }
+  .contenido p span {
+    font-size: 150% !important;
+  }
+  .contenido span {
+    font-size: 150% !important;
+  }
+</style>
 <template>
   <v-card v-if="leccion">
-    <v-card-title>
-      <h1 class="mx-auto display-1">{{ leccion.nombre }}</h1>
+    <v-chip class="mx-auto border text-xs-center" label :color="setColor(leccion.estado)" text-color="white">
+      <b style="right:5%; position:absolute;">{{ leccion.estado }}</b>
+    </v-chip>
+    <v-card-title primary-title>
+        <h1 class="mx-auto display-1 headline mb-0">{{ leccion.nombre | capitalizeFirst}}</h1>        
     </v-card-title>
-    <v-card-title class="pt-0">
-      <v-chip class="mx-auto" outline label :color="setColor(leccion.estado)">{{ leccion.estado }}</v-chip>
+    <p class="text-xs-center">( <i>{{ leccion.tipo | capitalizeFirst }}</i> )</p>
+    <v-card-title class="pt-0">      
     </v-card-title>
     <v-card-text>
-      <v-layout>
+      <v-layout row wrap>
         <v-flex xs6>
-          <p>Fecha prevista: {{ leccion.fechaInicio | formatoCreatedAt }}</p>
-          <p v-if="leccion.fechaInicioTomada">Inicio: {{ leccion.fechaInicioTomada | formatoHoraInicio }}</p>
-          <p v-if="leccion.fechaTerminada">Fin: {{ leccion.fechaTerminada | formatoHoraInicio }}</p>
-          <p>{{ leccion.nombreMateria }} P{{ leccion.nombreParalelo }}</p>
-          <p>Tiempo estimado: {{ leccion.tiempoEstimado }} minutos</p>
-          <p>Puntaje: {{ leccion.puntaje }} puntos</p>
-          <p>Tipo: {{ leccion.tipo | capitalizeFirst}}</p>
+          <p class="text-xs-center"><b>Fecha prevista:</b> {{ leccion.fechaInicio | formatoCreatedAt }}</p>
         </v-flex>
+        <v-flex xs6>
+          <p class="text-xs-center"><b>Tiempo estimado:</b> {{ leccion.tiempoEstimado }} minutos</p>
+        </v-flex>
+        <v-flex xs6>
+          <p v-if="leccion.fechaInicioTomada" class="text-xs-center"><b>Inicio:</b> {{ leccion.fechaInicioTomada | formatoHoraInicio }}</p>
+        </v-flex>
+        <v-flex xs6>
+          <p v-if="leccion.fechaTerminada" class="text-xs-center"><b>Fin:</b> {{ leccion.fechaTerminada | formatoHoraInicio }}</p>
+        </v-flex>
+        <v-flex xs6>
+          <p class="text-xs-center"><b>Puntaje:</b> {{ leccion.puntaje }} puntos</p>            
+        </v-flex>
+        <v-flex xs6>
+          <p class="text-xs-center"><b>{{ leccion.nombreMateria }}</b> P{{ leccion.nombreParalelo }}</p>
+        </v-flex>        
       </v-layout>
     </v-card-text>
     <v-divider></v-divider>
     <h2 class="mx-auto display-1 my-2">Preguntas</h2>
-    <section v-for="pregunta in preguntas" :key="pregunta._id">
-      <v-card-text  @click="goToPregunta(pregunta._id)" class="pregunta">
-        <h3 class="mb-2">{{ pregunta.nombre }}</h3>
-        <p v-html="pregunta.descripcion"></p>
-      </v-card-text>
+    <section v-for="pregunta in preguntas" :key="pregunta._id">      
+      <v-card
+      hover
+      raised
+      >
+      <v-card-title primary-title>
+        <h3 class="mb-2 headline mb-0">{{ pregunta.nombre }}</h3>
+      </v-card-title>
+        <v-card-text  @click="goToPregunta(pregunta._id)">
+          <p v-html="pregunta.descripcion" class="contenido"></p>
+        </v-card-text>
+      </v-card>
       <v-divider></v-divider>
     </section>
   </v-card>
@@ -87,15 +139,3 @@
     }
   }
 </script>
-<style>
-  span.chip__content {
-    text-transform: uppercase;
-  }
-  h1.display-1, h2.display-1 {
-    text-align: center;
-  }
-  .pregunta:hover {
-    background-color: rgba(192,192,192,0.4);
-    cursor: pointer;
-  }
-</style>

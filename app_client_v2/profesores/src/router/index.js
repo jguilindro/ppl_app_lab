@@ -16,6 +16,9 @@ import VerLecciones from '@/components/Lecciones/VerLecciones'
 import Leccion from '@/components/Lecciones/Leccion'
 import Estadisticas from '@/components/Lecciones/Estadisticas'
 import CrearLeccion from '@/components/Lecciones/CrearLeccion'
+// import EditarLeccion from '@/components/Lecciones/EditarLeccion'
+import SeleccionEstudiante from '@/components/Shared/SeleccionEstudiante'
+import CalificarLeccion from '@/components/Lecciones/CalificarLeccion'
 
 import BancoDePreguntas from '@/components/Preguntas/BancoDePreguntas'
 
@@ -63,6 +66,21 @@ export default new Router({
       name: 'Leccion',
       component: Leccion
     },
+    {
+      path: '/lecciones/:id/grupos',
+      name: 'SeleccionEstudiante',
+      component: SeleccionEstudiante
+    },
+    {
+      path: '/lecciones/:id/calificar/:id_grupo/:id_estudiante',
+      name: 'CalificarLeccion',
+      component: CalificarLeccion
+    },
+    /* {
+      path: '/lecciones/:id/editar',
+      name: 'EditarLeccion',
+      component: EditarLeccion
+    }, */
     {
       path: '/lecciones/:id/estadisticas',
       name: 'Estadisticas',
