@@ -10,8 +10,10 @@ if (process.env.NODE_ENV) {
   console.error('Error no escogio ninguna variable de entorno')
   process.exit(1)
 }
-mongoose.connect(urlServidor, { useMongoClient: true });
 
+// const db = mongoose.createConnection(url, { useMongoClient: true })
+
+mongoose.connect(urlServidor, { useMongoClient: true });
 const db = mongoose.connection;
 
 db.on('connected', function() {

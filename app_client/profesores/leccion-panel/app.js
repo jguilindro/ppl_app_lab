@@ -246,7 +246,7 @@ document.getElementById('pausar-leccion').disabled = true
 
 var leccion = io('/tomando_leccion');
 // var socket = io({transports: ['websocket']});
-leccion.on('tiempo restante', function(tiempo) {
+leccion.on('TIEMPO_RESTANTE', function(tiempo) {
   //console.log(tiempo)
   // document.getElementById('leccion-no-dar').disabled = true
   document.getElementById('comenzar-leccion').disabled = true

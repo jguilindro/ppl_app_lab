@@ -25,5 +25,11 @@ export default {
   },
   leccionDando (state) {
     return state.leccionDando
+  },
+  tiempoRestante (state) {
+    return state.tiempoLeccionRealtime
+  },
+  getSocket (state) {
+    return state.io
   }
 }

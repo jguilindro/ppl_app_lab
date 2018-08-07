@@ -95,6 +95,7 @@ var app = new Vue({
 				success : function(res){
 					app.lecciones 				= app.filtrarLecciones(res.datos);
 					app.leccionesAMostrar = app.filtrarLecciones(res.datos);
+          console.log(app.leccionesAMostrar)
 					app.leccionesAMostrar.sort(app.sortPorUpdate);
 					app.lecciones.sort(app.sortPorUpdate);
 				},

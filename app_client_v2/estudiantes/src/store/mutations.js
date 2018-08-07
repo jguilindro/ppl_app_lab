@@ -12,6 +12,13 @@ export default {
   SOCKET_CONNECT (state, socket) {
     state.connect = true
   },
+  SOCKET_TIEMPO_RESTANTE (state, socket) {
+    if (typeof socket !== 'string') {
+      state.tiempoLeccionRealtime = socket[0]
+    } else {
+      state.tiempoLeccionRealtime = socket
+    }
+  },
   SOCKET_EMPEZAR_LECCION (state, data) {
     state.leccionRealtime.timeout = data
     state.leccionRealtime.debeSerRedirigidoPorRealtime = true

@@ -1,13 +1,19 @@
 import Vue from 'vue'
-import leccion from './dump/data/leccion.estimacion.json'
+
+// import estimacion from './dump/data/leccion.estimacion.json'
+// import estimacionTexto from './dump/data/leccion.estimacion.texto.json'
+// import tutorial from './dump/data/leccion.tutorial.json'
+import usuario from './dump/data/usuarioDatos.json'
+
 export default {
-  async usuarioDatos ({commit}) {
-    commit('setError', null)
+  usuarioDatos ({commit}) {
     if (process.env.NODE_ENV === 'production') {
       return new Promise((resolve, reject) => {
         Vue.http.get('/api/estudiantes/leccion/datos_leccion')
           .then((paralelos) => {
             if (paralelos.body.estado) {
+              // console.log('llamado usuario datos')
+              console.log(JSON.stringify(paralelos))
               commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
               commit('setDatosEstudiante', paralelos.body.datos)
               commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
@@ -21,15 +27,14 @@ export default {
             return reject(err)
           })
       })
-    } else if (process.env.NODE_ENV === 'development') {
+    } else {
       return new Promise((resolve, reject) => {
-        let paralelos = leccion
-        // commit('setLecciones', paralelos.estudiante.lecciones)
-        commit('setDatosEstudiante', paralelos)
-        commit('setLeccionRealtimeEstadoEstudiante', paralelos.estudiante)
-        commit('setDatosMuchos', paralelos)
-        commit('setRealtimeLeccion', paralelos)
-        commit('SOCKET_USUARIO')
+        let paralelos = usuario
+        commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+        commit('setDatosEstudiante', paralelos.body.datos)
+        commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+        commit('setDatosMuchos', paralelos.body.datos)
+        commit('setRealtimeLeccion', paralelos.body.datos)
         return resolve()
       })
     }

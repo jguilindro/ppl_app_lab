@@ -29,6 +29,7 @@ const morgan = require('morgan')
 const CronJob = require('cron').CronJob
 const app = express()
 const server = require('http').Server(app)
+const cors = require('cors')
 const PORT = process.env.PORT || '8000'
 
 const db = require('./databases/mongo/mongo')
@@ -65,7 +66,7 @@ if (process.env.NODE_ENV !== 'testing') {
         //   if (error) {
         //     console.log(error)
         //   } else {
-            wsPPL.actualizar()
+            // wsPPL.actualizar()
         //   }
         // })
       }).catch((err) => {
@@ -90,6 +91,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/scripts', express.static(__dirname + '/node_modules/'))
 app.use(morgan('tiny'))
 app.use(cookieParser())
+app.use(cors())
 
 if (process.env.NODE_ENV !== 'production' || process.env.NODE_ENV === 'development:cas') { // se hace esto para aumentar el tiempo de respuesta. Se usara solo en development
   app.use(session({                         // debido a que siempre se reinicia el servidor si algo pasa

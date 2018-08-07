@@ -8,7 +8,7 @@
 export default {
   name: 'App',
   created () {
-    this.$store.dispatch('usuarioDatos')
+    this.$store.dispatch('usuarioDatos').then(() => { console.log('termino') })
   }
 }
 </script>

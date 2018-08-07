@@ -158,6 +158,7 @@ const detalleLeccion = async function (req, res) {
 
 const obtenerTodasLecciones = (req, res) => {
   LeccionModel.obtenerTodasLecciones((err, lecciones) => {
+    // console.log(lecciones)
     if (err) return respuesta.serverError(res);
     return respuesta.ok(res,lecciones);
   })

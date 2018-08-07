@@ -1,6 +1,6 @@
 <template>
   <div id="leccion">
-    <app-nav :pregunta="preguntaActualNombre" tiempo="15:55" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
+    <app-nav :pregunta="preguntaActualNombre" :tiempo="tiempoRestante" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
         v-on:pregunta="pestana($event)" :preguntaActualParent="activo" :preguntas="preguntas"
     ></app-nav>
     <v-container fluid style="min-height: 0;" grid-list-lg>
@@ -36,7 +36,6 @@
               <span class="grey--text">Tiempo Estimado: {{ pregunta.tiempoEstimado }} minutos</span>
             </v-card-actions>
           </v-card>
-          <v-divider dark inset></v-divider>
           <v-card>
             <v-card-title primary-title v-if="pregunta.respuesta" >
               <v-text-field
@@ -62,6 +61,9 @@
               <input type="file" class="filepond imagen" name="imagenes" :id="pregunta.id">
             </div>
             <v-btn class="hidden-md-and-up" block color="primary" large :disabled="pregunta.respuesta !== undefined || pregunta.subiendo" @click.native="responder(pregunta.id)">
+              Responder
+            </v-btn>
+            <v-btn class="hidden-sm-and-down" large color="primary" :disabled="pregunta.respuesta !== undefined || pregunta.subiendo" @click.native="responder(pregunta.id)">
               Responder
             </v-btn>
             <!-- botonEnviarBloqueado === index ||  -->
@@ -117,6 +119,7 @@ import FilePondPluginImageTransform from 'filepond-plugin-image-transform'
 import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import FilepondPluginImagePreview from 'filepond-plugin-image-preview'
+// import store from '@/store'
 
 import AppNav from './Nav'
 
@@ -127,7 +130,9 @@ export default {
   components: { AppNav },
   computed: {
     ...mapGetters({
-      leccion: 'leccionDando'
+      leccion: 'leccionDando',
+      tiempoRestante: 'tiempoRestante',
+      io: 'getSocket'
     }),
     preguntas () {
       return this.leccion.preguntas
@@ -137,6 +142,9 @@ export default {
     },
     cantidadPreguntas () {
       return this.leccion.preguntas.length
+    },
+    socket () {
+      return this.io
     },
     sidenav () {
       return this.side
@@ -170,7 +178,32 @@ export default {
       ponds: {}
     }
   },
+  beforeRouteEnter (to, from, next) {
+    console.log('beforeRouteEnter')
+    // let user = store.getters.nombres
+    // store.actions.usuarioDatos.then(() => {
+    //   console.log('finalizado')
+    //   next(true)
+    // })
+    // console.l
+    // next(vm => vm.setData(err, post))
+    next(vm => vm.setData())
+  },
   mounted () {
+    // return new Promise((resolve, reject) => {
+    //    this.$store.dispatch('usuarioDatos').then((datos) => {
+    //       console.log(datos)
+    //       console.log('mounted')
+    //       resolve()
+    //    })
+    // })
+    // await this.$store.dispatch('usuarioDatos')
+    // this.$store.subscribe((mutation, state) => {
+    //   this.$store.dispatch('usuarioDatos')
+    // })
+    // this.$nextTick(function () {
+    //   console.log('before mounted')
+    // })
     for (let elemento of this.$el.querySelectorAll('img')) {
       elemento.style.width = `${(1100 * screen.width) / 1280}px`
       /* eslint-disable no-new */
@@ -231,11 +264,40 @@ export default {
     }
   },
   ready () {
+    // this.$store.dispatch('usuarioDatos')
+    console.log('ready')
   },
   created () {
-    this.$store.dispatch('usuarioDatos')
+    this.$store.dispatch('usuarioDatos').then(() => { console.log('termino') })
+    // this.$http.get(`/api/estudiantes/leccion/datos_leccion`)
+    //   .then(paralelos => {
+    //     console.log(paralelos)
+    //     if (paralelos.body.estado) {
+    //       this.$store.commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+    //       this.$store.commit('setDatosEstudiante', paralelos.body.datos)
+    //       this.$store.commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+    //       this.$store.commit('setDatosMuchos', paralelos.body.datos)
+    //       this.$store.commit('setRealtimeLeccion', paralelos.body.datos)
+    //       this.$store.commit('SOCKET_USUARIO')
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log(e)
+    //     // this.errors.push(e)
+    //   })
+    // console.log(this.socket)
+    // this.$socket.on('TIEMPO_RESTANTE', function (tiempo) {
+    //   console.log(tiempo)
+    // })
+    console.log('created')
   },
   methods: {
+    setData () {
+      console.log('set data')
+    },
+    getLecciones () {
+      // this.$http.get(`/api/lecciones/${id}`)
+    },
     valido (objeto) {
       if (!objeto) {
         return false

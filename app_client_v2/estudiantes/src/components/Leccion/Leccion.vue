@@ -1,5 +1,6 @@
 <template>
   <v-card>
+    <v-progress-linear :indeterminate="esperando"></v-progress-linear>
     <!-- movil -->
     <app-nav class="hidden-sm-and-down"></app-nav>
 
@@ -39,17 +40,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import AppNav from '@/components/Nav/AppNav'
 import Pregunta from './Pregunta'
 import Seccion from './Seccion'
 
 export default {
   components: { AppNav, Pregunta, Seccion },
+  data () {
+    return {
+      leccion: {},
+      esperando: true
+    }
+  },
   computed: {
-    ...mapGetters({
-      leccion: 'leccion'
-    }),
     obtenerTipo () {
       if (this.leccion['preguntas']) {
         return 'preguntas'
@@ -58,10 +61,13 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     window.scrollTo(0, 0)
     const leccionId = this.$route.params.leccionId
-    this.$store.dispatch('leccionDatos', leccionId)
+    this.$store.dispatch('lecciones/Obtener', leccionId).then((leccion) => {
+      this.leccion = leccion
+      this.esperando = false
+    })
   }
 }
 </script>

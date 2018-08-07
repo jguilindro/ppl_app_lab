@@ -32,7 +32,7 @@ module.exports = (io) => {
         const LECCION_TOMANDO = yield obtenerLeccion(leccionId)
         const INICIO_LECCION = moment(LECCION_TOMANDO.fechaInicioTomada) // cambiar
         if (leccionR.pausada) {
-          leccion.in(paraleloId).emit('tiempo restante', 'Lección pausada')
+          leccion.in(paraleloId).emit('TIEMPO_RESTANTE', 'Lección pausada')
         } else if (pausada == 'pausada') {
           logger.trace('pausada para continuar', leccionR)
           // por comodidad para pausar tiempo lo que se hace es disminuir el tiempo de cuando empezo la leccion
@@ -60,9 +60,9 @@ module.exports = (io) => {
                 clearInterval(socket.interval)
                 leccionTerminadaSocket(socket.paralelo, leccionId)
                 leccion.in(paraleloId).emit('terminado leccion', true)
-                leccion.in(paraleloId).emit('tiempo restante', 'leccion terminada')
+                leccion.in(paraleloId).emit('TIEMPO_RESTANTE', 'leccion terminada')
               } else {
-                leccion.in(paraleloId).emit('tiempo restante', duration) // envia el tiempo a todos los estudiante de un curso
+                leccion.in(paraleloId).emit('TIEMPO_RESTANTE', duration) // envia el tiempo a todos los estudiante de un curso
               }
               delete tiempo_rest
               delete tiempo_temp
@@ -174,7 +174,7 @@ module.exports = (io) => {
         var pausada = yield pausarLeccion(datos['leccion'])
         if (pausada) { // para asegurarse que no pause dos veces
           cleanIntervals(intervals, datos['leccion'], true)
-          leccion.in(datos['paralelo']).emit('tiempo restante', 'Lección pausada')
+          leccion.in(datos['paralelo']).emit('TIEMPO_RESTANTE', 'Lección pausada')
         }
       }).catch((err) => {
         let error = new Error(err)

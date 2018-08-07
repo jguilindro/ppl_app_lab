@@ -12,7 +12,7 @@ let App = new Vue({
   },
   el: '#app',
   data: {
-    tiempo    : '',   //Tiempo restante de la lección
+    tiempo    : '',   //TIEMPO_RESTANTE de la lección
     leccion   : {},   //JSON de la lección
     preguntas : [],   //Array de preguntas de la lección
     estudiante: {},   //JSON con la info del estudiante conectado
@@ -534,7 +534,7 @@ function loading(estado, idBtn) {
   }
 }
 
-socket.on('tiempo restante', function(tiempo) {
+socket.on('TIEMPO_RESTANTE', function(tiempo) {
   App.tiempo = tiempo
 })
 
