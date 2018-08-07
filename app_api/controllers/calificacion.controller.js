@@ -487,16 +487,17 @@ const csv = function(req, res) {
 
         var documento = []
         for (var i = 0; i < leccionesParalelo.length; i++) {
+          let paralelo = leccionesParalelo[i]
           var calificaciones_leccion = yield obtenerCalificacionesPorLeccion(leccionesParalelo[i]._id)
           var calificada = leccionCalificada(leccionesParalelo[i], calificaciones_leccion)
-          if (!calificada) {
-            continue
-          }
+
+          // if (!calificada) {
+          //   continue
+          // }
           var row = []
           let paralelo_tmp = yield obtenerParaleloCsv(leccionesParalelo[i].paralelo)
           if (calificaciones_leccion.length) {
             for (var j = 0; j < calificaciones_leccion.length; j++) {
-              // console.log(calificaciones_leccion[i]);
               if (!calificaciones_leccion[j].grupo) {
                 continue
               }
@@ -509,12 +510,16 @@ const csv = function(req, res) {
               documento = documento.concat(row)
             }
             documento = ordenarPorGrupo(documento)
+            let materia =  paralelo['nombreMateria']
+            let curso = paralelo['nombreParalelo']
             if (leccionesParalelo[i].fechaTerminada) {
               var fecha = moment(leccionesParalelo[i].fechaTerminada).format('DD_MMMM_YYYY-hh_mm')
             } else {
               var fecha = moment(leccionesParalelo[i].fechaInicioTomada).add('m',leccionesParalelo[i].tiempoEstimado).format('DD_MMMM_YYYY-hh_mm')
             }
-            var worksheet =  workbook.addWorksheet(fecha, {
+            let sheetName = `${materia.replace(/ /g,'_')}_${curso.replace(/ /g,'_')}_${fecha}`
+            // console.log(`Leccion ${i}: ${sheetName}`)
+            var worksheet =  workbook.addWorksheet(sheetName, {
               pageSetup:{paperSize: 9, orientation:'landscape'}
             });
             worksheet.columns = [
