@@ -152,13 +152,13 @@ app.use('/v2', clientv2)
 app.use('/undefined', (req, res) => { res.redirect('/')})
 
 // ATT
-/*try {
+try {
   const att = require('./att/app').app
   app.use('/', att(io))
 } catch(err) {
   console.error('no tiene instalado el modulo att. Revise el README')
   console.log(err)
-}*/
+}
 
 // error page
 app.use(function(req, res, next) {
