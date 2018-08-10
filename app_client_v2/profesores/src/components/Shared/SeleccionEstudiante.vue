@@ -57,12 +57,23 @@
     watch: {
       grupoSel (value) {
         this.estudianteSel = ''
+        this.estudiantes = []
         if (value) {
-          this.estudiantes = this.grupos.find((grupo) => {
-            return grupo.grupo._id === value
-          }).participantes
-        } else {
-          this.estudiantes = []
+          if (this.$route.meta.recalificar) {
+            let participantes = this.grupos.find((grupo) => {
+              return grupo.grupo._id === value
+            }).participantes
+            let estudianteCalificado = this.grupos.find((grupo) => {
+              return grupo.grupo._id === value
+            }).estudianteCalificado
+            this.estudiantes.push(participantes.find((estudiante) => {
+              return estudiante._id === estudianteCalificado
+            }))
+          } else {
+            this.estudiantes = this.grupos.find((grupo) => {
+              return grupo.grupo._id === value
+            }).participantes
+          }
         }
       }
     },
@@ -76,7 +87,12 @@
         this.$http.get(`/api/calificaciones/${idLeccion}`)
           .then((response) => {
             this.grupos = response.body.datos.filter((calificaciones) => {
-              return calificaciones.grupo !== null && !calificaciones.calificada // Por el grupo que siempre se crea vacio...
+              const recalificar = this.$route.meta.recalificar
+              if (recalificar) {
+                return calificaciones.grupo !== null && calificaciones.calificada// Por el grupo que siempre se crea vacio...
+              } else {
+                return calificaciones.grupo !== null && !calificaciones.calificada // Por el grupo que siempre se crea vacio...
+              }
             })
           })
           .catch((err) => {
@@ -88,7 +104,14 @@
       },
       continuar () {
         const idLeccion = this.$route.params.id
-        this.$router.push(`/lecciones/${idLeccion}/calificar/${this.grupoSel}/${this.estudianteSel}`)
+        let ruta = ''
+        const recalificar = this.$route.meta.recalificar
+        if (recalificar) {
+          ruta = `/lecciones/${idLeccion}/recalificar/${this.grupoSel}/${this.estudianteSel}`
+        } else {
+          ruta = `/lecciones/${idLeccion}/calificar/${this.grupoSel}/${this.estudianteSel}`
+        }
+        this.$router.push(ruta)
       }
     }
   }

@@ -69,10 +69,22 @@ export default new Router({
     {
       path: '/lecciones/:id/grupos',
       name: 'SeleccionEstudiante',
-      component: SeleccionEstudiante
+      component: SeleccionEstudiante,
+      meta: { recalificar: false }
+    },
+    {
+      path: '/lecciones/:id/recalificar/grupos',
+      name: 'SeleccionEstudiante',
+      component: SeleccionEstudiante,
+      meta: { recalificar: true }
     },
     {
       path: '/lecciones/:id/calificar/:id_grupo/:id_estudiante',
+      name: 'CalificarLeccion',
+      component: CalificarLeccion
+    },
+    {
+      path: '/lecciones/:id/recalificar/:id_grupo/:id_estudiante',
       name: 'CalificarLeccion',
       component: CalificarLeccion
     },
