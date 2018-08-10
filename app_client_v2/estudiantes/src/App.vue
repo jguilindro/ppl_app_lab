@@ -8,7 +8,11 @@
 export default {
   name: 'App',
   created () {
-    this.$store.dispatch('usuarioDatos').then(() => { console.log('termino') })
+    this.$store.dispatch('Inicializar').catch((err) => {
+      // API de errores
+      // mostar un mensaje de error
+      console.log(err)
+    })
   }
 }
 </script>

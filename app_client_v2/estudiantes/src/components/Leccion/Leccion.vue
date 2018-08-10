@@ -64,7 +64,7 @@ export default {
   created () {
     window.scrollTo(0, 0)
     const leccionId = this.$route.params.leccionId
-    this.$store.dispatch('lecciones/Obtener', leccionId).then((leccion) => {
+    this.$store.dispatch('lecciones/obtener', leccionId).then((leccion) => {
       this.leccion = leccion
       this.esperando = false
     })

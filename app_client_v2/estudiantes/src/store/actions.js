@@ -13,13 +13,13 @@ export default {
           .then((paralelos) => {
             if (paralelos.body.estado) {
               // console.log('llamado usuario datos')
-              console.log(JSON.stringify(paralelos))
-              commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-              commit('setDatosEstudiante', paralelos.body.datos)
-              commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-              commit('setDatosMuchos', paralelos.body.datos)
-              commit('setRealtimeLeccion', paralelos.body.datos)
-              commit('SOCKET_USUARIO')
+              // console.log(JSON.stringify(paralelos))
+              // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+              // commit('setDatosEstudiante', paralelos.body.datos)
+              // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+              // commit('setDatosMuchos', paralelos.body.datos)
+              // commit('setRealtimeLeccion', paralelos.body.datos)
+              // commit('SOCKET_USUARIO')
               return resolve()
             }
           }).catch((err) => {
@@ -29,12 +29,12 @@ export default {
       })
     } else {
       return new Promise((resolve, reject) => {
-        let paralelos = usuario
-        commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-        commit('setDatosEstudiante', paralelos.body.datos)
-        commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-        commit('setDatosMuchos', paralelos.body.datos)
-        commit('setRealtimeLeccion', paralelos.body.datos)
+        // let paralelos = usuario
+        // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+        // commit('setDatosEstudiante', paralelos.body.datos)
+        // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+        // commit('setDatosMuchos', paralelos.body.datos)
+        // commit('setRealtimeLeccion', paralelos.body.datos)
         return resolve()
       })
     }
@@ -103,9 +103,6 @@ export default {
   },
   redirigirlo ({commit}) {
     commit('setRedirigir')
-  },
-  async online ({commit, dispatch}, estado) {
-    commit('setOnline', estado)
   },
   leccionDatos ({commit, state}, leccionId) {
     Vue.http.get(`/api/lecciones/detalle/${leccionId}`)

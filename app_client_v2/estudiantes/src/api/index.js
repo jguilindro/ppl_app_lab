@@ -10,3 +10,5 @@ export const responder = (respuesta) => fetch(`/api/respuestas/`, respuesta, 'PO
 
 // esta usa cookies en el back, por eso no tiene parametros
 export const ObtenerLeccionRealtimeDatos = () => fetch(`/api/estudiantes/leccion/datos_leccion`)
+
+export const ObtenerDatosIniciales = (respuesta) => fetch(`/api/estudiantes/leccion/datos_leccion`)

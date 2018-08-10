@@ -6,8 +6,7 @@ import VueSocketio from 'vue-socket.io'
 import Viewer from 'v-viewer'
 import 'vuetify/dist/vuetify.min.css'
 import 'vue-material-design-icons/styles.css'
-// import 'animate.css/animate.css'
-import App from '@/components/App'
+import App from './App'
 import router from '@/router'
 import { store } from '@/store'
 
@@ -17,6 +16,7 @@ Vue.use(Vuetify)
 Vue.use(VueSocketio, url, store)
 Vue.use(VeeValidate)
 Vue.use(Viewer)
+
 Vue.config.productionTip = false
 
 Vue.filter('fechaFormato', (value) => {
@@ -33,12 +33,9 @@ new Vue({
   components: { App },
   sockets: {
     connect () {
-      store.dispatch('setSocketUsuario', this.$socket)
-      store.commit('SOCKET_CONNECT')
-      store.dispatch('online', true)
+      store.commit('SET_SOCKET', this.$socket)
     },
     disconnect () {
-      store.dispatch('online', false)
     }
   },
   template: '<App/>'

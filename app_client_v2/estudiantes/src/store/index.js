@@ -1,70 +1,55 @@
 // NOTA IMPORTANTE
-// en los acrions se limpiara la pregunta y se le dara un formato que entiendan los componentes
-// para que al hacer el cambio de api no se cambie tanto todo
-
+// en los mutations de cada modulo se limpiran los datos cuando se cambie de api
 // se debe documentar lo que se ENVIARA al back
 // y lo que recibira el FRONT
 // siendo lo mas declarativo posible para hacer los mas facil posible el cambio de api
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VueResource from 'vue-resource'
 
-import mutations from './mutations'
-import actions from './actions'
+import { ObtenerDatosIniciales } from '@/api'
 import getters from './getters'
 import LeccionesModule from './modules/lecciones'
+import EstudianteModule from './modules/estudiante'
 
 Vue.use(Vuex)
-Vue.use(VueResource)
 
 export const store = new Vuex.Store({
   modules: {
-    lecciones: LeccionesModule
+    lecciones: LeccionesModule,
+    estudiante: EstudianteModule
   },
   state: {
     online: true,
-    io: {},
-
-    // no se usan
-    error: null,
-    tiempoLeccionRealtime: 0,
-    // datos estudiante
-    lecciones: {},
-    estudiante: {
-      correo: '',
-      nombres: '',
-      apellidos: '',
-      id: '',
-      grupoId: '',
-      paraleloId: ''
-    },
-    tmp: null,
-    usuarioDatos: {
-    }, // usado para una parte del realtime que se hace un emit, pero en realidad no tiene ninguna utilidad importante en el front
-    muchos: {},
-    // REALTIME
-
-    connect: false,
-    leccionRealtime: {
-      estado: '',
-      leccionYaComenzo: false,
-      paraleloDandoLeccion: false,
-      yaIngresoCodigo: false,
-      timeout: -1,
-      estudiateFueAnadidoAParalelo: false,
-      debeSerRedirigidoPorRealtime: false,
-      fueRedirigido: false
-    },
-    leccionDando: {
-      nombre: '',
-      estado: '',
-      preguntas: [],
-      leccionId: null
-    }
+    io: {}
   },
 
-  mutations,
-  actions,
+  mutations: {
+    SET_SOCKET (state, socket) {
+      state.io = socket
+    },
+    SOCKET_DISCONNECT (state) {
+      state.io = null
+      state.online = false
+    },
+    SOCKET_CONNECT (state, socket) {
+      state.online = true
+    }
+  },
+  actions: {
+    Inicializar ({commit}) {
+      return new Promise((resolve, reject) => {
+        ObtenerDatosIniciales().then((resp) => {
+          let lecciones = resp.estudiante.lecciones
+          let estudiante = resp.estudiante
+          commit('estudiante/SET_ESTUDIANTE', estudiante)
+          commit('lecciones/SET_LECCIONES', lecciones)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    }
+  },
   getters
 })

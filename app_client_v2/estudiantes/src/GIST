@@ -5,3 +5,78 @@ vuetify-chat
 /vue-bulma/vue-admin
 vue-element-admin
 /bailicangdu/vue2-manage
+https://codepen.io/ethiel97/pen/rmBZwM
+
+    // // no se usan
+    // error: null,
+    // tiempoLeccionRealtime: 0,
+    // // datos estudiante
+    // lecciones: {},
+    // estudiante: {
+    //   correo: '',
+    //   nombres: '',
+    //   apellidos: '',
+    //   id: '',
+    //   grupoId: '',
+    //   paraleloId: ''
+    // },
+    // tmp: null,
+    // usuarioDatos: {
+    // }, // usado para una parte del realtime que se hace un emit, pero en realidad no tiene ninguna utilidad importante en el front
+    // muchos: {},
+    // // REALTIME
+
+    // connect: false,
+    // leccionRealtime: {
+    //   estado: '',
+    //   leccionYaComenzo: false,
+    //   paraleloDandoLeccion: false,
+    //   yaIngresoCodigo: false,
+    //   timeout: -1,
+    //   estudiateFueAnadidoAParalelo: false,
+    //   debeSerRedirigidoPorRealtime: false,
+    //   fueRedirigido: false
+    // },
+    // leccionDando: {
+    //   nombre: '',
+    //   estado: '',
+    //   preguntas: [],
+    //   leccionId: null
+    // }
+
+  created () {
+    this.$store.dispatch('usuarioDatos').then(() => { console.log('termino') })
+  }
+
+      // if (process.env.NODE_ENV === 'production') {
+      //   return new Promise((resolve, reject) => {
+      //     Vue.http.get('/api/estudiantes/leccion/datos_leccion')
+      //       .then((resp) => {
+      //         if (resp.body.estado) {
+      //           console.log(resp.body)
+      //           // console.log('llamado usuario datos')
+      //           // console.log(JSON.stringify(paralelos))
+      //           // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+      //           // commit('setDatosEstudiante', paralelos.body.datos)
+      //           // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+      //           // commit('setDatosMuchos', paralelos.body.datos)
+      //           // commit('setRealtimeLeccion', paralelos.body.datos)
+      //           // commit('SOCKET_USUARIO')
+      //           return resolve()
+      //         }
+      //       }).catch((err) => {
+      //         commit('setError', err)
+      //         return reject(err)
+      //       })
+      //   })
+      // } else {
+      //   return new Promise((resolve, reject) => {
+      //     // let paralelos = usuario
+      //     // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
+      //     // commit('setDatosEstudiante', paralelos.body.datos)
+      //     // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
+      //     // commit('setDatosMuchos', paralelos.body.datos)
+      //     // commit('setRealtimeLeccion', paralelos.body.datos)
+      //     return resolve()
+      //   })
+      // }

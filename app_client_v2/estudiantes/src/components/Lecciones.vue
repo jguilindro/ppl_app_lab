@@ -22,16 +22,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import router from '@/router'
 import AppNav from '@/components/Nav/AppNav'
 
 export default {
   components: { AppNav },
   computed: {
-    ...mapGetters({
-      lecciones: 'lecciones'
-    })
+    lecciones () {
+      return this.$store.getters['lecciones/dadas']
+    }
   },
   methods: {
     irLeccion (leccionId, calificacion) {
@@ -39,9 +38,6 @@ export default {
         router.push({name: 'Leccion', params: { leccionId }})
       }
     }
-  },
-  mounted () {
-    this.$store.dispatch('limpiarLeccion')
   }
 }
 </script>

@@ -2,16 +2,6 @@ import _ from 'lodash'
 import moment from 'moment'
 
 export default {
-  setSocket (state, socket) {
-    state.io = socket
-  },
-  SOCKET_DISCONNECT (state) {
-    state.io = null
-    state.connect = false
-  },
-  SOCKET_CONNECT (state, socket) {
-    state.connect = true
-  },
   SOCKET_TIEMPO_RESTANTE (state, socket) {
     if (typeof socket !== 'string') {
       state.tiempoLeccionRealtime = socket[0]
@@ -122,9 +112,6 @@ export default {
   },
   setRedirigir (state) {
     state.leccionRealtime.fueRedirigido = true
-  },
-  setOnline (state, valor) {
-    state.online = valor
   },
   setLeccion (state, leccion) {
     state.leccion = {...state.leccion, ...leccion}

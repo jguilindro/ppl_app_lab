@@ -1,3 +1,10 @@
+<!--
+  COLORES ESPOL
+  #ebebeb blanco
+  #001a43 azul
+  #F5b400 dorado
+  #8da9c6 logo
+-->
 <template>
   <div id="app-nav">
     <v-navigation-drawer temporary v-model="sideNav" app >
@@ -10,8 +17,8 @@
             </v-avatar>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title> {{ nombresEstudiante }}</v-list-tile-title>
-              <v-list-tile-sub-title> {{ correoEstudiante }} </v-list-tile-sub-title>
+              <v-list-tile-title> {{ nombres }}</v-list-tile-title>
+              <v-list-tile-sub-title> {{ correo }} </v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -40,13 +47,6 @@
       <v-toolbar-title class="white--text">PPL ASSESSMENT</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar >
-    <!--
-      COLORES ESPOL
-      #ebebeb blanco
-      #001a43 azul
-      #F5b400 dorado
-      #8da9c6 logo
-    -->
     <!-- WEB -->
     <v-toolbar app color="blue darken-4" class="hidden-sm-and-down">
       <v-toolbar-title class="white--text">PPL ASSESSMENT</v-toolbar-title>
@@ -68,16 +68,16 @@
       </transition>
       <v-btn class="hidden-md-and-up" color="amber white--text" dark large v-show="estadoLeccion === 'redirigirlo-directamente'">INGRESAR A LECCIÓN</v-btn>
       <v-btn class="hidden-md-and-up" color="amber white--text" @click="ingresarCodigo()"  dark large v-show="estadoLeccion !== 'redirigirlo-directamente' && esRutaIngresarCodigo">INGRESAR CÓDIGO</v-btn>
-
     </v-content>
   </div>
 </template>
 
 <script>
 
-import { mapGetters } from 'vuex'
 import router from '@/router'
 
+// Para pruebas en local, como todavia no esta el single page de estudiantes leccion realtime
+// se usa para pruebas locales
 let menuItems = [{
   title: 'Ingresar Código',
   link: '/ingresarCodigo'
@@ -97,13 +97,22 @@ if (process.env.NODE_ENV === 'development') {
 export default {
   name: 'app-nav',
   computed: {
-    ...mapGetters({
-      nombresEstudiante: 'nombres',
-      inicialesEstudiante: 'iniciales',
-      correoEstudiante: 'correo',
-      estadoLeccion: 'estadoRealtime',
-      online: 'online'
-    }),
+    nombres () {
+      return this.$store.getters['estudiante/nombres']
+    },
+    correo () {
+      return this.$store.getters['estudiante/correo']
+    },
+    iniciales () {
+      return this.$store.getters['estudiante/iniciales']
+    },
+    online () {
+      return this.$store.getters['estaOnline']
+    },
+    estadoLeccion () {
+      // TODO: anadir accion
+      return 'dando-leccion'
+    },
     esRutaIngresarCodigo () {
       return this.$route.path !== '/ingresarCodigo'
     }
@@ -114,9 +123,6 @@ export default {
       menuItems
     }
   },
-  created () {
-    this.$store.dispatch('setSocketUsuario', this.$socket)
-  },
   methods: {
     logout () {
       window.location = '/api/session/logout'
@@ -126,15 +132,6 @@ export default {
     },
     ingresarCodigo () {
       router.push({name: 'IngresarCodigo'})
-    },
-    back () {
-      router.go(-1)
-    },
-    clearImageLocal (urlDevelopment) {
-      if (process.env.NODE_ENV === 'production') {
-        return urlDevelopment.split('static')['1'].substring(1)
-      }
-      return urlDevelopment
     }
   }
 }
