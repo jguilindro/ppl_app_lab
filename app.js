@@ -37,42 +37,42 @@ const db = require('./databases/mongo/mongo')
 if (process.env.NODE_ENV !== 'testing') {
   db.Conectar(urlServidor)
   .then(() => {
-    const WSPPL = require('./web_service/index.js')
-    const dbWebService = require('./databases/webService.db')
-    const { exec } = require('child_process')
-    const rutaScriptBackup = path.join(__dirname, 'scripts', 'mongoBackup.sh')
-    if (process.env.NODE_ENV === 'production') {
-      const wsPPL = WSPPL({ db: dbWebService, local: false })
-      wsPPL.inicializar().then(() => {
-        new CronJob('00 00 23 * * *', function() {
-          exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
-            if (error) {
-              console.error(error)
-            } else {
-              // wsPPL.actualizar()
-            }
-          })
-        }, null, true, 'America/Guayaquil')
-      }).catch((err) => {
-        console.error('Erro en inicializar')
-        console.error(err)
-      })
-    } else {
-      const dump = require('./web_service/dump')
-      const wsPPL = WSPPL({ db: dbWebService, anio: '2018', termino: '1s', local: false, dump })
-      wsPPL.inicializar().then((resp) => {
-        // exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
-        //   if (error) {
-        //     console.log(error)
-        //   } else {
-        //     wsPPL.actualizar()
-        //   }
-        // })
-      }).catch((err) => {
-        console.error('Erro en inicializar')
-        console.error(err)
-      })
-    }
+    // const WSPPL = require('./web_service/index.js')
+    // const dbWebService = require('./databases/webService.db')
+    // const { exec } = require('child_process')
+    // const rutaScriptBackup = path.join(__dirname, 'scripts', 'mongoBackup.sh')
+    // if (process.env.NODE_ENV === 'production') {
+    //   const wsPPL = WSPPL({ db: dbWebService, local: false })
+    //   wsPPL.inicializar().then(() => {
+    //     new CronJob('00 00 23 * * *', function() {
+    //       exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
+    //         if (error) {
+    //           console.error(error)
+    //         } else {
+    //           // wsPPL.actualizar()
+    //         }
+    //       })
+    //     }, null, true, 'America/Guayaquil')
+    //   }).catch((err) => {
+    //     console.error('Erro en inicializar')
+    //     console.error(err)
+    //   })
+    // } else {
+    //   const dump = require('./web_service/dump')
+    //   const wsPPL = WSPPL({ db: dbWebService, anio: '2018', termino: '1s', local: false, dump })
+    //   wsPPL.inicializar().then((resp) => {
+    //     // exec(`sh ${rutaScriptBackup}`, function (error, stdout, stderr) {
+    //     //   if (error) {
+    //     //     console.log(error)
+    //     //   } else {
+    //     //     wsPPL.actualizar()
+    //     //   }
+    //     // })
+    //   }).catch((err) => {
+    //     console.error('Erro en inicializar')
+    //     console.error(err)
+    //   })
+    // }
   })
   .catch((err) => {
     console.error(err)

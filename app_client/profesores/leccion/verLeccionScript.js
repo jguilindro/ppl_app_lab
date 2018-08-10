@@ -22,9 +22,18 @@ var app = new Vue({
 		profesorConectado: '',
 		anioActual: '',
 		paraleloId: '',
-		calificaciones: []
+		calificaciones: [],
+		sortActual:'nombre',
+  		dirSortActual:'asc'
 	},
 	methods: {
+		sort:function(s) {
+		    //if s == current sort, reverse
+		    if(s === this.sortActual) {
+		      this.dirSortActual = this.dirSortActual==='asc'?'desc':'asc';
+		    }
+		    this.sortActual = s;
+		  },
 		inicializarMaterialize: function(){
 			$('.button-collapse').sideNav();
 			$(".dropdown-button").dropdown({ hover: false });
@@ -339,9 +348,21 @@ var app = new Vue({
 
 				});
 
-		},
+		}
 
-	}
+	},
+	computed:{
+  sortedLecciones:function() {
+    return this.leccionesAMostrar.sort((a,b) => {
+      let modifier = 1;
+      if(this.dirSortActual === 'desc') modifier = -1;
+      if(a[this.sortActual] < b[this.sortActual]) return -1 * modifier;
+      if(a[this.sortActual] > b[this.sortActual]) return 1 * modifier;
+      return 0;
+    });
+  }
+}
+
 });
 
 //Yo lo hice #khemas :v
