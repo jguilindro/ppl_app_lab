@@ -3,42 +3,9 @@ import Vue from 'vue'
 // import estimacion from './dump/data/leccion.estimacion.json'
 // import estimacionTexto from './dump/data/leccion.estimacion.texto.json'
 // import tutorial from './dump/data/leccion.tutorial.json'
-import usuario from './dump/data/usuarioDatos.json'
+// import usuario from './dump/data/usuarioDatos.json'
 
 export default {
-  usuarioDatos ({commit}) {
-    if (process.env.NODE_ENV === 'production') {
-      return new Promise((resolve, reject) => {
-        Vue.http.get('/api/estudiantes/leccion/datos_leccion')
-          .then((paralelos) => {
-            if (paralelos.body.estado) {
-              // console.log('llamado usuario datos')
-              // console.log(JSON.stringify(paralelos))
-              // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-              // commit('setDatosEstudiante', paralelos.body.datos)
-              // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-              // commit('setDatosMuchos', paralelos.body.datos)
-              // commit('setRealtimeLeccion', paralelos.body.datos)
-              // commit('SOCKET_USUARIO')
-              return resolve()
-            }
-          }).catch((err) => {
-            commit('setError', err)
-            return reject(err)
-          })
-      })
-    } else {
-      return new Promise((resolve, reject) => {
-        // let paralelos = usuario
-        // commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-        // commit('setDatosEstudiante', paralelos.body.datos)
-        // commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-        // commit('setDatosMuchos', paralelos.body.datos)
-        // commit('setRealtimeLeccion', paralelos.body.datos)
-        return resolve()
-      })
-    }
-  },
   verificarCodigo ({commit, dispatch}, codigo) {
     commit('setError', null)
     dispatch('usuarioDatos')
@@ -62,22 +29,6 @@ export default {
   async obtenerParaleloUsuario ({commit, state, dispatch}) {
     commit('setError', null)
     await dispatch('usuarioDatos')
-    Vue.http.get(`/api/paralelos/estudiante/${state.estudiante.id}`)
-      .then((response) => {
-        if (response.body.estado) {
-          commit('setLeccionYaComenzo', response.body.datos.leccionYaComenzo)
-          commit('setParaleloDandoLeccion', response.body.datos.dandoLeccion)
-          commit('accionesLeccion')
-        } else {
-          commit('setError', response.body)
-        }
-      })
-      .catch((err) => {
-        commit('setError', err)
-      })
-  },
-  obtenerParaleloDatos ({commit, state}) {
-    commit('setError', null)
     Vue.http.get(`/api/paralelos/estudiante/${state.estudiante.id}`)
       .then((response) => {
         if (response.body.estado) {

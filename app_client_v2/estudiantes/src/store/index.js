@@ -7,17 +7,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { ObtenerDatosIniciales } from '@/api'
+import { ObtenerDatosIniciales, ObtenerEstadosRealtime } from '@/api'
 import getters from './getters'
 import LeccionesModule from './modules/lecciones'
 import EstudianteModule from './modules/estudiante'
+import RealtimeModule from './modules/realtime'
 
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   modules: {
     lecciones: LeccionesModule,
-    estudiante: EstudianteModule
+    estudiante: EstudianteModule,
+    realtime: RealtimeModule
   },
   state: {
     online: true,
@@ -37,13 +39,31 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    Inicializar ({commit}) {
+    Inicializar ({commit, dispatch}) {
       return new Promise((resolve, reject) => {
         ObtenerDatosIniciales().then((resp) => {
+          let estudianteId = resp.estudiante._id
           let lecciones = resp.estudiante.lecciones
+          let leccionRealtime = resp.leccion
           let estudiante = resp.estudiante
           commit('estudiante/SET_ESTUDIANTE', estudiante)
           commit('lecciones/SET_LECCIONES', lecciones)
+          commit('realtime/SET_ESTADO_ESTUDIANTE', estudiante)
+          commit('realtime/SET_LECCION', leccionRealtime)
+          return estudianteId
+        }).then((estudianteId) => {
+          dispatch('ObtenerDatosRealtime', estudianteId)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    ObtenerDatosRealtime ({commit, state}, estudianteId) {
+      return new Promise((resolve, reject) => {
+        ObtenerEstadosRealtime(estudianteId).then(response => {
+          commit('realtime/SET_LECCION_ESTADO', response)
+          commit('realtime/SET_ESTADO')
           resolve()
         }).catch(error => {
           reject(error)

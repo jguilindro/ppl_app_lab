@@ -53,7 +53,6 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import AppNav from '@/components/Nav/AppNav'
 import { store } from '@/store'
 
@@ -63,21 +62,24 @@ export default {
     validator: 'new'
   },
   created () {
-    this.$store.dispatch('obtenerParaleloUsuario')
-    this.$validator.localize('es', this.dictionary)
-    if (this.estadoLeccion === 'redirigirlo-directamente') {
-      if (process.env.NODE_ENV === 'production') {
-        window.location.href = '/estudiantes/leccion'
-      } else {
-        store.dispatch('redirigirlo')
+    this.$store.dispatch('Inicializar').then(() => {
+      this.$validator.localize('es', this.dictionary)
+      if (this.estadoLeccion === 'redirigirlo-directamente') {
+        if (process.env.NODE_ENV === 'production') {
+          window.location.href = '/estudiantes/leccion'
+        } else {
+          // store.dispatch('redirigirlo')
+        }
       }
-    }
+    })
   },
   computed: {
-    ...mapGetters({
-      estadoLeccion: 'estadoRealtime',
-      online: 'online'
-    })
+    estadoLeccion () {
+      return this.$store.getters['realtime/estado']
+    },
+    online () {
+      return this.$store.getters['estaOnline']
+    }
   },
   data () {
     return {
@@ -115,7 +117,7 @@ export default {
           if (process.env.NODE_ENV === 'production') {
             window.location.href = '/estudiantes/leccion'
           } else {
-            store.dispatch('redirigirlo')
+            // store.dispatch('redirigirlo')
           }
         }
       } else {
@@ -136,7 +138,7 @@ export default {
         if (process.env.NODE_ENV === 'production') {
           window.location.href = '/estudiantes/leccion'
         } else {
-          store.dispatch('redirigirlo')
+          // store.dispatch('redirigirlo')
         }
       }
     }

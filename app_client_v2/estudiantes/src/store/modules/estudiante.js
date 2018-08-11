@@ -3,13 +3,15 @@ const EstudianteModule = {
   state: {
     nombres: '',
     apellidos: '',
-    correo: ''
+    correo: '',
+    id: ''
   },
   mutations: {
     SET_ESTUDIANTE (state, payload) {
       state.nombres = payload.nombres
       state.apellidos = payload.apellidos
       state.correo = payload.correo
+      state.id = payload._id
     }
   },
   getters: {
@@ -21,6 +23,9 @@ const EstudianteModule = {
     },
     iniciales (state) {
       return `${state.nombres.charAt(0)}${state.apellidos.charAt(0)}`
+    },
+    id (state) {
+      return state.id
     }
   }
 }
