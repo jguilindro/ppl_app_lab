@@ -11,6 +11,8 @@
                 label="Código Lección"
                 v-model="codigo"
                 :counter="7"
+                :autofocus="true"
+                :max="7"
                 clearable
                 :error-messages="errors.collect('codigo')"
                 v-validate="'required|max:7|numeric'"
@@ -61,17 +63,8 @@ export default {
   $_veeValidate: {
     validator: 'new'
   },
-  created () {
-    this.$store.dispatch('Inicializar').then(() => {
-      this.$validator.localize('es', this.dictionary)
-      if (this.estadoLeccion === 'redirigirlo-directamente') {
-        if (process.env.NODE_ENV === 'production') {
-          window.location.href = '/estudiantes/leccion'
-        } else {
-          // store.dispatch('redirigirlo')
-        }
-      }
-    })
+  created () { // al iniciar debe poder redirigirlo
+    this.$validator.localize('es', this.dictionary)
   },
   computed: {
     estadoLeccion () {
@@ -91,7 +84,7 @@ export default {
         custom: {
           codigo: {
             required: () => 'El código no puede estar vacío',
-            número: () => 'Deben ser números',
+            pattern: () => 'Deben ser números',
             max: 'El código debe tener 7 números',
             min: 'El código debe tener 7 números'
           }
@@ -105,7 +98,7 @@ export default {
       let esValido = await this.$validator.validateAll()
       if (esValido) {
         self.snackbar = false
-        await store.dispatch('verificarCodigo', this.codigo)
+        await store.dispatch('realtime/Codigo', this.codigo)
         let { estadoRealtime } = self.$store.getters
         if (estadoRealtime === 'paralelo-no-esta-dando-leccion') {
           self.snackbar = true
@@ -117,7 +110,7 @@ export default {
           if (process.env.NODE_ENV === 'production') {
             window.location.href = '/estudiantes/leccion'
           } else {
-            // store.dispatch('redirigirlo')
+            this.$router.push('/leccionRealtime')
           }
         }
       } else {
@@ -138,7 +131,7 @@ export default {
         if (process.env.NODE_ENV === 'production') {
           window.location.href = '/estudiantes/leccion'
         } else {
-          // store.dispatch('redirigirlo')
+          this.$router.push('/leccionRealtime')
         }
       }
     }

@@ -60,14 +60,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   name: 'app-nav',
   props: ['pregunta', 'tiempo', 'leccionNombre', 'cantidadPreguntas', 'preguntaActualParent', 'preguntas'],
   computed: {
-    ...mapGetters({
-      online: 'online'
-    }),
+    online () {
+      return this.$store.getters['estaOnline']
+    },
     cantidadNoContestadas () {
       let cantidad = 0
       for (let pregunta of this.preguntas) {

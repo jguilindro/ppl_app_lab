@@ -119,14 +119,6 @@ export default {
   setLeccionLimpiar (state) {
     state.leccion = {}
   },
-  setSubiendoImagen (state, preguntaId) {
-    let index = state.leccionDando.preguntas.findIndex((obj) => obj.id === preguntaId)
-    state.leccionDando.preguntas[index].subiendo = true
-  },
-  setTerminoSubirImagen (state, preguntaId) {
-    let index = state.leccionDando.preguntas.findIndex((obj) => obj.id === preguntaId)
-    state.leccionDando.preguntas[index].subiendo = false
-  },
   setRealtimeLeccion (state, datos) {
     try {
       // state.leccionDando.grupoId = datos.grupo._id

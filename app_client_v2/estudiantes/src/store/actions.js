@@ -77,35 +77,6 @@ export default {
   terminoSubirImagen ({commit}, preguntaId) {
     commit('setTerminoSubirImagen', preguntaId)
   },
-  responder ({commit, state}, datos) {
-    let respuesta = {
-      estudiante: state.estudiante.id,
-      leccion: state.leccionDando.leccionId,
-      paralelo: state.estudiante.paraleloId,
-      grupo: state.estudiante.grupoId,
-      pregunta: datos.preguntaId,
-      imagenes: datos.imagen,
-      respuesta: datos.respuesta,
-      contestado: true,
-      arraySubrespuestas: `[]`
-    }
-    return new Promise((resolve, reject) => {
-      Vue.http.post(`/api/respuestas/`, respuesta)
-        .then((response) => {
-          if (response.body.estado) {
-            commit('setRespuestaLocal', { preguntaId: datos.preguntaId, imagen: datos.imagen, respuesta: datos.respuesta, local: datos.local })
-            resolve(true)
-          } else {
-            commit('setError', response.body)
-            reject(new Error(false))
-          }
-        })
-        .catch((err) => {
-          commit('setError', err)
-          reject(err)
-        })
-    })
-  },
   getImagen ({commit, state}, url) {
     Vue.http.get(url)
       .then((response) => {

@@ -1,4 +1,4 @@
-import { VerificarCodigo } from '@/api'
+import { VerificarCodigo, Responder } from '@/api'
 import _ from 'lodash'
 
 const realtimeModule = {
@@ -13,18 +13,48 @@ const realtimeModule = {
       empezo: false
     },
     codigo: '',
+    tiempo: '',
     estado: 'paralelo-no-esta-dando-leccion'
   },
   actions: {
     Codigo ({commit, dispatch}, codigo) {
       return new Promise((resolve, reject) => {
         VerificarCodigo(codigo).then((resp) => {
-          console.log(resp)
           commit('SET_ESTADOS', resp)
           commit('SET_ESTADO')
+          resolve()
         }).catch(error => {
           reject(error)
         })
+      })
+    },
+    ResponderPregunta ({commit}, datos) {
+      let respuesta = {
+        estudiante: datos.estudianteId,
+        leccion: datos.leccionId,
+        paralelo: datos.paraleloId,
+        grupo: datos.grupoId,
+        pregunta: datos.preguntaId,
+        imagenes: datos.imagen,
+        respuesta: datos.respuesta,
+        contestado: true,
+        arraySubrespuestas: `[]`
+      }
+      return new Promise((resolve, reject) => {
+        Responder(respuesta)
+          .then((response) => {
+            if (response.body.estado) {
+              commit('SET_RESPUESTA', { preguntaId: respuesta.preguntaId, imagen: respuesta.imagen, respuesta: respuesta.respuesta, local: datos.local })
+              resolve(true)
+            } else {
+              // commit('setError', response.body)
+              reject(new Error(false))
+            }
+          })
+          .catch((err) => {
+            // commit('setError', err)
+            reject(err)
+          })
       })
     }
   },
@@ -41,6 +71,9 @@ const realtimeModule = {
       state.estudiante.ingresoCodigo = payload.codigoLeccion
       state.leccionEstado.empezoTiempo = payload.leccionYaComenzo
       state.leccionEstado.empezo = payload.paraleloDandoLeccion
+    },
+    SET_TIEMPO (state, payload) {
+      state.tiempo = payload
     },
     SET_ESTADO (state) {
       // ingresoCodigo  empezo empezoTiempo
@@ -67,7 +100,7 @@ const realtimeModule = {
     SET_LECCION (state, payload) {
       // TODO: debe editarse para coger las preguntas con seccion
       try {
-        state.leccion.leccionId = payload._id
+        state.leccion.id = payload._id
         state.leccion.nombre = payload.nombre
         state.leccion.estado = payload.estado
         let preguntasOrdenadas = _.sortBy(payload.preguntas, (o) => {
@@ -104,13 +137,33 @@ const realtimeModule = {
         }
         state.leccion.preguntas = preguntasLimpiada
       } catch (err) {
-        console.log(new Error(err))
+        state.leccion = {}
+        console.log(new Error('No se esta dando leccion'))
       }
+    },
+    SET_SUBIENDO_IMAGEN (state, preguntaId) {
+      let index = state.leccion.preguntas.findIndex((obj) => obj.id === preguntaId)
+      state.leccion.preguntas[index].subiendo = true
+    },
+    SET_TERMINO_SUBIR_IMAGEN (state, preguntaId) {
+      let index = state.leccion.preguntas.findIndex((obj) => obj.id === preguntaId)
+      state.leccion.preguntas[index].subiendo = false
+    },
+    SET_RESPUESTA (state, { preguntaId, imagen, respuesta, local }) {
+      let resp = { preguntaId, imagen, respuesta, local }
+      let index = state.leccion.preguntas.findIndex((obj) => obj.id === preguntaId)
+      state.leccion.preguntas[index].respuesta = resp
     }
   },
   getters: {
     estado (store) {
       return store.estado
+    },
+    leccion (store) {
+      return store.leccion
+    },
+    tiempo (store) {
+      return store.tiempo
     }
   }
 }

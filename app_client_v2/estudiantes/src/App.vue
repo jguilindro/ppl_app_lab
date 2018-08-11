@@ -6,14 +6,7 @@
 
 <script>
 export default {
-  name: 'App',
-  created () {
-    this.$store.dispatch('Inicializar').catch((err) => {
-      // API de errores
-      // mostar un mensaje de error
-      console.log(err)
-    })
-  }
+  name: 'App'
 }
 </script>
 

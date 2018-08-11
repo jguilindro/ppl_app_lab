@@ -12,6 +12,14 @@ import getters from './getters'
 import LeccionesModule from './modules/lecciones'
 import EstudianteModule from './modules/estudiante'
 import RealtimeModule from './modules/realtime'
+import socketPlugin from './plugins/socket'
+import io from 'socket.io-client'
+let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
+const socket = io(url, {
+  'reconnect': true,
+  'forceNew': true
+})
+const socketPlg = socketPlugin(socket)
 
 Vue.use(Vuex)
 
@@ -21,14 +29,22 @@ export const store = new Vuex.Store({
     estudiante: EstudianteModule,
     realtime: RealtimeModule
   },
+  plugins: [socketPlg],
   state: {
     online: true,
     io: {}
   },
-
   mutations: {
     SET_SOCKET (state, socket) {
       state.io = socket
+    },
+    SOCKET_TIEMPO_RESTANTE (state, socket) { // FIX
+      console.log(socket)
+      if (typeof socket !== 'string') {
+        state.tiempoLeccionRealtime = socket[0]
+      } else {
+        state.tiempoLeccionRealtime = socket
+      }
     },
     SOCKET_DISCONNECT (state) {
       state.io = null
@@ -36,6 +52,13 @@ export const store = new Vuex.Store({
     },
     SOCKET_CONNECT (state, socket) {
       state.online = true
+    },
+    SOCKET_EMPEZAR_LECCION (state, data) { // FIX
+      console.log(data)
+      let estado = state.realtime.estado
+      if (estado === 'tiene-que-esperar-a-que-empiece-la-leccion') {
+        state.realtime.estado = 'redirigirlo-directamente'
+      }
     }
   },
   actions: {
@@ -46,14 +69,19 @@ export const store = new Vuex.Store({
           let lecciones = resp.estudiante.lecciones
           let leccionRealtime = resp.leccion
           let estudiante = resp.estudiante
+          let grupo = resp.grupo
+          let paralelo = resp.paralelo
           commit('estudiante/SET_ESTUDIANTE', estudiante)
+          commit('estudiante/SET_GRUPO', grupo)
+          commit('estudiante/SET_PARALELO', paralelo)
           commit('lecciones/SET_LECCIONES', lecciones)
           commit('realtime/SET_ESTADO_ESTUDIANTE', estudiante)
           commit('realtime/SET_LECCION', leccionRealtime)
           return estudianteId
         }).then((estudianteId) => {
-          dispatch('ObtenerDatosRealtime', estudianteId)
-          resolve()
+          dispatch('ObtenerDatosRealtime', estudianteId).then(() => {
+            resolve()
+          })
         }).catch(error => {
           reject(error)
         })

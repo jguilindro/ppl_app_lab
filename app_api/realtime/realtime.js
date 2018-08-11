@@ -201,9 +201,10 @@ module.exports = (io) => {
     =======================
     */
     socket.on('usuario estudiante', function(usuario) {
+      console.log(usuario)
         co(function* () {
-          let estudianteId = usuario['_id']
-          let leccionId = usuario['leccionRealtimeId']
+          let estudianteId = usuario['estudianteId']
+          let leccionId = usuario['leccionId']
           let paraleloId = usuario['paraleloId']
           socket.join(paraleloId)
           if (leccionId) {

@@ -1,6 +1,6 @@
 <template>
   <div id="leccion">
-    <app-nav :pregunta="preguntaActualNombre" :tiempo="tiempoRestante" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
+    <app-nav :pregunta="preguntaActualNombre" :tiempo="tiempo" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
         v-on:pregunta="pestana($event)" :preguntaActualParent="activo" :preguntas="preguntas"
     ></app-nav>
     <v-container fluid style="min-height: 0;" grid-list-lg>
@@ -37,6 +37,12 @@
             </v-card-actions>
           </v-card>
           <v-card>
+            <v-card-media height="100px"  v-if="valido(pregunta.respuesta)" >
+              <img :src="pregunta.respuesta.imagen" :id="`imagen_${pregunta.id}`">
+            </v-card-media>
+            <div v-if="!valido(pregunta.respuesta)">
+              <input type="file" class="filepond imagen" name="imagenes" :id="pregunta.id">
+            </div>
             <v-card-title primary-title v-if="pregunta.respuesta" >
               <v-text-field
                 name="input-4-1"
@@ -54,23 +60,12 @@
                 :id="`respuesta_${pregunta.id}`"
               ></v-text-field>
             </v-card-title>
-            <v-card-media height="100px"  v-if="valido(pregunta.respuesta)" > <!-- style="width: 50%; margin: 0 auto;"   && pregunta.respuesta.imagen-->
-              <img :src="pregunta.respuesta.imagen" :id="`imagen_${pregunta.id}`">
-            </v-card-media>
-            <div v-if="!valido(pregunta.respuesta)">
-              <input type="file" class="filepond imagen" name="imagenes" :id="pregunta.id">
-            </div>
             <v-btn class="hidden-md-and-up" block color="primary" large :disabled="pregunta.respuesta !== undefined || pregunta.subiendo" @click.native="responder(pregunta.id)">
               Responder
             </v-btn>
             <v-btn class="hidden-sm-and-down" large color="primary" :disabled="pregunta.respuesta !== undefined || pregunta.subiendo" @click.native="responder(pregunta.id)">
               Responder
             </v-btn>
-            <!-- botonEnviarBloqueado === index ||  -->
-            <!-- <v-btn class="hidden-md-and-up" block color="primary" dark large>
-              Próxima
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn> -->
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -110,7 +105,6 @@
 
 <script>
 import Viewer from 'viewerjs'
-import { mapGetters } from 'vuex'
 import * as FilePondO from 'filepond'
 import _ from 'lodash'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
@@ -119,7 +113,7 @@ import FilePondPluginImageTransform from 'filepond-plugin-image-transform'
 import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import FilepondPluginImagePreview from 'filepond-plugin-image-preview'
-// import store from '@/store'
+// // import store from '@/store'
 
 import AppNav from './Nav'
 
@@ -129,19 +123,20 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 export default {
   components: { AppNav },
   computed: {
-    ...mapGetters({
-      leccion: 'leccionDando',
-      tiempoRestante: 'tiempoRestante',
-      io: 'getSocket'
-    }),
+    io () {
+      return this.$store.getters.io
+    },
+    leccion () {
+      return this.$store.getters['realtime/leccion']
+    },
     preguntas () {
-      return this.leccion.preguntas
+      return this.$store.getters['realtime/leccion'].preguntas
     },
     leccionNombre () {
-      return this.leccion.nombre
+      return this.$store.getters['realtime/leccion'].nombre
     },
     cantidadPreguntas () {
-      return this.leccion.preguntas.length
+      return this.$store.getters['realtime/leccion'].preguntas.length
     },
     socket () {
       return this.io
@@ -152,8 +147,12 @@ export default {
     activo () {
       return this.active
     },
+    tiempo () {
+      return this.$store.getters['realtime/tiempo']
+    },
     preguntaActualRespondida () {
-      if (this.leccion.preguntas[this.preguntaActual] && this.leccion.preguntas[this.preguntaActual].respuesta) {
+      let leccion = this.$store.getters['realtime/leccion']
+      if (leccion.preguntas[this.preguntaActual] && leccion.preguntas[this.preguntaActual].respuesta) {
         return true
       } else {
         return false
@@ -179,7 +178,6 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    console.log('beforeRouteEnter')
     // let user = store.getters.nombres
     // store.actions.usuarioDatos.then(() => {
     //   console.log('finalizado')
@@ -187,28 +185,18 @@ export default {
     // })
     // console.l
     // next(vm => vm.setData(err, post))
-    next(vm => vm.setData())
+    // next(vm => vm.setData())
+    next()
   },
   mounted () {
-    // return new Promise((resolve, reject) => {
-    //    this.$store.dispatch('usuarioDatos').then((datos) => {
-    //       console.log(datos)
-    //       console.log('mounted')
-    //       resolve()
-    //    })
-    // })
-    // await this.$store.dispatch('usuarioDatos')
-    // this.$store.subscribe((mutation, state) => {
-    //   this.$store.dispatch('usuarioDatos')
-    // })
-    // this.$nextTick(function () {
-    //   console.log('before mounted')
-    // })
-    for (let elemento of this.$el.querySelectorAll('img')) {
+    // setear tamano de las imagenes
+    for (let elemento of document.querySelectorAll('img')) {
       elemento.style.width = `${(1100 * screen.width) / 1280}px`
       /* eslint-disable no-new */
       new Viewer(elemento, { toolbar: { zoomIn: 1, zoomOut: 1, rotateLeft: 1, rotateRight: 1 }, title: false, navbar: false })
     }
+
+    // plugin para enviar imagenes
     FilePondO.registerPlugin(FilePondPluginFileValidateType, FilePondPluginImageExifOrientation, FilePondPluginImageResize, FilePondPluginImageTransform, FilePondPluginImageCrop, FilepondPluginImagePreview)
     FilePondO.setOptions({
       server: {
@@ -216,6 +204,8 @@ export default {
         timeout: 7000
       }
     })
+
+    // boton enviar imagenes
     let ponds = []
     for (let pond of document.querySelectorAll('.imagen')) {
       let pondTmp = FilePondO.create(pond, {
@@ -231,19 +221,18 @@ export default {
         labelTapToCancel: 'Toque para cancelar',
         labelTapToUndo: 'Toque para eliminar',
         acceptedFileTypes: ['image/*']
-        // instantUpload: false
-        // files
       })
       ponds.push(pondTmp)
     }
 
+    // acciones y loaders de enviar imagenes
     for (let pond of document.querySelectorAll('.imagen')) {
       pond.addEventListener('FilePond:addfilestart', (e) => {
-        this.$store.dispatch('subiendoImagen', e.srcElement.id)
+        this.$store.dispatch('SET_SUBIENDO_IMAGEN', e.srcElement.id)
       })
       pond.addEventListener('FilePond:processfile', (e) => {
         this.ponds[e.detail.file.id] = { preguntaId: e.srcElement.id }
-        this.$store.dispatch('terminoSubirImagen', e.srcElement.id)
+        this.$store.dispatch('SET_TERMINO_SUBIR_IMAGEN', e.srcElement.id)
       })
       pond.addEventListener('FilePond:removefile', (e) => {
         delete this.ponds[e.detail.file.id]
@@ -264,40 +253,11 @@ export default {
     }
   },
   ready () {
-    // this.$store.dispatch('usuarioDatos')
-    console.log('ready')
   },
-  created () {
-    this.$store.dispatch('usuarioDatos').then(() => { console.log('termino') })
-    // this.$http.get(`/api/estudiantes/leccion/datos_leccion`)
-    //   .then(paralelos => {
-    //     console.log(paralelos)
-    //     if (paralelos.body.estado) {
-    //       this.$store.commit('setLecciones', paralelos.body.datos.estudiante.lecciones)
-    //       this.$store.commit('setDatosEstudiante', paralelos.body.datos)
-    //       this.$store.commit('setLeccionRealtimeEstadoEstudiante', paralelos.body.datos.estudiante)
-    //       this.$store.commit('setDatosMuchos', paralelos.body.datos)
-    //       this.$store.commit('setRealtimeLeccion', paralelos.body.datos)
-    //       this.$store.commit('SOCKET_USUARIO')
-    //     }
-    //   })
-    //   .catch(e => {
-    //     console.log(e)
-    //     // this.errors.push(e)
-    //   })
-    // console.log(this.socket)
-    // this.$socket.on('TIEMPO_RESTANTE', function (tiempo) {
-    //   console.log(tiempo)
-    // })
-    console.log('created')
-  },
+  // async created () {
+  //   await this.$store.dispatch('Inicializar')
+  // },
   methods: {
-    setData () {
-      console.log('set data')
-    },
-    getLecciones () {
-      // this.$http.get(`/api/lecciones/${id}`)
-    },
     valido (objeto) {
       if (!objeto) {
         return false
@@ -350,7 +310,6 @@ export default {
     responder (preguntaId) {
       let imagen = ''
       let local = ''
-      // console.log(this.ponds)
       for (let id in this.ponds) {
         if (this.ponds[id]['preguntaId'] === preguntaId) {
           imagen = JSON.parse(this.ponds[id]['server'])['datos']
@@ -358,14 +317,17 @@ export default {
         }
       }
       let respuesta = this.$el.querySelector(`#respuesta_${preguntaId}`).value
-      this.$store.dispatch('responder', { imagen, respuesta, preguntaId, local })
+      let estudianteId = this.$store.getters['estudiante/id']
+      let paraleloId = this.$store.getters['estudiante/paralelo']
+      let grupoId = this.$store.getters['estudiante/grupo']
+      let leccionId = this.$store.getters['realtime/leccion']['id']
+      this.$store.dispatch('realtime/ResponderPregunta', { imagen, respuesta, preguntaId, local, estudianteId, paraleloId, grupoId, leccionId })
         .then(() => {
           this.snackbarResponder = true
         })
         .catch(() => {
           this.snackbarErrorResponder = true
         })
-      // https://vuetifyjs.com/en/components/buttons Loader al boton al enviar
     }
   }
 }
