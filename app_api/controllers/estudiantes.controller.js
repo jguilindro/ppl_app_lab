@@ -234,7 +234,7 @@ const leccionDatos = (req, res) => {
     let leccion = null
     if (estudiante.leccion) {
       leccion   = yield obtenerLeccion(estudiante.leccion);
-    } 
+    }
     let respuestas       = yield obtenerRespuestas(estudiante.leccion, id_estudiante);
     let anadido          = yield anadirParticipanteARegistro(estudiante.leccion, grupo._id, id_estudiante);
     let preguntas = []

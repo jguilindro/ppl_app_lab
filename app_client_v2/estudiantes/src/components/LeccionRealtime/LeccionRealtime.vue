@@ -3,6 +3,12 @@
     <app-nav :pregunta="preguntaActualNombre" :tiempo="tiempo" :leccionNombre="leccionNombre" :cantidadPreguntas="cantidadPreguntas"
         v-on:pregunta="pestana($event)" :preguntaActualParent="activo" :preguntas="preguntas"
     ></app-nav>
+<!--     <el-tabs tab-position="right" style="height: 200px;">
+      <el-tab-pane label="Pregunta 1">Pregunta 1</el-tab-pane>
+      <el-tab-pane label="Pregunta 2">Pregunta 2</el-tab-pane>
+      <el-tab-pane label="Pregunta 3">Pregunta 3</el-tab-pane>
+      <el-tab-pane label="Pregunta 4">Pregunta 4</el-tab-pane>
+    </el-tabs> -->
     <v-container fluid style="min-height: 0;" grid-list-lg>
       <v-tabs :hide-slider="true" v-model="active"  fixed-tabs  v-touch="{
           left: () => next(),
@@ -70,6 +76,7 @@
         </v-tab-item>
       </v-tabs>
     </v-container>
+
     <v-snackbar
         :timeout="4000"
         :multi-line="true"
@@ -178,14 +185,6 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    // let user = store.getters.nombres
-    // store.actions.usuarioDatos.then(() => {
-    //   console.log('finalizado')
-    //   next(true)
-    // })
-    // console.l
-    // next(vm => vm.setData(err, post))
-    // next(vm => vm.setData())
     next()
   },
   mounted () {
@@ -228,11 +227,11 @@ export default {
     // acciones y loaders de enviar imagenes
     for (let pond of document.querySelectorAll('.imagen')) {
       pond.addEventListener('FilePond:addfilestart', (e) => {
-        this.$store.dispatch('SET_SUBIENDO_IMAGEN', e.srcElement.id)
+        this.$store.commit('realtime/SET_SUBIENDO_IMAGEN', e.srcElement.id)
       })
       pond.addEventListener('FilePond:processfile', (e) => {
         this.ponds[e.detail.file.id] = { preguntaId: e.srcElement.id }
-        this.$store.dispatch('SET_TERMINO_SUBIR_IMAGEN', e.srcElement.id)
+        this.$store.commit('realtime/SET_TERMINO_SUBIR_IMAGEN', e.srcElement.id)
       })
       pond.addEventListener('FilePond:removefile', (e) => {
         delete this.ponds[e.detail.file.id]
@@ -252,11 +251,6 @@ export default {
       })
     }
   },
-  ready () {
-  },
-  // async created () {
-  //   await this.$store.dispatch('Inicializar')
-  // },
   methods: {
     valido (objeto) {
       if (!objeto) {

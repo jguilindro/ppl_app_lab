@@ -31,9 +31,9 @@
       <v-icon >mdi-clock </v-icon>
       <v-toolbar-title slot="extension">{{pregunta}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-badge left overlap >
+      <!-- <v-badge left overlap >
         <span slot="badge" dark small>{{ cantidadNoContestadas }}</span>
-      </v-badge>
+      </v-badge> -->
       <v-menu bottom left>
         <v-btn icon slot="activator">
           <v-icon>more_vert</v-icon>
@@ -74,6 +74,7 @@ export default {
           cantidad = cantidad + 1
         }
       }
+      console.log(cantidad)
       return cantidad
     }
   },
@@ -98,6 +99,9 @@ export default {
   watch: {
     preguntaActualParent (val) {
       this.preguntaActual = parseInt(this.preguntaActualParent)
+    },
+    preguntas () {
+      console.log('contestada pregunta')
     }
   }
 }

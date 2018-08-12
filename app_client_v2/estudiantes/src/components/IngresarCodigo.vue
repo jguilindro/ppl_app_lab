@@ -3,57 +3,58 @@
     <app-nav></app-nav>
     <div class="ingresarCodigo">
       <v-jumbotron>
-      <v-container fill-height v-if="estadoLeccion === 'paralelo-no-esta-dando-leccion' || estadoLeccion === 'tiene-que-ingresar-el-codigo' || estadoLeccion === 'al-ingresar-el-codigo-redirigirlo-directamente'">
-        <v-layout align-center>
-          <v-flex text-xs-center>
-            <v-form v-model="valid">
-              <v-text-field
-                label="Código Lección"
-                v-model="codigo"
-                :counter="7"
-                :autofocus="true"
-                :max="7"
-                clearable
-                :error-messages="errors.collect('codigo')"
-                v-validate="'required|max:7|numeric'"
-                data-vv-name="codigo"
-                required
-                pattern="[0-9]*"
-                inputmode="numeric"
-                @keypress="keypressed($event)"
-              ></v-text-field>
-              <v-btn class="hidden-md-and-up" @click="submit" block :disabled="!valid" color="primary" dark>
-                Enviar
-              </v-btn>
-              <v-btn class="hidden-sm-and-down" @click="submit" :disabled="!valid" color="primary" large>
-                Enviar
-              </v-btn>
-            </v-form>
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <v-container fill-height v-if="estadoLeccion === 'tiene-que-esperar-a-que-empiece-la-leccion'">
-        <v-layout align-center>
-          <v-flex text-xs-center>
-            <v-progress-circular indeterminate :size="70" :width="7" color="blue"></v-progress-circular>
-            <h2>Espere a que el profesor comience la lección. Si no lo redirige, por favor recargue la página</h2>
-          </v-flex>
-        </v-layout>
-      </v-container>
-       <v-snackbar
-        :timeout="3000"
-        :multi-line="true"
-        :color="'error'"
-        :top="true"
-        v-model="snackbar"
-      >
-        {{ mensajeSnackbar }}
-        <v-btn flat color="white" @click.native="snackbar = false">Cerrar</v-btn>
-      </v-snackbar>
-    </v-jumbotron>
+        <v-container fill-height v-if="estadoLeccion === 'paralelo-no-esta-dando-leccion' || estadoLeccion === 'tiene-que-ingresar-el-codigo' || estadoLeccion === 'al-ingresar-el-codigo-redirigirlo-directamente'">
+          <v-layout align-center>
+            <v-flex text-xs-center>
+              <v-form v-model="valid">
+                <v-text-field
+                  label="Código Lección"
+                  v-model="codigo"
+                  :counter="7"
+                  :autofocus="true"
+                  :max="7"
+                  clearable
+                  :error-messages="errors.collect('codigo')"
+                  v-validate="'required|max:7|numeric'"
+                  data-vv-name="codigo"
+                  required
+                  pattern="[0-9]*"
+                  inputmode="numeric"
+                  @keypress="keypressed($event)"
+                ></v-text-field>
+                <v-btn class="hidden-md-and-up" @click="submit" block :disabled="!valid" color="primary" dark>
+                  Enviar
+                </v-btn>
+                <v-btn class="hidden-sm-and-down" @click="submit" :disabled="!valid" color="primary" large>
+                  Enviar
+                </v-btn>
+              </v-form>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-container fill-height v-if="estadoLeccion === 'tiene-que-esperar-a-que-empiece-la-leccion'">
+          <v-layout align-center>
+            <v-flex text-xs-center>
+              <v-progress-circular indeterminate :size="70" :width="7" color="blue"></v-progress-circular>
+              <h2>Espere a que el profesor comience la lección. Si no lo redirige, por favor recargue la página</h2>
+            </v-flex>
+          </v-layout>
+        </v-container>
+         <v-snackbar
+          :timeout="3000"
+          :multi-line="true"
+          :color="'error'"
+          :top="true"
+          v-model="snackbar"
+        >
+          {{ mensajeSnackbar }}
+          <v-btn flat color="white" @click.native="snackbar = false">Cerrar</v-btn>
+        </v-snackbar>
+      </v-jumbotron>
     </div>
   </div>
 </template>
+
 <script>
 import AppNav from '@/components/Nav/AppNav'
 import { store } from '@/store'
@@ -63,7 +64,7 @@ export default {
   $_veeValidate: {
     validator: 'new'
   },
-  created () { // al iniciar debe poder redirigirlo
+  created () {
     this.$validator.localize('es', this.dictionary)
   },
   computed: {
@@ -108,7 +109,7 @@ export default {
           self.mensajeSnackbar = 'El código ingresado no es de la lección'
         } else if (estadoRealtime === 'al-ingresar-el-codigo-redirigirlo-directamente') {
           if (process.env.NODE_ENV === 'production') {
-            window.location.href = '/estudiantes/leccion'
+            window.location.href = '/estudiantes/leccion' // CAMBIAR
           } else {
             this.$router.push('/leccionRealtime')
           }
@@ -129,7 +130,7 @@ export default {
     estadoLeccion (val) {
       if (val === 'redirigirlo-directamente') {
         if (process.env.NODE_ENV === 'production') {
-          window.location.href = '/estudiantes/leccion'
+          window.location.href = '/estudiantes/leccion' // CAMBIAR
         } else {
           this.$router.push('/leccionRealtime')
         }

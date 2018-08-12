@@ -68,6 +68,9 @@ export const store = new Vuex.Store({
           let estudianteId = resp.estudiante._id
           let lecciones = resp.estudiante.lecciones
           let leccionRealtime = resp.leccion
+          if (leccionRealtime) {
+            leccionRealtime['respuestas'] = resp.respuestas
+          }
           let estudiante = resp.estudiante
           let grupo = resp.grupo
           let paralelo = resp.paralelo

@@ -67,6 +67,7 @@ const crearRespuesta = (req, res) => {
 		subrespuestas : arraySubrespuestas
 	});
 	co(function* (){
+    console.log(req.body.leccion, req.body.pregunta, req.body.estudiante)
 		let respuesta = yield  obtenerRespuestaDeEstudianteP(req.body.leccion, req.body.pregunta, req.body.estudiante);
 		if( respuesta == null ){
 			resp.crearRespuesta( err => {
@@ -77,7 +78,7 @@ const crearRespuesta = (req, res) => {
 				return response.creado(res);
 			});
 		}else{
-			return response.serverError(res);	
+			return response.noOK(res)	
 		}
 	}).catch( fail => {
     console.log(fail)

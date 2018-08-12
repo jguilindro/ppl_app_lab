@@ -42,17 +42,11 @@ const realtimeModule = {
       }
       return new Promise((resolve, reject) => {
         Responder(respuesta)
-          .then((response) => {
-            if (response.body.estado) {
-              commit('SET_RESPUESTA', { preguntaId: respuesta.preguntaId, imagen: respuesta.imagen, respuesta: respuesta.respuesta, local: datos.local })
-              resolve(true)
-            } else {
-              // commit('setError', response.body)
-              reject(new Error(false))
-            }
+          .then((response) => { // no se analizar el body, porque solo me manda el estado true de creado
+            commit('SET_RESPUESTA', { preguntaId: respuesta.pregunta, imagen: respuesta.imagenes, respuesta: respuesta.respuesta, local: datos.local })
+            resolve(true)
           })
           .catch((err) => {
-            // commit('setError', err)
             reject(err)
           })
       })
@@ -112,7 +106,7 @@ const realtimeModule = {
           let preguntaTemp = pregunta.pregunta
           if (!pregunta['esSeccion']) {
             let respuestaDePregunta = respuestas.find((resp) => {
-              return resp.pregunta === pregunta['_id']
+              return resp.pregunta === preguntaTemp['_id']
             })
             if (respuestaDePregunta) {
               respuestaDePregunta = {

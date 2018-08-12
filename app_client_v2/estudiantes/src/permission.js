@@ -2,12 +2,7 @@ import router from './router'
 import { store } from '@/store'
 router.beforeEach((to, from, next) => {
   let path = to['path']
-  let pathFrom = from['path']
   if (path === '/lecciones') {
-    store.dispatch('Inicializar').then(() => {
-      next()
-    })
-  } else if (path === '/lecciones' && pathFrom === '/leccionRealtime') {
     store.dispatch('Inicializar').then(() => {
       next()
     })
@@ -25,7 +20,7 @@ router.beforeEach((to, from, next) => {
       let estadoLeccion = store.getters['realtime/estado']
       if (estadoLeccion === 'redirigirlo-directamente') {
         if (process.env.NODE_ENV === 'production') {
-          window.location.href = '/estudiantes/leccion'
+          window.location.href = '/estudiantes/leccion' // CAMBIAR
         } else {
           router.push('/leccionRealtime')
         }

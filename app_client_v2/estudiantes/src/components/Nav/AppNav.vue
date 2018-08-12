@@ -131,7 +131,7 @@ export default {
       window.location = '/att/estudiantes'
     },
     ingresarCodigo () {
-      router.push({name: 'IngresarCodigo'})
+      router.push({ name: 'IngresarCodigo' })
     }
   }
 }
