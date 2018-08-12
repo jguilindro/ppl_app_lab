@@ -59,7 +59,7 @@ module.exports = (io) => {
               if (!CURRENT_TIME_GUAYAQUIL.isBefore(TIEMPO_MAXIMO)) {
                 clearInterval(socket.interval)
                 leccionTerminadaSocket(socket.paralelo, leccionId)
-                leccion.in(paraleloId).emit('terminado leccion', true)
+                leccion.in(paraleloId).emit('TERMINADO_LECCION', true)
                 leccion.in(paraleloId).emit('TIEMPO_RESTANTE', 'leccion terminada')
               } else {
                 leccion.in(paraleloId).emit('TIEMPO_RESTANTE', duration) // envia el tiempo a todos los estudiante de un curso
@@ -76,7 +76,7 @@ module.exports = (io) => {
           // var intervalTiempo = setTimeout(function() {
           //   cleanIntervals(intervals, leccionId, true).then(function() {
           //     leccionTerminada(socket.paralelo, leccionId)
-          //     leccion.in(paraleloId).emit('terminado leccion', true)
+          //     leccion.in(paraleloId).emit('TERMINADO_LECCION', true)
           //     console.log('leccion terminada por setTimeout')
           //   })
           // },termo)
@@ -149,9 +149,9 @@ module.exports = (io) => {
         var intervals_done = yield cleanIntervals(intervals, socket.leccion, true)
         var lecciones_terminadas = yield leccionTerminada(PARALELO, PARALELO.leccion)
         if (profesor &&  PARALELO && lecciones_terminadas && intervals_done) {
-          leccion.in(PARALELO._id).emit('terminado leccion', true)
+          leccion.in(PARALELO._id).emit('TERMINADO_LECCION', true)
         } else {
-          leccion.in(PARALELO._id).emit('terminado leccion', false)
+          leccion.in(PARALELO._id).emit('TERMINADO_LECCION', false)
         }
       }).catch(fail => {
         let error = new Error(fail)
@@ -493,7 +493,7 @@ function leccionTerminada(paralelo, id_leccion) {
       }
     }
     return true
-    console.log('terminado leccion estudiantes');
+    console.log('TERMINADO_LECCION estudiantes');
   }, fail => {
    console.log(fail);
   })
@@ -528,7 +528,7 @@ function leccionTerminadaSocket(paralelo, id_leccion) {
       }
     }
     return true
-    console.log('terminado leccion estudiantes');
+    console.log('TERMINADO_LECCION estudiantes');
   }, fail => {
    console.log(fail);
   })
@@ -560,7 +560,7 @@ function leccionTerminadaDevelop(paralelo, id_leccion) {
    }))
   })
   Promise.all(promises).then(values => {
-   console.log('terminado leccion estudiantes');
+   console.log('TERMINADO_LECCION estudiantes');
   }, fail => {
    console.log(fail);
   })

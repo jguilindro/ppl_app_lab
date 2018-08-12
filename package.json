@@ -61,6 +61,7 @@
     "tracer": "^0.8.7",
     "unstream": "^2.0.0",
     "validator": "^9.4.1",
+    "vue-socket.io": "^2.1.1-b",
     "winston": "^3.0.0-rc0"
   },
   "devDependencies": {

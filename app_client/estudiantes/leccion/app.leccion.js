@@ -538,7 +538,7 @@ socket.on('TIEMPO_RESTANTE', function(tiempo) {
   App.tiempo = tiempo
 })
 
-socket.on('terminado leccion', function(match) {
+socket.on('TERMINADO_LECCION', function(match) {
   socket.disconnect();
   window.location.href = '/estudiantes/';
 });

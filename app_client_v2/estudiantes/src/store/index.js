@@ -6,20 +6,21 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '@/router'
 
 import { ObtenerDatosIniciales, ObtenerEstadosRealtime } from '@/api'
 import getters from './getters'
 import LeccionesModule from './modules/lecciones'
 import EstudianteModule from './modules/estudiante'
 import RealtimeModule from './modules/realtime'
-import socketPlugin from './plugins/socket'
-import io from 'socket.io-client'
-let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
-const socket = io(url, {
-  'reconnect': true,
-  'forceNew': true
-})
-const socketPlg = socketPlugin(socket)
+// import socketPlugin from './plugins/socket'
+// import io from 'socket.io-client'
+// let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
+// const socket = io(url, {
+//   'reconnect': true,
+//   'forceNew': true
+// })
+// const socketPlg = socketPlugin(socket)
 
 Vue.use(Vuex)
 
@@ -29,7 +30,7 @@ export const store = new Vuex.Store({
     estudiante: EstudianteModule,
     realtime: RealtimeModule
   },
-  plugins: [socketPlg],
+  // plugins: [socketPlg],
   state: {
     online: true,
     io: {}
@@ -38,12 +39,11 @@ export const store = new Vuex.Store({
     SET_SOCKET (state, socket) {
       state.io = socket
     },
-    SOCKET_TIEMPO_RESTANTE (state, socket) { // FIX
-      console.log(socket)
+    SOCKET_TIEMPO_RESTANTE (state, socket) {
       if (typeof socket !== 'string') {
-        state.tiempoLeccionRealtime = socket[0]
+        store.commit('realtime/SET_TIEMPO', socket[0])
       } else {
-        state.tiempoLeccionRealtime = socket
+        store.commit('realtime/SET_TIEMPO', socket)
       }
     },
     SOCKET_DISCONNECT (state) {
@@ -51,13 +51,20 @@ export const store = new Vuex.Store({
       state.online = false
     },
     SOCKET_CONNECT (state, socket) {
-      state.online = true
+      let estudianteId = store.getters['estudiante/id']
+      let leccionId = store.getters['realtime/leccion']['id']
+      let paraleloId = store.getters['estudiante/paralelo']
+      let io = store.getters['io']
+      io.emit('usuario estudiante', { estudianteId, leccionId, paraleloId })
     },
-    SOCKET_EMPEZAR_LECCION (state, data) { // FIX
-      console.log(data)
-      let estado = state.realtime.estado
-      if (estado === 'tiene-que-esperar-a-que-empiece-la-leccion') {
-        state.realtime.estado = 'redirigirlo-directamente'
+    SOCKET_EMPEZAR_LECCION (state, data) {
+      router.push('/leccionRealtime')
+    },
+    SOCKET_TERMINADO_LECCION (state, data) {
+      if (process.env.NODE_ENV === 'development') {
+        router.push('/lecciones')
+      } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'testing') {
+        router.push('/')
       }
     }
   },
