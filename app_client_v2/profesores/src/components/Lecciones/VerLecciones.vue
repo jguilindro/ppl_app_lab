@@ -54,10 +54,10 @@
           <v-chip outline label :color="setColor(props.item.estado)">{{ props.item.estado | capitalizeFirst }}</v-chip>
         </td>
         <td class="text-xs-center">
-          <v-btn v-if="props.item.estado === 'pendiente'" class="indigo darken-5 white--text">
+          <v-btn v-if="props.item.estado === 'pendiente'" class="indigo darken-5 white--text" @click.native="tomarLeccion(props.item._id, props.item.paralelo)">
             Tomar
           </v-btn>
-          <v-btn v-else-if="props.item.estado === 'tomando'" class="orange darken-3 white--text">
+          <v-btn v-else-if="props.item.estado === 'tomando'" class="orange darken-3 white--text" router :to="'/leccion-panel/' + props.item._id + '/' + props.item.paralelo">
             Entrar
           </v-btn>
           <v-btn v-else-if="props.item.estado === 'terminado'" class="green white--text" router :to="'/lecciones/' + props.item._id + '/grupos'">
@@ -181,6 +181,9 @@
       },
       leccion (id) {
         this.$router.push('/lecciones/' + id)
+      },
+      tomarLeccion (idLeccion, idParalelo) {
+        this.$store.dispatch('leccionRealTime/tomar', { idLeccion, idParalelo })
       }
     }
   }
