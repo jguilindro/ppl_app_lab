@@ -161,15 +161,15 @@ app.use('/undefined', (req, res) => { res.redirect('/')})
 }*/
 
 // error page
-app.use(function(req, res, next) {
-  if (process.env.NODE_ENV === 'production') {
-    res.redirect('/')
-  } else {
-    var err = new Error('Url o metodo no valido')
-    err.status = 404
-    next(err)
-  }
-})
+// app.use(function(req, res, next) {
+//   if (process.env.NODE_ENV === 'production') {
+//     res.redirect('/')
+//   } else {
+//     var err = new Error('Url o metodo no valido')
+//     err.status = 404
+//     next(err)
+//   }
+// })
 
 app.set('port', PORT)
 

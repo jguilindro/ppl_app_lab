@@ -71,8 +71,8 @@ router.get('/',authApi.estudiante, EstudiantesController.obtenerTodosEstudiantes
   *
   * @apiSampleRequest off
 **/
-router.get('/:id_estudiante',authApi.estudiante, EstudiantesController.obtenerEstudiante);
-
+router.get('/:id_estudiante', EstudiantesController.obtenerEstudiante);
+// authApi.estudiante,
 /**
   * @api {post} estudiantes Crear un estudiante
   * @apiName CrearEstudiante
