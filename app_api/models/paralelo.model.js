@@ -216,7 +216,7 @@ ParaleloSchema.statics.obtenerParaleloPeerCsv = function(id_profesor, callback) 
 }
 
 ParaleloSchema.statics.obtenerParaleloProfesorCsv = function(id_profesor, callback) {
-  this.findOne({profesor: id_profesor}).populate({
+  this.find({profesor: id_profesor}).populate({
     path: 'grupos',
     populate: { path: 'estudiantes' },
     select: 'estudiantes nombre'
