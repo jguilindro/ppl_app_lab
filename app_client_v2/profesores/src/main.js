@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import moment from 'moment'
-import VueSocketio from 'vue-socket.io'
 import 'vuetify/dist/vuetify.min.css'
 import 'chart.js'
 import VueCharts from 'hchs-vue-charts'
@@ -17,18 +16,18 @@ import Rubrica from '@/components/Shared/Rubrica'
 import CalificarPregunta from '@/components/Shared/CalificarPregunta'
 import DescripcionPregunta from '@/components/Shared/DescripcionPregunta'
 import CalificarRespuesta from '@/components/Shared/CalificarRespuesta'
+import GruposLeccion from '@/components/Shared/GruposLeccion'
 
-let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
-
+Vue.use(VueCharts)
 Vue.use(window.VueCharts)
 Vue.use(Vuetify)
-Vue.use(VueSocketio, url, store)
 
 Vue.component('navbar', Navbar)
 Vue.component('rubrica', Rubrica)
 Vue.component('calificar-pregunta', CalificarPregunta)
 Vue.component('calificar-respuesta', CalificarRespuesta)
 Vue.component('descripcion-pregunta', DescripcionPregunta)
+Vue.component('grupos-leccion', GruposLeccion)
 
 Vue.config.productionTip = false
 

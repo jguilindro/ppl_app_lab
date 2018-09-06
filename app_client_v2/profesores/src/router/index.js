@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import VueSocketio from 'vue-socket.io-extended'
+import io from 'socket.io-client'
+import { store } from '../store'
 
 import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/Login'
@@ -17,12 +20,16 @@ import Leccion from '@/components/Lecciones/Leccion'
 import Estadisticas from '@/components/Lecciones/Estadisticas'
 import CrearLeccion from '@/components/Lecciones/CrearLeccion'
 // import EditarLeccion from '@/components/Lecciones/EditarLeccion'
+// import LeccionPanel from '@/components/Lecciones/LeccionPanel'
 import SeleccionEstudiante from '@/components/Shared/SeleccionEstudiante'
 import CalificarLeccion from '@/components/Lecciones/CalificarLeccion'
 
 import BancoDePreguntas from '@/components/Preguntas/BancoDePreguntas'
 
 Vue.use(Router)
+
+const LeccionPanel = () => import('@/components/Lecciones/LeccionPanel')
+let url = process.env.NODE_ENV === 'production' ? '/tomando_leccion' : 'http://localhost:8000/tomando_leccion'
 
 export default new Router({
   routes: [
@@ -68,12 +75,24 @@ export default new Router({
     },
     {
       path: '/lecciones/:id/grupos',
-      name: 'SeleccionEstudiante',
-      component: SeleccionEstudiante
+      name: 'SeleccionEstudianteCalificar',
+      component: SeleccionEstudiante,
+      meta: { recalificar: false }
+    },
+    {
+      path: '/lecciones/:id/recalificar/grupos',
+      name: 'SeleccionEstudianteRecalificar',
+      component: SeleccionEstudiante,
+      meta: { recalificar: true }
     },
     {
       path: '/lecciones/:id/calificar/:id_grupo/:id_estudiante',
       name: 'CalificarLeccion',
+      component: CalificarLeccion
+    },
+    {
+      path: '/lecciones/:id/recalificar/:id_grupo/:id_estudiante',
+      name: 'RecalificarLeccion',
       component: CalificarLeccion
     },
     /* {
@@ -85,6 +104,15 @@ export default new Router({
       path: '/lecciones/:id/estadisticas',
       name: 'Estadisticas',
       component: Estadisticas
+    },
+    {
+      path: '/leccion-panel/:id/paralelo/:id_paralelo',
+      name: 'LeccionPanel',
+      component: LeccionPanel,
+      beforeEnter (to, from, next) {
+        Vue.use(VueSocketio, io(url), { store })
+        next()
+      }
     },
     {
 

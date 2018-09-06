@@ -3,7 +3,8 @@
     <v-flex xs7 class="pr-5">
       <h3 class="mb-3">Respuesta del estudiante</h3>
       <p v-if="sub.respondida" v-html="sub.respuesta" style="text-align: justify;"></p>
-      <img v-if="sub.imagen !== '' || sub.imagenes !== ''" :src="sub.imagen">
+      <img v-if="sub.imagen !== ''" :src="sub.imagen">
+      <img v-if="sub.imagenes !== ''" :src="sub.imagenes">
       <p v-if="!sub.respondida"><b><i>El estudiante no respondió esta pregunta.</i></b></p>
     </v-flex>
     <v-flex xs5>
@@ -17,7 +18,7 @@
             <v-text-field v-model="sub.feedback" label="Feedback" placeholder="Ej: Esta respuesta está incompleta porque..." required :disabled="disabled" auto-grow multi-line rows="2"></v-text-field>
           </v-flex>
           <v-flex xs12>
-            <v-btn class="indigo darken-5 white--text" @click.native="calificarSubPregunta" :disabled="disabled" :loading="loading">Calificar</v-btn>
+            <v-btn class="indigo darken-5 white--text" @click.native="calificar" :disabled="disabled" :loading="loading">Calificar</v-btn>
           </v-flex>
         </v-layout>
       </v-form>

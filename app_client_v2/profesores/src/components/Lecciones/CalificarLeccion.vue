@@ -22,7 +22,7 @@
           <v-flex xs12 class="mb-3">
             <h1 class="text-xs-center">{{ leccion.nombre }}</h1>
           </v-flex>
-          <v-flex xs12 v-for="(pregunta, index) in preguntas">
+          <v-flex xs12 v-for="(pregunta, index) in preguntas" :key="pregunta._id">
             <calificar-pregunta :pregunta="pregunta" :index="index" v-on:calificacionPregunta="calificarPregunta"></calificar-pregunta>
           </v-flex>
         </v-layout>
@@ -100,14 +100,13 @@
             this.loading = false
             this.estudianteSel = response.body.datos.estudiante
             this.$store.commit('setLeccionCalificar', response.body.datos.leccion)
-            response.body.datos.leccion.preguntas.forEach((pregunta) => {
-              let actual = pregunta.pregunta
-              if (actual.tipoLeccion === 'tutorial') {
-                actual.subpreguntas.forEach((sub) => {
+            response.body.datos.preguntas.forEach((pregunta) => {
+              if (pregunta.esSeccion) {
+                pregunta.subpreguntas.forEach((sub) => {
                   this.calificarPregunta(sub.calificacion)
                 })
               } else {
-                this.calificarPregunta(actual.calificacion)
+                this.calificarPregunta(pregunta.calificacion)
               }
             })
             this.preguntas = response.body.datos.preguntas
