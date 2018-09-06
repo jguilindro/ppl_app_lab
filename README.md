@@ -11,8 +11,6 @@
 * Development.- att_development
 * Production.- att_production
 
-## Production
-
 __La primera vez clonado__
 
 ```sh
@@ -57,3 +55,9 @@ __puerto 8001__
 * Att
 
 __puerto 8002__
+
+# Version 2
+
+```sh
+> yarn dev2
+```

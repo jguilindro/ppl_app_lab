@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "bower install",
     "dev": "cross-env NODE_ENV=development env-cmd .env nodemon server.js --config nodemon.json",
+    "dev2": "cross-env NODE_ENV=development env-cmd .env nodemon api/server.js --config nodemon_v2.json",
     "dev:cas": "cross-env NODE_ENV=development:cas env-cmd .env node server.js",
     "test:realtime": "cross-env NODE_ENV=testing env-cmd .env npm run mocha realtime/sockets/realtime.test.js --require realtime/sockets/helpers.sockets.js --exit",
     "test:realtime:db": "cross-env NODE_ENV=testing env-cmd .env npm run mocha realtime/db/database.test.js --timeout=20000 --require realtime/db/helpers.db.js --exit",
@@ -20,7 +21,7 @@
   "dependencies": {
     "@keyv/mongo": "^1.0.4",
     "@xkeshi/image-compressor": "^0.5.3",
-    "ajv": "^6.4.0",
+    "ajv": "^6.5.3",
     "body-parser": "~1.16.0",
     "bower": "^1.8.0",
     "cas-authentication": "^0.0.8",
@@ -77,12 +78,16 @@
     "gitbook-plugin-api": "^1.1.0",
     "jsonfile": "^3.0.0",
     "lolex": "^2.3.2",
-    "mocha": "^4.0.1",
+    "mocha": "^5.2.0",
+    "mock-mongoose": "^7.3.6",
+    "mongodb-mocker": "^1.1.4",
     "nodemon": "^1.11.0",
     "npm-run-all": "^2.3.0",
+    "rfr": "^1.2.3",
     "shelljs": "^0.8.2",
-    "sinon": "^4.0.1",
+    "sinon": "^6.2.0",
     "socket.io-client": "^2.0.3",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "tap": "^12.0.1"
   }
 }
