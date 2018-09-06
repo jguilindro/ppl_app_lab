@@ -457,7 +457,6 @@ const csv = function(req, res) {
 
     var leccionesParalelo = []
     var bandera = true;
-
     if (paralelos_peer || paralelo_titular) {
       if (!lecciones && !paralelos && !grupos) {
         if (paralelos_peer.length) {
@@ -475,9 +474,13 @@ const csv = function(req, res) {
         }
 
         if (paralelo_titular) {
-          var paralelo = paralelo_titular
-          let leccion_tmp = yield obtenerLeccionesParalelo(paralelo._id)
-          leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
+          for (var i = 0; i < paralelo_titular.length; i++) {
+             let leccion_tmp = yield obtenerLeccionesParalelo(paralelo_titular[i])
+             leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
+          }
+          // var paralelo = paralelo_titular
+          // let leccion_tmp = yield obtenerLeccionesParalelo(paralelo._id)
+          // leccionesParalelo = [...leccionesParalelo, ...leccion_tmp]
         } else if (paralelos_peer_asignado.length > 1) {
           leccionesParalelo = leccionesParalelo
         } else if (bandera){
