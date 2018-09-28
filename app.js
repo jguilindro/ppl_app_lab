@@ -9,8 +9,9 @@ if (require("os").userInfo().username == 'User') { // usado para cuando estoy en
 } else if (process.env.NODE_ENV){
   if (process.env.NODE_ENV === 'development:cas') {
     urlServidor = `mongodb://localhost/ppl_development`
-  } else {
-    urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
+  } else if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'){
+    urlServidor = 'mongodb://localhost:443/ppl_development'
+    // urlServidor = `mongodb://localhost/ppl_${process.env.NODE_ENV}`
   }
 } else {
   console.error('Error no escogio ninguna variable de entorno')
