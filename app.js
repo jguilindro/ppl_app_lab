@@ -134,11 +134,11 @@ app.use('/api', api)
 require('./app_api/realtime/realtime')(io)
 
 // realtime v2
-if (process.env.NODE_ENV !== 'production') {
-  const realtime = express()
-  require('./realtime/routes.realtime')(realtime, io)
-  app.use('/api/realtime', realtime)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const realtime = express()
+//   require('./realtime/routes.realtime')(realtime, io)
+//   app.use('/api/realtime', realtime)
+// }
 
 // app client
 const client = express()
@@ -153,13 +153,13 @@ app.use('/v2', clientv2)
 app.use('/undefined', (req, res) => { res.redirect('/')})
 
 // ATT
-try {
-  const att = require('./att/app').app
-  app.use('/', att(io))
-} catch(err) {
-  console.error('no tiene instalado el modulo att. Revise el README')
-  console.log(err)
-}
+// try {
+//   const att = require('./att/app').app
+//   app.use('/', att(io))
+// } catch(err) {
+//   console.error('no tiene instalado el modulo att. Revise el README')
+//   console.log(err)
+// }
 
 // error page
 // app.use(function(req, res, next) {
