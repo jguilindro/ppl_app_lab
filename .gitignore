@@ -31,7 +31,6 @@ coverage/
 reports/
 !reports/.gitkeep
 .nyc_output
-dist/
 !dist/index.html
 *.mp4
 tmux*
