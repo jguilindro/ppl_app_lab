@@ -162,7 +162,9 @@ module.exports = (app) => {
     app.get( '/api/session/logout', cas.logout)
   }
 
-  app.use('/profesores',redirecion, authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores')))
+  app.use('/profesores',redirecion, authProfesor, middleProfesorControl, (req, res) => { res.redirect('/v2/profesores')})
+
+  // app.use('/profesores',redirecion, authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores')))
   app.use('/profesores/grupos', redirecion,authProfesor, middleProfesorControl, express.static(path.join(__dirname, 'profesores/grupos')))
   app.use('/profesores/preguntas/banco', redirecion, authProfesor, middleProfesorControl,  express.static(path.join(__dirname, 'profesores/preguntas/banco')))
   app.use('/profesores/preguntas/:id', redirecion, authProfesor, middleProfesorControl,  express.static(path.join(__dirname, 'profesores/preguntas/ver-pregunta')))

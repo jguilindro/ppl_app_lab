@@ -80,7 +80,6 @@
     "lolex": "^2.3.2",
     "mocha": "^5.2.0",
     "mock-mongoose": "^7.3.6",
-    "mongodb-mocker": "^1.1.4",
     "nodemon": "^1.11.0",
     "npm-run-all": "^2.3.0",
     "rfr": "^1.2.3",

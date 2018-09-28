@@ -22,7 +22,7 @@ export default {
   obtenerUsuario ({commit}) {
     commit('setError', null)
     commit('setLoading', true)
-    Vue.http.get('api/session/usuario_conectado')
+    Vue.http.get('/api/session/usuario_conectado')
       .then((res) => {
         commit('setLoading', false)
         if (res.body.estado) {
